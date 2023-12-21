@@ -1,0 +1,42 @@
+# `pfl`: Python framework for Private Federated Learning simulations
+
+`pfl` is a Python framework developed at Apple to enable researchers to run efficient simulations with privacy-preserving federated learning (FL) and disseminate the results of their research in FL.
+The framework is `not` intended to be used for third-party FL deployments but the results of the simulations can be tremendously useful in actual FL deployments.
+We hope that `pfl` will promote open research in FL and its effective dissemination.
+
+``pfl`` provides several useful features, including the following:
+
+* Get started quickly trying out PFL for your use case with your existing model and data.
+* Iterate quickly with fast simulations utilizing multiple levels of distributed training (multiple processes, GPUs and machines).
+* Flexibility and expressiveness - when a researcher has a PFL idea to try, ``pfl`` has flexible APIs to express these ideas.
+* Scalable simulations for large experiments with state-of-the-art algorithms and models.
+* Support of both PyTorch and TensorFlow.
+* Unified benchmarks for datasets that has been vetted for both TensorFlow and PyTorch.
+* Support of other models in addition to neural networks, e.g. GBDTs. Switching between types of models is seamless.
+* Tight integration with privacy features, including common mechanisms for local and central differential privacy.
+
+## Installation
+
+Installation instructions can be found here `<TODO>`.
+`pfl` is available on PyPI and a full installation be done with pip:
+
+```
+pip install 'pfl[tf,pytorch,trees]'
+```
+
+## Getting started - tutorial notebooks
+
+To try out `pfl` immediately without installation, we provide several colab notebooks for learning the different components in `pfl` hands-on.
+`<TODO push notebooks to colab>`
+
+## Getting started - benchmarks
+
+`pfl` aims to streamline the benchmarking process of testing hypotheses in the Federated Learning paradigm. The official benchmarks are available in the [benchmarks](./benchmarks) directory, using a variety of realistic dataset-model combinations with and without differential privacy (yes, we do also have CIFAR10).
+
+**Copying these examples is a great starting point for doing your own research.**
+[See the quickstart](./benchmarks#quickstart) on how to get started converging a model on the simplest benchmark (CIFAR10) in just a few minutes.
+
+## Contributing
+
+Researchers are invited to contributed to the framework. Please, see `<TODO>` for more details.
+

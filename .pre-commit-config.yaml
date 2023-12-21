@@ -1,0 +1,45 @@
+# Configuration for the `pre-commit` tool.
+#
+# *Note*: To override the check, add the `--no-verify` flag to your
+# git command line
+#
+# To enable the checks' being invoked on `git commit`, run
+#   ```
+#   pip3 install pre-commit
+#   pre-commit install
+#   ```
+#
+# To run them manually before committing, type `pre-commit run`
+default_language_version:
+  python: python3.10
+repos:
+  # Data validity and file permissions
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+        exclude: \.rst$
+      - id: check-shebang-scripts-are-executable
+      - id: check-toml
+      - id: check-yaml
+      - id: fix-encoding-pragma
+  # Formatting consistency
+  - repo: https://github.com/google/yapf
+    rev: v0.40.1
+    hooks:
+      - id: yapf
+        args:
+          - --in-place
+  # Style checks, common errors, etc.
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: "v0.0.290"
+    hooks:
+      - id: ruff
+  # Static analysis for type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.0
+    hooks:
+    - id: mypy
+  # TODO: license header hook

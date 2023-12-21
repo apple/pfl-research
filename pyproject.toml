@@ -1,0 +1,188 @@
+[tool.poetry]
+name = "pfl"
+version = "0.0.1"
+description = "Simulation framework for Private Federated Learning"
+# TODO: adjust to Apple
+authors = ["Filip Granqvist <fgranqvist@apple.com>"]
+#repository = "https://github.com/grananqvist/pfl"
+#documentation = "https://grananqvist.github.io/pfl/"
+readme = "README.md"
+packages = [
+  {include = "pfl"}
+]
+include = [
+  "VERSION",
+  "tox.ini"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+multiprocess = "^0.70.15"
+numpy = "^1.21"
+scipy = "^1.7.3"
+dp-accounting = "^0.4"
+prv-accountant = "^0.2.0"
+#### Will be installed only with "pytorch" install extra
+torch = [
+  { version = "2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
+]
+#### Will be installed only with "tf" install extra
+tensorflow = [
+    {version = "^2.14", markers = "sys_platform == 'linux'", optional = true},
+    {version = "^2.14", markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", optional = true}
+]
+# Require TF2.14 for M1 because looks like installing Horovod with <TF2.13 on M1 doesn't work.
+tensorflow-macos = { version = "^2.14", markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", optional = true}
+tensorflow-probability = { version = "^0.22", optional = true }
+
+#### Will be installed only with "trees" install extra
+scikit-learn = { version = "^1.0.2", optional = true }
+xgboost = { version = "^1.4.2", optional = true }
+
+#### Needed in case you want to install Horovod
+cmake = "^3.27.5"
+wheel = "^0.41.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+pytest-cov = "^4.0.0"
+deptry = "^0.6.4"
+pre-commit = "^2.20.0"
+tox = "^3.25.1"
+yapf = "^0.40.1"
+pytest-env = "^1.0.1"
+pytest-xdist = "^3.3.1"
+bump-my-version = "^0.9.3"
+ruff = "0.0.290"
+pytest-lazy-fixture = "^0.6.3"
+mypy = "1.5"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.1.2"
+sphinx-autodoc-typehints = "^1.24.0"
+furo = "^2023.8.19"
+sphinx-last-updated-by-git = "^0.3.6"
+
+[tool.poetry.extras]
+pytorch = [ 'torch', 'cmake']
+tf = ['tensorflow', 'tensorflow-macos', 'tensorflow-probability', 'cmake']
+trees = ['scikit-learn', 'xgboost']
+
+[[tool.poetry.source]]
+name = "torch_cu118"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+files = ["pfl", "tests"]
+disable_error_code = "import,union-attr,index,attr-defined,arg-type"
+exclude = ['doc']
+#disallow_any_unimported = "True"
+#no_implicit_optional = "True"
+#warn_unused_ignores = "True"
+#show_error_codes = "True"
+
+[tool.ruff]
+target-version = "py37"
+line-length = 120
+fix = true
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+   # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # tryceratops
+    "TRY",
+]
+ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.coverage.report]
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+source = ["pfl"]
+
+[tool.pytest.ini_options]
+testpaths = "test/"
+python_files = "test_*.py"
+addopts = "-n auto"
+faulthandler_timeout = 600
+
+env = [
+    "TF_CPP_MIN_LOG_LEVEL = 2",
+    "PYTHONPATH = .",
+    "PFL_DISTRIBUTE_METHOD = legacy",
+]
+
+filterwarnings = [
+    "ignore:numpy.ufunc size changed.*:RuntimeWarning",
+    "ignore::DeprecationWarning:tensorflow.*:",
+    "ignore::FutureWarning:tensorflow.*:",
+    "ignore::FutureWarning:tensorboard.*:",
+    "ignore::ResourceWarning:tensorflow.*:",
+    "ignore::ImportWarning:importlib.*:",
+]
+
+markers = [
+    "macos: mark test that should only run on MacOS, enable with --macos",
+    "disable_horovod: mark test that use Horovod. If you don't have Horovod installed, you can still run tests with --disable_horovod",
+]
+
+# Run with command:
+# poetry run bump-my-version bump <major/minor/patch>
+[tool.bumpversion]
+current_version = "0.0.1"
+commit = "True"
+tag = "False"
+
+[[tool.bumpversion.files]]
+filename = "VERSION"
+
+[[tool.bumpversion.files]]
+filename = "pfl/version.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+

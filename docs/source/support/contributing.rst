@@ -285,5 +285,4 @@ The contributor should take this checklist into account to ensure a smooth and q
 .. _pfl-research Git repository: https://github.com/apple/pfl
 .. _Poetry: https://python-poetry.org
 .. _pyproject.toml: https://github.com/apple/pfl/blob/main/pyproject.toml
-.. _#help-pfl-dodml: slack://channel?team=TERA6E70T&id=CRL6BQ1SQ
 

@@ -227,12 +227,8 @@ class TestBandedMatrixFactorizationMechanism:
 
     @staticmethod
     def _get_banded_matrix_mechanism():
-        make_privacy_accountant = lambda num_compositions: PLDPrivacyAccountant(
-            num_compositions=num_compositions,
-            epsilon=2.0,
-            delta=1e-6,
-            sampling_probability=0.1,
-            mechanism='gaussian')
+        make_privacy_accountant = lambda num_compositions: MagicMock(
+            cohort_noise_parameter=1.1713266372680664)
         return BandedMatrixFactorizationMechanism(
             clipping_bound=1.0,
             num_iterations=16,

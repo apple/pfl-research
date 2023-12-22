@@ -7,7 +7,7 @@ Test privacy_mechanism.py.
 
 import math
 import typing
-from unittest.mock import ANY, MagicMock
+from unittest.mock import ANY, MagicMock, patch
 
 import numpy as np
 import pytest
@@ -339,16 +339,13 @@ class TestMechanisms:
         return (mechanism, sigma)
 
     def _from_privacy_accountant_sigma(self, norm_bound, noise_scale):
-        privacy_accountant = PLDPrivacyAccountant(num_compositions=100,
-                                                  sampling_probability=0.01,
-                                                  mechanism='gaussian',
-                                                  epsilon=2,
-                                                  delta=1e-8,
-                                                  noise_parameter=None,
-                                                  noise_scale=noise_scale)
-        mechanism = GaussianMechanism.from_privacy_accountant(
-            accountant=privacy_accountant, clipping_bound=norm_bound)
-        return (mechanism, mechanism.relative_noise_stddev * norm_bound)
+        with patch(
+                'pfl.privacy.privacy_accountant.PrivacyAccountant.__post_init__'  # pylint: disable=line-too-long
+        ):
+            accountant = MagicMock(cohort_noise_parameter=0.5 * noise_scale)
+            mechanism = GaussianMechanism.from_privacy_accountant(
+                accountant=accountant, clipping_bound=norm_bound)
+            return (mechanism, mechanism.relative_noise_stddev * norm_bound)
 
     def test_privacy_accountant_noise_scalar(self):
         assert (self._from_privacy_accountant_sigma(

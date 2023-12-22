@@ -14,6 +14,11 @@ from dp_accounting.pld import privacy_loss_distribution
 from dp_accounting.rdp import rdp_privacy_accountant
 from prv_accountant import LaplaceMechanism, PoissonSubsampledGaussianMechanism, PRVAccountant
 
+MIN_BOUND_NOISE_PARAMETER = 0
+MAX_BOUND_NOISE_PARAMETER = 100
+RTOL_NOISE_PARAMETER = 0.001
+CONFIDENCE_THRESHOLD_NOISE_PARAMETER = 1e-8
+
 
 @dataclass
 class PrivacyAccountant:
@@ -174,10 +179,6 @@ class PLDPrivacyAccountant(PrivacyAccountant):
 
             else:
                 # Do binary search over noise_parameter
-                min_bound, max_bound = 0, 100
-                confidence_threshold = 1e-8
-                rtol = 0.0001
-
                 func = lambda noise_parameter: self.get_composed_accountant(
                     self.mechanism, noise_parameter, self.pessimistic_estimate,
                     self.sampling_probability, self.use_connect_dots, self.
@@ -190,10 +191,11 @@ class PLDPrivacyAccountant(PrivacyAccountant):
                         func_monotonically_increasing=
                         func_monotonically_increasing,
                         target_value=self.delta,
-                        min_bound=min_bound,
-                        max_bound=max_bound,
-                        rtol=rtol,
-                        confidence_threshold=confidence_threshold)
+                        min_bound=MIN_BOUND_NOISE_PARAMETER,
+                        max_bound=MAX_BOUND_NOISE_PARAMETER,
+                        rtol=RTOL_NOISE_PARAMETER,
+                        confidence_threshold=
+                        CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
                 except Exception as e:
                     raise ValueError(
                         'Error occurred during binary search for '
@@ -295,10 +297,6 @@ class PRVPrivacyAccountant(PrivacyAccountant):
             else:
 
                 # Do binary search over noise_parameter
-                min_bound, max_bound = 0, 100
-                confidence_threshold = 1e-8
-                rtol = 0.0001
-
                 func = lambda noise_parameter: self.get_composed_accountant(
                     self.mechanism, noise_parameter, self.sampling_probability,
                     self.num_compositions, self.eps_error, self.delta_error
@@ -310,10 +308,11 @@ class PRVPrivacyAccountant(PrivacyAccountant):
                         func_monotonically_increasing=
                         func_monotonically_increasing,
                         target_value=self.delta,
-                        min_bound=min_bound,
-                        max_bound=max_bound,
-                        rtol=rtol,
-                        confidence_threshold=confidence_threshold)
+                        min_bound=MIN_BOUND_NOISE_PARAMETER,
+                        max_bound=MAX_BOUND_NOISE_PARAMETER,
+                        rtol=RTOL_NOISE_PARAMETER,
+                        confidence_threshold=
+                        CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
                 except Exception as e:
                     raise ValueError(
                         'Error occurred during binary search for '
@@ -386,10 +385,6 @@ class RDPPrivacyAccountant(PrivacyAccountant):
 
             else:
                 # Do binary search over noise_parameter
-                min_bound, max_bound = 0, 100
-                confidence_threshold = 1e-8
-                rtol = 0.0001
-
                 func = lambda noise_parameter: self.get_composed_accountant(
                     self.mechanism, noise_parameter, self.sampling_probability,
                     self.num_compositions).get_delta(self.epsilon)
@@ -400,14 +395,15 @@ class RDPPrivacyAccountant(PrivacyAccountant):
                         func_monotonically_increasing=
                         func_monotonically_increasing,
                         target_value=self.delta,
-                        min_bound=min_bound,
-                        max_bound=max_bound,
-                        rtol=rtol,
-                        confidence_threshold=confidence_threshold)
+                        min_bound=MIN_BOUND_NOISE_PARAMETER,
+                        max_bound=MAX_BOUND_NOISE_PARAMETER,
+                        rtol=RTOL_NOISE_PARAMETER,
+                        confidence_threshold=
+                        CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
                 except Exception as e:
                     raise ValueError(
                         'Error occurred during binary search for noise_'
-                        '_parameter using RDP privacy accountant: {e}') from e
+                        f'_parameter using RDP privacy accountant: {e}') from e
 
     @staticmethod
     def get_composed_accountant(mechanism, noise_parameter,

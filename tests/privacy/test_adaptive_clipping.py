@@ -5,9 +5,10 @@
 Test adaptive_clipping.py.
 '''
 
-import math
 import typing
+from unittest.mock import MagicMock
 
+import math
 import numpy as np
 import pytest
 from pytest_lazyfixture import lazy_fixture
@@ -127,15 +128,9 @@ class TestAdaptiveClipping:
                                log_space_clipping_bound_step_size,
                                expected_clipping_bound):
         max_cohort_size = 1000
-        population_size = 100000000
         clipping_bound = 3.
         norm_quantile_noise_stddev = 0.05
-        accountant = PLDPrivacyAccountant(
-            num_compositions=100,
-            sampling_probability=max_cohort_size / population_size,
-            mechanism='gaussian',
-            epsilon=2,
-            delta=1e-6)
+        accountant = MagicMock(cohort_noise_parameter=0.3282815217971802)
         make_gaussian_mechanism = (
             lambda clipping_bound: GaussianMechanism.from_privacy_accountant(
                 accountant=accountant, clipping_bound=clipping_bound))

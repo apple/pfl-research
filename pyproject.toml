@@ -2,10 +2,9 @@
 name = "pfl"
 version = "0.0.1"
 description = "Simulation framework for Private Federated Learning"
-# TODO: adjust to Apple
-authors = ["Filip Granqvist <fgranqvist@apple.com>"]
-#repository = "https://github.com/grananqvist/pfl"
-#documentation = "https://grananqvist.github.io/pfl/"
+authors = ["Apple"]
+repository = "https://github.com/apple/pfl-research"
+#documentation = "TODO"
 readme = "README.md"
 packages = [
   {include = "pfl"}

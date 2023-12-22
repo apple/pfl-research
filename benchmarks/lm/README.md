@@ -37,11 +37,3 @@ StackOverflow non-IID Central DP:
 ```
 python -m lm.${framework}.train --args_config lm/configs/baseline.yaml --central_privacy_mechanism gaussian_moments_accountant
 ```
-
-
-framework=pytorch
-python -m lm.${framework}.train --args_config lm/configs/baseline.yaml --central_num_iterations 11
-python -m lm.${framework}.train --args_config lm/configs/baseline.yaml --central_privacy_mechanism gaussian_moments_accountant  --central_num_iterations 11
-framework=tf
-python -m lm.${framework}.train --args_config lm/configs/baseline.yaml --central_num_iterations 11
-python -m lm.${framework}.train --args_config lm/configs/baseline.yaml --central_privacy_mechanism gaussian_moments_accountant  --central_num_iterations 11

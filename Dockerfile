@@ -63,7 +63,7 @@ RUN poetry config virtualenvs.create false
 RUN poetry build && python -m pip install dist/*.whl
 RUN poetry install
 
-# docker build -f Dockerfile -t docker.apple.com/dodml/oss-pfl:latest-tf . --target tf
+# docker build -f Dockerfile -t pfl:latest-tf . --target tf
 FROM base as tf
 WORKDIR /pfl/
 COPY --from=base /pfl /pfl
@@ -71,7 +71,7 @@ RUN poetry install -E tf -E trees
 RUN poetry run ./build_scripts/install_horovod.sh true false true
 RUN rm -rf /pfl
 
-# docker build -f Dockerfile -t docker.apple.com/dodml/oss-pfl:latest-pytorch . --build-arg CUDA_VERSION=11.8.0 --build-arg RUNTIME_TYPE=devel --target pytorch
+# docker build -f Dockerfile -t pfl:latest-pytorch . --build-arg CUDA_VERSION=11.8.0 --build-arg RUNTIME_TYPE=devel --target pytorch
 FROM base as pytorch
 WORKDIR /pfl/
 COPY --from=base /pfl /pfl
@@ -79,7 +79,7 @@ RUN poetry install -E pytorch -E trees
 RUN poetry run ./build_scripts/install_horovod.sh false true true
 RUN rm -rf /pfl
 
-# docker build -f Dockerfile -t docker.apple.com/dodml/oss-pfl:latest-ci . --build-arg CUDA_VERSION=11.8.0 --build-arg RUNTIME_TYPE=devel --target ci
+# docker build -f Dockerfile -t pfl:latest-ci . --build-arg CUDA_VERSION=11.8.0 --build-arg RUNTIME_TYPE=devel --target ci
 FROM base as ci
 WORKDIR /pfl/
 COPY --from=base /pfl /pfl

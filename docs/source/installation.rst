@@ -20,14 +20,15 @@ To install the latest compatible version of the deep learning framework you plan
     # Install pfl for GBDTs
     pip install 'pfl[trees]'
 
-If you want to access the official benchmarks, clone the `pfl-research`_ repository from Github.
+If you want to access the official benchmarks, clone the `pfl-research`_ repository from Github and go to ``./benchmarks``.
 This is also a good starting point when doing your own research. 
 
 .. code-block:: default
 
     git clone https://github.com/apple/pfl-research.git
+    cd pfl-research/benchmarks
 
-Follow instructions in each ``README.md`` of `pfl-research`_ to get started running the default setups.
+Follow instructions in each ``README.md`` of ``pfl-research/benchmarks`` to get started running the default setups.
 
 
 Install pfl from source

@@ -50,7 +50,7 @@ In most cases, you can also use our setup script available in the ``pfl`` reposi
 
 .. code-block::
 
-   git clone https://github.com/apple/pfl.git
+   git clone https://github.com/apple/pfl-research.git
    # arg1: Install for TF
    # arg2: Install for PyTorch
    # arg3: Install non-Python dependencies on Linux.
@@ -219,5 +219,5 @@ Native datasets
 If all data can fit into RAM, then using :class:`~pfl.data.dataset.Dataset` is the fastest.
 If you need to load the data from disk in a lazy fashion, or if you do heavy preprocessing, then we recommend using :class:`~pfl.data.tensorflow.TFFederatedDataset` and :class:`~pfl.data.pytorch.PyTorchFederatedDataset` respectively to allow for parallelization of preparing users' data.
 
-.. _LM example: https://github.com/apple/pfl-research/tree/main/lm
+.. _LM example: https://github.com/apple/pfl-research/tree/main/benchmarks/lm
 .. _Horovod: https://horovod.readthedocs.io/en/stable

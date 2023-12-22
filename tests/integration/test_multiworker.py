@@ -53,8 +53,6 @@ def _run_test_two_workers(tmp_path,
         )
 
     # Run `run_training_on_fake_data.py` with two workers.
-    # The processes are called with DEBUG_WORKER_ID 0 and 1,
-    # see https://quip-apple.com/8CBFAnJVI5qa
     worker1_env = os.environ.copy()
     worker1_env['PFL_WORKER_RANK'] = '0'
     worker1_env['PFL_WORKER_ADDRESSES'] = ",".join(

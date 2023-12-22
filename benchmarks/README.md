@@ -1,4 +1,4 @@
-# pfl-research
+# PFL benchmarks
 
 ## Setup environment
 
@@ -48,7 +48,7 @@ python image_classification/pytorch/train.py --args_config image_classification/
 There are multiple official benchmarks for `pfl` to simulate various scenarios, split into categories:
 * [image_classification](./image_classification) - train small CNN on CIFAR10.
 * [lm](./lm) - train transformer model on StackOverflow
-* [flair](./flair) - train ResNet18 on [FLAIR]() dataset.
+* [flair](./flair) - train ResNet18 on [FLAIR](https://proceedings.neurips.cc/paper_files/paper/2022/file/f64e55d03e2fe61aa4114e49cb654acb-Paper-Datasets_and_Benchmarks.pdf) dataset.
 
 ## Run distributed simulations
 

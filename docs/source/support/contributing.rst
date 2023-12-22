@@ -4,9 +4,9 @@ Contributing
 ============
 
 We welcome contributions from anyone who wish to improve ``pfl`` for research.
-The framework is maintained in `pfl Git repository`_ and anything related to benchmarking and new research goes into `pfl-research Git repository`_.
-Below are guidelines on how to make contributions to ``pfl`` and to ``pfl-research`` that follow our best practices.
-Reach out to us on ``fgranqvist@apple.com`` if you have any questions about developing on ``pfl`` and see `open issues <https://github.com/apple/pfl/issues>`_ for community reported bugs and beginner friendly tasks.
+The framework is maintained in `pfl-research Git repository`_ and anything related to benchmarking and new research goes into `pfl-research Git repository`_.
+Below are guidelines on how to make contributions to ``pfl`` that follow our best practices.
+Reach out to us on ``fgranqvist@apple.com`` if you have any questions about developing on ``pfl`` and see `open issues <https://github.com/apple/pfl-research/issues>`_ for community reported bugs and beginner friendly tasks.
 
 Setting up development environment
 ----------------------------------
@@ -15,14 +15,14 @@ The ``main`` branch always contains the latest release of ``pfl``.
 Any new features and improvements should be based off the development branch called ``develop``.
 If you would like to contribute to ``pfl``, a first step is to set up your development environment by following these steps:
 
-1. Create a fork of ``pfl`` using the github UI: go to `pfl Git repository`_ and click on ``Fork``. **Do not keep your branches in the main pfl repo**.
+1. Create a fork of ``pfl-research`` repo using the github UI: go to `pfl-research Git repository`_ and click on ``Fork``. **Do not keep your branches in the main pfl-research repo**.
 2. Clone the forked repository to your local computer.
 3. Execute these commands:
 
 .. code-block:: bash
 
-    # Add apple/pfl as an upstream
-    git remote add upstream https://github.com/apple/pfl
+    # Add apple/pfl-research as an upstream
+    git remote add upstream https://github.com/apple/pfl-research
     git fetch upstream
 
     # Checkout a new feature branch, called 'new-awesome-feature', based off "develop" from upstream
@@ -94,7 +94,7 @@ This means that we do not accept any new changes into pfl's current major versio
 See :ref:`code structure <code_structure>` for information about what parts of ``pfl`` are classified as public API.
 
 We don't have an RFC process in place yet for external contributions.
-If you wish to implement a new feature that will require at least a minor version bump according to semantic versioning we suggest that you first open an `issue <https://github.com/apple/pfl/issues>`_ and explain the why, what and how and get some initial feedback.
+If you wish to implement a new feature that will require at least a minor version bump according to semantic versioning we suggest that you first open an `issue <https://github.com/apple/pfl-research/issues>`_ and explain the why, what and how and get some initial feedback.
 
 There are 2 active branches in the main repository (and 1 additional when preparing to release):
 
@@ -117,7 +117,7 @@ Unlike Google’s styleguide, we use `Sphinx-style docstring formatting`_.
 Do not include `:type` and `:rtype`, since that is replaced by type hints.
 For consistency, code should be formatted with `yapf`_ of the version specified in `pyproject.toml`_.
 `yapf`_ automates a subset of the rules mentioned in the styleguide.
-To run `yapf`_, integrate it in your IDE or manually run the following command in the root directory of ``pfl``:
+To run `yapf`_, integrate it in your IDE or manually run the following command in the root directory of ``pfl-research``:
 
 .. code-block:: bash
 
@@ -256,7 +256,7 @@ For that you just need to push the files you modified to the branch of your fork
     git commit -m 'Message explaining your changes'
     git push origin new-awesome-feature
 
-Finally, you can go do a pull request from the Github UI: go to ``https://github.com/apple/pfl/compare`` and click on ``Create pull request``. Then, make sure that you reference any open issues that the PR solves and leave an informative message about the changes made in the ``new-awesome-feature`` branch.
+Finally, you can go do a pull request from the Github UI: go to ``https://github.com/apple/pfl-research/compare`` and click on ``Create pull request``. Then, make sure that you reference any open issues that the PR solves and leave an informative message about the changes made in the ``new-awesome-feature`` branch.
 
 The next step is to wait for the CI builds to pass (progress is shown at the bottom of the PR).
 Contributors with admin status may have to kickstart the CI for you.
@@ -282,7 +282,7 @@ The contributor should take this checklist into account to ensure a smooth and q
 .. _type hints: https://docs.python.org/3.7/library/typing.html
 .. _Sphinx-style docstring formatting: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html
 .. _pfl Git repository: https://github.com/apple/pfl
-.. _pfl-research Git repository: https://github.com/apple/pfl
+.. _pfl-research Git repository: https://github.com/apple/pfl-research
 .. _Poetry: https://python-poetry.org
-.. _pyproject.toml: https://github.com/apple/pfl/blob/main/pyproject.toml
+.. _pyproject.toml: https://github.com/apple/pfl-research/blob/main/pyproject.toml
 

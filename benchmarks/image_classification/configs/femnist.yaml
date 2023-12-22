@@ -1,0 +1,27 @@
+data_path: ./data/femnist
+seed: 0
+# Which dataset to train on: {cifar10, cifar10_iid, femnist, femnist_digits}.
+dataset: femnist_digits
+# Which model to train: {simple_dnn,simple_cnn,resnet18}.
+model_name: simple_cnn
+# Which algorithm to train with: {fedavg,fedprox}.
+algorithm_name: fedavg
+
+# Change to run DP baseline.
+central_privacy_mechanism: none
+#- central_privacy_mechanism: gaussian_moments_accountant
+central_epsilon: 2.0
+central_delta: 1e-6
+central_privacy_clipping_bound: 0.4
+noise_cohort_size: 1000
+
+learning_rate: 1.0
+cohort_size: 50
+val_cohort_size: 0
+central_num_iterations: 1500
+local_num_epochs: 1
+local_learning_rate: 0.1
+weight_by_samples: false
+evaluation_frequency: 10
+local_batch_size: 10
+central_eval_batch_size: 10000

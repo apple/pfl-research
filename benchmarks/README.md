@@ -1,0 +1,68 @@
+# pfl-research
+
+## Setup environment
+
+Prerequisite 1: you need to have [poetry](https://python-poetry.org/docs/#installation) installed.
+```
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+Prerequisite 2: you need to have compatible Python version available in poetry.
+You only need to have this activated the first time you install the poetry environment.
+```
+conda create -n py310 python=3.10
+conda activate py310
+```
+
+Install environment:
+
+```
+git clone git@github.com:apple/pfl-research.git
+cd pfl-research/benchmarks/
+# If you have the new Python 3.10 environment active, it should be cloned.
+poetry env use `which python`
+# Install to run tf, pytorch and tests
+poetry install -E pytorch -E tf
+# Activate environment
+poetry shell
+# Add root directory to `PYTHONPATH` such that the utility modules can be imported
+export PYTHONPATH=`pwd`:$PYTHONPATH
+```
+
+This default setup should enable you to run any of the official benchmarks.
+
+## Quickstart
+
+1. Complete setup as above.
+2. Download CIFAR10 data:
+```
+python -m dataset.cifar10.download_preprocess --output_dir data/cifar10
+```
+3. Train a small CNN on CIFAR10 IID data:
+```
+python image_classification/pytorch/train.py --args_config image_classification/configs/baseline.yaml
+```
+
+## Official benchmarks
+
+There are multiple official benchmarks for `pfl` to simulate various scenarios, split into categories:
+* [image_classification](./image_classification) - train small CNN on CIFAR10.
+* [lm](./lm) - train transformer model on StackOverflow
+* [flair](./flair) - train ResNet18 on [FLAIR]() dataset.
+
+## Run distributed simulations
+
+TODO: describe how to install horovod, what horovod commands to use, point to pfl distributed sim documentation.
+
+## Other Poetry commands
+
+Alternatively, you can install a subset of dependencies:
+
+```
+# Install to run tf examples
+poetry install -E tf --no-dev
+# Install to run pytorch examples
+poetry install -E pytorch --no-dev
+# Install to run tf, pytorch and tests
+poetry install -E pytorch -E tf
+```

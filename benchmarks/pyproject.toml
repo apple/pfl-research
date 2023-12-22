@@ -1,0 +1,59 @@
+[tool.poetry]
+name = "pfl-research"
+version = "0.0.0"
+description = "Examples, benchmarks and reproducible research implemented in pfl"
+authors = ["Apple"]
+
+
+[tool.poetry.dependencies]
+# Use newer python versions at your own risk, they have not been fully tested with `pfl`.
+python = ">=3.10,<3.11"
+h5py = "^3.8.0"
+multiprocess = "^0.70.12"
+tqdm = "^4.63.1"
+tensorflow = { version = "^2.14.0", optional = true }
+tensorflow_probability = { version = "^0.22", optional = true }
+tensorflow_addons = { version = ">=0.20.0,<1", optional = true }
+torch = [
+  { version = "2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
+]
+torchvision = [
+  { version = "0.15.2+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "0.15.2", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
+]
+pfl = [
+    {git = "git@github.com:apple/pfl-research.git", rev = "main", extras = ["tf"], markers="extra=='tf'"},
+    {git = "git@github.com:apple/pfl-research.git", rev = "main", extras = ["pytorch"], markers="extra=='pytorch'"},
+]
+pillow = ">=8.2.0"
+
+[tool.poetry.extras]
+tf = ["pfl", "tensorflow_addons", "tensorflow"]
+pytorch = ["pfl", "torchvision", "torch"]
+
+[tool.poetry.group.dev.dependencies]
+mock = "^5.1.0"
+pytest = "^7.2.0"
+pre-commit = "^2.20.0"
+pytest-xdist = "^3.3.1"
+pytest-lazy-fixture = "^0.6.3"
+mypy = "1.5"
+ruff = "0.0.290"
+scikit-learn = "^1.0.2"
+# TODO: upgrade yapf in future PR
+#yapf = "^0.40.1"
+yapf = "^0.26.0"
+
+# TODO: these pytorch sources are only needed while pfl is installed from github address.
+[[tool.poetry.source]]
+name = "torch_cu118"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[tool.mypy]
+disable_error_code = "import,arg-type,operator,assignment,name-defined,var-annotated,index,call-overload,list-item"

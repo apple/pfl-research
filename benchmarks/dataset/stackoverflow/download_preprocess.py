@@ -16,24 +16,21 @@ such that experiment setups match that of other frameworks.
 Preprocess and save dataset as HDF5 on disk in ML-ready format.
 This script is a one-time procedure.
 """
-from collections import defaultdict, OrderedDict
-from typing import Dict, Iterator, Optional
-
 import argparse
 import json
+import lzma
 import os
 import sqlite3
-import lzma
-import urllib.request
 import urllib.parse
+import urllib.request
+from collections import OrderedDict, defaultdict
+from typing import Dict, Iterator, Optional
 
-from tqdm import tqdm
-
-import multiprocess as mp
 import h5py
+import multiprocess as mp
 import numpy as np
 import tensorflow as tf
-
+from tqdm import tqdm
 
 PAD = 'PAD'
 UNK = 'UNK'
@@ -41,7 +38,8 @@ BOS = 'BOS'
 EOS = 'EOS'
 
 
-def load_word_counts(cache_dir=None, vocab_size: Optional[int] = None):
+def load_word_counts(cache_dir=None,
+                     vocab_size: Optional[int] = None) -> Dict[str, int]:
     """Loads the word counts for the Stack Overflow dataset.
 
     :param: cache_dir:
@@ -60,15 +58,14 @@ def load_word_counts(cache_dir=None, vocab_size: Optional[int] = None):
     if vocab_size is not None:
         if not isinstance(vocab_size, int):
             raise TypeError(
-                f'vocab_size should be None or int, got {type(vocab_size)}.'
-            )
+                f'vocab_size should be None or int, got {type(vocab_size)}.')
         if vocab_size <= 0:
             raise ValueError(f'vocab_size must be positive, got {vocab_size}.')
 
     path = tf.keras.utils.get_file(
         'stackoverflow.word_count.tar.bz2',
         origin='https://storage.googleapis.com/tff-datasets-public/'
-               'stackoverflow.word_count.tar.bz2',
+        'stackoverflow.word_count.tar.bz2',
         file_hash=(
             '1dc00256d6e527c54b9756d968118378ae14e6692c0b3b6cad470cdd3f0c519c'
         ),
@@ -90,9 +87,8 @@ def load_word_counts(cache_dir=None, vocab_size: Optional[int] = None):
     return word_counts
 
 
-def _fetch_client_ids(
-        database_filepath: str, split_name: Optional[str] = None
-) -> Iterator[str]:
+def fetch_client_ids(database_filepath: str,
+                     split_name: Optional[str] = None) -> Iterator[str]:
     """Fetches the list of client_ids.
 
     :param database_filepath:
@@ -109,37 +105,36 @@ def _fetch_client_ids(
         query += f" WHERE split_name = '{split_name}'"
     query += ";"
     result = connection.execute(query)
-    return map(lambda x: x[0], result)
+    return (x[0] for x in result)
 
 
 def fetch_lzma_file(origin: str, filename: str):
     """Fetches a LZMA compressed file and decompresses on the fly."""
+
     # Read and decompress in approximately megabyte chunks.
     def url_basename(origin: str) -> str:
         origin_path = urllib.parse.urlparse(origin).path
         return origin_path.rsplit('/', maxsplit=1)[-1]
 
-    chunk_size = 2 ** 20
+    chunk_size = 2**20
     decompressor = lzma.LZMADecompressor()
-    with urllib.request.urlopen(origin) as in_stream, open(
-            filename, 'wb') as out_stream:
+    with urllib.request.urlopen(origin) as in_stream, open(filename,
+                                                           'wb') as out_stream:
         length = in_stream.headers.get('content-length')
-        if length is not None:
-            total_size = int(length)
-        else:
-            total_size = None
+        total_size = int(length) if length is not None else None
         download_chunk = in_stream.read(chunk_size)
-        with tqdm(
-            total=total_size, desc=f'Downloading {url_basename(origin)}'
-        ) as progbar:
+        with tqdm(total=total_size,
+                  desc=f'Downloading {url_basename(origin)}') as progbar:
             while download_chunk:
                 progbar.update(len(download_chunk))
                 out_stream.write(decompressor.decompress(download_chunk))
                 download_chunk = in_stream.read(chunk_size)
 
 
-def query_client_dataset(database_filepath: str, client_id: str,
-                         split_name: Optional[str] = None):
+def query_client_dataset(database_filepath: str,
+                         client_id: str,
+                         split_name: Optional[str] = None) -> tf.data.Dataset:
+
     def add_proto_parsing(dataset: tf.data.Dataset) -> tf.data.Dataset:
         """Add parsing of the tf.Example proto to the dataset pipeline."""
 
@@ -154,8 +149,7 @@ def query_client_dataset(database_filepath: str, client_id: str,
             )
             parsed_features = tf.io.parse_example(tensor_proto, parse_spec)
             return OrderedDict(
-                (key, parsed_features[key]) for key in parse_spec.keys()
-            )
+                (key, parsed_features[key]) for key in parse_spec)
 
         return dataset.map(parse_proto, num_parallel_calls=tf.data.AUTOTUNE)
 
@@ -166,12 +160,13 @@ def query_client_dataset(database_filepath: str, client_id: str,
     ]
     if split_name is not None:
         query_parts.extend([" and split_name ='", split_name, "'"])
-    return add_proto_parsing(tf.data.experimental.SqlDataset(
-        driver_name="sqlite",
-        data_source_name=database_filepath,
-        query=tf.strings.join(query_parts),
-        output_types=(tf.string,),
-    ))
+    return add_proto_parsing(
+        tf.data.experimental.SqlDataset(
+            driver_name="sqlite",
+            data_source_name=database_filepath,
+            query=tf.strings.join(query_parts),
+            output_types=(tf.string, ),
+        ))
 
 
 def get_vocabulary(vocabulary_size: int) -> Dict[str, int]:
@@ -186,8 +181,10 @@ def get_vocabulary(vocabulary_size: int) -> Dict[str, int]:
         * bos - 10002
         * eos - 10003
     """
-    vocab_list = [PAD] + list(
-        load_word_counts(vocab_size=vocabulary_size).keys()) + [UNK, BOS, EOS]
+    vocab_list = [
+        PAD, *list(load_word_counts(vocab_size=vocabulary_size).keys()), UNK,
+        BOS, EOS
+    ]
     vocab = defaultdict(lambda: vocab_list.index(UNK))
     vocab.update({t: i for i, t in enumerate(vocab_list)})
     return vocab
@@ -200,8 +197,9 @@ def _process_vocabulary(vocabulary_size, h5):
     h5['/metadata/pad_symbol'] = vocabulary[PAD]
     for token, id_ in vocabulary.items():
         # Wrap inside " because of the '.' token.
-        h5.create_dataset(
-            f'/metadata/vocabulary/"{token}"', data=id_, dtype='int32')
+        h5.create_dataset(f'/metadata/vocabulary/"{token}"',
+                          data=id_,
+                          dtype='int32')
     return vocabulary
 
 
@@ -217,6 +215,7 @@ def _tokens_to_ids(raw_batch, vocab, max_sequence_length):
 
 def _make_worker_fn(database_filepath, partition, vocabulary,
                     max_sequence_length, h5_path, lock):
+
     def _process_user(user_id):
 
         # tf Dataset with sentences from user.
@@ -224,8 +223,11 @@ def _make_worker_fn(database_filepath, partition, vocabulary,
 
         sentences = []
         for sentence_data in tfdata:
-            sentence_tokens = ['BOS'] + sentence_data['tokens'].numpy().decode(
-                'UTF-8').split(' ') + ['EOS']
+            sentence_tokens = [
+                'BOS',
+                *sentence_data['tokens'].numpy().decode('UTF-8').split(' '),
+                'EOS'
+            ]
             sentences.append(sentence_tokens)
 
         trimmed_sentences = [
@@ -236,17 +238,14 @@ def _make_worker_fn(database_filepath, partition, vocabulary,
         padded_sentences_ids = _tokens_to_ids(trimmed_sentences, vocabulary,
                                               max_sequence_length)
 
-        with lock:
-            with h5py.File(h5_path, 'a') as h5:
-                # Store encoded inputs.
-                h5.create_dataset(
-                    f'/{partition}/{user_id}/inputs',
-                    data=padded_sentences_ids[:, :-1])
+        with lock, h5py.File(h5_path, 'a') as h5:
+            # Store encoded inputs.
+            h5.create_dataset(f'/{partition}/{user_id}/inputs',
+                              data=padded_sentences_ids[:, :-1])
 
-                # Store encoded targets.
-                h5.create_dataset(
-                    f'/{partition}/{user_id}/targets',
-                    data=padded_sentences_ids[:, 1:])
+            # Store encoded targets.
+            h5.create_dataset(f'/{partition}/{user_id}/targets',
+                              data=padded_sentences_ids[:, 1:])
         return user_id, token_count
 
     def _worker_fn(work_queue, result_queue):
@@ -295,8 +294,9 @@ def dl_preprocess_and_dump_h5(output_dir: str, vocabulary_size: int,
     database_filepath = os.path.join(output_dir, "stackoverflow.sqlite")
     if not os.path.exists(database_filepath):
         print(f'Downloading StackOverflow data to {output_dir}')
-        database_origin = ("https://storage.googleapis.com/tff-datasets-public/"
-                           "stackoverflow.sqlite.lzma")
+        database_origin = (
+            "https://storage.googleapis.com/tff-datasets-public/"
+            "stackoverflow.sqlite.lzma")
         fetch_lzma_file(origin=database_origin, filename=database_filepath)
 
     h5_path = os.path.join(output_dir, 'stackoverflow.hdf5')
@@ -308,21 +308,21 @@ def dl_preprocess_and_dump_h5(output_dir: str, vocabulary_size: int,
     lock = mp.Lock()
     for partition in ['train', 'val', 'test']:
         print(f'Processing users for partition {partition}')
-        client_ids = _fetch_client_ids(database_filepath, partition)
+        client_ids = fetch_client_ids(database_filepath, partition)
         # This is a dict that is shared between main and subprocess.
         user_num_tokens = manager.dict()
         work_queue = mp.Queue()
         results_queue = mp.Queue()
         processes = [
-            mp.Process(
-                target=_make_worker_fn(database_filepath, partition, vocabulary,
-                                       max_sequence_length, h5_path, lock),
-                args=(work_queue, results_queue)) for _ in range(num_processes)
+            mp.Process(target=_make_worker_fn(database_filepath, partition,
+                                              vocabulary, max_sequence_length,
+                                              h5_path, lock),
+                       args=(work_queue, results_queue))
+            for _ in range(num_processes)
         ]
         processes.append(
-            mp.Process(
-                target=_collect_num_tokens,
-                args=(results_queue, user_num_tokens, num_processes)))
+            mp.Process(target=_collect_num_tokens,
+                       args=(results_queue, user_num_tokens, num_processes)))
 
         for p in processes:
             p.start()

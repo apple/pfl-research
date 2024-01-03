@@ -3,12 +3,8 @@
 ## Setup environment
 
 1. Same as the [default setup](../README.md).
-2. To download dataset, you need to have `tensorflow_federated` installed. Use either a different environment to install this package and prepare dataset, or re-run step (1) after dataset is processed to maintain the correct environment for running the benchmarks.
-```
-pip install tensorflow_federated
-```
+2. To download and process the StackOverflow dataset, you need to have `tensorflow` installed as the raw data is in serialized TensorFlow example format. If you only will use PyTorch for training, you may uninstall `tensorflow` after the dataset is processed.  
 
-> :warning: As of 2023-10-20, `tensorflow-federated` is not installable on MacOS M1, hence preprocessing the data will only work on a Linux machine.
 
 ## Download and preprocess StackOverflow dataset
 

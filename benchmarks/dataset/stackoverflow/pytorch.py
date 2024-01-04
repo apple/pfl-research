@@ -116,13 +116,13 @@ def make_stackoverflow_datasets(
     metadata = get_metadata(data_path)
     training_federated_dataset = make_federated_dataset(
         data_path, 'train', max_user_sentences, data_fraction)
-    val_federated_dataset = make_federated_dataset(data_path, 'heldout',
+    val_federated_dataset = make_federated_dataset(data_path, 'val',
                                                    max_user_sentences, 1.0)
 
     # Federated evaluation with `val_cohort_size>=200` is reliable enough.
     # This central evaluation is solely to compare with the same validation set
     # as a centrally trained model.
-    central_data = make_central_dataset(data_path, 'heldout',
+    central_data = make_central_dataset(data_path, 'val',
                                         central_data_fraction)
 
     return (training_federated_dataset, val_federated_dataset, central_data,

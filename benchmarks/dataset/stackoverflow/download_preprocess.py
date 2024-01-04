@@ -98,6 +98,9 @@ def fetch_client_ids(database_filepath: str,
     :returns:
       An iterator of string client ids.
     """
+    if split_name == "val":
+        # heldout is used in the raw sqlite database
+        split_name = "heldout"
     connection = sqlite3.connect(database_filepath)
     query = "SELECT DISTINCT client_id FROM client_metadata"
     if split_name is not None:
@@ -158,6 +161,9 @@ def query_client_dataset(database_filepath: str,
         "'",
     ]
     if split_name is not None:
+        if split_name == "val":
+            # heldout is used in the raw sqlite database
+            split_name = "heldout"
         query_parts.extend([" and split_name ='", split_name, "'"])
     return add_proto_parsing(
         tf.data.experimental.SqlDataset(
@@ -305,7 +311,7 @@ def dl_preprocess_and_dump_h5(output_dir: str, vocabulary_size: int,
 
     manager = mp.Manager()
     lock = mp.Lock()
-    for partition in ['train', 'heldout', 'test']:
+    for partition in ['train', 'val', 'test']:
         print(f'Processing users for partition {partition}')
         client_ids = list(fetch_client_ids(database_filepath, partition))
         # This is a dict that is shared between main and subprocess.
@@ -328,6 +334,7 @@ def dl_preprocess_and_dump_h5(output_dir: str, vocabulary_size: int,
 
         for user_id in tqdm(client_ids, 'Queueing work'):
             work_queue.put(user_id)
+
         for p in processes:
             work_queue.put(None)
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
 from functools import partial
@@ -7,12 +6,11 @@ from typing import Any, Dict, List, Tuple
 import torch
 
 from pfl.data.dataset import Dataset
-from pfl.data.sampling import get_user_sampler
 from pfl.data.pytorch import PyTorchFederatedDataset
+from pfl.data.sampling import get_user_sampler
 
-from .numpy import (get_metadata, get_fraction_of_users, get_user_weights,
-                    make_tensors_fn, make_central_dataset as
-                    make_central_dataset_numpy)
+from .numpy import get_fraction_of_users, get_metadata, get_user_weights, make_tensors_fn
+from .numpy import make_central_dataset as make_central_dataset_numpy
 
 
 class _PTDatasetWrap(torch.utils.data.Dataset):
@@ -67,14 +65,13 @@ def make_federated_dataset(
     dataset = _PTDatasetWrap(hdf5_path, partition, max_user_sentences,
                              user_ids)
     sampler = get_user_sampler('random', user_ids)
-    return PyTorchFederatedDataset(
-        dataset,
-        sampler,
-        user_id_to_weight=user_id_to_weight,
-        num_workers=4,
-        pin_memory=True,
-        prefetch_factor=4,
-        persistent_workers=False)
+    return PyTorchFederatedDataset(dataset,
+                                   sampler,
+                                   user_id_to_weight=user_id_to_weight,
+                                   num_workers=4,
+                                   pin_memory=True,
+                                   prefetch_factor=4,
+                                   persistent_workers=False)
 
 
 def make_central_dataset(hdf5_path: str, partition: str,
@@ -106,12 +103,12 @@ def make_central_dataset(hdf5_path: str, partition: str,
 
 
 def make_stackoverflow_datasets(
-        data_path: str,
-        max_user_sentences: int = 1000,
-        data_fraction: float = 1.0,
-        central_data_fraction: float = 0.01,
-) -> Tuple[PyTorchFederatedDataset, PyTorchFederatedDataset, Dataset,
-           Dict[str, Any]]:
+    data_path: str,
+    max_user_sentences: int = 1000,
+    data_fraction: float = 1.0,
+    central_data_fraction: float = 0.01,
+) -> Tuple[PyTorchFederatedDataset, PyTorchFederatedDataset, Dataset, Dict[
+        str, Any]]:
     """
     Create a train and test ``PyTorchFederatedDataset`` as well as a
     central dataset for StackOverflow dataset.
@@ -119,13 +116,13 @@ def make_stackoverflow_datasets(
     metadata = get_metadata(data_path)
     training_federated_dataset = make_federated_dataset(
         data_path, 'train', max_user_sentences, data_fraction)
-    val_federated_dataset = make_federated_dataset(data_path, 'val',
+    val_federated_dataset = make_federated_dataset(data_path, 'heldout',
                                                    max_user_sentences, 1.0)
 
     # Federated evaluation with `val_cohort_size>=200` is reliable enough.
     # This central evaluation is solely to compare with the same validation set
     # as a centrally trained model.
-    central_data = make_central_dataset(data_path, 'val',
+    central_data = make_central_dataset(data_path, 'heldout',
                                         central_data_fraction)
 
     return (training_federated_dataset, val_federated_dataset, central_data,

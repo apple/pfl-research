@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
 from functools import partial
@@ -10,9 +9,8 @@ from pfl.data.dataset import Dataset
 from pfl.data.sampling import get_user_sampler
 from pfl.data.tensorflow import TFFederatedDataset
 
-from .numpy import (get_metadata, get_fraction_of_users, get_user_weights,
-                    make_tensors_fn, make_central_dataset as
-                    make_central_dataset_numpy)
+from .numpy import get_fraction_of_users, get_metadata, get_user_weights, make_tensors_fn
+from .numpy import make_central_dataset as make_central_dataset_numpy
 
 
 def make_federated_dataset(hdf5_path: str,
@@ -56,11 +54,10 @@ def make_federated_dataset(hdf5_path: str,
         data = data.prefetch(10)
         return data
 
-    return TFFederatedDataset(
-        make_tf_dataset_fn,
-        sampler,
-        user_id_dtype=tf.string,
-        user_id_to_weight=user_id_to_weight)
+    return TFFederatedDataset(make_tf_dataset_fn,
+                              sampler,
+                              user_id_dtype=tf.string,
+                              user_id_to_weight=user_id_to_weight)
 
 
 def make_central_dataset(hdf5_path: str, partition: str,
@@ -92,10 +89,10 @@ def make_central_dataset(hdf5_path: str, partition: str,
 
 
 def make_stackoverflow_datasets(
-        data_path: str,
-        max_user_sentences: int = 1000,
-        data_fraction: float = 1.0,
-        central_data_fraction: float = 0.01,
+    data_path: str,
+    max_user_sentences: int = 1000,
+    data_fraction: float = 1.0,
+    central_data_fraction: float = 0.01,
 ) -> Tuple[TFFederatedDataset, TFFederatedDataset, Dataset, Dict[str, Any]]:
     """
     Create a train and test ``TFFederatedDataset`` as well as a
@@ -104,13 +101,13 @@ def make_stackoverflow_datasets(
     metadata = get_metadata(data_path)
     training_federated_dataset = make_federated_dataset(
         data_path, 'train', max_user_sentences, data_fraction)
-    val_federated_dataset = make_federated_dataset(data_path, 'val',
+    val_federated_dataset = make_federated_dataset(data_path, 'heldout',
                                                    max_user_sentences, 1.0)
 
     # Federated evaluation with `val_cohort_size>=200` is reliable enough.
     # This central evaluation is solely to compare with the same validation set
     # as a centrally trained model.
-    central_data = make_central_dataset(data_path, 'val',
+    central_data = make_central_dataset(data_path, 'heldout',
                                         central_data_fraction)
 
     return (training_federated_dataset, val_federated_dataset, central_data,

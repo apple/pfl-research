@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
 # Some of the code in this file is adapted from:
@@ -306,9 +305,9 @@ def dl_preprocess_and_dump_h5(output_dir: str, vocabulary_size: int,
 
     manager = mp.Manager()
     lock = mp.Lock()
-    for partition in ['train', 'val', 'test']:
+    for partition in ['train', 'heldout', 'test']:
         print(f'Processing users for partition {partition}')
-        client_ids = fetch_client_ids(database_filepath, partition)
+        client_ids = list(fetch_client_ids(database_filepath, partition))
         # This is a dict that is shared between main and subprocess.
         user_num_tokens = manager.dict()
         work_queue = mp.Queue()

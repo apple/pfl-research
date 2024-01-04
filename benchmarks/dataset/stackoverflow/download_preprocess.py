@@ -308,6 +308,7 @@ def dl_preprocess_and_dump_h5(output_dir: str, vocabulary_size: int,
     # Will overwrite file if exists.
     with h5py.File(h5_path, 'w') as h5:
         vocabulary = _process_vocabulary(vocabulary_size, h5)
+        h5['/metadata/max_sequence_length'] = max_sequence_length
 
     manager = mp.Manager()
     lock = mp.Lock()

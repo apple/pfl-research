@@ -79,6 +79,9 @@ jobs:
   publish-documentation:
     executor: linux-python
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "1f:58:50:56:ce:6c:63:5c:77:c1:34:a0:f5:bd:9f:b7"
       - full_install_steps
       - run:
           name: "Publish docs"

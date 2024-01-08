@@ -52,6 +52,9 @@ def dl_preprocess_and_dump(output_dir: str):
                 labels.append(data[b'labels'])
         images = np.concatenate(images).reshape((-1, 32, 32, 3))
         labels = np.concatenate(labels).reshape((-1, 1))
+        # This snippet was used to generate cifar10 for ci
+        #images = images[:300]
+        #labels = labels[:300]
         out_file_path = os.path.join(output_dir, output_file_name)
         with open(out_file_path, 'wb') as f:
             pickle.dump((images, labels), f)

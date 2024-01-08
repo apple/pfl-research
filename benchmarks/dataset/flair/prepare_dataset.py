@@ -90,6 +90,18 @@ def preprocess_federated_dataset(image_dir: str, labels_file: str,
         # Iterate through users of each partition.
         for i, user_id in tqdm.tqdm(
                 enumerate(user_metadata), total=len(user_metadata)):
+            # This snippet was used to generate flair_federated_small.h5
+            #if i > len(user_metadata)*0.01:
+            #    break
+            #if len(user_metadata[user_id]) > 20:
+            #    # Skip large users
+            #    continue
+            # This snippet was used to generate flair_federated_ci.h5
+            #if i > 12:
+            #    break
+            #if i > 10:
+            #    user_metadata[user_id][0]['partition'] = 'test'
+
             # Load and concatenate all images of a user.
             image_array, image_id_array = [], []
             labels_row, labels_col = [], []

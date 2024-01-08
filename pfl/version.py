@@ -1,1 +1,2 @@
-__version__ = "5.0.0-beta1"
+# -*- coding: utf-8 -*-
+__version__ = "0.1.0"

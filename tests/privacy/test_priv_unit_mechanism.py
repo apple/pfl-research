@@ -36,6 +36,7 @@ def sensitivity_theoretical_squared_error(norm_fraction):
 
 class TestPrivUnitMechanism:
 
+    @pytest.mark.is_slow
     @pytest.mark.parametrize('num_dimensions', [20, 100, 5000])
     @pytest.mark.parametrize('magnitude', [0., .6, 2., 5.])
     @pytest.mark.parametrize('test_vector_type',

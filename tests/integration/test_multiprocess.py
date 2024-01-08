@@ -11,6 +11,7 @@ import pytest
 from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
 
 
+@pytest.mark.is_slow
 @pytest.mark.horovod
 class TestMultiProcess:
     """

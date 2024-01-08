@@ -144,21 +144,31 @@ def pytest_addoption(parser):
                      action='store_true',
                      default=False,
                      help='run tests that require MacOS')
+    parser.addoption('--disable_slow',
+                     action='store_true',
+                     default=False,
+                     help=('Disable slow tests. We need to speed up these '
+                           'tests for reasonable runtime on CircleCI'))
 
 
 def pytest_collection_modifyitems(config, items):
     disable_horovod = config.getoption("--disable_horovod")
-    skip_horovod = pytest.mark.skip(
-        reason="Test disabled with --horovod=False")
+    skip_horovod_marker = pytest.mark.skip(
+        reason="Test disabled with --disable_horovod")
+    disable_slow = config.getoption("--disable_slow")
+    skip_slow_marker = pytest.mark.skip(
+        reason="Test disabled with --disable_slow")
 
     disable_macos = not config.getoption('--macos')
-    skip_macos = pytest.mark.skip(reason='need --macos option to run')
+    skip_macos_marker = pytest.mark.skip(reason='need --macos option to run')
 
     for item in items:
         if "horovod" in item.keywords and disable_horovod:
-            item.add_marker(skip_horovod)
+            item.add_marker(skip_horovod_marker)
+        if "is_slow" in item.keywords and disable_slow:
+            item.add_marker(skip_slow_marker)
         if "macos" in item.keywords and disable_macos:
-            item.add_marker(skip_macos)
+            item.add_marker(skip_macos_marker)
 
 
 @pytest.fixture

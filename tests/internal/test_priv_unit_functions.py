@@ -96,6 +96,7 @@ class TestPrivUnit:
             assert cap_size_epsilon == pytest.approx(cap_size_epsilon_back,
                                                      rel=.1)
 
+    @pytest.mark.is_slow
     @pytest.mark.parametrize('num_dimensions', [10000, 1000, 100, 10])
     @pytest.mark.parametrize(
         'num_samples',

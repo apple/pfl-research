@@ -19,18 +19,25 @@ INSTALL_PYTORCH=${2:-true}
 INSTALL_PKGS=${3:-false}
 
 if "$INSTALL_PKGS"; then
+    # Use sudo only if needed.
+    # Our docker image does not have sudo because already running as root.
+    if command -v sudo &>/dev/null && [ "$(id -u)" -ne 0 ]; then
+        SUDO=sudo
+    else
+        SUDO=
+    fi
+
     # Install Horovod dependencies.
-    conda update conda -y
-    conda install -c conda-forge libstdcxx-ng=12 -y
     while true; do
         # This can fail sometimes when run with tox because apt-get can't be run in
         # parallel. The solution here is to simply retry until it works.
-        if apt-get update && apt-get install -y \
+        if $SUDO apt-get update && $SUDO apt-get install -y \
             cmake \
             openmpi-bin \
             openmpi-common \
             libopenmpi-dev \
             mpich \
+            libstdc++6 \
             libcupti-dev; then
           break
         fi

@@ -352,6 +352,7 @@ class TestMechanisms:
             1.0,
             1.0)[1] == self._from_privacy_accountant_sigma(1.0, 0.1)[1] * 10)
 
+    @pytest.mark.is_slow
     @pytest.mark.parametrize('ops_module', framework_fixtures)
     @pytest.mark.parametrize('set_seed', [False, True])
     @pytest.mark.parametrize('norm_bound,noise_scale',
@@ -389,6 +390,7 @@ class TestMechanisms:
                                              has_squared_error=True,
                                              ops=ops_module)
 
+    @pytest.mark.is_slow
     @pytest.mark.parametrize('ops_module', framework_fixtures)
     @pytest.mark.parametrize('set_seed', [False, True])
     @pytest.mark.parametrize('norm_bound', [0.02, 6e6])
@@ -425,6 +427,7 @@ class TestMechanisms:
                                          set_seed=set_seed,
                                          ops=ops_module)
 
+    @pytest.mark.is_slow
     @pytest.mark.parametrize('ops_module', framework_fixtures)
     @pytest.mark.parametrize('set_seed', [False, True])
     @pytest.mark.parametrize('norm_bound', [0.02, 6e6])

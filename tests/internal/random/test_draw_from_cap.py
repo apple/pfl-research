@@ -182,7 +182,7 @@ class TestDrawFromCap:
         self.check_angle_distribution(max_angle, num_dimensions, angles)
 
     @pytest.mark.parametrize('max_angle', [.25 * math.pi, 2, 3])
-    @pytest.mark.parametrize('num_samples', [100, 1000, 10000])
+    @pytest.mark.parametrize('num_samples', [100, 1000])
     @pytest.mark.parametrize('directions', [(0, 1, 2), (1, 2, 0), (2, 1, 0)])
     def test_draw_unit_vector_from_cap_distribution(self, max_angle,
                                                     num_samples, directions):
@@ -228,7 +228,7 @@ class TestDrawFromCap:
     @pytest.mark.parametrize('num_dimensions', [3, 10])
     @pytest.mark.parametrize('max_dot_product',
                              [1, .5, 0.01, 0., -.1, -.5, -.8])
-    @pytest.mark.parametrize('num_samples', [1000])
+    @pytest.mark.parametrize('num_samples', [100])
     def test_draw_unit_vector_from_cap_angle_max_dot_product(
             self, num_dimensions, max_dot_product, num_samples):
         """

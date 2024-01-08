@@ -49,8 +49,8 @@ class GaussianMechanism(CentrallyApplicablePrivacyMechanism,
 
     The differential privacy guarantee assumes that each user participates
     in the training at most once. For multiple iterations (which is the
-    typical case), it is recommended to use
-    ``MomentsAccountantGaussianMechanism``.
+    typical case in Federated Learning), it is recommended to use
+    ``from_privacy_accountant``.
 
     :param clipping_bound:
         The ℓ² norm bound for clipping the statistics (e.g. model updates) using

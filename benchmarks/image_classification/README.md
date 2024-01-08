@@ -33,7 +33,7 @@ CIFAR10 IID central DP:
 ```
 python image_classification/${framework}/train.py --args_config image_classification/configs/baseline.yaml --central_privacy_mechanism gaussian_moments_accountant --central_num_iterations 3000
 ```
-CIFAR10 non-IID no DP:
+CIFAR10 non-IID central DP:
 ```
 python image_classification/${framework}/train.py --args_config image_classification/configs/baseline.yaml --dataset cifar10 --central_privacy_mechanism gaussian_moments_accountant --central_num_iterations 3000
 ```

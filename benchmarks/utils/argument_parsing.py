@@ -19,8 +19,8 @@ from pfl.algorithm import (NNAlgorithmParams, FederatedAveraging, FedProx,
                            FedProxParams)
 from pfl.privacy import (
     CentrallyApplicablePrivacyMechanism, CentrallyAppliedPrivacyMechanism,
-    NoPrivacy, GaussianMechanism, LaplaceMechanism,
-    MomentsAccountantGaussianMechanism, NormClippingOnly, PrivUnitMechanism)
+    NoPrivacy, GaussianMechanism, LaplaceMechanism, GaussianMechanism,
+    NormClippingOnly, PrivUnitMechanism, PLDPrivacyAccountant)
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism
 
 logger = logging.getLogger(name=__name__)
@@ -363,14 +363,15 @@ def parse_mechanism(mechanism_name,
         else:
             noise_scale = 1.0
             max_cohort_size = cohort_size
-        mechanism = MomentsAccountantGaussianMechanism(
-            clipping_bound=clipping_bound,
+        accountant = PLDPrivacyAccountant(
+            num_compositions=num_epochs,
+            sampling_probability=max_cohort_size / population,
+            mechanism='gaussian',
             epsilon=epsilon,
             delta=delta,
-            num_iterations=num_epochs,
-            max_cohort_size=max_cohort_size,
-            population_size=population,
             noise_scale=noise_scale)
+        mechanism = GaussianMechanism.from_privacy_accountant(
+            accountant=accountant, clipping_bound=clipping_bound)
 
     elif mechanism_name == 'banded_matrix_factorization':
         assert clipping_bound is not None
@@ -386,14 +387,17 @@ def parse_mechanism(mechanism_name,
         else:
             noise_scale = 1.0
             max_cohort_size = cohort_size
-        mechanism = BandedMatrixFactorizationMechanism(
+
+        make_privacy_accountant = lambda num_compositions: PLDPrivacyAccountant(
+            num_compositions,
+            sampling_probability=max_cohort_size / population,
+            mechanism='gaussian',
             epsilon=epsilon,
             delta=delta,
-            clipping_bound=clipping_bound,
-            num_iterations=num_epochs,
-            min_separation=min_separation,
-            sampling_rate=max_cohort_size / population,
             noise_scale=noise_scale)
+        mechanism = BandedMatrixFactorizationMechanism(
+            clipping_bound, num_epochs, min_separation,
+            make_privacy_accountant)
 
     elif mechanism_name == 'laplace':
         assert clipping_bound is not None

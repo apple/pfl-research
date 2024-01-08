@@ -2,13 +2,13 @@
 
 [[package]]
 name = "absl-py"
-version = "2.0.0"
+version = "1.4.0"
 description = "Abseil Python Common Libraries, see https://github.com/abseil/abseil-py."
 optional = true
-python-versions = ">=3.7"
+python-versions = ">=3.6"
 files = [
-    {file = "absl-py-2.0.0.tar.gz", hash = "sha256:d9690211c5fcfefcdd1a45470ac2b5c5acd45241c3af71eed96bc5441746c0d5"},
-    {file = "absl_py-2.0.0-py3-none-any.whl", hash = "sha256:9a28abb62774ae4e8edbe2dd4c49ffcd45a6a848952a5eccc6a49f3f0fc1e2f3"},
+    {file = "absl-py-1.4.0.tar.gz", hash = "sha256:d2c244d01048ba476e7c080bd2c6df5e141d211de80223460d5b3b8a2a58433d"},
+    {file = "absl_py-1.4.0-py3-none-any.whl", hash = "sha256:0d3fe606adfa4f7db64792dd4c7aee4ee0c38ab75dfd353b7a83ed3e957fcb47"},
 ]
 
 [[package]]
@@ -25,6 +25,25 @@ files = [
 [package.dependencies]
 six = ">=1.6.1,<2.0"
 wheel = ">=0.23.0,<1.0"
+
+[[package]]
+name = "attrs"
+version = "23.2.0"
+description = "Classes Without Boilerplate"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "attrs-23.2.0-py3-none-any.whl", hash = "sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1"},
+    {file = "attrs-23.2.0.tar.gz", hash = "sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30"},
+]
+
+[package.extras]
+cov = ["attrs[tests]", "coverage[toml] (>=5.3)"]
+dev = ["attrs[tests]", "pre-commit"]
+docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-towncrier", "towncrier", "zope-interface"]
+tests = ["attrs[tests-no-zope]", "zope-interface"]
+tests-mypy = ["mypy (>=1.6)", "pytest-mypy-plugins"]
+tests-no-zope = ["attrs[tests-mypy]", "cloudpickle", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-xdist[psutil]"]
 
 [[package]]
 name = "cachetools"
@@ -292,6 +311,25 @@ files = [
     {file = "dm_tree-0.1.8-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:181c35521d480d0365f39300542cb6cd7fd2b77351bb43d7acfda15aef63b317"},
     {file = "dm_tree-0.1.8-cp39-cp39-win_amd64.whl", hash = "sha256:8ed3564abed97c806db122c2d3e1a2b64c74a63debe9903aad795167cc301368"},
 ]
+
+[[package]]
+name = "dp-accounting"
+version = "0.4.3"
+description = "Tools for tracking differential privacy budgets"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "dp-accounting-0.4.3.tar.gz", hash = "sha256:bf7ffc4b8048a0bc44c3601a263a23dc6c4c37bed348f1dfe378eb808ceb3419"},
+    {file = "dp_accounting-0.4.3-py3-none-any.whl", hash = "sha256:ef231a18729f8466fe62d6bfae2a243c5ed23e57df8bd84635e041e33f0d74b9"},
+]
+
+[package.dependencies]
+absl-py = ">=1.0,<2.0"
+attrs = ">=22"
+dm-tree = ">=0.1.8,<0.2.0"
+mpmath = ">=1.2,<2.0"
+numpy = ">=1.21,<2.0"
+scipy = ">=1.7,<2.0"
 
 [[package]]
 name = "exceptiongroup"
@@ -665,6 +703,16 @@ files = [
     {file = "MarkupSafe-2.1.3-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:5bbe06f8eeafd38e5d0a4894ffec89378b6c6a625ff57e3028921f8ff59318ac"},
     {file = "MarkupSafe-2.1.3-cp311-cp311-win32.whl", hash = "sha256:dd15ff04ffd7e05ffcb7fe79f1b98041b8ea30ae9234aed2a9168b5797c3effb"},
     {file = "MarkupSafe-2.1.3-cp311-cp311-win_amd64.whl", hash = "sha256:134da1eca9ec0ae528110ccc9e48041e0828d79f24121a1a146161103c76e686"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:f698de3fd0c4e6972b92290a45bd9b1536bffe8c6759c62471efaa8acb4c37bc"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:aa57bd9cf8ae831a362185ee444e15a93ecb2e344c8e52e4d721ea3ab6ef1823"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ffcc3f7c66b5f5b7931a5aa68fc9cecc51e685ef90282f4a82f0f5e9b704ad11"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:47d4f1c5f80fc62fdd7777d0d40a2e9dda0a05883ab11374334f6c4de38adffd"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1f67c7038d560d92149c060157d623c542173016c4babc0c1913cca0564b9939"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:9aad3c1755095ce347e26488214ef77e0485a3c34a50c5a5e2471dff60b9dd9c"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_i686.whl", hash = "sha256:14ff806850827afd6b07a5f32bd917fb7f45b046ba40c57abdb636674a8b559c"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8f9293864fe09b8149f0cc42ce56e3f0e54de883a9de90cd427f191c346eb2e1"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-win32.whl", hash = "sha256:715d3562f79d540f251b99ebd6d8baa547118974341db04f5ad06d5ea3eb8007"},
+    {file = "MarkupSafe-2.1.3-cp312-cp312-win_amd64.whl", hash = "sha256:1b8dd8c3fd14349433c79fa8abeb573a55fc0fdd769133baac1f5e07abf54aeb"},
     {file = "MarkupSafe-2.1.3-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:8e254ae696c88d98da6555f5ace2279cf7cd5b3f52be2b5cf97feafe883b58d2"},
     {file = "MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cb0932dc158471523c9637e807d9bfb93e06a95cbf010f1a38b98623b929ef2b"},
     {file = "MarkupSafe-2.1.3-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9402b03f1a1b4dc4c19845e5c749e3ab82d5078d16a2a4c2cd2df62d57bb0707"},
@@ -962,7 +1010,7 @@ files = [
 
 [[package]]
 name = "pfl"
-version = "0.0.1"
+version = "0.1.0"
 description = "Simulation framework for Private Federated Learning"
 optional = true
 python-versions = ">=3.10,<3.12"
@@ -971,28 +1019,28 @@ develop = false
 
 [package.dependencies]
 cmake = "^3.27.5"
+dp-accounting = "^0.4"
 multiprocess = "^0.70.15"
 numpy = "^1.21"
+prv-accountant = "^0.2.0"
 scipy = "^1.7.3"
 tensorflow = {version = ">=2.14,<3.0", optional = true, markers = "sys_platform == \"linux\" or sys_platform == \"darwin\" and platform_machine == \"x86_64\""}
 tensorflow-macos = {version = "^2.14", optional = true, markers = "sys_platform == \"darwin\" and platform_machine == \"arm64\""}
-tensorflow-metal = {version = "^1.0.1", optional = true, markers = "sys_platform == \"darwin\" and platform_machine == \"arm64\""}
 tensorflow-probability = {version = "^0.22", optional = true}
 torch = [
     {version = "2.0.1+cu118", optional = true, markers = "sys_platform == \"linux\""},
     {version = "2.0.1", optional = true, markers = "sys_platform == \"darwin\""},
 ]
+wheel = "^0.41.2"
 
 [package.extras]
 pytorch = ["cmake (>=3.27.5,<4.0.0)", "torch (==2.0.1)", "torch (==2.0.1+cu118)"]
-tf = ["cmake (>=3.27.5,<4.0.0)", "tensorflow (>=2.14,<3.0)", "tensorflow (>=2.14,<3.0)", "tensorflow-macos (>=2.14,<3.0)", "tensorflow-metal (>=1.0.1,<2.0.0)", "tensorflow-probability (>=0.22,<0.23)"]
+tf = ["cmake (>=3.27.5,<4.0.0)", "tensorflow (>=2.14,<3.0)", "tensorflow (>=2.14,<3.0)", "tensorflow-macos (>=2.14,<3.0)", "tensorflow-probability (>=0.22,<0.23)"]
 trees = ["scikit-learn (>=1.0.2,<2.0.0)", "xgboost (>=1.4.2,<2.0.0)"]
 
 [package.source]
-type = "git"
-url = "git@github.com:apple/pfl-research.git"
-reference = "main"
-resolved_reference = "6c2158337df0c8ce92ae21342e2942f8e18dccf6"
+type = "directory"
+url = ".."
 
 [[package]]
 name = "pillow"
@@ -1130,6 +1178,24 @@ files = [
     {file = "protobuf-4.24.4-py3-none-any.whl", hash = "sha256:80797ce7424f8c8d2f2547e2d42bfbb6c08230ce5832d6c099a37335c9c90a92"},
     {file = "protobuf-4.24.4.tar.gz", hash = "sha256:5a70731910cd9104762161719c3d883c960151eea077134458503723b60e3667"},
 ]
+
+[[package]]
+name = "prv-accountant"
+version = "0.2.0"
+description = "A fast algorithm to optimally compose privacy guarantees of differentially private (DP) mechanisms to arbitrary accuracy."
+optional = true
+python-versions = ">=3.7.0"
+files = [
+    {file = "prv_accountant-0.2.0-py3-none-any.whl", hash = "sha256:53564736db91327ac4cc6953c725a8510cfde397e01d99a6092d61f8f1e3c74d"},
+    {file = "prv_accountant-0.2.0.tar.gz", hash = "sha256:548400c975242ef63e4a2c0a2e58070b15ad0ddc35056b25e9e5692b4e337f68"},
+]
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+
+[package.extras]
+extra = ["flake8", "jupyter", "nbconvert", "pandas", "plotly", "pytest", "sympy", "tensorflow-privacy", "tqdm"]
 
 [[package]]
 name = "pyasn1"
@@ -1681,22 +1747,6 @@ wrapt = ">=1.11.0,<1.15"
 and-cuda = ["nvidia-cublas-cu11 (==11.11.3.6)", "nvidia-cuda-cupti-cu11 (==11.8.87)", "nvidia-cuda-nvcc-cu11 (==11.8.89)", "nvidia-cuda-runtime-cu11 (==11.8.89)", "nvidia-cudnn-cu11 (==8.7.0.84)", "nvidia-cufft-cu11 (==10.9.0.58)", "nvidia-curand-cu11 (==10.3.0.86)", "nvidia-cusolver-cu11 (==11.4.1.48)", "nvidia-cusparse-cu11 (==11.7.5.86)", "nvidia-nccl-cu11 (==2.16.5)", "tensorrt (==8.5.3.1)"]
 
 [[package]]
-name = "tensorflow-metal"
-version = "1.1.0"
-description = "TensorFlow acceleration for Mac GPUs."
-optional = true
-python-versions = "*"
-files = [
-    {file = "tensorflow_metal-1.1.0-cp310-cp310-macosx_12_0_arm64.whl", hash = "sha256:443d71b3a567fe3f45f982c4794d357b55dec01a4ff1d6d8ba152a68a2c018ab"},
-    {file = "tensorflow_metal-1.1.0-cp311-cp311-macosx_12_0_arm64.whl", hash = "sha256:1c365669fc9d764edcc1773254a477db7096975b1bff58fb37a11d7b8ca4295f"},
-    {file = "tensorflow_metal-1.1.0-cp39-cp39-macosx_12_0_arm64.whl", hash = "sha256:ee2ef41d91fde0740b7649e0c74dc157656f4fe4a2e00bcc03b04532ba47aa12"},
-]
-
-[package.dependencies]
-six = ">=1.15.0"
-wheel = ">=0.35,<1.0"
-
-[[package]]
 name = "tensorflow-probability"
 version = "0.22.0"
 description = "Probabilistic modeling and statistical inference in TensorFlow"
@@ -2149,4 +2199,4 @@ tf = ["pfl", "pfl", "tensorflow", "tensorflow_addons"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "b733b52d4105d1ba6499a9bdddf75ea11a054040f68c24a1a92e95e0d3e774b7"
+content-hash = "9cb359884c1afef3134ade071648270036107d35b9d23fcc75affdce946992bd"

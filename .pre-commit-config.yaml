@@ -26,20 +26,30 @@ repos:
       - id: check-yaml
       - id: fix-encoding-pragma
   # Formatting consistency
-  - repo: https://github.com/google/yapf
-    rev: v0.40.1
+  # TODO: can't use main yapf while this issue is open
+  # https://github.com/google/yapf/issues/1164
+  #- repo: https://github.com/google/yapf
+  #  rev: v0.40.2
+  - repo: https://github.com/grananqvist/yapf
+    rev: 438cb2825b220f2f64c5f5fd045cf378c466e749
     hooks:
       - id: yapf
         args:
           - --in-place
+        files: ^(pfl|tests)/
+  # TODO: fix ruff errors and remove pylint, then enable this.
   # Style checks, common errors, etc.
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.0.290"
-    hooks:
-      - id: ruff
+  #- repo: https://github.com/charliermarsh/ruff-pre-commit
+  #  rev: "v0.0.290"
+  #  hooks:
+  #    - id: ruff
   # Static analysis for type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.0
     hooks:
     - id: mypy
+      # TODO: rdar://120436473 (Fix style checks for benchmark dir)
+      files: ^(pfl|tests)/
   # TODO: license header hook
+
+

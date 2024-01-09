@@ -266,6 +266,9 @@ class PyTorchModel(StatefulModel):
                     user_dataset.iter(train_params.get('local_batch_size'))):
                 if batch_ix == train_params.get('local_num_steps'):
                     break
+                batch = [
+                    get_framework_module().to_tensor(data) for data in batch
+                ]
                 train_step_fn(self._model, local_optimizer, batch,
                               user_dataset.train_kwargs, **kwargs)
 

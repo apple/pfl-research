@@ -870,8 +870,7 @@ def pytorch_model_setup(request, pytorch_ops, user_dataset,
                 self.train()
             # Sum loss across output dim, average across batches,
             # similar to what is built-in in Keras model training.
-            unreduced_loss = self._l1loss(self(torch.FloatTensor(x)),
-                                          torch.FloatTensor(y))
+            unreduced_loss = self._l1loss(self(x), y)
             return torch.mean(torch.sum(unreduced_loss, dim=1))
 
         def loss2(self, x, y, eval=True):
@@ -879,8 +878,7 @@ def pytorch_model_setup(request, pytorch_ops, user_dataset,
             l1loss = torch.nn.L1Loss(reduction='none')
             # Sum loss across output dim, average across batches,
             # similar to what is built-in in Keras model training.
-            unreduced_loss = l1loss(self(torch.FloatTensor(x)),
-                                    torch.FloatTensor(y))
+            unreduced_loss = l1loss(self(x), y)
             loss_value = torch.mean(torch.sum(unreduced_loss, dim=1))
 
             num_samples = x.shape[0]

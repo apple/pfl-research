@@ -22,7 +22,7 @@ PyTorch
    :members:
 
 
-Gaussian Mixture Model
+Gaussian mixture model
 ----------------------
 
  .. automodule:: pfl.model.gaussian_mixture_model

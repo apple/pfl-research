@@ -1,6 +1,6 @@
 .. _gbdt:
 
-Gradient Boosted Decision Trees
+Gradient boosted decision trees
 ===============================
 
 Algorithms

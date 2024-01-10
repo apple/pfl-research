@@ -9,8 +9,11 @@ Abstract base classes
 .. automodule:: pfl.algorithm.base
    :members:
 
-Federated Learning
+Federated learning
 ------------------
+
+Federated averaging
+^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: pfl.algorithm.federated_averaging
    :members:
@@ -28,7 +31,7 @@ FedProx
    :members:
 
 
-Meta-Learning / personalisation
+Meta-learning / personalisation
 -------------------------------
 
 .. automodule:: pfl.algorithm.reptile

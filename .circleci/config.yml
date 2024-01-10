@@ -23,6 +23,15 @@ commands:
           command: |
             pip install poetry
             poetry install --only dev -q || true
+  benchmark_install_steps:
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            cd benchmarks
+            pip install poetry
+            poetry install -E tf -E pytorch || true
 
 jobs:
   code-quality:
@@ -67,6 +76,23 @@ jobs:
       - run:
           name: "Test with PyTorch"
           command: poetry run tox -e 'py310-test-pytorch'
+
+  check-run-cifar10:
+    executor: linux-python
+    steps:
+      - benchmark_install_steps
+      - run:
+          name: "Download data"
+          command: |
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_train.p \
+              -o ./data/cifar10/cifar10_train.p
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_test.p \
+              -o ./data/cifar10/cifar10_test.p
+      - run:
+          name: "Run a few iterations of training"
+          command: PYTHONPATH=. python image_classification/pytorch/train.py \
+            --args_config image_classification/configs/baseline.yaml \
+            --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
 
   publish-wheel:
     executor: linux-python
@@ -114,6 +140,8 @@ workflows:
           filters:
             branches:
               only: main
+
+
 
 
 

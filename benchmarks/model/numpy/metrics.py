@@ -296,10 +296,6 @@ class AUC(MetricValue, ABC):
 
         self._confusion_matrix = confusion_matrix
 
-    @property
-    def is_average(self):
-        return False
-
     def __eq__(self, other):
         assert isinstance(other, AUC)
         return self._confusion_matrix == other._confusion_matrix \
@@ -477,10 +473,6 @@ class MacroWeighted(MetricValue):
         weighted_value = self._weighted_value / self._weight
         # return the macro average
         return np.mean(np.nan_to_num(weighted_value))
-
-    @property
-    def is_average(self):
-        return True
 
     def __repr__(self):
         return '({}/{})'.format(self._weighted_value, self._weight)

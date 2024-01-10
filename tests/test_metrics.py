@@ -86,7 +86,7 @@ class TestMetrics(unittest.TestCase):
         dic = metrics.to_simple_dict()
         assert len(dic) == 2
         assert dic['1'] == 2
-        assert dic['2 (avg)'] == 1
+        assert dic['2'] == 1
 
     def test_serialization(self):
         metrics = Metrics([(self.name_1, Weighted(2, 1)), (self.name_2, 256)])
@@ -211,7 +211,6 @@ class TestSummed(unittest.TestCase):
 
     def test_construction(self):
         v = Summed(1)
-        assert not v.is_average
         assert v.overall_value == 1
 
     def test_equality(self):
@@ -245,7 +244,6 @@ class TestHistogram:
 
     def test_construction(self, counts, bins):
         h1 = Histogram(counts, bins)
-        assert not h1.is_average
         np.testing.assert_array_equal(h1.bin_counts, counts)
         np.testing.assert_array_equal(h1.bins, bins)
 

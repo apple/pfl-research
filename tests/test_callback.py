@@ -23,6 +23,7 @@ from pfl.callback import (
     RestoreTrainingCallback,
     StopwatchCallback,
     TensorBoardCallback,
+    TrackBestOverallMetrics,
     WandbCallback,
 )
 from pfl.common_types import Population, Saveable
@@ -682,6 +683,44 @@ class TestAggregateMetricsToDisk:
                 assert line == expected_line
 
 
+class TestTrackBestOverallMetrics:
+
+    def test_callback(self, mock_model):
+        loss_name = MetricName('loss', Population.TRAIN)
+        accuracy_name = MetricName('accuracy', Population.TRAIN)
+        cb = TrackBestOverallMetrics([
+            loss_name,
+        ], ['train population | accuracy'])
+
+        no_metrics = cb.on_train_begin(model=mock_model)
+        assert len(no_metrics) == 0
+
+        observed_losses = [3, 2, 1, 2, 3, 0.5]
+        observed_accs = [0.8, 0.7, 0.7, 0.81, 0.9, 0.0]
+        expected_best_losses = [3, 2, 1, 1, 1, 0.5]
+        expected_best_accs = [0.8, 0.8, 0.8, 0.81, 0.9, 0.9]
+
+        should_stop, no_metrics = cb.after_central_iteration(
+            Metrics(), mock_model, central_iteration=0)
+        assert not should_stop
+        assert len(no_metrics) == 0
+
+        for i, (observed_loss, observed_acc, expected_best_loss,
+                expected_best_acc) in enumerate(
+                    zip(observed_losses, observed_accs, expected_best_losses,
+                        expected_best_accs)):
+            aggregate_metrics = Metrics([(loss_name, observed_loss),
+                                         (accuracy_name, observed_acc)])
+            should_stop, best_metrics = cb.after_central_iteration(
+                aggregate_metrics, mock_model, central_iteration=i)
+            assert not should_stop
+            assert best_metrics.to_simple_dict() == {
+                'Train population | loss | best overall': expected_best_loss,
+                'Train population | accuracy | best overall':
+                expected_best_acc,
+            }
+
+
 class TestWandbCallback:
 
     @patch('pfl.callback.WandbCallback.wandb')
@@ -705,7 +744,7 @@ class TestWandbCallback:
         mock_wandb.log.assert_not_called()
         cb.after_central_iteration(metrics, mock_model, central_iteration=1)
         data = {
-            'Val population | loss (avg)': 10.0,
+            'Val population | loss': 10.0,
             'Train population | number of data points': 2
         }
         mock_wandb.log.assert_called_once_with(data, step=1)

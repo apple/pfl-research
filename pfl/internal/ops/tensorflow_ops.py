@@ -691,18 +691,6 @@ class KerasMetricValue(MetricValue):
         return _run_result_graph(self._keras_metric,
                                  self._metric_state).numpy()
 
-    @property
-    def is_average(self):
-        """
-        Return ``True`` if the overall value returned by ``overall_value`` is
-        an average.
-
-        :returns:
-            ``False``, which is the conservative setting because it's not
-            really possible to tell what the underlying metric does.
-        """
-        return False
-
     def to_vector(self) -> np.ndarray:
         return np.array(
             [v.numpy().astype(np.float32) for v in self._metric_state])

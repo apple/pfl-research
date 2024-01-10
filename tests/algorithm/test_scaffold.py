@@ -203,7 +203,7 @@ for _ in range(epochs):
         check_equal_metrics(
             model_update_metrics,
             Metrics([(StringMetricName('applied_stats'), 1),
-                     (StringMetricName('server_c norm (avg)'), 1)]))
+                     (StringMetricName('server_c norm'), 1)]))
         check_equal_stats(
             scaffold._server_c,
             MappedVectorStatistics({'weight': np.ones((2, 2)) * 2.025}))

@@ -89,7 +89,7 @@ class TrainMetricName(MetricName):
                 f'{self.description}{postfix}')
 
 
-class ComposableMetricName(MetricName):
+class ComposableMetricName(StringMetricName):
     """
     Base class of any decorate-able `MetricName`.
 
@@ -104,12 +104,12 @@ class ComposableMetricName(MetricName):
         an instance of `MetricName`.
     """
 
-    def __init__(self, metric_name: MetricName):
-        assert isinstance(metric_name, MetricName)
+    def __init__(self, metric_name: StringMetricName):
+        assert isinstance(metric_name, StringMetricName)
         if self.__class__.__name__ == 'ComposableMetricName':
             raise NotImplementedError("Don't init this class")
 
-        super().__init__(metric_name.description, metric_name.population)
+        super().__init__(metric_name.description)
         # hacky, dataclasses doesn't support assignment of instance variables
         self._inner_metric_name = metric_name
 
@@ -133,7 +133,7 @@ class MetricNamePostfix(ComposableMetricName):
         The postfix to append to the metric name string.
     """
 
-    def __init__(self, metric_name: MetricName, postfix: str):
+    def __init__(self, metric_name: StringMetricName, postfix: str):
         super().__init__(metric_name)
         self.postfix = postfix
 
@@ -185,14 +185,6 @@ class MetricValue(ABC):
     def overall_value(self):
         """
         Return the overall value, e.g. an average or a total.
-        """
-
-    @property
-    @abstractmethod
-    def is_average(self):
-        """
-        Return ``True`` if the overall value returned by ``overall_value`` is
-        an average.
         """
 
     @abstractmethod
@@ -252,12 +244,6 @@ def get_overall_value(metric_value: MetricValueType) -> float:
     return metric_value
 
 
-def is_average(metric_value: MetricValueType) -> bool:
-    if isinstance(metric_value, MetricValue):
-        return metric_value.is_average
-    return False
-
-
 def serialize_to_vector(metric_value: MetricValueType) -> np.ndarray:
     if isinstance(metric_value, MetricValue):
         return metric_value.to_vector()
@@ -303,10 +289,6 @@ class Weighted(MetricValue):
             assert self._weighted_value == 0
             return 0.
         return self._weighted_value / float(self._weight)
-
-    @property
-    def is_average(self):
-        return True
 
     @property
     def weighted_value(self):
@@ -362,10 +344,6 @@ class Summed(MetricValue):
 
     def __init__(self, value):
         self._value = value
-
-    @property
-    def is_average(self):
-        return False
 
     @property
     def overall_value(self):
@@ -451,10 +429,6 @@ class Histogram(MetricValue):
     def overall_value(self):
         raise NotImplementedError("property overall_value doesn't make "
                                   "sense for histogram metrics")
-
-    @property
-    def is_average(self):
-        return False
 
     def __eq__(self, other):
         assert isinstance(other, Histogram)
@@ -629,9 +603,7 @@ class Metrics:
 
             # Uppercase the first character.
             name_uppercase = metric_name[0].upper() + metric_name[1:]
-            name = f'{name_uppercase} (avg)' if is_average(
-                weighted_value) else f'{name_uppercase}'
-            return (name, get_overall_value(weighted_value))
+            return (name_uppercase, get_overall_value(weighted_value))
 
         return dict(
             convert(*value) for value in self._hash_to_keyvalue.values()

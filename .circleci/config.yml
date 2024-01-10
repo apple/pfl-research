@@ -120,6 +120,7 @@ workflows:
       - build-documentation-wheel
       - test-tf
       - test-pytorch
+      - check-run-cifar10
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))
       #- build-images:

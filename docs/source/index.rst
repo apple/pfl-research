@@ -21,7 +21,7 @@ We hope that ``pfl`` will promote open research in FL and its effective dissemin
 * Support of other models in addition to neural networks, e.g. GBDTs. Switching between types of models while keeping the remaining setup fixed is seamless.
 * Tight integration with privacy features, including common mechanisms for local and central differential privacy.
 
-Researchers are invited to contributed to the framework. Please, see :doc:`support/contributing` for more details.
+Researchers are invited to contribute to the framework. Please, see :doc:`support/contributing` for more details.
 
 
 .. toctree::

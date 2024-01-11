@@ -94,16 +94,7 @@ jobs:
           name: "Run tests in benchmarks"
           command: |
             cd benchmarks
-            poetry run pip uninstall -y tensorflow
-            poetry run pytest test/dataset/stackoverflow --durations 0 -n4
-            echo 1
-            poetry run pytest test/dataset/cifar10 --durations 0 -n4
-            echo 2
-            poetry run pytest test/model --durations 0 -n4
-            echo 35
-            poetry run pytest test/ --durations 0 -k "not stackoverflow" -n4
-            echo 4
-            poetry run pytest test/dataset/stackoverflow/test_stackoverflow.py --durations 0 -n4
+            poetry run pytest test/ --durations 0 -n4
 
   check-run-cifar10:
     executor: linux-python

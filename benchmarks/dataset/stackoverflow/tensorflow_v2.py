@@ -56,11 +56,10 @@ def make_federated_dataset(hdf5_path: str,
         data = data.prefetch(10)
         return data
 
-    return TFFederatedDataset(
-        make_tf_dataset_fn,
-        sampler,
-        user_id_dtype=tf.string,
-        user_id_to_weight=user_id_to_weight)
+    return TFFederatedDataset(make_tf_dataset_fn,
+                              sampler,
+                              user_id_dtype=tf.string,
+                              user_id_to_weight=user_id_to_weight)
 
 
 def make_central_dataset(hdf5_path: str, partition: str,
@@ -92,10 +91,10 @@ def make_central_dataset(hdf5_path: str, partition: str,
 
 
 def make_stackoverflow_datasets(
-        data_path: str,
-        max_user_sentences: int = 1000,
-        data_fraction: float = 1.0,
-        central_data_fraction: float = 0.01,
+    data_path: str,
+    max_user_sentences: int = 1000,
+    data_fraction: float = 1.0,
+    central_data_fraction: float = 0.01,
 ) -> Tuple[TFFederatedDataset, TFFederatedDataset, Dataset, Dict[str, Any]]:
     """
     Create a train and test ``TFFederatedDataset`` as well as a

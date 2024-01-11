@@ -14,9 +14,10 @@ if get_pytorch_major_version():
     import torch
 
 
-@pytest.mark.skipif(
-    not get_pytorch_major_version(), reason='PyTorch not installed')
+@pytest.mark.skipif(not get_pytorch_major_version(),
+                    reason='PyTorch not installed')
 class TestPyTorchDNN:
+
     @pytest.mark.parametrize('input_shape', [(32, 32, 3), (28, 28, 1)])
     @pytest.mark.parametrize('output_shape', [10, 100])
     def test_output_shape(self, input_shape: Tuple[int, ...],

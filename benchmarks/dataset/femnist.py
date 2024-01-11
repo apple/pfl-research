@@ -12,10 +12,11 @@ from pfl.data.sampling import get_user_sampler
 from pfl.data.dataset import Dataset
 
 
-def _load_h5_into_dict(h5_file_path: str,
-                       digits_only: bool,
-                       numpy_to_tensor: Callable = lambda x: x
-                       ) -> Dict[str, List[np.ndarray]]:
+def _load_h5_into_dict(
+        h5_file_path: str,
+        digits_only: bool,
+        numpy_to_tensor: Callable = lambda x: x
+) -> Dict[str, List[np.ndarray]]:
     """
     Load data into memory and create a mapping from user ids to that
     user's data.
@@ -89,9 +90,9 @@ def make_central_dataset(h5_file_path: str,
 
 
 def make_femnist_datasets(
-        data_dir: str,
-        digits_only: bool = False,
-        numpy_to_tensor: Callable = lambda x: x,
+    data_dir: str,
+    digits_only: bool = False,
+    numpy_to_tensor: Callable = lambda x: x,
 ) -> Tuple[FederatedDataset, FederatedDataset, Dataset, Dict[str, Any]]:
     """
     Create a train and val ``FederatedDataset`` as well as a central dataset
@@ -105,8 +106,9 @@ def make_femnist_datasets(
     # data
     training_federated_dataset = make_federated_dataset(
         train_h5_file_path, digits_only, numpy_to_tensor)
-    val_federated_dataset = make_federated_dataset(
-        val_h5_file_path, digits_only, numpy_to_tensor)
+    val_federated_dataset = make_federated_dataset(val_h5_file_path,
+                                                   digits_only,
+                                                   numpy_to_tensor)
     central_data = make_central_dataset(val_h5_file_path, digits_only)
 
     return training_federated_dataset, val_federated_dataset, central_data, {}

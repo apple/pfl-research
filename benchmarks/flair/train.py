@@ -16,10 +16,12 @@ from pfl.model.pytorch import PyTorchModel
 
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_pytorch
-from utils.argument_parsing import (
-    add_algorithm_arguments, add_filepath_arguments, add_seed_arguments,
-    add_dnn_training_arguments, add_mechanism_arguments, get_algorithm,
-    parse_mechanism, maybe_inject_arguments_from_config)
+from utils.argument_parsing import (add_algorithm_arguments,
+                                    add_filepath_arguments, add_seed_arguments,
+                                    add_dnn_training_arguments,
+                                    add_mechanism_arguments, get_algorithm,
+                                    parse_mechanism,
+                                    maybe_inject_arguments_from_config)
 from utils.callback.pytorch import CentralLRDecay
 from utils.logging import init_logging
 from .argument_parsing import add_flair_training_arguments
@@ -104,15 +106,13 @@ def main():
             arguments.learning_rate,
             weight_decay=arguments.weight_decay)
 
-    model = PyTorchModel(
-        model=pytorch_model,
-        local_optimizer_create=torch.optim.SGD,
-        central_optimizer=central_optimizer)
+    model = PyTorchModel(model=pytorch_model,
+                         local_optimizer_create=torch.optim.SGD,
+                         central_optimizer=central_optimizer)
 
-    backend = SimulatedBackend(
-        training_data=training_federated_dataset,
-        val_data=val_federated_dataset,
-        postprocessors=[local_privacy, central_privacy])
+    backend = SimulatedBackend(training_data=training_federated_dataset,
+                               val_data=val_federated_dataset,
+                               postprocessors=[local_privacy, central_privacy])
 
     algorithm, algorithm_params = get_algorithm(arguments)
 
@@ -127,19 +127,17 @@ def main():
 
     # Central evaluation on dev data.
     callbacks = [
-        CentralEvaluationCallback(
-            central_data,
-            model_eval_params=model_eval_params,
-            frequency=arguments.evaluation_frequency),
+        CentralEvaluationCallback(central_data,
+                                  model_eval_params=model_eval_params,
+                                  frequency=arguments.evaluation_frequency),
         StopwatchCallback(),
         ModelCheckpointingCallback('./checkpoints'),
         AggregateMetricsToDisk('./metrics.csv'),
-        CentralLRDecay(
-            arguments.learning_rate,
-            0.02,
-            arguments.central_num_iterations,
-            30,
-            linear_warmup=True)
+        CentralLRDecay(arguments.learning_rate,
+                       0.02,
+                       arguments.central_num_iterations,
+                       30,
+                       linear_warmup=True)
     ]
 
     if arguments.restore_model_path is not None:
@@ -147,13 +145,12 @@ def main():
         logger.info('Restored model from {}'.format(
             arguments.restore_model_path))
 
-    model = algorithm.run(
-        algorithm_params=algorithm_params,
-        backend=backend,
-        model=model,
-        model_train_params=model_train_params,
-        model_eval_params=model_eval_params,
-        callbacks=callbacks)
+    model = algorithm.run(algorithm_params=algorithm_params,
+                          backend=backend,
+                          model=model,
+                          model_train_params=model_train_params,
+                          model_eval_params=model_eval_params,
+                          callbacks=callbacks)
 
 
 if __name__ == '__main__':

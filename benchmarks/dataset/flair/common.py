@@ -43,10 +43,10 @@ def get_label_mapping(hdf5_path: str,
             return json.loads(h5['/metadata/label_mapping'][()])
 
 
-def get_training_channel_mean_stddevs(hdf5_path: str,
-                                      data_fraction: float = 0.1,
-                                      seed: Optional[int] = None
-                                      ) -> Tuple[List[float], List[float]]:
+def get_training_channel_mean_stddevs(
+        hdf5_path: str,
+        data_fraction: float = 0.1,
+        seed: Optional[int] = None) -> Tuple[List[float], List[float]]:
     """
     Get the averaged channel mean and std from training data, following ImageNet
     implementation from https://github.com/soumith/imagenet-multiGPU.torch/blob/master/donkey.lua # pylint: disable=line-too-long
@@ -126,9 +126,8 @@ def get_user_num_images(hdf5_path: str, partition: str) -> Dict[str, int]:
     """
     with h5py.File(hdf5_path, 'r') as h5:
         user_num_images = {}
-        for key in tqdm.tqdm(
-                h5[f'/{partition}'].keys(),
-                desc=f"Creating user_num_images for {partition}"):
+        for key in tqdm.tqdm(h5[f'/{partition}'].keys(),
+                             desc=f"Creating user_num_images for {partition}"):
             user_num_images[key] = h5[f'/{partition}/{key}/image_ids'].shape[0]
     return user_num_images
 
@@ -165,7 +164,6 @@ def make_central_datasets(hdf5_path: str, partition: str,
     inputs_all = np.vstack(inputs_all)
     targets_all = np.vstack(targets_all)
     data_tensors = [inputs_all, targets_all]
-    return Dataset(
-        raw_data=data_tensors,
-        train_kwargs={"eval": False},
-        eval_kwargs={"eval": True})
+    return Dataset(raw_data=data_tensors,
+                   train_kwargs={"eval": False},
+                   eval_kwargs={"eval": True})

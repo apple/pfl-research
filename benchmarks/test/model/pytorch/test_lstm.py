@@ -14,9 +14,10 @@ _PAD_SYMBOL = 0
 _UNK_SYMBOL = 1
 
 
-@pytest.mark.skipif(
-    not get_pytorch_major_version(), reason='PyTorch not installed')
+@pytest.mark.skipif(not get_pytorch_major_version(),
+                    reason='PyTorch not installed')
 class TestPyTorchCNN:
+
     @pytest.mark.parametrize('embedding_size', [64, 128])
     @pytest.mark.parametrize('num_cell_states', [64, 128])
     @pytest.mark.parametrize('num_lstm_layers', [1, 2])
@@ -29,8 +30,9 @@ class TestPyTorchCNN:
                                 num_lstm_layers, vocab_size, _PAD_SYMBOL,
                                 _UNK_SYMBOL)
         batch_size = 3
-        inputs = np.random.randint(
-            0, vocab_size, size=(batch_size, sequence_length))
+        inputs = np.random.randint(0,
+                                   vocab_size,
+                                   size=(batch_size, sequence_length))
         logits = pytorch_model(torch.from_numpy(inputs))
         assert logits.shape == (batch_size, sequence_length, vocab_size)
 

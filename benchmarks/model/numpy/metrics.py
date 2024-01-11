@@ -116,10 +116,9 @@ class BucketConfusionMatrix:
         bucket_indices = np.maximum(bucket_indices, 0).astype(int)
 
         def gather_bucket(label, bucket_index):
-            return unsorted_segment_sum(
-                data=label,
-                segment_ids=bucket_index,
-                num_segments=num_thresholds)
+            return unsorted_segment_sum(data=label,
+                                        segment_ids=bucket_index,
+                                        num_segments=num_thresholds)
 
         if multi_label:
             true_labels, false_labels = true_labels.T, false_labels.T
@@ -184,8 +183,8 @@ class BucketConfusionMatrix:
 
     @property
     def true_positive_rate(self):
-        return np.nan_to_num(
-            self._true_positive / (self._true_positive + self._false_negative))
+        return np.nan_to_num(self._true_positive /
+                             (self._true_positive + self._false_negative))
 
     @property
     def false_positive_rate(self):
@@ -194,8 +193,8 @@ class BucketConfusionMatrix:
 
     @property
     def precision(self):
-        return np.nan_to_num(
-            self._true_positive / (self._true_positive + self._false_positive))
+        return np.nan_to_num(self._true_positive /
+                             (self._true_positive + self._false_positive))
 
     @property
     def recall(self):
@@ -264,7 +263,8 @@ class AUC(MetricValue, ABC):
             y_pred: Optional[np.ndarray] = None,
             multi_label: bool = False,
             num_thresholds: int = 200,
-            summation_method: AUCSummationMethod = AUCSummationMethod.INTERPOLATION,  # pylint: disable=line-too-long
+            summation_method: AUCSummationMethod = AUCSummationMethod.
+        INTERPOLATION,  # pylint: disable=line-too-long
     ):
         if num_thresholds <= 1:
             raise ValueError(
@@ -309,11 +309,10 @@ class AUC(MetricValue, ABC):
 
     def __add__(self, other):
         assert isinstance(other, AUC)
-        return self.__class__(
-            self._confusion_matrix + other._confusion_matrix,
-            num_thresholds=self._num_thresholds,
-            summation_method=self._summation_method,
-            multi_label=self._multi_label)
+        return self.__class__(self._confusion_matrix + other._confusion_matrix,
+                              num_thresholds=self._num_thresholds,
+                              summation_method=self._summation_method,
+                              multi_label=self._multi_label)
 
     def _riemann_sum(self, x, y):
         # https://en.wikipedia.org/wiki/Riemann_sum
@@ -341,11 +340,10 @@ class AUC(MetricValue, ABC):
         return self._confusion_matrix.to_vector()
 
     def from_vector(self, vector: np.ndarray) -> 'AUC':
-        return self.__class__(
-            self._confusion_matrix.from_vector(vector),
-            num_thresholds=self._num_thresholds,
-            summation_method=self._summation_method,
-            multi_label=self._multi_label)
+        return self.__class__(self._confusion_matrix.from_vector(vector),
+                              num_thresholds=self._num_thresholds,
+                              summation_method=self._summation_method,
+                              multi_label=self._multi_label)
 
 
 class ROCAUC(AUC):
@@ -385,9 +383,8 @@ class PRAUC(AUC):
 
             safe_p_ratio = np.where(
                 (p[:self._num_thresholds - 1] > 0) & (p[1:] > 0),
-                np.nan_to_num(
-                    p[:self._num_thresholds - 1] / np.maximum(p[1:], 0)),
-                np.ones_like(p[1:]))
+                np.nan_to_num(p[:self._num_thresholds - 1] /
+                              np.maximum(p[1:], 0)), np.ones_like(p[1:]))
 
             pr_auc_increment = np.nan_to_num(
                 prec_slope * (dtp + intercept * np.log(safe_p_ratio)) /

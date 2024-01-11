@@ -56,8 +56,9 @@ def _process_vocabulary(vocabulary_size, h5):
     h5['/metadata/pad_symbol'] = vocabulary[PAD]
     for token, id_ in vocabulary.items():
         # Wrap inside " because of the '.' token.
-        h5.create_dataset(
-            f'/metadata/vocabulary/"{token}"', data=id_, dtype='int32')
+        h5.create_dataset(f'/metadata/vocabulary/"{token}"',
+                          data=id_,
+                          dtype='int32')
     return vocabulary
 
 
@@ -73,6 +74,7 @@ def _tokens_to_ids(raw_batch, vocab, max_sequence_length):
 
 def _make_worker_fn(tff_dataset, partition, vocabulary, max_sequence_length,
                     h5_path, lock):
+
     def _process_user(user_id):
 
         # tf Dataset with sentences from user.
@@ -95,14 +97,12 @@ def _make_worker_fn(tff_dataset, partition, vocabulary, max_sequence_length,
         with lock:
             with h5py.File(h5_path, 'a') as h5:
                 # Store encoded inputs.
-                h5.create_dataset(
-                    f'/{partition}/{user_id}/inputs',
-                    data=padded_sentences_ids[:, :-1])
+                h5.create_dataset(f'/{partition}/{user_id}/inputs',
+                                  data=padded_sentences_ids[:, :-1])
 
                 # Store encoded targets.
-                h5.create_dataset(
-                    f'/{partition}/{user_id}/targets',
-                    data=padded_sentences_ids[:, 1:])
+                h5.create_dataset(f'/{partition}/{user_id}/targets',
+                                  data=padded_sentences_ids[:, 1:])
         return user_id, token_count
 
     def _worker_fn(work_queue, result_queue):
@@ -170,15 +170,15 @@ def dl_preprocess_and_dump_h5(output_dir: str, vocabulary_size: int,
         work_queue = mp.Queue()
         results_queue = mp.Queue()
         processes = [
-            mp.Process(
-                target=_make_worker_fn(tff_dataset, partition, vocabulary,
-                                       max_sequence_length, h5_path, lock),
-                args=(work_queue, results_queue)) for _ in range(num_processes)
+            mp.Process(target=_make_worker_fn(tff_dataset, partition,
+                                              vocabulary, max_sequence_length,
+                                              h5_path, lock),
+                       args=(work_queue, results_queue))
+            for _ in range(num_processes)
         ]
         processes.append(
-            mp.Process(
-                target=_collect_num_tokens,
-                args=(results_queue, user_num_tokens, num_processes)))
+            mp.Process(target=_collect_num_tokens,
+                       args=(results_queue, user_num_tokens, num_processes)))
 
         for p in processes:
             p.start()

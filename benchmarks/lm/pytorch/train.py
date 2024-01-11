@@ -15,10 +15,11 @@ from pfl.model.pytorch import PyTorchModel
 from pfl.privacy import CentrallyAppliedPrivacyMechanism
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_pytorch
-from utils.argument_parsing import (
-    add_algorithm_arguments, add_filepath_arguments, add_seed_arguments,
-    add_weighting_arguments, get_algorithm, parse_weighting_strategy,
-    parse_mechanism, maybe_inject_arguments_from_config)
+from utils.argument_parsing import (add_algorithm_arguments,
+                                    add_filepath_arguments, add_seed_arguments,
+                                    add_weighting_arguments, get_algorithm,
+                                    parse_weighting_strategy, parse_mechanism,
+                                    maybe_inject_arguments_from_config)
 from utils.callback.pytorch import CentralLRDecay
 from utils.logging import init_logging
 from ..argument_parsing import add_lm_arguments
@@ -79,19 +80,17 @@ def main():
     params = [p for p in pytorch_model.parameters() if p.requires_grad]
     if arguments.central_optimizer == 'adam':
         # Hyperparameters for stability, see S. Reddi et al. 2020 Appendix C.1.
-        central_optimizer = torch.optim.Adam(
-            params,
-            arguments.learning_rate,
-            eps=arguments.adaptivity_degree,
-            betas=(0.9, 0.99))
+        central_optimizer = torch.optim.Adam(params,
+                                             arguments.learning_rate,
+                                             eps=arguments.adaptivity_degree,
+                                             betas=(0.9, 0.99))
     else:
         assert arguments.central_optimizer == 'sgd'
         central_optimizer = torch.optim.SGD(params, arguments.learning_rate)
 
-    model = PyTorchModel(
-        model=pytorch_model,
-        local_optimizer_create=torch.optim.SGD,
-        central_optimizer=central_optimizer)
+    model = PyTorchModel(model=pytorch_model,
+                         local_optimizer_create=torch.optim.SGD,
+                         central_optimizer=central_optimizer)
 
     weighting_strategy = parse_weighting_strategy(arguments.weighting,
                                                   arguments.weight_clip)
@@ -101,10 +100,9 @@ def main():
         CentrallyAppliedPrivacyMechanism(central_privacy)
     ]
 
-    backend = SimulatedBackend(
-        training_data=training_federated_dataset,
-        val_data=val_federated_dataset,
-        postprocessors=postprocessors)
+    backend = SimulatedBackend(training_data=training_federated_dataset,
+                               val_data=val_federated_dataset,
+                               postprocessors=postprocessors)
 
     algorithm, algorithm_params = get_algorithm(arguments)
 
@@ -118,10 +116,9 @@ def main():
 
     callbacks = [
         StopwatchCallback(),
-        CentralEvaluationCallback(
-            central_data,
-            model_eval_params=model_eval_params,
-            frequency=arguments.evaluation_frequency),
+        CentralEvaluationCallback(central_data,
+                                  model_eval_params=model_eval_params,
+                                  frequency=arguments.evaluation_frequency),
         ModelCheckpointingCallback('./checkpoints'),
         AggregateMetricsToDisk('./metrics.csv'),
     ]
@@ -143,13 +140,12 @@ def main():
         logger.info('Restored model from {}'.format(
             arguments.restore_model_path))
 
-    model = algorithm.run(
-        algorithm_params=algorithm_params,
-        backend=backend,
-        model=model,
-        model_train_params=model_train_params,
-        model_eval_params=model_eval_params,
-        callbacks=callbacks)
+    model = algorithm.run(algorithm_params=algorithm_params,
+                          backend=backend,
+                          model=model,
+                          model_train_params=model_train_params,
+                          model_eval_params=model_eval_params,
+                          callbacks=callbacks)
 
 
 if __name__ == '__main__':

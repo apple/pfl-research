@@ -38,9 +38,10 @@ def make_flair_datasets(data_path: str, use_fine_grained_labels: bool,
     training_federated_dataset = make_federated_dataset(
         data_path, 'train', use_fine_grained_labels, max_num_user_images,
         numpy_to_tensor)
-    val_federated_dataset = make_federated_dataset(
-        data_path, 'val', use_fine_grained_labels, max_num_user_images,
-        numpy_to_tensor)
+    val_federated_dataset = make_federated_dataset(data_path, 'val',
+                                                   use_fine_grained_labels,
+                                                   max_num_user_images,
+                                                   numpy_to_tensor)
 
     central_data, metadata = get_central_data_and_metadata(
         data_path, use_fine_grained_labels)
@@ -80,8 +81,9 @@ def make_flair_pytorch_datasets(data_path: str, use_fine_grained_labels: bool,
 
     training_federated_dataset = make_federated_dataset(
         data_path, 'train', use_fine_grained_labels, max_num_user_images)
-    val_federated_dataset = make_federated_dataset(
-        data_path, 'val', use_fine_grained_labels, max_num_user_images)
+    val_federated_dataset = make_federated_dataset(data_path, 'val',
+                                                   use_fine_grained_labels,
+                                                   max_num_user_images)
 
     central_data, metadata = get_central_data_and_metadata(
         data_path, use_fine_grained_labels)

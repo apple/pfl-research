@@ -16,11 +16,11 @@ from ..numpy.metrics import AveragedPrecision, MacroWeighted
 
 
 def multi_label_cnn(
-        model_type: str,
-        num_outputs: int,
-        channel_mean: List[float],
-        channel_stddevs: List[float],
-        pretrained: bool,
+    model_type: str,
+    num_outputs: int,
+    channel_mean: List[float],
+    channel_stddevs: List[float],
+    pretrained: bool,
 ):
     """
     A CNN used for multi-label classification task.
@@ -55,12 +55,12 @@ def multi_label_cnn(
         """
 
         def __init__(
-                self,
-                torchvision_model_type: str,
-                num_outputs: int,
-                channel_mean: List[float],
-                channel_stddevs: List[float],
-                pretrained: bool,
+            self,
+            torchvision_model_type: str,
+            num_outputs: int,
+            channel_mean: List[float],
+            channel_stddevs: List[float],
+            pretrained: bool,
         ):
             super().__init__()
             self._num_outputs = num_outputs
@@ -163,10 +163,9 @@ def multi_label_cnn(
                 "micro recall":
                 Weighted(tps_sum, tps_sum + fns_sum),
                 "micro AP":
-                AveragedPrecision(
-                    y_true=targets.cpu().numpy(),
-                    y_pred=scores.cpu().numpy(),
-                    multi_label=False),
+                AveragedPrecision(y_true=targets.cpu().numpy(),
+                                  y_pred=scores.cpu().numpy(),
+                                  multi_label=False),
                 # Macro metrics: averaged over classes
                 "macro loss":
                 MacroWeighted(summed_loss.cpu().numpy(), num_predictions),
@@ -179,10 +178,9 @@ def multi_label_cnn(
                 MacroWeighted(tps.cpu().numpy(),
                               tps.cpu().numpy() + fns.cpu().numpy()),
                 "macro AP":
-                AveragedPrecision(
-                    y_true=targets.cpu().numpy(),
-                    y_pred=scores.cpu().numpy(),
-                    multi_label=True),
+                AveragedPrecision(y_true=targets.cpu().numpy(),
+                                  y_pred=scores.cpu().numpy(),
+                                  multi_label=True),
             }
 
     return MultiLabelCNN(model_type, num_outputs, channel_mean,

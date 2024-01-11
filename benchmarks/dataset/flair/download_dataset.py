@@ -30,8 +30,8 @@ LABEL_RELATIONSHIP_URL = urljoin(DATA_URL, "labels/label_relationship.txt")
 
 def extract_tar(compressed_path: str, dataset_dir: str,
                 keep_archive_after_decompress: bool):
-    subprocess.run(
-        f"tar -zxf {compressed_path} -C {dataset_dir}".split(), check=True)
+    subprocess.run(f"tar -zxf {compressed_path} -C {dataset_dir}".split(),
+                   check=True)
     if not keep_archive_after_decompress:
         os.remove(compressed_path)
 
@@ -50,26 +50,22 @@ def decompress_images(dataset_dir: str, keep_archive_after_decompress: bool):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        stream=sys.stdout,
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)s: %(message)s')
+    logging.basicConfig(stream=sys.stdout,
+                        level=logging.INFO,
+                        format='%(asctime)s %(levelname)s: %(message)s')
 
     parser = argparse.ArgumentParser(
         description='Download the images and labels of FLAIR dataset.')
-    parser.add_argument(
-        "--dataset_dir",
-        required=True,
-        help="Path to directory of dataset to be downloaded")
-    parser.add_argument(
-        "--download_raw",
-        action="store_true",
-        help="Whether to download the raw images, "
-        "which need storage space ~1.2TB")
-    parser.add_argument(
-        "--keep_archive_after_decompress",
-        action="store_true",
-        help="Whether to keep the image tarball archives")
+    parser.add_argument("--dataset_dir",
+                        required=True,
+                        help="Path to directory of dataset to be downloaded")
+    parser.add_argument("--download_raw",
+                        action="store_true",
+                        help="Whether to download the raw images, "
+                        "which need storage space ~1.2TB")
+    parser.add_argument("--keep_archive_after_decompress",
+                        action="store_true",
+                        help="Whether to keep the image tarball archives")
     arguments = parser.parse_args()
     os.makedirs(arguments.dataset_dir, exist_ok=True)
 

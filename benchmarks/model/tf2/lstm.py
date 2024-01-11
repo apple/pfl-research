@@ -27,8 +27,9 @@ def lm_lstm(embedding_size: int, num_cell_states: int, num_lstm_layers: int,
 
     inputs = tf.keras.layers.Input(shape=(None, ))
     # Embedding layer automatically masks padding for consecutive layers.
-    input_embedding = tf.keras.layers.Embedding(
-        input_dim=vocab_size, output_dim=embedding_size, mask_zero=True)
+    input_embedding = tf.keras.layers.Embedding(input_dim=vocab_size,
+                                                output_dim=embedding_size,
+                                                mask_zero=True)
     intermediate = input_embedding(inputs)
 
     for _ in range(num_lstm_layers):
@@ -38,8 +39,9 @@ def lm_lstm(embedding_size: int, num_cell_states: int, num_lstm_layers: int,
     if embedding_size != num_cell_states:
         intermediate = tf.keras.layers.Dense(embedding_size)(intermediate)
 
-    logits = tf.matmul(
-        intermediate, input_embedding.embeddings, transpose_b=True)
+    logits = tf.matmul(intermediate,
+                       input_embedding.embeddings,
+                       transpose_b=True)
 
     keras_model = tf.keras.Model(inputs=inputs, outputs=logits)
     print(keras_model.summary())

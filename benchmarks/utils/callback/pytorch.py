@@ -21,6 +21,7 @@ def polynomial_lr_lambda(current_step: int, lr_init: float, lr_end: float,
 
 
 class CentralLRDecay(TrainingProcessCallback):
+
     def __init__(self,
                  init_learning_rate: float,
                  end_learning_rate: float,

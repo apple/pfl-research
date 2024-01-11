@@ -90,6 +90,7 @@ jobs:
             pip install poetry
             poetry install -E tf --no-root || true
             echo 'export PYTHONPATH=.' >> $BASH_ENV
+            poetry run pytest test/ --durations 0 -n0
             echo 1
             poetry run pytest test/dataset/cifar10 --durations 0
             echo 2

@@ -26,10 +26,6 @@ commands:
   benchmark_install_steps:
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - benchmark-dependencies-full-{{ checksum "benchmarks/poetry.lock" }}
-            - benchmark-dependencies-full-
       - run:
           name: Install dependencies
           command: |
@@ -37,10 +33,6 @@ commands:
             pip install poetry
             poetry install -E tf -E pytorch --no-root || true
             echo 'export PYTHONPATH=.' >> $BASH_ENV
-      - save_cache:
-          paths:
-            - "~/.cache/pypoetry/virtualenvs"
-          key: benchmark-dependencies-full-{{ checksum "benchmarks/poetry.lock" }}
 
 jobs:
   code-quality:
@@ -86,7 +78,7 @@ jobs:
           name: "Test with PyTorch"
           command: poetry run tox -e 'py310-test-pytorch'
 
-  test-benchmarks-tf:
+  test-benchmarks:
     executor: linux-python
     steps:
       - benchmark_install_steps
@@ -145,12 +137,12 @@ jobs:
 workflows:
   build_and_test:
     jobs:
-      #- code-quality
-      #- build-documentation-wheel
-      #- test-tf
-      #- test-pytorch
-      - test-benchmarks-tf
-      #- check-run-cifar10
+      - code-quality
+      - build-documentation-wheel
+      - test-tf
+      - test-pytorch
+      - test-benchmarks
+      - check-run-cifar10
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))
       #- build-images:

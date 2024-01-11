@@ -81,30 +81,24 @@ jobs:
   test-benchmarks-tf:
     executor: linux-python
     steps:
-      #- benchmark_install_steps
-      - checkout
+      - benchmark_install_steps
       - run:
           name: "Run tests in benchmarks"
           command: |
             cd benchmarks
-            pip install poetry
-            poetry install -E tf --no-root || true
-            echo 'export PYTHONPATH=.' >> $BASH_ENV
-            poetry run pytest test/ --durations 0 -n0
+            poetry run pytest test/dataset/stackoverflow --durations 0 -n0
             echo 1
             poetry run pytest test/dataset/cifar10 --durations 0
             echo 2
-            poetry run pytest test/dataset/stackoverflow/test_stackoverflow.py --durations 0
-            echo 3
-            poetry run pytest test/dataset/stackoverflow/test_download_preprocess.py --durations 0
-            echo 34
-            poetry run pytest test/ --durations 0 -k "not test/model"
-            echo 4
             poetry run pytest test/model/numpy --durations 0
             echo 5
             poetry run pytest test/model/pytorch/test_dnn.py --durations 0
             echo 6
             poetry run pytest test/model --durations 0
+            echo 35
+            poetry run pytest test/ --durations 0 -k "not stackoverflow"
+            echo 4
+            poetry run pytest test/dataset/stackoverflow/test_stackoverflow.py --durations 0
 
   check-run-cifar10:
     executor: linux-python

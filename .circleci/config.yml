@@ -78,10 +78,15 @@ jobs:
           name: "Test with PyTorch"
           command: poetry run tox -e 'py310-test-pytorch'
 
-  test-benchmarks:
+  test-benchmarks-tf:
     executor: linux-python
     steps:
       - benchmark_install_steps
+      - run:
+          name: "Only keep TF installed"
+          command: |
+            cd benchmarks
+            poetry install -E tf --no-root || true
       - run:
           name: "Run tests in benchmarks"
           command: |
@@ -141,7 +146,7 @@ workflows:
       - build-documentation-wheel
       - test-tf
       - test-pytorch
-      - test-benchmarks
+      - test-benchmarks-tf
       - check-run-cifar10
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))

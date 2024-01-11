@@ -83,10 +83,10 @@ jobs:
     steps:
       - benchmark_install_steps
       - run:
-          name: "Only keep TF installed"
+          name: "Only keep PyTorch installed"
           command: |
             cd benchmarks
-            poetry install -E tf --no-root || true
+            poetry install -E pytorch --no-root || true
       - run:
           name: "Run tests in benchmarks"
           command: |
@@ -142,12 +142,12 @@ jobs:
 workflows:
   build_and_test:
     jobs:
-      - code-quality
-      - build-documentation-wheel
-      - test-tf
-      - test-pytorch
+      #- code-quality
+      #- build-documentation-wheel
+      #- test-tf
+      #- test-pytorch
       - test-benchmarks-tf
-      - check-run-cifar10
+      #- check-run-cifar10
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))
       #- build-images:

@@ -30,6 +30,8 @@ class LMTransformer(LMBase):
         self._transformer_encoder = nn.TransformerEncoder(
             encoder_layers, num_transformer_layers)
 
+        self._proj_in: torch.nn.Module
+        self._proj_out: torch.nn.Module
         if embedding_size != hidden_size:
             self._proj_in = nn.Linear(embedding_size, hidden_size)
             self._proj_out = nn.Linear(hidden_size, embedding_size)

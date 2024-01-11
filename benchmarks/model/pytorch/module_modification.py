@@ -19,8 +19,11 @@ def _replace_child(root: nn.Module, child_name: str,
     parent = root
     nameList = child_name.split(".")
     for name in nameList[:-1]:
-        parent = parent._modules[name]
+        new_parent = parent._modules[name]
+        assert new_parent is not None
+        parent = new_parent
     # set to identity
+    assert parent is not None
     parent._modules[nameList[-1]] = converter(parent._modules[nameList[-1]])
 
 

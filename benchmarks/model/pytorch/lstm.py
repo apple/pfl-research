@@ -88,6 +88,7 @@ class LMLSTM(LMBase):
                 nn.LSTM(input_size, num_cell_states, batch_first=True))
             input_size = num_cell_states
 
+        self._intermediate: torch.nn.Module
         if input_size != embedding_size:
             self._intermediate = nn.Linear(input_size, embedding_size)
         else:

@@ -42,8 +42,8 @@ def load_user_metadata_and_label_counters(
     with open(labels_file) as f:
         metadata_list = json.load(f)
 
-    label_counter = Counter()
-    fine_grained_label_counter = Counter()
+    label_counter: Counter = Counter()
+    fine_grained_label_counter: Counter = Counter()
     for metadata in metadata_list:
         user_metadata[metadata["user_id"]].append(metadata)
         label_counter.update(metadata["labels"])
@@ -166,9 +166,9 @@ def preprocess_central_dataset(image_dir: str, labels_file: str,
     Same parameters as `preprocess_federated_dataset`.
     """
     logger.info('Preprocessing central dataset.')
-    user_metadata = load_user_metadata(labels_file)
-    label_counter = Counter()
-    fine_grained_label_counter = Counter()
+    (user_metadata, _, _) = load_user_metadata_and_label_counters(labels_file)
+    label_counter: Counter = Counter()
+    fine_grained_label_counter: Counter = Counter()
     with h5py.File(output_file, 'w') as h5file:
         # Iterate through users of each partition.
         for i, user_id in enumerate(user_metadata):

@@ -55,4 +55,4 @@ name = "PyPI"
 priority = "primary"
 
 [tool.mypy]
-disable_error_code = "import,arg-type,operator,assignment,name-defined,var-annotated,index,call-overload,list-item"
+disable_error_code = "import,union-attr,index,attr-defined,arg-type"

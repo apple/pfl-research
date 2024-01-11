@@ -145,7 +145,7 @@ def make_central_dataset(hdf5_path: str, partition: str,
         StackOverflow HDF5 data file. This ``Dataset`` can be used for
         central evaluation with ``CentralEvaluationCallback``.
     """
-    inputs_all, targets_all = [], []
+    inputs_all_list, targets_all_list = [], []
     users = get_fraction_of_users(hdf5_path, partition, data_fraction)
 
     with h5py.File(hdf5_path, 'r') as h5:
@@ -153,10 +153,10 @@ def make_central_dataset(hdf5_path: str, partition: str,
             inputs = np.array(h5[f'{partition}/{user_id}/inputs'])
             targets = np.array(h5[f'{partition}/{user_id}/targets'])
             # Fast way of concatenating the user datasets.
-            inputs_all.extend(inputs.tolist())
-            targets_all.extend(targets.tolist())
-        inputs_all, targets_all = (np.array(inputs_all, dtype=np.int32),
-                                   np.array(targets_all, dtype=np.int32))
+            inputs_all_list.extend(inputs.tolist())
+            targets_all_list.extend(targets.tolist())
+        inputs_all, targets_all = (np.array(inputs_all_list, dtype=np.int32),
+                                   np.array(targets_all_list, dtype=np.int32))
     return Dataset(raw_data=[inputs_all, targets_all],
                    eval_kwargs={"eval": True})
 

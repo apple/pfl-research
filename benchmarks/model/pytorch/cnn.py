@@ -222,6 +222,8 @@ def simple_cnn(input_shape: Tuple[int, ...], num_outputs: int) -> nn.Module:
         if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
             torch.nn.init.xavier_uniform_(m.weight)
 
-    model.loss = types.MethodType(image_classification_loss, model)
-    model.metrics = types.MethodType(image_classification_metrics, model)
+    model.loss = types.MethodType(image_classification_loss,
+                                  model)  # type: ignore
+    model.metrics = types.MethodType(image_classification_metrics,
+                                     model)  # type: ignore
     return model

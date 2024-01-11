@@ -91,7 +91,8 @@ jobs:
           name: "Run tests in benchmarks"
           command: |
             cd benchmarks
-            poetry run pytest test/ --durations 0
+            poetry run pip install pytest-forked
+            poetry run pytest test/ --durations 0 --forked
 
   check-run-cifar10:
     executor: linux-python

@@ -26,6 +26,10 @@ commands:
   benchmark_install_steps:
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - benchmark-dependencies-full-{{ checksum "benchmarks/poetry.lock" }}
+            - benchmark-dependencies-full-
       - run:
           name: Install dependencies
           command: |
@@ -33,6 +37,10 @@ commands:
             pip install poetry
             poetry install -E tf -E pytorch --no-root || true
             echo 'export PYTHONPATH=.' >> $BASH_ENV
+      - save_cache:
+          paths:
+            - "~/.cache/pypoetry/virtualenvs"
+          key: benchmark-dependencies-full-{{ checksum "benchmarks/poetry.lock" }}
 
 jobs:
   code-quality:
@@ -86,6 +94,7 @@ jobs:
           name: "Run tests in benchmarks"
           command: |
             cd benchmarks
+            poetry run pip uninstall -y tensorflow
             poetry run pytest test/dataset/stackoverflow --durations 0 -n0
             echo 1
             poetry run pytest test/dataset/cifar10 --durations 0

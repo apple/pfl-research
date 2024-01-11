@@ -32,6 +32,7 @@ commands:
             cd benchmarks
             pip install poetry
             poetry install -E tf -E pytorch --no-root || true
+            echo 'export PYTHONPATH=.' >> $BASH_ENV
 
 jobs:
   code-quality:
@@ -93,14 +94,14 @@ jobs:
           name: "(PyTorch) run a few iterations of training"
           command: |
             cd benchmarks
-            PYTHONPATH=. python image_classification/pytorch/train.py \
+            poetry run python image_classification/pytorch/train.py \
               --args_config image_classification/configs/baseline.yaml \
               --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
       - run:
           name: "(TF) run a few iterations of training"
           command: |
             cd benchmarks
-            PYTHONPATH=. python image_classification/tf/train.py \
+            poetry run python image_classification/tf/train.py \
               --args_config image_classification/configs/baseline.yaml \
               --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
 

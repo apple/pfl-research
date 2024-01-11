@@ -84,21 +84,25 @@ jobs:
       - run:
           name: "Download data"
           command: |
-            mkdir -p ./data/cifar10
+            mkdir -p ./benchmarks/data/cifar10
             curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_train.p \
-              -o ./data/cifar10/cifar10_train.p
+              -o ./benchmarks/data/cifar10/cifar10_train.p
             curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_test.p \
-              -o ./data/cifar10/cifar10_test.p
+              -o ./benchmarks/data/cifar10/cifar10_test.p
       - run:
           name: "(PyTorch) run a few iterations of training"
-          command: PYTHONPATH=. python image_classification/pytorch/train.py \
-            --args_config image_classification/configs/baseline.yaml \
-            --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+          command: |
+            cd benchmarks
+            PYTHONPATH=. python image_classification/pytorch/train.py \
+              --args_config image_classification/configs/baseline.yaml \
+              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
       - run:
           name: "(TF) run a few iterations of training"
-          command: PYTHONPATH=. python image_classification/tf/train.py \
-            --args_config image_classification/configs/baseline.yaml \
-            --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+          command: |
+            cd benchmarks
+            PYTHONPATH=. python image_classification/tf/train.py \
+              --args_config image_classification/configs/baseline.yaml \
+              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
 
   publish-wheel:
     executor: linux-python

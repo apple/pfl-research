@@ -17,11 +17,12 @@ class PositionalEmbedding(tf.keras.layers.Layer):
                  max_sequence_length: int):
         super().__init__()
         self.embedding_size = embedding_size
-        self.embedding = tf.keras.layers.Embedding(
-            vocab_size, embedding_size, mask_zero=True)
+        self.embedding = tf.keras.layers.Embedding(vocab_size,
+                                                   embedding_size,
+                                                   mask_zero=True)
         self.pos_encoding = tf.convert_to_tensor(
-            positional_encoding(
-                length=max_sequence_length, depth=embedding_size))
+            positional_encoding(length=max_sequence_length,
+                                depth=embedding_size))
 
     def compute_mask(self, *args, **kwargs):
         return self.embedding.compute_mask(*args, **kwargs)

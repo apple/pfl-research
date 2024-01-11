@@ -48,6 +48,6 @@ def simple_dnn(input_shape: Tuple[int, ...], num_outputs: int) -> nn.Module:
     McMahan et al. 2017 https://arxiv.org/pdf/1602.05629.pdf.
     See ``dnn`` for description about parameters.
     """
-    return functools.partial(
-        dnn, hidden_dims=[200, 200])(
-            input_shape, num_outputs=num_outputs)
+    return functools.partial(dnn, hidden_dims=[200,
+                                               200])(input_shape,
+                                                     num_outputs=num_outputs)

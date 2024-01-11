@@ -53,18 +53,18 @@ def lm_transformer(embedding_size: int,
     intermediate = tf.keras.layers.Dropout(dropout_rate)(intermediate)
 
     for _ in range(num_transformer_layers):
-        encoder_layer = CausalEncoderLayer(
-            hidden_size=hidden_size,
-            num_heads=num_heads,
-            feedforward_size=feedforward_size,
-            dropout_rate=dropout_rate)
+        encoder_layer = CausalEncoderLayer(hidden_size=hidden_size,
+                                           num_heads=num_heads,
+                                           feedforward_size=feedforward_size,
+                                           dropout_rate=dropout_rate)
         intermediate = encoder_layer(intermediate)
     # Dense layer changes dimension from rnn_layer_size to input_embedding_size
     if embedding_size != hidden_size:
         intermediate = tf.keras.layers.Dense(embedding_size)(intermediate)
 
-    logits = tf.matmul(
-        intermediate, input_embedding.embedding.embeddings, transpose_b=True)
+    logits = tf.matmul(intermediate,
+                       input_embedding.embedding.embeddings,
+                       transpose_b=True)
 
     keras_model = tf.keras.Model(inputs=inputs, outputs=logits)
     print(keras_model.summary())

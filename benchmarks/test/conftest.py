@@ -5,11 +5,10 @@ import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        '--macos',
-        action='store_true',
-        default=False,
-        help='run tests that require MacOS')
+    parser.addoption('--macos',
+                     action='store_true',
+                     default=False,
+                     help='run tests that require MacOS')
 
 
 def pytest_collection_modifyitems(config, items):

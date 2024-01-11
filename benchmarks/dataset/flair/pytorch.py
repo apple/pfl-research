@@ -75,5 +75,6 @@ def make_federated_dataset(hdf5_path: str, partition: str,
     sampler = get_user_sampler('random', user_ids)
     flair_dataset = FLAIRDataset(hdf5_path, user_ids, partition, num_classes,
                                  use_fine_grained_labels, max_num_user_images)
-    return PyTorchFederatedDataset(
-        flair_dataset, sampler, user_id_to_weight=user_num_images)
+    return PyTorchFederatedDataset(flair_dataset,
+                                   sampler,
+                                   user_id_to_weight=user_num_images)

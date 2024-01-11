@@ -67,14 +67,13 @@ def make_federated_dataset(
     dataset = _PTDatasetWrap(hdf5_path, partition, max_user_sentences,
                              user_ids)
     sampler = get_user_sampler('random', user_ids)
-    return PyTorchFederatedDataset(
-        dataset,
-        sampler,
-        user_id_to_weight=user_id_to_weight,
-        num_workers=4,
-        pin_memory=True,
-        prefetch_factor=4,
-        persistent_workers=False)
+    return PyTorchFederatedDataset(dataset,
+                                   sampler,
+                                   user_id_to_weight=user_id_to_weight,
+                                   num_workers=4,
+                                   pin_memory=True,
+                                   prefetch_factor=4,
+                                   persistent_workers=False)
 
 
 def make_central_dataset(hdf5_path: str, partition: str,
@@ -106,12 +105,12 @@ def make_central_dataset(hdf5_path: str, partition: str,
 
 
 def make_stackoverflow_datasets(
-        data_path: str,
-        max_user_sentences: int = 1000,
-        data_fraction: float = 1.0,
-        central_data_fraction: float = 0.01,
-) -> Tuple[PyTorchFederatedDataset, PyTorchFederatedDataset, Dataset,
-           Dict[str, Any]]:
+    data_path: str,
+    max_user_sentences: int = 1000,
+    data_fraction: float = 1.0,
+    central_data_fraction: float = 0.01,
+) -> Tuple[PyTorchFederatedDataset, PyTorchFederatedDataset, Dataset, Dict[
+        str, Any]]:
     """
     Create a train and test ``PyTorchFederatedDataset`` as well as a
     central dataset for StackOverflow dataset.

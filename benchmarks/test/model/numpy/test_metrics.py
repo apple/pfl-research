@@ -57,10 +57,10 @@ def _get_sklearn_auc(auc_type):
 
 def _get_keras_auc(auc_type, multi_label):
     from tensorflow.keras.metrics import AUC as KerasAUC  # type: ignore
-    keras_roc_auc = lambda multi_label: KerasAUC(
-        multi_label=multi_label, curve="roc")
-    keras_pr_auc = lambda multi_label: KerasAUC(
-        multi_label=multi_label, curve="pr")
+    keras_roc_auc = lambda multi_label: KerasAUC(multi_label=multi_label,
+                                                 curve="roc")
+    keras_pr_auc = lambda multi_label: KerasAUC(multi_label=multi_label,
+                                                curve="pr")
 
     if auc_type == "roc":
         return keras_roc_auc(multi_label)
@@ -71,6 +71,7 @@ def _get_keras_auc(auc_type, multi_label):
 
 
 class TestAUC:
+
     @pytest.mark.parametrize('auc_type', ["roc", "pr", "ap"])
     @pytest.mark.parametrize('multi_label', [True, False])
     def test_auc_aggregation(self, auc_type, multi_label):
@@ -82,8 +83,9 @@ class TestAUC:
         for _ in range(num_workers):
             y_score = _get_random_probabilities()
             y_true = np.round(_get_random_probabilities()).astype(int)
-            worker_auc = _get_bucket_auc(auc_type)(
-                y_true=y_true, y_pred=y_score, multi_label=multi_label)
+            worker_auc = _get_bucket_auc(auc_type)(y_true=y_true,
+                                                   y_pred=y_score,
+                                                   multi_label=multi_label)
             if aggregated_auc is None:
                 aggregated_auc = worker_auc
             else:
@@ -120,10 +122,9 @@ class TestAUC:
                     y_true=y_true,
                     y_score=y_score,
                     average="macro" if multi_label else "micro")
-                assert np.isclose(
-                    bucket_value, sklearn_value, atol=5e-3), (
-                        f"Our {auc_type} AUC value: {bucket_value},"
-                        f" sklearn {auc_type} AUC value: {sklearn_value}")
+                assert np.isclose(bucket_value, sklearn_value, atol=5e-3), (
+                    f"Our {auc_type} AUC value: {bucket_value},"
+                    f" sklearn {auc_type} AUC value: {sklearn_value}")
 
     @pytest.mark.skipif(get_tf_major_version() < 2, reason='not tf>=2')
     @pytest.mark.parametrize('auc_type', ["roc", "pr"])

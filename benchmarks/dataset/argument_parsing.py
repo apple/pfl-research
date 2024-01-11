@@ -18,21 +18,20 @@ def add_dataset_arguments(
     arguments depending on the dataset specified in ``dataset``.
     """
 
-    parser.add_argument(
-        '--dataset',
-        choices=[
-            'cifar10', 'cifar10_iid', 'femnist', 'femnist_digits', 'reddit',
-            'flair', 'flair_iid', 'flair_pytorch', 'stackoverflow'
-        ],
-        default='cifar10',
-        help='Which dataset to train on')
+    parser.add_argument('--dataset',
+                        choices=[
+                            'cifar10', 'cifar10_iid', 'femnist',
+                            'femnist_digits', 'reddit', 'flair', 'flair_iid',
+                            'flair_pytorch', 'stackoverflow'
+                        ],
+                        default='cifar10',
+                        help='Which dataset to train on')
 
-    parser.add_argument(
-        '--minimum_num_datapoints_per_user',
-        type=int,
-        default=1,
-        help='The minimum number of samples that allows a'
-        'simulated user to participate.')
+    parser.add_argument('--minimum_num_datapoints_per_user',
+                        type=int,
+                        default=1,
+                        help='The minimum number of samples that allows a'
+                        'simulated user to participate.')
 
     # Get the value of `dataset` argument and dynamically add
     # arguments depending on which dataset is chosen.
@@ -51,11 +50,10 @@ def add_dataset_arguments(
             help='Alpha for Dir(alpha) non-iid class partitioning, '
             'not used for cifar10_iid')
     elif known_args.dataset in {'reddit', 'stackoverflow'}:
-        parser.add_argument(
-            "--data_fraction",
-            type=float,
-            default=1.0,
-            help='Fraction of total dataset to use.')
+        parser.add_argument("--data_fraction",
+                            type=float,
+                            default=1.0,
+                            help='Fraction of total dataset to use.')
 
         parser.add_argument(
             "--central_data_fraction",
@@ -78,17 +76,15 @@ def add_dataset_arguments(
     elif known_args.dataset in ['flair', 'flair_iid', 'flair_pytorch']:
         parser = add_artificial_fed_dataset_arguments(parser)
 
-        parser.add_argument(
-            '--use_fine_grained_labels',
-            action=store_bool,
-            default=False,
-            help='Whether to use fine-grained label taxonomy.')
+        parser.add_argument('--use_fine_grained_labels',
+                            action=store_bool,
+                            default=False,
+                            help='Whether to use fine-grained label taxonomy.')
 
-        parser.add_argument(
-            '--max_num_user_images',
-            type=int,
-            default=100,
-            help='Maximum number of images per user')
+        parser.add_argument('--max_num_user_images',
+                            type=int,
+                            default=100,
+                            help='Maximum number of images per user')
 
     return parser
 
@@ -100,19 +96,17 @@ def add_artificial_fed_dataset_arguments(
     ``ArtificialFederatedDataset``, e.g. for CIFAR10.
     """
 
-    parser.add_argument(
-        '--datapoints_per_user_distribution',
-        choices=['constant', 'poisson'],
-        default='constant',
-        help='Distribution of the number of samples that '
-        'simulated users have to train on.')
+    parser.add_argument('--datapoints_per_user_distribution',
+                        choices=['constant', 'poisson'],
+                        default='constant',
+                        help='Distribution of the number of samples that '
+                        'simulated users have to train on.')
 
-    parser.add_argument(
-        '--mean_datapoints_per_user',
-        type=float,
-        default=50,
-        help='Mean parameter for the number of samples that '
-        'the simulated users have to train on.')
+    parser.add_argument('--mean_datapoints_per_user',
+                        type=float,
+                        default=50,
+                        help='Mean parameter for the number of samples that '
+                        'the simulated users have to train on.')
 
     return parser
 
@@ -155,9 +149,10 @@ def parse_draw_num_datapoints_per_user(
     return draw_num_datapoints_per_user
 
 
-def get_datasets(args: argparse.Namespace
-                 ) -> Tuple[FederatedDatasetBase, FederatedDatasetBase,
-                            Dataset, Dict[str, Any]]:
+def get_datasets(
+    args: argparse.Namespace
+) -> Tuple[FederatedDatasetBase, FederatedDatasetBase, Dataset, Dict[str,
+                                                                     Any]]:
     """
     Create a federated dataset for training, a federated dataset for evalution
     and a central dataset for central evaluation.
@@ -186,9 +181,10 @@ def get_datasets(args: argparse.Namespace
             args.minimum_num_datapoints_per_user)
 
         if args.dataset == 'cifar10':
-            datasets = cifar10.make_cifar10_datasets(
-                args.data_path, user_dataset_len_sampler, numpy_to_tensor,
-                args.partition_alpha)
+            datasets = cifar10.make_cifar10_datasets(args.data_path,
+                                                     user_dataset_len_sampler,
+                                                     numpy_to_tensor,
+                                                     args.partition_alpha)
         elif args.dataset == 'cifar10_iid':
             datasets = cifar10.make_cifar10_iid_datasets(
                 args.data_path, user_dataset_len_sampler, numpy_to_tensor)

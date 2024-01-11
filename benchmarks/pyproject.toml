@@ -42,9 +42,7 @@ pytest-lazy-fixture = "^0.6.3"
 mypy = "1.5"
 ruff = "0.0.290"
 scikit-learn = "^1.0.2"
-# TODO: upgrade yapf in future PR
-#yapf = "^0.40.1"
-yapf = "^0.26.0"
+yapf = "^0.40.1"
 
 # TODO: these pytorch sources are only needed while pfl is installed from github address.
 [[tool.poetry.source]]

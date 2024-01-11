@@ -12,11 +12,10 @@ def add_lm_arguments(argument_parser):
     argument_parser = add_dnn_training_arguments(argument_parser)
     argument_parser = add_mechanism_arguments(argument_parser)
 
-    argument_parser.add_argument(
-        '--central_optimizer',
-        choices=['sgd', 'adam'],
-        default='sgd',
-        help='Optimizer for central updates')
+    argument_parser.add_argument('--central_optimizer',
+                                 choices=['sgd', 'adam'],
+                                 default='sgd',
+                                 help='Optimizer for central updates')
 
     known_args, _ = argument_parser.parse_known_args()
     if known_args.central_optimizer == 'adam':
@@ -26,11 +25,10 @@ def add_lm_arguments(argument_parser):
             default=0.01,
             help='Degree of adaptivity (eps) in adaptive server optimizer.')
 
-    argument_parser.add_argument(
-        '--local_lr_decay',
-        action=store_bool,
-        default=False,
-        help='Use linear local learning rate decay')
+    argument_parser.add_argument('--local_lr_decay',
+                                 action=store_bool,
+                                 default=False,
+                                 help='Use linear local learning rate decay')
 
     argument_parser.add_argument(
         '--central_lr_num_warmup_iterations',

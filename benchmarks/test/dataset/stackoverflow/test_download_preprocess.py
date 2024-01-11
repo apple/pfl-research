@@ -17,6 +17,7 @@ if get_tf_major_version():
 
 @pytest.fixture
 def mock_tffdatas():
+
     def make_client(user_id):
         sentence_data = {'tokens': tf.constant("a b c")}
         # Number of mock sentences == user_id value
@@ -36,6 +37,7 @@ def mock_tffdatas():
 
 @pytest.fixture(autouse=True)
 def tff(mock_tffdatas):
+
     def mock_word_counts(vocab_size):
         # vocabulary is alphabet.
         return {chr(97 + i): i for i in range(vocab_size)}
@@ -54,6 +56,7 @@ def tff(mock_tffdatas):
 # Only run if TF2 is installed. Using tf.data.
 @pytest.mark.skipif(get_tf_major_version() < 2, reason='not tf>=2')
 class TestDownloadPreprocess:
+
     def test_get_vocabulary(self, tff):
         from dataset.stackoverflow.download_preprocess import get_vocabulary
 

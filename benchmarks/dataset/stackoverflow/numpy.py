@@ -52,8 +52,9 @@ def get_fraction_of_users(hdf5_path: str, partition: str,
 
         tokens_cumsum = np.cumsum(list(user_num_tokens.values()))
 
-    cutoff_index = np.searchsorted(
-        tokens_cumsum, tokens_cumsum[-1] * data_fraction, side='left')
+    cutoff_index = np.searchsorted(tokens_cumsum,
+                                   tokens_cumsum[-1] * data_fraction,
+                                   side='left')
     selected_users = users[:cutoff_index]
     print(
         f'Using {int(tokens_cumsum[cutoff_index-1])}/{int(tokens_cumsum[-1])}'
@@ -73,8 +74,8 @@ def make_tensors_fn(hdf5_path, partition, max_user_sentences, user_id):
     """
     with h5py.File(hdf5_path, 'r') as h5:
         inputs = np.array(h5[f'{partition}/{user_id}/inputs'], dtype=np.int32)
-        targets = np.array(
-            h5[f'{partition}/{user_id}/targets'], dtype=np.int32)
+        targets = np.array(h5[f'{partition}/{user_id}/targets'],
+                           dtype=np.int32)
         data_order = np.random.permutation(len(inputs))
         inputs = inputs[data_order][:max_user_sentences]
         targets = targets[data_order][:max_user_sentences]
@@ -84,10 +85,9 @@ def make_tensors_fn(hdf5_path, partition, max_user_sentences, user_id):
 def make_dataset_fn(hdf5_path, partition, max_user_sentences, user_id):
     tensors = make_tensors_fn(hdf5_path, partition, max_user_sentences,
                               user_id)
-    return Dataset(
-        raw_data=tensors,
-        train_kwargs={"eval": False},
-        eval_kwargs={"eval": True})
+    return Dataset(raw_data=tensors,
+                   train_kwargs={"eval": False},
+                   eval_kwargs={"eval": True})
 
 
 def make_federated_dataset(hdf5_path: str,
@@ -120,8 +120,9 @@ def make_federated_dataset(hdf5_path: str,
     make_dataset_fn_ = partial(make_dataset_fn, hdf5_path, partition,
                                max_user_sentences)
     sampler = get_user_sampler('random', user_ids)
-    return FederatedDataset(
-        make_dataset_fn_, sampler, user_id_to_weight=user_id_to_weight)
+    return FederatedDataset(make_dataset_fn_,
+                            sampler,
+                            user_id_to_weight=user_id_to_weight)
 
 
 def make_central_dataset(hdf5_path: str, partition: str,
@@ -156,15 +157,15 @@ def make_central_dataset(hdf5_path: str, partition: str,
             targets_all.extend(targets.tolist())
         inputs_all, targets_all = (np.array(inputs_all, dtype=np.int32),
                                    np.array(targets_all, dtype=np.int32))
-    return Dataset(
-        raw_data=[inputs_all, targets_all], eval_kwargs={"eval": True})
+    return Dataset(raw_data=[inputs_all, targets_all],
+                   eval_kwargs={"eval": True})
 
 
 def make_stackoverflow_datasets(
-        data_path: str,
-        max_user_sentences: int = 1000,
-        data_fraction: float = 1.0,
-        central_data_fraction: float = 0.01,
+    data_path: str,
+    max_user_sentences: int = 1000,
+    data_fraction: float = 1.0,
+    central_data_fraction: float = 0.01,
 ) -> Tuple[FederatedDataset, FederatedDataset, Dataset, Dict[str, Any]]:
     """
     Create a train and test ``FederatedDataset`` as well as a

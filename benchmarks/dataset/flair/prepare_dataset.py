@@ -88,8 +88,8 @@ def preprocess_federated_dataset(image_dir: str, labels_file: str,
     fine_grained_label_counter = Counter()
     with h5py.File(output_file, 'w') as h5file:
         # Iterate through users of each partition.
-        for i, user_id in tqdm.tqdm(
-                enumerate(user_metadata), total=len(user_metadata)):
+        for i, user_id in tqdm.tqdm(enumerate(user_metadata),
+                                    total=len(user_metadata)):
             # This snippet was used to generate flair_federated_small.h5
             #if i > len(user_metadata)*0.01:
             #    break
@@ -142,8 +142,8 @@ def preprocess_federated_dataset(image_dir: str, labels_file: str,
             h5file[f'/{partition}/{user_id}/image_ids'] = np.asarray(
                 image_id_array, dtype='S')
             # Tensor with dimensions [num_images,width,height,channels]
-            h5file.create_dataset(
-                f'/{partition}/{user_id}/images', data=np.stack(image_array))
+            h5file.create_dataset(f'/{partition}/{user_id}/images',
+                                  data=np.stack(image_array))
 
             if (i + 1) % LOG_INTERVAL == 0:
                 logger.info("Processed {0}/{1} users".format(
@@ -177,8 +177,8 @@ def preprocess_central_dataset(image_dir: str, labels_file: str,
                 image_id = metadata["image_id"]
                 image = Image.open(os.path.join(image_dir, f"{image_id}.jpg"))
                 partition = metadata["partition"]
-                h5file.create_dataset(
-                    f'/{partition}/{image_id}/image', data=np.asarray(image))
+                h5file.create_dataset(f'/{partition}/{image_id}/image',
+                                      data=np.asarray(image))
                 # Encode labels as a single string, separated by delimiter |
                 h5file[
                     f'/{partition}/{image_id}/labels'] = LABEL_DELIMITER.join(
@@ -204,10 +204,9 @@ def preprocess_central_dataset(image_dir: str, labels_file: str,
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        stream=sys.stdout,
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)s: %(message)s')
+    logging.basicConfig(stream=sys.stdout,
+                        level=logging.INFO,
+                        format='%(asctime)s %(levelname)s: %(message)s')
 
     argument_parser = argparse.ArgumentParser(
         description=
@@ -222,13 +221,12 @@ if __name__ == '__main__':
         required=True,
         help='Path to output HDF5 file that will be constructed by this script'
     )
-    argument_parser.add_argument(
-        '--not_group_data_by_user',
-        action='store_true',
-        default=False,
-        help='If true, do not group data by user IDs.'
-        'If false, group data by user IDs to '
-        'make suitable for federated learning.')
+    argument_parser.add_argument('--not_group_data_by_user',
+                                 action='store_true',
+                                 default=False,
+                                 help='If true, do not group data by user IDs.'
+                                 'If false, group data by user IDs to '
+                                 'make suitable for federated learning.')
     arguments = argument_parser.parse_args()
 
     image_dir = os.path.join(arguments.dataset_dir, "small_images")

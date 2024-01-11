@@ -49,6 +49,7 @@ def mock_endpoint():
 
 
 class TestDownloadPreprocess:
+
     def test_dl_preprocess_and_dump(self, mock_endpoint, tmp_path):
         dl_preprocess_and_dump(tmp_path)
         with open(os.path.join(tmp_path, 'cifar10_train.p'), 'rb') as f:

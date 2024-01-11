@@ -36,10 +36,10 @@ def h5_path(tmp_path):
             for user_id in range(1, 4):
                 features = np.zeros((3, 2)) + user_id + partition_ix
                 targets = np.zeros((3, 2)) + user_id * 10 + partition_ix
-                h5.create_dataset(
-                    f'/{partition}/{user_id}/inputs', data=features)
-                h5.create_dataset(
-                    f'/{partition}/{user_id}/targets', data=targets)
+                h5.create_dataset(f'/{partition}/{user_id}/inputs',
+                                  data=features)
+                h5.create_dataset(f'/{partition}/{user_id}/targets',
+                                  data=targets)
 
     yield h5_path
 
@@ -93,6 +93,7 @@ def _check_user_dataset(dataset, ix, partition_ix, expected_num_users):
 
 
 class TestStackOverflowNumpy:
+
     def test_get_metadata(self, h5_path):
         metadata = get_metadata(h5_path)
         assert metadata == {
@@ -103,8 +104,9 @@ class TestStackOverflowNumpy:
         }
 
     def test_get_fraction_of_users(self, h5_path):
-        users = get_fraction_of_users(
-            h5_path, partition='train', data_fraction=0.7)
+        users = get_fraction_of_users(h5_path,
+                                      partition='train',
+                                      data_fraction=0.7)
         assert users == ['1', '2']
 
     def test_get_user_weights(self, h5_path):
@@ -122,23 +124,22 @@ class TestStackOverflowNumpy:
         pytest.param(
             pytest.lazy_fixture('tf2_so_module'),
             marks=[
-                pytest.mark.skipif(
-                    get_tf_major_version() < 2, reason='not tf>=2'),
+                pytest.mark.skipif(get_tf_major_version() < 2,
+                                   reason='not tf>=2'),
                 # This test makes pytest get stuck when running in CI, only run
                 # on MacOs for now while rdar://107677363 is not fixed.
                 pytest.mark.macos
             ],
             id='tf_v2'),
-        pytest.param(
-            pytest.lazy_fixture('pytorch_so_module'),
-            marks=[
-                pytest.mark.skipif(
-                    not get_pytorch_major_version(),
-                    reason='PyTorch not installed'),
-            ],
-            id='pytorch'),
+        pytest.param(pytest.lazy_fixture('pytorch_so_module'),
+                     marks=[
+                         pytest.mark.skipif(not get_pytorch_major_version(),
+                                            reason='PyTorch not installed'),
+                     ],
+                     id='pytorch'),
     ])
 class TestStackOverflowAll:
+
     @pytest.mark.parametrize('data_fraction', [1.0, 0.7])
     @pytest.mark.parametrize('partition', ['train', 'val'])
     def test_make_federated_dataset(self, so_module, partition, data_fraction,
@@ -187,9 +188,13 @@ class TestStackOverflowAll:
         }
         for ix in range(3):
             user, _ = next(fed_train)
-            _check_user_dataset(
-                user, ix=0, partition_ix=0, expected_num_users=1)
+            _check_user_dataset(user,
+                                ix=0,
+                                partition_ix=0,
+                                expected_num_users=1)
         for ix in range(3):
             user, _ = next(fed_val)
-            _check_user_dataset(
-                user, ix=ix, partition_ix=1, expected_num_users=3)
+            _check_user_dataset(user,
+                                ix=ix,
+                                partition_ix=1,
+                                expected_num_users=3)

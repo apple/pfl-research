@@ -17,10 +17,12 @@ from pfl.privacy import CentrallyAppliedPrivacyMechanism
 from pfl.internal.ops.pytorch_ops import to_tensor
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_pytorch
-from utils.argument_parsing import (
-    add_algorithm_arguments, add_filepath_arguments, add_seed_arguments,
-    add_dnn_training_arguments, add_mechanism_arguments, get_algorithm,
-    parse_mechanism, maybe_inject_arguments_from_config)
+from utils.argument_parsing import (add_algorithm_arguments,
+                                    add_filepath_arguments, add_seed_arguments,
+                                    add_dnn_training_arguments,
+                                    add_mechanism_arguments, get_algorithm,
+                                    parse_mechanism,
+                                    maybe_inject_arguments_from_config)
 from utils.logging import init_logging
 
 
@@ -72,10 +74,10 @@ def main():
 
     params = [p for p in pytorch_model.parameters() if p.requires_grad]
 
-    model = PyTorchModel(
-        model=pytorch_model,
-        local_optimizer_create=torch.optim.SGD,
-        central_optimizer=torch.optim.SGD(params, arguments.learning_rate))
+    model = PyTorchModel(model=pytorch_model,
+                         local_optimizer_create=torch.optim.SGD,
+                         central_optimizer=torch.optim.SGD(
+                             params, arguments.learning_rate))
 
     weighting_strategy = WeightByDatapoints(
     ) if arguments.weight_by_samples else WeightByUser()
@@ -85,10 +87,9 @@ def main():
         CentrallyAppliedPrivacyMechanism(central_privacy)
     ]
 
-    backend = SimulatedBackend(
-        training_data=training_federated_dataset,
-        val_data=val_federated_dataset,
-        postprocessors=postprocessors)
+    backend = SimulatedBackend(training_data=training_federated_dataset,
+                               val_data=val_federated_dataset,
+                               postprocessors=postprocessors)
 
     algorithm, algorithm_params = get_algorithm(arguments)
 
@@ -112,18 +113,17 @@ def main():
         logger.info('Restored model from {}'.format(
             arguments.restore_model_path))
 
-    model = algorithm.run(
-        algorithm_params=algorithm_params,
-        backend=backend,
-        model=model,
-        model_train_params=model_train_params,
-        model_eval_params=model_eval_params,
-        callbacks=[
-            StopwatchCallback(),
-            central_evaluation_cb,
-            ModelCheckpointingCallback('./checkpoints'),
-            AggregateMetricsToDisk('./metrics.csv'),
-        ])
+    model = algorithm.run(algorithm_params=algorithm_params,
+                          backend=backend,
+                          model=model,
+                          model_train_params=model_train_params,
+                          model_eval_params=model_eval_params,
+                          callbacks=[
+                              StopwatchCallback(),
+                              central_evaluation_cb,
+                              ModelCheckpointingCallback('./checkpoints'),
+                              AggregateMetricsToDisk('./metrics.csv'),
+                          ])
 
 
 if __name__ == '__main__':

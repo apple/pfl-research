@@ -86,15 +86,12 @@ jobs:
           name: "Run tests in benchmarks"
           command: |
             cd benchmarks
-            poetry run pytest test/model/numpy --durations 0
+            poetry run pytest test/model --durations 0
             echo 1
-            poetry run pytest test/model/pytorch/test_cnn.py --durations 0
-            echo 2
-            poetry run pytest test/model/pytorch/test_dnn.py --durations 0
-            echo 3
-            poetry run pytest test/model/pytorch/test_lstm.py --durations 0
             poetry run pytest test/dataset/cifar10 --durations 0
+            echo 2
             poetry run pytest test/dataset/stackoverflow/test_stackoverflow.py --durations 0
+            echo 3
             poetry run pytest test/dataset/stackoverflow/test_download_preprocess.py --durations 0
 
   check-run-cifar10:

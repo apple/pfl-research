@@ -14,6 +14,7 @@ _PAD_SYMBOL = 0
 _UNK_SYMBOL = 1
 
 
+@pytest.mark.macos
 @pytest.mark.skipif(not get_pytorch_major_version(),
                     reason='PyTorch not installed')
 class TestPyTorchCNN:

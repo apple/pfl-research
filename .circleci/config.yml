@@ -82,6 +82,7 @@ jobs:
     executor: linux-python
     steps:
       #- benchmark_install_steps
+      - checkout
       - run:
           name: "Run tests in benchmarks"
           command: |
@@ -95,9 +96,13 @@ jobs:
             poetry run pytest test/dataset/stackoverflow/test_stackoverflow.py --durations 0
             echo 3
             poetry run pytest test/dataset/stackoverflow/test_download_preprocess.py --durations 0
+            echo 34
+            poetry run pytest test/ --durations 0 -k "not test/model"
             echo 4
             poetry run pytest test/model/numpy --durations 0
+            echo 5
             poetry run pytest test/model/pytorch/test_dnn.py --durations 0
+            echo 6
             poetry run pytest test/model --durations 0
 
   check-run-cifar10:

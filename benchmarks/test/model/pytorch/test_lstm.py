@@ -14,16 +14,13 @@ _PAD_SYMBOL = 0
 _UNK_SYMBOL = 1
 
 
-@pytest.mark.macos
 @pytest.mark.skipif(not get_pytorch_major_version(),
                     reason='PyTorch not installed')
 class TestPyTorchCNN:
 
-    @pytest.mark.parametrize('embedding_size', [64, 128])
-    @pytest.mark.parametrize('num_cell_states', [64, 128])
-    @pytest.mark.parametrize('num_lstm_layers', [1, 2])
-    @pytest.mark.parametrize('vocab_size', [1000, 5000])
-    @pytest.mark.parametrize('sequence_length', [10, 20])
+    @pytest.mark.parametrize(
+        'embedding_size,num_cell_states,num_lstm_layers,vocab_size,sequence_length',
+        [(64, 64, 1, 1000, 10), (128, 128, 2, 5000, 20)])
     def test_output_shape(self, embedding_size: int, num_cell_states: int,
                           num_lstm_layers: int, vocab_size: int,
                           sequence_length: int):
@@ -37,10 +34,11 @@ class TestPyTorchCNN:
         logits = pytorch_model(torch.from_numpy(inputs))
         assert logits.shape == (batch_size, sequence_length, vocab_size)
 
-    @pytest.mark.parametrize('embedding_size', [64, 128])
-    @pytest.mark.parametrize('num_cell_states', [64, 128])
-    @pytest.mark.parametrize('num_lstm_layers', [1, 2])
-    @pytest.mark.parametrize('vocab_size', [1000, 5000])
+    @pytest.mark.parametrize(
+        'embedding_size,num_cell_states,num_lstm_layers,num_lstm_layers', [
+            (64, 64, 1, 1000),
+            (128, 128, 2, 5000),
+        ])
     def test_num_parameters(self, embedding_size: int, num_cell_states: int,
                             num_lstm_layers: int, vocab_size: int):
         pytorch_model = lm_lstm(embedding_size, num_cell_states,

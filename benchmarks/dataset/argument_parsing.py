@@ -172,6 +172,8 @@ def get_datasets(
     # create federated training and val datasets from central training and val
     # data
     numpy_to_tensor = getattr(args, "numpy_to_tensor", lambda x: x)
+    datasets: Tuple[FederatedDatasetBase, FederatedDatasetBase, Dataset,
+                    Dict[str, Any]]
     if args.dataset.startswith('cifar10'):
 
         from . import cifar10

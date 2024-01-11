@@ -15,8 +15,8 @@ from .weighting import (WeightByTokens, WeightByCubeRootTokens,
 import numpy as np
 
 from pfl.aggregate.weighting import WeightByUser
-from pfl.algorithm import (NNAlgorithmParams, FederatedAveraging, FedProx,
-                           FedProxParams)
+from pfl.algorithm import (FederatedAlgorithm, NNAlgorithmParams,
+                           FederatedAveraging, FedProx, FedProxParams)
 from pfl.privacy import (CentrallyApplicablePrivacyMechanism,
                          CentrallyAppliedPrivacyMechanism, NoPrivacy,
                          GaussianMechanism, LaplaceMechanism,
@@ -470,6 +470,7 @@ def get_algorithm(args: argparse.Namespace):
     algorithm_name = args.algorithm_name.lower()
     logger.info(f'initializing algorithm {algorithm_name}')
 
+    algorithm: FederatedAlgorithm
     if algorithm_name == 'fedavg':
         algorithm_params = NNAlgorithmParams(
             central_num_iterations=args.central_num_iterations,

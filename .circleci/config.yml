@@ -83,15 +83,13 @@ jobs:
     steps:
       - benchmark_install_steps
       - run:
-          name: "Only keep PyTorch installed"
-          command: |
-            cd benchmarks
-            poetry install -E pytorch --no-root || true
-      - run:
           name: "Run tests in benchmarks"
           command: |
             cd benchmarks
-            poetry run pytest test/test_argument_parsing.py --durations 0
+            poetry run pytest test/model --durations 0
+            poetry run pytest test/dataset/cifar10 --durations 0
+            poetry run pytest test/dataset/stackoverflow/test_stackoverflow.py --durations 0
+            poetry run pytest test/dataset/stackoverflow/test_download_preprocess.py --durations 0
 
   check-run-cifar10:
     executor: linux-python

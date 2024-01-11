@@ -167,3 +167,5 @@ docs/build
 .DS_Store
 
 benchmarks/data
+benchmarks/checkpoints/
+benchmarks/metrics.csv

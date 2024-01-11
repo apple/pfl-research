@@ -23,6 +23,16 @@ commands:
           command: |
             pip install poetry
             poetry install --only dev -q || true
+  benchmark_install_steps:
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            cd benchmarks
+            pip install poetry
+            poetry install -E tf -E pytorch --no-root || true
+            echo 'export PYTHONPATH=.' >> $BASH_ENV
 
 jobs:
   code-quality:
@@ -68,6 +78,33 @@ jobs:
           name: "Test with PyTorch"
           command: poetry run tox -e 'py310-test-pytorch'
 
+  check-run-cifar10:
+    executor: linux-python
+    steps:
+      - benchmark_install_steps
+      - run:
+          name: "Download data"
+          command: |
+            mkdir -p ./benchmarks/data/cifar10
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_train.p \
+              -o ./benchmarks/data/cifar10/cifar10_train.p
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_test.p \
+              -o ./benchmarks/data/cifar10/cifar10_test.p
+      - run:
+          name: "(PyTorch) run a few iterations of training"
+          command: |
+            cd benchmarks
+            poetry run python image_classification/pytorch/train.py \
+              --args_config image_classification/configs/baseline.yaml \
+              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+      - run:
+          name: "(TF) run a few iterations of training"
+          command: |
+            cd benchmarks
+            poetry run python image_classification/tf/train.py \
+              --args_config image_classification/configs/baseline.yaml \
+              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+
   publish-wheel:
     executor: linux-python
     steps:
@@ -94,6 +131,7 @@ workflows:
       - build-documentation-wheel
       - test-tf
       - test-pytorch
+      - check-run-cifar10
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))
       #- build-images:
@@ -114,6 +152,8 @@ workflows:
           filters:
             branches:
               only: main
+
+
 
 
 

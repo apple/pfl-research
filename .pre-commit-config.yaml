@@ -36,7 +36,6 @@ repos:
       - id: yapf
         args:
           - --in-place
-        files: ^(pfl|tests)/
   # TODO: fix ruff errors and remove pylint, then enable this.
   # Style checks, common errors, etc.
   #- repo: https://github.com/charliermarsh/ruff-pre-commit

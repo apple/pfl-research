@@ -35,7 +35,7 @@ class TestPyTorchCNN:
         assert logits.shape == (batch_size, sequence_length, vocab_size)
 
     @pytest.mark.parametrize(
-        'embedding_size,num_cell_states,num_lstm_layers,num_lstm_layers', [
+        'embedding_size,num_cell_states,num_lstm_layers,vocab_size', [
             (64, 64, 1, 1000),
             (128, 128, 2, 5000),
         ])

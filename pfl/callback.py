@@ -954,22 +954,34 @@ class TrackBestOverallMetrics(TrainingProcessCallback):
     :param higher_is_better_metric_names:
         Same as ``lower_is_better_metric_names``, but for metrics where
         a higher value is better.
+    :param assert_metrics_found_within_frequency:
+        As a precaution, assert that all metrics referenced in
+        ``lower_is_better_metric_names`` and
+        ``higher_is_better_metric_names`` are found within this many
+        iterations. If you e.g. misspelled a metric name or put this
+        callback an order before the metric was generated, you will be
+        notified.
     """
 
-    def __init__(
-        self,
-        lower_is_better_metric_names: Optional[List[Union[
-            str, StringMetricName]]] = None,
-        higher_is_better_metric_names: Optional[List[Union[
-            str, StringMetricName]]] = None,
-    ):
+    def __init__(self,
+                 lower_is_better_metric_names: Optional[List[Union[
+                     str, StringMetricName]]] = None,
+                 higher_is_better_metric_names: Optional[List[Union[
+                     str, StringMetricName]]] = None,
+                 assert_metrics_found_within_frequency: int = 25):
         self._lower_is_better_metric_names = lower_is_better_metric_names or []
         self._higher_is_better_metric_names = higher_is_better_metric_names or []
+        self._assert_metrics_found_within_frequency = assert_metrics_found_within_frequency
         self._init()
 
     def _init(self):
         self._best_lower_metrics: Dict = {}
         self._best_higher_metrics: Dict = {}
+        self._found_metric_at_iteration = {
+            k: 0
+            for k in self._lower_is_better_metric_names +
+            self._higher_is_better_metric_names
+        }
 
     def on_train_begin(self, *, model: ModelType) -> Metrics:
         self._init()
@@ -992,6 +1004,7 @@ class TrackBestOverallMetrics(TrainingProcessCallback):
                          (self._higher_is_better_metric_names, max)]:
             for k in metric_names:
                 if k in aggregate_metrics:
+                    self._found_metric_at_iteration[k] = central_iteration
                     new_value = get_overall_value(aggregate_metrics[k])
                     if k not in self._best_lower_metrics:
                         self._best_lower_metrics[k] = new_value
@@ -1002,6 +1015,16 @@ class TrackBestOverallMetrics(TrainingProcessCallback):
                     # as the underlying metric values are appearing.
                     best_overall_metrics[self._get_name_with_postfix(
                         k)] = self._best_lower_metrics[k]
+                else:
+                    if (central_iteration
+                            > self._found_metric_at_iteration[k] +
+                            self._assert_metrics_found_within_frequency):
+                        iterations_past = (central_iteration -
+                                           self._found_metric_at_iteration[k])
+                        raise ValueError(
+                            f"{k} has not been found in the past {iterations_past} "
+                            "iterations, check the name of the metric and the "
+                            "order of TrackBestOverallMetrics in callbacks.")
         return False, best_overall_metrics
 
 

@@ -720,6 +720,12 @@ class TestTrackBestOverallMetrics:
                 expected_best_acc,
             }
 
+        cb.after_central_iteration(Metrics(), mock_model, central_iteration=30)
+        with pytest.raises(ValueError):
+            cb.after_central_iteration(Metrics(),
+                                       mock_model,
+                                       central_iteration=31)
+
 
 class TestWandbCallback:
 

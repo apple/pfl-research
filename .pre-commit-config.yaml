@@ -47,8 +47,6 @@ repos:
     rev: v1.5.0
     hooks:
     - id: mypy
-      # TODO: rdar://120436473 (Fix style checks for benchmark dir)
-      files: ^(pfl|tests)/
   # TODO: license header hook
 
 

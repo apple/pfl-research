@@ -150,7 +150,7 @@ def make_central_datasets(hdf5_path: str, partition: str,
         with ``CentralEvaluationCallback``.
     """
     num_classes = len(get_label_mapping(hdf5_path, use_fine_grained_labels))
-    inputs_all, targets_all = [], []
+    inputs_all_list, targets_all_list = [], []
 
     with h5py.File(hdf5_path, 'r') as h5:
         for user_id in h5[f'/{partition}'].keys():
@@ -158,11 +158,11 @@ def make_central_datasets(hdf5_path: str, partition: str,
             targets_shape = (len(inputs), num_classes)
             targets = get_multi_hot_targets(targets_shape, h5, partition,
                                             user_id, use_fine_grained_labels)
-            inputs_all.append(inputs)
-            targets_all.append(targets)
+            inputs_all_list.append(inputs)
+            targets_all_list.append(targets)
 
-    inputs_all = np.vstack(inputs_all)
-    targets_all = np.vstack(targets_all)
+    inputs_all = np.vstack(inputs_all_list)
+    targets_all = np.vstack(targets_all_list)
     data_tensors = [inputs_all, targets_all]
     return Dataset(raw_data=data_tensors,
                    train_kwargs={"eval": False},

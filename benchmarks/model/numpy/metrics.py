@@ -123,14 +123,16 @@ class BucketConfusionMatrix:
         if multi_label:
             true_labels, false_labels = true_labels.T, false_labels.T
             bucket_indices = bucket_indices.T
-            tp_bucket_v = []
-            fp_bucket_v = []
+            tp_bucket_v_list = []
+            fp_bucket_v_list = []
             for true_label, false_label, bucket_index in zip(
                     true_labels, false_labels, bucket_indices):
-                tp_bucket_v.append(gather_bucket(true_label, bucket_index))
-                fp_bucket_v.append(gather_bucket(false_label, bucket_index))
-            tp_bucket_v = np.vstack(tp_bucket_v)
-            fp_bucket_v = np.vstack(fp_bucket_v)
+                tp_bucket_v_list.append(gather_bucket(true_label,
+                                                      bucket_index))
+                fp_bucket_v_list.append(
+                    gather_bucket(false_label, bucket_index))
+            tp_bucket_v = np.vstack(tp_bucket_v_list)
+            fp_bucket_v = np.vstack(fp_bucket_v_list)
             tp = np.cumsum(tp_bucket_v[:, ::-1], axis=1)[:, ::-1].T
             fp = np.cumsum(fp_bucket_v[:, ::-1], axis=1)[:, ::-1].T
             total_true_labels = np.sum(true_labels, axis=1)[None, :]

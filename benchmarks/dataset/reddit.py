@@ -189,7 +189,7 @@ def make_central_dataset(hdf5_path: str,
         HDF5 data file. This ``Dataset`` can be used for central evaluation
         with ``CentralEvaluationCallback``.
     """
-    inputs_all, targets_all, masks_all = [], [], []
+    inputs_all_list, targets_all_list, masks_all_list = [], [], []
     users = get_fraction_of_users(hdf5_path, partition, data_fraction)
 
     with h5py.File(hdf5_path, 'r') as h5:
@@ -198,12 +198,12 @@ def make_central_dataset(hdf5_path: str,
             targets = np.array(h5[f'{partition}/{user_id}/targets'])
             masks = (inputs != h5['metadata/pad_symbol']).astype(np.float32)
             # Fast way of concatenating the user datasets.
-            inputs_all.extend(inputs.tolist())
-            targets_all.extend(targets.tolist())
-            masks_all.extend(masks.tolist())
-        inputs_all, targets_all, masks_all = (np.array(inputs_all),
-                                              np.array(targets_all),
-                                              np.array(masks_all))
+            inputs_all_list.extend(inputs.tolist())
+            targets_all_list.extend(targets.tolist())
+            masks_all_list.extend(masks.tolist())
+        inputs_all, targets_all, masks_all = (np.array(inputs_all_list),
+                                              np.array(targets_all_list),
+                                              np.array(masks_all_list))
 
         inputs_all, targets_all, masks_all = _pad_batch(
             inputs_all, targets_all, masks_all, local_batch_size,

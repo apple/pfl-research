@@ -10,25 +10,28 @@ from .lstm import LMBase
 
 
 class LMTransformer(LMBase):
+
     def __init__(self, embedding_size: int, hidden_size: int, num_heads: int,
                  feedforward_size: int, num_transformer_layers: int,
                  dropout_rate: float, vocab_size: int,
                  max_sequence_length: int, pad_symbol: int, unk_symbol: int):
         super().__init__(pad_symbol, unk_symbol)
         self._embedding_size = embedding_size
-        self._embeddings = nn.Embedding(
-            vocab_size, embedding_size, padding_idx=pad_symbol)
+        self._embeddings = nn.Embedding(vocab_size,
+                                        embedding_size,
+                                        padding_idx=pad_symbol)
         self._positional_encoder = PositionalEncoding(embedding_size,
                                                       max_sequence_length)
-        encoder_layers = nn.TransformerEncoderLayer(
-            hidden_size,
-            num_heads,
-            feedforward_size,
-            dropout_rate,
-            batch_first=True)
+        encoder_layers = nn.TransformerEncoderLayer(hidden_size,
+                                                    num_heads,
+                                                    feedforward_size,
+                                                    dropout_rate,
+                                                    batch_first=True)
         self._transformer_encoder = nn.TransformerEncoder(
             encoder_layers, num_transformer_layers)
 
+        self._proj_in: torch.nn.Module
+        self._proj_out: torch.nn.Module
         if embedding_size != hidden_size:
             self._proj_in = nn.Linear(embedding_size, hidden_size)
             self._proj_out = nn.Linear(hidden_size, embedding_size)

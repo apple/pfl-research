@@ -10,6 +10,7 @@ from pfl.model.tensorflow import TFModel
 
 
 class LocalLRDecay(TrainingProcessCallback):
+
     def __init__(self, initial_learning_rate, central_num_iterations):
         # Linear warmup over 20 central iterations.
         self._num_warmup_iterations = 20
@@ -39,6 +40,7 @@ class LocalLRDecay(TrainingProcessCallback):
 
 
 class CentralLRDecay(TrainingProcessCallback):
+
     def __init__(self,
                  init_learning_rate: float,
                  end_learning_rate: float,

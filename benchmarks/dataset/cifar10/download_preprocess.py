@@ -38,8 +38,8 @@ def dl_preprocess_and_dump(output_dir: str):
         print(f'Found {tar_path} on disk, skip download')
 
     # Extract tar file.
-    subprocess.run(
-        f"tar -zxf {tar_path} -C {raw_output_dir}".split(), check=True)
+    subprocess.run(f"tar -zxf {tar_path} -C {raw_output_dir}".split(),
+                   check=True)
 
     # Merge all files into a pickle with train data and a pickle with test data.
     def merge_data_and_dump(data_paths, output_file_name):
@@ -52,15 +52,18 @@ def dl_preprocess_and_dump(output_dir: str):
                 labels.append(data[b'labels'])
         images = np.concatenate(images).reshape((-1, 32, 32, 3))
         labels = np.concatenate(labels).reshape((-1, 1))
+        # This snippet was used to generate cifar10 for ci
+        #images = images[:300]
+        #labels = labels[:300]
         out_file_path = os.path.join(output_dir, output_file_name)
         with open(out_file_path, 'wb') as f:
             pickle.dump((images, labels), f)
         print(f'Saved processed data to {out_file_path}')
 
-    merge_data_and_dump(
-        glob(raw_output_dir + '/**/data_batch*'), 'cifar10_train.p')
-    merge_data_and_dump(
-        glob(raw_output_dir + '/**/test_batch*'), 'cifar10_test.p')
+    merge_data_and_dump(glob(raw_output_dir + '/**/data_batch*'),
+                        'cifar10_train.p')
+    merge_data_and_dump(glob(raw_output_dir + '/**/test_batch*'),
+                        'cifar10_test.p')
 
 
 if __name__ == '__main__':

@@ -26,8 +26,8 @@ def dnn(input_shape: Tuple[int, ...], hidden_dims: Tuple[int, ...],
     """
 
     return tf.keras.models.Sequential([
-        tf.keras.layers.Reshape(
-            input_shape=input_shape, target_shape=(np.prod(input_shape), )),
+        tf.keras.layers.Reshape(input_shape=input_shape,
+                                target_shape=(np.prod(input_shape), )),
         *[
             tf.keras.layers.Dense(dim, activation=tf.nn.relu)
             for dim in hidden_dims
@@ -44,6 +44,6 @@ def simple_dnn(input_shape: Tuple[int, ...],
     McMahan et al. 2017 https://arxiv.org/pdf/1602.05629.pdf.
     See ``dnn`` for description about parameters.
     """
-    return functools.partial(
-        dnn, hidden_dims=[200, 200])(
-            input_shape, num_outputs=num_outputs)
+    return functools.partial(dnn, hidden_dims=[200,
+                                               200])(input_shape,
+                                                     num_outputs=num_outputs)

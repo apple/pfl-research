@@ -29,8 +29,8 @@ class _FrozenBatchNorm(_NormBase, ABC):
         else:
             exponential_average_factor = self.momentum
 
-        bn_training = (self.running_mean is None) and (self.running_var is
-                                                       None)
+        bn_training = (self.running_mean is None) and (self.running_var
+                                                       is None)
 
         return F.batch_norm(
             input,
@@ -47,6 +47,7 @@ class _FrozenBatchNorm(_NormBase, ABC):
 
 
 class FrozenBatchNorm1D(_FrozenBatchNorm):
+
     def _check_input_dim(self, input):
         if input.dim() != 2 and input.dim() != 3:
             raise ValueError('expected 2D or 3D input (got {}D input)'.format(
@@ -54,6 +55,7 @@ class FrozenBatchNorm1D(_FrozenBatchNorm):
 
 
 class FrozenBatchNorm2D(_FrozenBatchNorm):
+
     def _check_input_dim(self, input):
         if input.dim() != 4:
             raise ValueError('expected 4D input (got {}D input)'.format(
@@ -61,6 +63,7 @@ class FrozenBatchNorm2D(_FrozenBatchNorm):
 
 
 class FrozenBatchNorm3D(_FrozenBatchNorm):
+
     def _check_input_dim(self, input):
         if input.dim() != 5:
             raise ValueError('expected 5D input (got {}D input)'.format(
@@ -77,6 +80,7 @@ class Transpose2D(nn.Module):
 
 
 class PositionalEncoding(nn.Module):
+
     def __init__(self, embedding_size: int, max_sequence_length: int):
         super().__init__()
         pe = positional_encoding(max_sequence_length, embedding_size)

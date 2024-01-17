@@ -2,7 +2,7 @@
 
 # Copyright © 2023-2024 Apple Inc.
 
-from typing import Tuple
+from typing import List, Tuple
 import functools
 import types
 
@@ -30,14 +30,16 @@ def dnn(input_shape: Tuple[int, ...], hidden_dims: Tuple[int, ...],
     """
 
     in_features = int(np.prod(input_shape))
-    layers = [nn.Flatten()]
+    layers: List[nn.Module] = [nn.Flatten()]
     for dim in hidden_dims:
         layers.extend([nn.Linear(in_features, dim), nn.ReLU()])
         in_features = dim
     layers.append(nn.Linear(in_features, num_outputs))
     model = nn.Sequential(*layers)
-    model.loss = types.MethodType(image_classification_loss, model)
-    model.metrics = types.MethodType(image_classification_metrics, model)
+    model.loss = types.MethodType(image_classification_loss,
+                                  model)  # type: ignore
+    model.metrics = types.MethodType(image_classification_metrics,
+                                     model)  # type: ignore
     return model
 
 
@@ -48,6 +50,6 @@ def simple_dnn(input_shape: Tuple[int, ...], num_outputs: int) -> nn.Module:
     McMahan et al. 2017 https://arxiv.org/pdf/1602.05629.pdf.
     See ``dnn`` for description about parameters.
     """
-    return functools.partial(
-        dnn, hidden_dims=[200, 200])(
-            input_shape, num_outputs=num_outputs)
+    return functools.partial(dnn, hidden_dims=[200,
+                                               200])(input_shape,
+                                                     num_outputs=num_outputs)

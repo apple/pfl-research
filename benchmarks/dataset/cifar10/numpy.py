@@ -75,8 +75,9 @@ def make_iid_federated_dataset(
     images = numpy_to_tensor(images)
     labels = numpy_to_tensor(labels)
 
-    return ArtificialFederatedDataset.from_slices(
-        [images, labels], data_sampler, user_dataset_len_sampler)
+    return ArtificialFederatedDataset.from_slices([images, labels],
+                                                  data_sampler,
+                                                  user_dataset_len_sampler)
 
 
 def make_central_dataset(images: np.ndarray, labels: np.ndarray) -> Dataset:
@@ -89,10 +90,10 @@ def make_central_dataset(images: np.ndarray, labels: np.ndarray) -> Dataset:
 
 
 def make_cifar10_datasets(
-        data_dir: str,
-        user_dataset_len_sampler: Callable,
-        numpy_to_tensor: Callable,
-        alpha: float = 0.1,
+    data_dir: str,
+    user_dataset_len_sampler: Callable,
+    numpy_to_tensor: Callable,
+    alpha: float = 0.1,
 ) -> Tuple[FederatedDataset, FederatedDataset, Dataset, Dict[str, Any]]:
     """
     Create a train and val ``ArtificialFederatedDataset`` as well as a
@@ -121,8 +122,8 @@ def make_cifar10_datasets(
 
 
 def make_cifar10_iid_datasets(
-        data_dir: str, user_dataset_len_sampler: Callable,
-        numpy_to_tensor: Callable
+    data_dir: str, user_dataset_len_sampler: Callable,
+    numpy_to_tensor: Callable
 ) -> Tuple[ArtificialFederatedDataset, ArtificialFederatedDataset, Dataset,
            Dict[str, Any]]:
     """

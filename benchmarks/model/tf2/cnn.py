@@ -24,9 +24,10 @@ def simple_cnn(input_shape: Tuple[int, ...],
     """
 
     return tf.keras.models.Sequential([
-        Conv2D(
-            32, kernel_size=(3, 3), activation='relu',
-            input_shape=input_shape),
+        Conv2D(32,
+               kernel_size=(3, 3),
+               activation='relu',
+               input_shape=input_shape),
         Conv2D(64, kernel_size=(3, 3), activation='relu'),
         MaxPool2D(pool_size=(2, 2)),
         Dropout(0.25),
@@ -55,8 +56,11 @@ def _conv_norm(x, filters, kernel_size, weight_decay=1e-4, strides=(1, 1)):
     return layer
 
 
-def _conv_norm_relu(x, filters, kernel_size, weight_decay=1e-4, strides=(1,
-                                                                         1)):
+def _conv_norm_relu(x,
+                    filters,
+                    kernel_size,
+                    weight_decay=1e-4,
+                    strides=(1, 1)):
     layer = _conv_norm(x, filters, kernel_size, weight_decay, strides)
     layer = tf.nn.relu(layer)
     return layer

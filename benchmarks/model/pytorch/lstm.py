@@ -11,6 +11,7 @@ from model.numpy.metrics import Perplexity
 
 
 class LMBase(nn.Module):
+
     def __init__(self, pad_symbol: int, unk_symbol: int):
         super().__init__()
         self._pad_symbol = pad_symbol
@@ -21,10 +22,10 @@ class LMBase(nn.Module):
         inputs, targets = inputs.long(), targets.long()
         logits = self.forward(inputs)
         log_probs = F.log_softmax(logits, dim=-1)
-        loss_fct = torch.nn.NLLLoss(
-            reduction='sum', ignore_index=self._pad_symbol)
-        loss = loss_fct(
-            log_probs.reshape(-1, log_probs.shape[-1]), targets.reshape(-1))
+        loss_fct = torch.nn.NLLLoss(reduction='sum',
+                                    ignore_index=self._pad_symbol)
+        loss = loss_fct(log_probs.reshape(-1, log_probs.shape[-1]),
+                        targets.reshape(-1))
         num_tokens = torch.sum(targets != self._pad_symbol)
         return loss / num_tokens
 
@@ -34,8 +35,8 @@ class LMBase(nn.Module):
         inputs, targets = inputs.long(), targets.long()
         logits = self.forward(inputs)
         log_probs = F.log_softmax(logits, dim=-1)
-        loss_fct = torch.nn.NLLLoss(
-            reduction='none', ignore_index=self._pad_symbol)
+        loss_fct = torch.nn.NLLLoss(reduction='none',
+                                    ignore_index=self._pad_symbol)
 
         targets = targets.reshape(-1)
         loss = loss_fct(log_probs.reshape(-1, log_probs.shape[-1]), targets)
@@ -71,12 +72,14 @@ class LMBase(nn.Module):
 
 
 class LMLSTM(LMBase):
+
     def __init__(self, embedding_size: int, num_cell_states: int,
                  num_lstm_layers: int, vocab_size: int, pad_symbol: int,
                  unk_symbol: int):
         super().__init__(pad_symbol, unk_symbol)
-        self._embeddings = nn.Embedding(
-            vocab_size, embedding_size, padding_idx=pad_symbol)
+        self._embeddings = nn.Embedding(vocab_size,
+                                        embedding_size,
+                                        padding_idx=pad_symbol)
         self._lstms = nn.ModuleList()
 
         input_size = embedding_size
@@ -85,6 +88,7 @@ class LMLSTM(LMBase):
                 nn.LSTM(input_size, num_cell_states, batch_first=True))
             input_size = num_cell_states
 
+        self._intermediate: torch.nn.Module
         if input_size != embedding_size:
             self._intermediate = nn.Linear(input_size, embedding_size)
         else:

@@ -68,8 +68,9 @@ def get_fraction_of_users(hdf5_path: str, partition: str,
 
         tokens_cumsum = np.cumsum(list(user_num_tokens.values()))
 
-    cutoff_index = np.searchsorted(
-        tokens_cumsum, tokens_cumsum[-1] * data_fraction, side='left')
+    cutoff_index = np.searchsorted(tokens_cumsum,
+                                   tokens_cumsum[-1] * data_fraction,
+                                   side='left')
     selected_users = users[:cutoff_index]
     print(
         f'Using {int(tokens_cumsum[cutoff_index-1])}/{int(tokens_cumsum[-1])}'
@@ -121,12 +122,13 @@ def make_federated_dataset(
 
             if include_mask:
                 # Only TF1 needs a mask tensor and manual batch padding.
-                masks = (inputs != h5['metadata/pad_symbol']).astype(
-                    np.float32)
+                masks = (inputs
+                         != h5['metadata/pad_symbol']).astype(np.float32)
 
-                inputs, targets, masks = _pad_batch(
-                    inputs, targets, masks, local_batch_size, max_sequence_len,
-                    h5['metadata/pad_symbol'])
+                inputs, targets, masks = _pad_batch(inputs, targets, masks,
+                                                    local_batch_size,
+                                                    max_sequence_len,
+                                                    h5['metadata/pad_symbol'])
                 X_lengths = np.sum(masks, axis=1)
                 data_tensors = [inputs, targets, X_lengths, masks]
             else:
@@ -143,8 +145,9 @@ def make_federated_dataset(
         data_size = int(user_num_tokens[user_name] // max_sequence_len)
         for start_index in range(0, data_size, max_data_size):
             end_index = min(data_size + 1, start_index + max_data_size)
-            user_id = UserId(
-                name=user_name, start_index=start_index, end_index=end_index)
+            user_id = UserId(name=user_name,
+                             start_index=start_index,
+                             end_index=end_index)
             if (user_id.end_index -
                     user_id.start_index) >= minimum_num_datapoints_per_user:
                 user_ids.append(user_id)
@@ -154,8 +157,9 @@ def make_federated_dataset(
         u: u.end_index - u.start_index
         for i, u in enumerate(user_ids)
     }
-    return FederatedDataset(
-        make_dataset_fn, sampler, user_id_to_weight=user_id_to_weight)
+    return FederatedDataset(make_dataset_fn,
+                            sampler,
+                            user_id_to_weight=user_id_to_weight)
 
 
 def make_central_dataset(hdf5_path: str,
@@ -185,7 +189,7 @@ def make_central_dataset(hdf5_path: str,
         HDF5 data file. This ``Dataset`` can be used for central evaluation
         with ``CentralEvaluationCallback``.
     """
-    inputs_all, targets_all, masks_all = [], [], []
+    inputs_all_list, targets_all_list, masks_all_list = [], [], []
     users = get_fraction_of_users(hdf5_path, partition, data_fraction)
 
     with h5py.File(hdf5_path, 'r') as h5:
@@ -194,20 +198,20 @@ def make_central_dataset(hdf5_path: str,
             targets = np.array(h5[f'{partition}/{user_id}/targets'])
             masks = (inputs != h5['metadata/pad_symbol']).astype(np.float32)
             # Fast way of concatenating the user datasets.
-            inputs_all.extend(inputs.tolist())
-            targets_all.extend(targets.tolist())
-            masks_all.extend(masks.tolist())
-        inputs_all, targets_all, masks_all = (np.array(inputs_all),
-                                              np.array(targets_all),
-                                              np.array(masks_all))
+            inputs_all_list.extend(inputs.tolist())
+            targets_all_list.extend(targets.tolist())
+            masks_all_list.extend(masks.tolist())
+        inputs_all, targets_all, masks_all = (np.array(inputs_all_list),
+                                              np.array(targets_all_list),
+                                              np.array(masks_all_list))
 
         inputs_all, targets_all, masks_all = _pad_batch(
             inputs_all, targets_all, masks_all, local_batch_size,
             max_sequence_len, h5['metadata/pad_symbol'])
 
         if include_mask:
-            X_all_lengths = np.sum(
-                inputs_all != h5['metadata/pad_symbol'], axis=1)
+            X_all_lengths = np.sum(inputs_all != h5['metadata/pad_symbol'],
+                                   axis=1)
             data_tensors = [inputs_all, targets_all, X_all_lengths, masks_all]
         else:
             data_tensors = [inputs_all, targets_all]
@@ -215,13 +219,13 @@ def make_central_dataset(hdf5_path: str,
 
 
 def make_reddit_datasets(
-        data_path: str,
-        include_mask: bool,
-        local_batch_size: int,
-        max_user_tokens: int = 1600,
-        data_fraction: float = 1.0,
-        central_data_fraction: float = 0.01,
-        minimum_num_datapoints_per_user: int = 1
+    data_path: str,
+    include_mask: bool,
+    local_batch_size: int,
+    max_user_tokens: int = 1600,
+    data_fraction: float = 1.0,
+    central_data_fraction: float = 0.01,
+    minimum_num_datapoints_per_user: int = 1
 ) -> Tuple[FederatedDataset, FederatedDataset, Dataset, Dict[str, Any]]:
     """
     Create a train and val ``ArtificialFederatedDataset`` as well as a
@@ -250,9 +254,10 @@ def make_reddit_datasets(
     # Federated evaluation with `val_cohort_size>=200` is reliable enough.
     # This central evaluation is solely to compare with the same validation set
     # as a centrally trained model.
-    central_data = make_central_dataset(
-        data_path, 'val', include_mask, central_data_fraction,
-        local_batch_size, metadata['max_sequence_length'])
+    central_data = make_central_dataset(data_path, 'val', include_mask,
+                                        central_data_fraction,
+                                        local_batch_size,
+                                        metadata['max_sequence_length'])
 
     return (training_federated_dataset, val_federated_dataset, central_data,
             metadata)

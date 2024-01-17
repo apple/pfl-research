@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
 # Some of the code in this file is adapted from:
@@ -243,14 +244,15 @@ def _make_worker_fn(database_filepath, partition, vocabulary,
         padded_sentences_ids = _tokens_to_ids(trimmed_sentences, vocabulary,
                                               max_sequence_length)
 
-        with lock, h5py.File(h5_path, 'a') as h5:
-            # Store encoded inputs.
-            h5.create_dataset(f'/{partition}/{user_id}/inputs',
-                              data=padded_sentences_ids[:, :-1])
+        with lock:
+            with h5py.File(h5_path, 'a') as h5:
+                # Store encoded inputs.
+                h5.create_dataset(f'/{partition}/{user_id}/inputs',
+                                  data=padded_sentences_ids[:, :-1])
 
-            # Store encoded targets.
-            h5.create_dataset(f'/{partition}/{user_id}/targets',
-                              data=padded_sentences_ids[:, 1:])
+                # Store encoded targets.
+                h5.create_dataset(f'/{partition}/{user_id}/targets',
+                                  data=padded_sentences_ids[:, 1:])
         return user_id, token_count
 
     def _worker_fn(work_queue, result_queue):

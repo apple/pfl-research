@@ -21,10 +21,11 @@ from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_tf2
 from model.tf2.metrics import (MaskedCategoricalAccuracy,
                                MaskedCategoricalCrossentropy, Perplexity)
-from utils.argument_parsing import (
-    add_algorithm_arguments, add_filepath_arguments, add_seed_arguments,
-    add_weighting_arguments, get_algorithm, parse_weighting_strategy,
-    parse_mechanism, maybe_inject_arguments_from_config)
+from utils.argument_parsing import (add_algorithm_arguments,
+                                    add_filepath_arguments, add_seed_arguments,
+                                    add_weighting_arguments, get_algorithm,
+                                    parse_weighting_strategy, parse_mechanism,
+                                    maybe_inject_arguments_from_config)
 from utils.callback.tensorflow import LocalLRDecay, CentralLRDecay
 from utils.logging import init_logging
 from ..argument_parsing import add_lm_arguments
@@ -95,8 +96,8 @@ def main():
 
     metrics = {
         'loss':
-        MaskedCategoricalCrossentropy(
-            from_logits=True, masked_tokens=[PAD, UNK]),
+        MaskedCategoricalCrossentropy(from_logits=True,
+                                      masked_tokens=[PAD, UNK]),
         'next word accuracy | including unk':
         MaskedCategoricalAccuracy(masked_tokens=[PAD]),
         'next word accuracy':
@@ -105,10 +106,9 @@ def main():
         Perplexity(from_logits=True, masked_tokens=[PAD, UNK])
     }
 
-    model = TFModel(
-        model=keras_model,
-        central_optimizer=central_optimizer,
-        metrics=metrics)
+    model = TFModel(model=keras_model,
+                    central_optimizer=central_optimizer,
+                    metrics=metrics)
 
     weighting_strategy = parse_weighting_strategy(arguments.weighting,
                                                   arguments.weight_clip)
@@ -118,10 +118,9 @@ def main():
         CentrallyAppliedPrivacyMechanism(central_privacy)
     ]
 
-    backend = SimulatedBackend(
-        training_data=training_federated_dataset,
-        val_data=val_federated_dataset,
-        postprocessors=postprocessors)
+    backend = SimulatedBackend(training_data=training_federated_dataset,
+                               val_data=val_federated_dataset,
+                               postprocessors=postprocessors)
 
     algorithm, algorithm_params = get_algorithm(arguments)
 
@@ -135,10 +134,9 @@ def main():
 
     callbacks = [
         StopwatchCallback(),
-        CentralEvaluationCallback(
-            central_data,
-            model_eval_params=model_eval_params,
-            frequency=arguments.evaluation_frequency),
+        CentralEvaluationCallback(central_data,
+                                  model_eval_params=model_eval_params,
+                                  frequency=arguments.evaluation_frequency),
         ModelCheckpointingCallback('./checkpoints'),
         AggregateMetricsToDisk('./metrics.csv'),
     ]
@@ -175,13 +173,12 @@ def main():
                 write_graph=False,
                 tensorboard_port=int(tb_port) if tb_port else None))
 
-    model = algorithm.run(
-        algorithm_params=algorithm_params,
-        backend=backend,
-        model=model,
-        model_train_params=model_train_params,
-        model_eval_params=model_eval_params,
-        callbacks=callbacks)
+    model = algorithm.run(algorithm_params=algorithm_params,
+                          backend=backend,
+                          model=model,
+                          model_train_params=model_train_params,
+                          model_eval_params=model_eval_params,
+                          callbacks=callbacks)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
 from functools import partial
@@ -80,10 +81,10 @@ def make_central_dataset(hdf5_path: str, partition: str,
         StackOverflow HDF5 data file. This ``Dataset`` can be used for
         central evaluation with ``CentralEvaluationCallback``.
     """
-    data_tensors = make_central_dataset_numpy(hdf5_path, partition,
-                                              data_fraction).raw_data
+    data_tensors_np = make_central_dataset_numpy(hdf5_path, partition,
+                                                 data_fraction).raw_data
     data_tensors = [
-        tf.convert_to_tensor(t, dtype=tf.int32) for t in data_tensors
+        tf.convert_to_tensor(t, dtype=tf.int32) for t in data_tensors_np
     ]
     return Dataset(raw_data=data_tensors)
 

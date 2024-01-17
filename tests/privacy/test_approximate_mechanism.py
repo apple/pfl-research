@@ -18,6 +18,7 @@ from pfl.privacy.approximate_mechanism import SquaredErrorLocalPrivacyMechanism
 from pfl.stats import MappedVectorStatistics
 
 
+@pytest.mark.is_slow
 class TestApproximateMechanism:
 
     def compare_approximation(self,

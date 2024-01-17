@@ -163,9 +163,10 @@ class BandedMatrixFactorizationMechanism(GaussianMechanism):
     :param make_privacy_accountant:
         Lambda function that takes number of compositions as input and returns
         privacy accountant, of type PrivacyAccountantKind.
-    ::example
 
+    ::example
         .. code-block:: python
+
             make_privacy_accountant = lambda num_compositions:
                 PLDPrivacyAccountant(num_compositions, **other_params)
             BandedMatrixFactorizationMechanism(clipping_bound, num_iterations,

@@ -28,6 +28,7 @@ class PrivacyAccountant:
     must be defined. If two are defined, the remaining variable can be
     computed. If all three are defined a check will be performed to make sure
     a valid set of variable values has been provided.
+
     :param num_compositions:
         Maximum number of compositions to be performed with mechanism.
     :param sampling_probability:
@@ -114,6 +115,7 @@ class PLDPrivacyAccountant(PrivacyAccountant):
     Discrete Approximations of Privacy Loss Distributions”, Doroshenko et al.,
     PoPETs 2022, https://arxiv.org/pdf/2207.04380.pdf
     This class supports Gaussian and Laplacian mechanisms.
+
     :param value_discretization_interval:
         The length of the dicretization interval for the privacy loss
         distribution. Rounding will occur to integer multiples of
@@ -244,6 +246,7 @@ class PRVPrivacyAccountant(PrivacyAccountant):
     a lower bound, an estimated value, and an upper bound for the delta and
     epsilon respectively. The estimated value is used for all further
     computations.
+    
     :param eps_error:
         Maximum permitted error in epsilon. Typically around 0.1.
     :param delta_error:

@@ -1,0 +1,171 @@
+# Reference: https://circleci.com/docs/configuration-reference
+version: 2.1
+
+executors:
+  linux-python:
+    docker:
+      - image: cimg/python:3.10.13
+
+commands:
+  full_install_steps:
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            pip install poetry
+            poetry install -E tf -E pytorch -E trees -q || true
+  dev_install_steps:
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            pip install poetry
+            poetry install --only dev -q || true
+  benchmark_install_steps:
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            cd benchmarks
+            pip install poetry
+            poetry install -E tf -E pytorch --no-root || true
+            echo 'export PYTHONPATH=.' >> $BASH_ENV
+
+jobs:
+  code-quality:
+    executor: linux-python
+    steps:
+      - checkout
+      - run:
+          name: "Run pre-commit hooks"
+          command: |
+            pip install pre-commit
+            make check
+            if ! git diff --quiet; then echo 'Style checks failed, please install pre-commit and run pre-commit run --all and push the change'; exit 1; fi
+
+  build-documentation-wheel:
+    executor: linux-python
+    steps:
+      - full_install_steps
+      - run:
+          name: "Build documentation"
+          command: make docs
+      - run: 
+          name: "Build wheel"
+          command: make build
+      - run: 
+          name: "Install wheel"
+          command: python -m pip install dist/*.whl
+
+  test-tf:
+    executor: linux-python
+    resource_class: large
+    steps:
+      - dev_install_steps
+      - run:
+          name: "Test with TensorFlow"
+          command: poetry run tox -e 'py310-test-tf'
+
+  test-pytorch:
+    executor: linux-python
+    resource_class: large
+    steps:
+      - dev_install_steps
+      - run:
+          name: "Test with PyTorch"
+          command: poetry run tox -e 'py310-test-pytorch'
+
+  test-benchmarks:
+    executor: linux-python
+    steps:
+      - benchmark_install_steps
+      - run:
+          name: "Run tests in benchmarks"
+          command: |
+            cd benchmarks
+            poetry run pytest test/ --durations 0 -n4
+
+  check-run-cifar10:
+    executor: linux-python
+    steps:
+      - benchmark_install_steps
+      - run:
+          name: "Download data"
+          command: |
+            mkdir -p ./benchmarks/data/cifar10
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_train.p \
+              -o ./benchmarks/data/cifar10/cifar10_train.p
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_test.p \
+              -o ./benchmarks/data/cifar10/cifar10_test.p
+      - run:
+          name: "(PyTorch) run a few iterations of training"
+          command: |
+            cd benchmarks
+            poetry run python image_classification/pytorch/train.py \
+              --args_config image_classification/configs/baseline.yaml \
+              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+      - run:
+          name: "(TF) run a few iterations of training"
+          command: |
+            cd benchmarks
+            poetry run python image_classification/tf/train.py \
+              --args_config image_classification/configs/baseline.yaml \
+              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+
+  publish-wheel:
+    executor: linux-python
+    steps:
+      - checkout
+      - run:
+          name: "Publish wheel"
+          command: make build-and-publish
+
+  publish-documentation:
+    executor: linux-python
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "1f:58:50:56:ce:6c:63:5c:77:c1:34:a0:f5:bd:9f:b7"
+      - full_install_steps
+      - run:
+          name: "Publish docs"
+          command: make docs-and-publish
+
+workflows:
+  build_and_test:
+    jobs:
+      - code-quality
+      - build-documentation-wheel
+      - test-tf
+      - test-pytorch
+      - test-benchmarks
+      - check-run-cifar10
+
+      # TODO: rdar://120414177 (optional CI for docker image (build only))
+      #- build-images:
+      #    # Only verify build images on release candidates.
+      #    filters:
+      #      branches:
+      #        only: /^release-.*/
+
+      - publish-wheel:
+          # Only publish package on new tag.
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - publish-documentation:
+          # Only publish docs on commit to main.
+          filters:
+            branches:
+              only: main
+
+
+
+
+
+

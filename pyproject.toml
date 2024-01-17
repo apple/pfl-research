@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pfl"
-version = "0.0.1"
+version = "0.1.0"
 description = "Simulation framework for Private Federated Learning"
 authors = ["Apple"]
 repository = "https://github.com/apple/pfl-research"
@@ -147,12 +147,11 @@ source = ["pfl"]
 testpaths = "test/"
 python_files = "test_*.py"
 addopts = "-n auto"
-faulthandler_timeout = 600
+faulthandler_timeout = 720
 
 env = [
     "TF_CPP_MIN_LOG_LEVEL = 2",
     "PYTHONPATH = .",
-    "PFL_DISTRIBUTE_METHOD = legacy",
 ]
 
 filterwarnings = [
@@ -167,12 +166,13 @@ filterwarnings = [
 markers = [
     "macos: mark test that should only run on MacOS, enable with --macos",
     "disable_horovod: mark test that use Horovod. If you don't have Horovod installed, you can still run tests with --disable_horovod",
+    "disable_slow: mark test that is slow. We need to speed up these tests for reasonable runtime on CircleCI"
 ]
 
 # Run with command:
 # poetry run bump-my-version bump <major/minor/patch>
 [tool.bumpversion]
-current_version = "0.0.1"
+current_version = "0.1.0"
 commit = "True"
 tag = "False"
 
@@ -183,5 +183,7 @@ filename = "VERSION"
 filename = "pfl/version.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
+
+
 
 

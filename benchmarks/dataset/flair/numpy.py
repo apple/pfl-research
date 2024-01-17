@@ -54,13 +54,13 @@ def make_federated_dataset(
             data_order = np.random.permutation(len(inputs))
             inputs = numpy_to_tensor(inputs[data_order])
             targets = numpy_to_tensor(targets[data_order])
-        return Dataset(
-            raw_data=[inputs, targets],
-            train_kwargs={"eval": False},
-            eval_kwargs={"eval": True})
+        return Dataset(raw_data=[inputs, targets],
+                       train_kwargs={"eval": False},
+                       eval_kwargs={"eval": True})
 
-    return FederatedDataset(
-        make_dataset_fn, sampler, user_id_to_weight=user_num_images)
+    return FederatedDataset(make_dataset_fn,
+                            sampler,
+                            user_id_to_weight=user_num_images)
 
 
 def make_artificial_federated_dataset(
@@ -110,10 +110,9 @@ def make_artificial_federated_dataset(
                 targets.append(np.expand_dims(target, axis=0))
         inputs = numpy_to_tensor(np.vstack(inputs))
         targets = numpy_to_tensor(np.vstack(targets))
-        return Dataset(
-            raw_data=[inputs, targets],
-            train_kwargs={"eval": False},
-            eval_kwargs={"eval": True})
+        return Dataset(raw_data=[inputs, targets],
+                       train_kwargs={"eval": False},
+                       eval_kwargs={"eval": True})
 
     data_sampler = get_data_sampler('random', len(user_image_id))
     return ArtificialFederatedDataset(make_dataset_fn, data_sampler,

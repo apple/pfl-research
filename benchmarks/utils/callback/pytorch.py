@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
-from typing import Tuple
+from typing import Callable, Optional, Tuple
 
 from pfl.metrics import Metrics
 from pfl.model.pytorch import PyTorchModel
@@ -21,6 +21,7 @@ def polynomial_lr_lambda(current_step: int, lr_init: float, lr_end: float,
 
 
 class CentralLRDecay(TrainingProcessCallback):
+
     def __init__(self,
                  init_learning_rate: float,
                  end_learning_rate: float,
@@ -30,6 +31,7 @@ class CentralLRDecay(TrainingProcessCallback):
                  decay_power: float = 1.0):
         self._num_warmup_iterations = num_warmup_iterations
 
+        self._warmup: Optional[Callable]
         if linear_warmup:
             # Linear warmup over central iterations.
             self._warmup = lambda t: float(t) / float(

@@ -19,15 +19,18 @@ def _replace_child(root: nn.Module, child_name: str,
     parent = root
     nameList = child_name.split(".")
     for name in nameList[:-1]:
-        parent = parent._modules[name]
+        new_parent = parent._modules[name]
+        assert new_parent is not None
+        parent = new_parent
     # set to identity
+    assert parent is not None
     parent._modules[nameList[-1]] = converter(parent._modules[nameList[-1]])
 
 
 def replace_all_modules(
-        root: nn.Module,
-        target_class: Type[nn.Module],
-        converter: Callable[[nn.Module], nn.Module],
+    root: nn.Module,
+    target_class: Type[nn.Module],
+    converter: Callable[[nn.Module], nn.Module],
 ) -> nn.Module:
     """
     Converts all the submodules (of root) that have the same
@@ -55,8 +58,9 @@ def _batchnorm_to_groupnorm(
         paper *Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour*
         https://arxiv.org/pdf/1706.02677.pdf
     """
-    return nn.GroupNorm(
-        min(32, module.num_features), module.num_features, affine=True)
+    return nn.GroupNorm(min(32, module.num_features),
+                        module.num_features,
+                        affine=True)
 
 
 def _batchnorm_to_freeze_batchnorm(
@@ -76,12 +80,11 @@ def _batchnorm_to_freeze_batchnorm(
         elif isinstance(module, nn.BatchNorm3d):
             return FrozenBatchNorm3D
 
-    return match_dim()(
-        num_features=module.num_features,
-        eps=module.eps,
-        momentum=module.momentum,
-        affine=module.affine,
-        track_running_stats=module.track_running_stats)
+    return match_dim()(num_features=module.num_features,
+                       eps=module.eps,
+                       momentum=module.momentum,
+                       affine=module.affine,
+                       track_running_stats=module.track_running_stats)
 
 
 def validate_no_batchnorm(module: nn.Module):
@@ -96,9 +99,9 @@ def validate_no_batchnorm(module: nn.Module):
 
 
 def convert_batchnorm_modules(
-        model: nn.Module,
-        converter: Callable[[nn.modules.batchnorm._BatchNorm], nn.
-                            Module] = _batchnorm_to_groupnorm,
+    model: nn.Module,
+    converter: Callable[[nn.modules.batchnorm._BatchNorm],
+                        nn.Module] = _batchnorm_to_groupnorm,
 ) -> nn.Module:
     """
     Converts all BatchNorm modules to another module

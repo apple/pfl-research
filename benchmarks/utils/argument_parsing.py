@@ -15,12 +15,13 @@ from .weighting import (WeightByTokens, WeightByCubeRootTokens,
 import numpy as np
 
 from pfl.aggregate.weighting import WeightByUser
-from pfl.algorithm import (NNAlgorithmParams, FederatedAveraging, FedProx,
-                           FedProxParams)
-from pfl.privacy import (
-    CentrallyApplicablePrivacyMechanism, CentrallyAppliedPrivacyMechanism,
-    NoPrivacy, GaussianMechanism, LaplaceMechanism,
-    MomentsAccountantGaussianMechanism, NormClippingOnly, PrivUnitMechanism)
+from pfl.algorithm import (FederatedAlgorithm, NNAlgorithmParams,
+                           FederatedAveraging, FedProx, FedProxParams)
+from pfl.privacy import (CentrallyApplicablePrivacyMechanism,
+                         CentrallyAppliedPrivacyMechanism, NoPrivacy,
+                         GaussianMechanism, LaplaceMechanism,
+                         GaussianMechanism, NormClippingOnly,
+                         PrivUnitMechanism, PLDPrivacyAccountant)
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism
 
 logger = logging.getLogger(name=__name__)
@@ -46,8 +47,10 @@ def maybe_inject_arguments_from_config():
 def add_seed_arguments(
         parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
 
-    parser.add_argument(
-        "--seed", type=int, default=0, help=('Seed to use for pseudo rng'))
+    parser.add_argument("--seed",
+                        type=int,
+                        default=0,
+                        help=('Seed to use for pseudo rng'))
 
     return parser
 
@@ -59,15 +62,13 @@ def add_filepath_arguments(
         '--args_config',
         help='Path to YAML configuration file containing the arguments.')
 
-    parser.add_argument(
-        '--data_path',
-        required=True,
-        help='The path from which the dataset will be read.')
+    parser.add_argument('--data_path',
+                        required=True,
+                        help='The path from which the dataset will be read.')
 
-    parser.add_argument(
-        "--restore_model_path",
-        default=None,
-        help='Path to model checkpoint to restore')
+    parser.add_argument("--restore_model_path",
+                        default=None,
+                        help='Path to model checkpoint to restore')
 
     return parser
 
@@ -113,6 +114,7 @@ def parse_weighting_strategy(name, weight_clip):
 
 
 class store_bool(argparse.Action):
+
     def __init__(self, option_strings, dest, **kwargs):
         argparse.Action.__init__(self, option_strings, dest, **kwargs)
 
@@ -251,6 +253,7 @@ def add_mechanism_arguments(argument_parser):
         'applied.')
 
     class OrderAction(argparse.Action):
+
         def __init__(self, option_strings, dest, nargs=None, **kwargs):
             if nargs is not None:
                 raise ValueError("nargs not allowed")
@@ -363,14 +366,15 @@ def parse_mechanism(mechanism_name,
         else:
             noise_scale = 1.0
             max_cohort_size = cohort_size
-        mechanism = MomentsAccountantGaussianMechanism(
-            clipping_bound=clipping_bound,
+        accountant = PLDPrivacyAccountant(
+            num_compositions=num_epochs,
+            sampling_probability=max_cohort_size / population,
+            mechanism='gaussian',
             epsilon=epsilon,
             delta=delta,
-            num_iterations=num_epochs,
-            max_cohort_size=max_cohort_size,
-            population_size=population,
             noise_scale=noise_scale)
+        mechanism = GaussianMechanism.from_privacy_accountant(
+            accountant=accountant, clipping_bound=clipping_bound)
 
     elif mechanism_name == 'banded_matrix_factorization':
         assert clipping_bound is not None
@@ -386,14 +390,17 @@ def parse_mechanism(mechanism_name,
         else:
             noise_scale = 1.0
             max_cohort_size = cohort_size
-        mechanism = BandedMatrixFactorizationMechanism(
+
+        make_privacy_accountant = lambda num_compositions: PLDPrivacyAccountant(
+            num_compositions,
+            sampling_probability=max_cohort_size / population,
+            mechanism='gaussian',
             epsilon=epsilon,
             delta=delta,
-            clipping_bound=clipping_bound,
-            num_iterations=num_epochs,
-            min_separation=min_separation,
-            sampling_rate=max_cohort_size / population,
             noise_scale=noise_scale)
+        mechanism = BandedMatrixFactorizationMechanism(
+            clipping_bound, num_epochs, min_separation,
+            make_privacy_accountant)
 
     elif mechanism_name == 'laplace':
         assert clipping_bound is not None
@@ -426,14 +433,13 @@ def add_algorithm_arguments(
     specified in `algorithm_name` argument.
     """
 
-    parser.add_argument(
-        '--algorithm_name',
-        choices=[
-            'fedavg',
-            'fedprox',
-        ],
-        default='fedavg',
-        help='Which algorithm to train with.')
+    parser.add_argument('--algorithm_name',
+                        choices=[
+                            'fedavg',
+                            'fedprox',
+                        ],
+                        default='fedavg',
+                        help='Which algorithm to train with.')
 
     # Get the value of `algorithm_name` argument and dynamically add
     # arguments depending on which algorithm is chosen.
@@ -464,6 +470,7 @@ def get_algorithm(args: argparse.Namespace):
     algorithm_name = args.algorithm_name.lower()
     logger.info(f'initializing algorithm {algorithm_name}')
 
+    algorithm: FederatedAlgorithm
     if algorithm_name == 'fedavg':
         algorithm_params = NNAlgorithmParams(
             central_num_iterations=args.central_num_iterations,

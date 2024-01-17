@@ -12,6 +12,7 @@ from utils.argument_parsing import store_bool
 
 
 class TestStoreBool(unittest.TestCase):
+
     def test_values(self):
         parser = argparse.ArgumentParser()
         parser.add_argument('--argument_name', action=store_bool)
@@ -38,8 +39,9 @@ class TestStoreBool(unittest.TestCase):
 
     def test_default(self):
         parser = argparse.ArgumentParser()
-        parser.add_argument(
-            '--argument_name', action=store_bool, default=False)
+        parser.add_argument('--argument_name',
+                            action=store_bool,
+                            default=False)
 
         result = parser.parse_args([])
         self.assertEqual(result.argument_name, False)

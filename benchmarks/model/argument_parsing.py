@@ -29,31 +29,27 @@ def add_model_arguments(
     known_args, _ = parser.parse_known_args()
 
     if known_args.model_name in {'lm_lstm', 'lm_transformer'}:
-        parser.add_argument(
-            "--embedding_size",
-            type=int,
-            required=True,
-            help='Number of dimensions in embedding layer.')
+        parser.add_argument("--embedding_size",
+                            type=int,
+                            required=True,
+                            help='Number of dimensions in embedding layer.')
 
     if known_args.model_name == 'lm_lstm':
-        parser.add_argument(
-            "--num_cell_states",
-            type=int,
-            required=True,
-            help='Number of cell states in each LSTM.')
+        parser.add_argument("--num_cell_states",
+                            type=int,
+                            required=True,
+                            help='Number of cell states in each LSTM.')
 
-        parser.add_argument(
-            "--num_lstm_layers",
-            type=int,
-            required=True,
-            help='Number of stacked LSTM layers.')
+        parser.add_argument("--num_lstm_layers",
+                            type=int,
+                            required=True,
+                            help='Number of stacked LSTM layers.')
 
     if known_args.model_name == 'lm_transformer':
-        parser.add_argument(
-            "--hidden_size",
-            type=int,
-            required=True,
-            help='Number of hidde states in each Transformer.')
+        parser.add_argument("--hidden_size",
+                            type=int,
+                            required=True,
+                            help='Number of hidde states in each Transformer.')
 
         parser.add_argument(
             "--num_heads",
@@ -67,11 +63,10 @@ def add_model_arguments(
             required=True,
             help='Number of feed forward hidden states in each Transformer.')
 
-        parser.add_argument(
-            "--num_transformer_layers",
-            type=int,
-            required=True,
-            help='Number of stacked Transformer layers.')
+        parser.add_argument("--num_transformer_layers",
+                            type=int,
+                            required=True,
+                            help='Number of stacked Transformer layers.')
 
         parser.add_argument(
             '--dropout_rate',
@@ -92,16 +87,14 @@ def add_model_arguments(
             'shufflenet_v2_x1_5', 'shufflenet_v2_x2_0'
         ]
 
-        parser.add_argument(
-            '--model_type',
-            choices=_torchvision_architectures,
-            help='Model architecture.')
+        parser.add_argument('--model_type',
+                            choices=_torchvision_architectures,
+                            help='Model architecture.')
 
-        parser.add_argument(
-            '--pretrained',
-            action=store_bool,
-            default=False,
-            help='Use ImageNet pretrained vision model')
+        parser.add_argument('--pretrained',
+                            action=store_bool,
+                            default=False,
+                            help='Use ImageNet pretrained vision model')
 
     return parser
 
@@ -153,10 +146,11 @@ def get_model_tf2(args: argparse.Namespace):
         model = tf2.lm_lstm(args.embedding_size, args.num_cell_states,
                             args.num_lstm_layers, args.vocab_size)
     elif model_name == 'lm_transformer':
-        model = tf2.lm_transformer(
-            args.embedding_size, args.hidden_size, args.num_heads,
-            args.feedforward_size, args.num_transformer_layers,
-            args.vocab_size, args.max_sequence_length, args.dropout_rate)
+        model = tf2.lm_transformer(args.embedding_size, args.hidden_size,
+                                   args.num_heads, args.feedforward_size,
+                                   args.num_transformer_layers,
+                                   args.vocab_size, args.max_sequence_length,
+                                   args.dropout_rate)
     else:
         raise TypeError(f'Model {model_name} not implemented for TF2.')
 

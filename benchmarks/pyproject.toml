@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pfl-research"
+name = "pfl-benchmarks"
 version = "0.0.0"
 description = "Examples, benchmarks and reproducible research implemented in pfl"
 authors = ["Apple"]
@@ -22,9 +22,10 @@ torchvision = [
   { version = "0.15.2+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
   { version = "0.15.2", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
+# Installs pfl from source.
 pfl = [
-    {git = "git@github.com:apple/pfl-research.git", rev = "main", extras = ["tf"], markers="extra=='tf'"},
-    {git = "git@github.com:apple/pfl-research.git", rev = "main", extras = ["pytorch"], markers="extra=='pytorch'"},
+    { path = "../", extras = ["tf"], markers="extra=='tf'"},
+    { path = "../", extras = ["pytorch"], markers="extra=='pytorch'"},
 ]
 pillow = ">=8.2.0"
 
@@ -41,9 +42,7 @@ pytest-lazy-fixture = "^0.6.3"
 mypy = "1.5"
 ruff = "0.0.290"
 scikit-learn = "^1.0.2"
-# TODO: upgrade yapf in future PR
-#yapf = "^0.40.1"
-yapf = "^0.26.0"
+yapf = "^0.40.1"
 
 # TODO: these pytorch sources are only needed while pfl is installed from github address.
 [[tool.poetry.source]]
@@ -56,4 +55,4 @@ name = "PyPI"
 priority = "primary"
 
 [tool.mypy]
-disable_error_code = "import,arg-type,operator,assignment,name-defined,var-annotated,index,call-overload,list-item"
+disable_error_code = "import,union-attr,index,attr-defined,arg-type"

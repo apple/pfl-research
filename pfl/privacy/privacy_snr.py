@@ -92,10 +92,6 @@ class SNRMetric(MetricValue):
 
         return self._signal_l2_norm / rough_noise_norm
 
-    @property
-    def is_average(self):
-        return False
-
     def to_vector(self) -> np.ndarray:
         """
         Get a vector representation of this metric value, with

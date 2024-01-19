@@ -946,6 +946,11 @@ class AggregateMetricsToDisk(TrainingProcessCallback):
 class TrackBestOverallMetrics(TrainingProcessCallback):
     """
     Track the best value of given metrics over all iterations.
+    If the specified metric names are not found for a particular
+    central iteration, nothing will happen. Use parameter
+    ``assert_metrics_found_within_frequency`` to assert that they
+    must eventually be found, e.g. if you are doing central evaluation
+    only every nth iteration.
 
     :param lower_is_better_metric_names:
         A list of metric names to track. Whenever a metric with a name

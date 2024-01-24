@@ -136,6 +136,12 @@ jobs:
 
 workflows:
   build_and_test:
+    when:
+      matches:
+        # Only on branches approved by Apple CircleCI policy:
+        # https://app.circleci.com/settings/organization/github/apple/policies/baseline_apple
+        pattern: "^main|gh-readonly-queue/main/pr-\\d+-[0-9a-f]{40}.*$"
+        value: << pipeline.git.branch >>
     jobs:
       - code-quality
       - build-documentation-wheel
@@ -164,7 +170,34 @@ workflows:
             branches:
               only: main
 
-
+  build_and_test-pr:
+    when:
+      matches:
+        # PR builds need approval, as per Apple CircleCI policy:
+        # https://app.circleci.com/settings/organization/github/apple/policies/baseline_apple
+        pattern: "^pull/\\d+(/head)?$"
+        value: << pipeline.git.branch >>
+    jobs:
+      - hold:
+          type: approval
+      - code-quality:
+          requires:
+            - hold
+      - build-documentation-wheel:
+          requires:
+            - hold
+      - test-tf:
+          requires:
+            - hold
+      - test-pytorch:
+          requires:
+            - hold
+      - test-benchmarks:
+          requires:
+            - hold
+      - check-run-cifar10:
+          requires:
+            - hold
 
 
 

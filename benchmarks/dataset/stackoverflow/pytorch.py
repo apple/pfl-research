@@ -7,12 +7,11 @@ from typing import Any, Dict, List, Tuple
 import torch
 
 from pfl.data.dataset import Dataset
-from pfl.data.sampling import get_user_sampler
 from pfl.data.pytorch import PyTorchFederatedDataset
+from pfl.data.sampling import get_user_sampler
 
-from .numpy import (get_metadata, get_fraction_of_users, get_user_weights,
-                    make_tensors_fn, make_central_dataset as
-                    make_central_dataset_numpy)
+from .numpy import get_fraction_of_users, get_metadata, get_user_weights, make_tensors_fn
+from .numpy import make_central_dataset as make_central_dataset_numpy
 
 
 class _PTDatasetWrap(torch.utils.data.Dataset):

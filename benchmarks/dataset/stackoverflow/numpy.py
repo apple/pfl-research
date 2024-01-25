@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
-from functools import partial
 import json
+from functools import partial
 from typing import Any, Dict, List, Tuple
 
 import h5py

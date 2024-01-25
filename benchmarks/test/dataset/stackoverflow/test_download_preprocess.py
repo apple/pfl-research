@@ -3,11 +3,11 @@
 # Copyright © 2023-2024 Apple Inc.
 import json
 import os
-import pytest
+from unittest.mock import patch
 
 import h5py
-from mock import patch, MagicMock
 import numpy as np
+import pytest
 
 from pfl.internal.ops import get_tf_major_version
 
@@ -15,49 +15,36 @@ if get_tf_major_version():
     import tensorflow as tf
 
 
-@pytest.fixture
-def mock_tffdatas():
-
-    def make_client(user_id):
-        sentence_data = {'tokens': tf.constant("a b c")}
-        # Number of mock sentences == user_id value
-        return tf.data.Dataset.from_generator(
-            lambda: iter([sentence_data] * user_id),
-            output_types={'tokens': tf.string})
-
-    def make_mock_tffdata(partition_user_id):
-        return MagicMock(
-            **{
-                'client_ids': [partition_user_id],
-                'create_tf_dataset_for_client.side_effect': make_client
-            })
-
-    return [make_mock_tffdata(i) for i in range(1, 4)]
+def mock_word_counts(vocab_size):
+    # vocabulary is alphabet.
+    return {chr(97 + i): i for i in range(vocab_size)}
 
 
-@pytest.fixture(autouse=True)
-def tff(mock_tffdatas):
+def mock_fetch_client_ids(database_filepath, partition):
+    return {"train": [1], "val": [2], "test": [3]}[partition]
 
-    def mock_word_counts(vocab_size):
-        # vocabulary is alphabet.
-        return {chr(97 + i): i for i in range(vocab_size)}
 
-    mock_tff = MagicMock()
-    mock_tff.simulation.datasets.stackoverflow.load_word_counts.side_effect = \
-        mock_word_counts
-    mock_tff.simulation.datasets.stackoverflow.load_data.return_value = \
-        mock_tffdatas
-    # Patching module before imported allow us to
-    # run unittest without tff installed.
-    with patch.dict('sys.modules', {'tensorflow_federated': mock_tff}):
-        yield mock_tff
+def mock_query_client_dataset(database_filepath, user_id, partition):
+    sentence_data = {'tokens': tf.constant("a b c")}
+    # Number of mock sentences == user_id value
+    return tf.data.Dataset.from_generator(
+        lambda: iter([sentence_data] * user_id),
+        output_types={'tokens': tf.string})
 
 
 # Only run if TF2 is installed. Using tf.data.
 @pytest.mark.skipif(get_tf_major_version() < 2, reason='not tf>=2')
+@patch("dataset.stackoverflow.download_preprocess.load_word_counts",
+       mock_word_counts)
+@patch("dataset.stackoverflow.download_preprocess.fetch_client_ids",
+       mock_fetch_client_ids)
+@patch("dataset.stackoverflow.download_preprocess.query_client_dataset",
+       mock_query_client_dataset)
+@patch("dataset.stackoverflow.download_preprocess.fetch_lzma_file",
+       lambda origin, filename: None)
 class TestDownloadPreprocess:
 
-    def test_get_vocabulary(self, tff):
+    def test_get_vocabulary(self):
         from dataset.stackoverflow.download_preprocess import get_vocabulary
 
         vocab = get_vocabulary(3)
@@ -70,20 +57,14 @@ class TestDownloadPreprocess:
             'BOS': 5,
             'EOS': 6
         }
-        tff.simulation.datasets.stackoverflow.load_word_counts. \
-            assert_called_once_with(vocab_size=3)
 
-    def test_dl_preprocess_and_dump_h5(self, tff, mock_tffdatas, tmp_path):
-        from dataset.stackoverflow.download_preprocess import (
-            dl_preprocess_and_dump_h5)
+    def test_dl_preprocess_and_dump_h5(self, tmp_path):
+        from dataset.stackoverflow.download_preprocess import dl_preprocess_and_dump_h5
         vocab_size = 3
         max_sequence_length = 2
         num_processes = 2
         dl_preprocess_and_dump_h5(tmp_path, vocab_size, max_sequence_length,
                                   num_processes)
-
-        tff.simulation.datasets.stackoverflow.load_tag_counts. \
-            assert_called_once_with(cache_dir=tmp_path)
 
         with h5py.File(os.path.join(tmp_path, 'stackoverflow.hdf5'), 'r') as f:
             # trimmed, max_sequence_length is 3.

@@ -191,7 +191,7 @@ def get_vocabulary(vocabulary_size: int) -> Dict[str, int]:
         PAD, *list(load_word_counts(vocab_size=vocabulary_size).keys()), UNK,
         BOS, EOS
     ]
-    vocab = defaultdict(lambda: vocab_list.index(UNK))
+    vocab: Dict[str, int] = defaultdict(lambda: vocab_list.index(UNK))
     vocab.update({t: i for i, t in enumerate(vocab_list)})
     return vocab
 

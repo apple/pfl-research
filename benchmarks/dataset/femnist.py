@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import os
-from typing import Any, Callable, Dict, Tuple, List
+from typing import Any, Callable, Dict, List, Tuple
 
 import h5py
 import numpy as np
 
 from pfl.data import FederatedDataset
-from pfl.data.sampling import get_user_sampler
 from pfl.data.dataset import Dataset
+from pfl.data.sampling import get_user_sampler
 
 
 def _load_h5_into_dict(

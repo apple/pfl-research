@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from pfl.metrics import Weighted
 from model.numpy.metrics import Perplexity
+from pfl.metrics import Weighted
 
 
 class LMBase(nn.Module):

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 from typing import List
@@ -9,11 +7,10 @@ import numpy as np
 import torch.utils.data  # type: ignore
 
 from pfl.data import FederatedDataset
-from pfl.data.sampling import get_user_sampler
 from pfl.data.pytorch import PyTorchFederatedDataset  # type: ignore
+from pfl.data.sampling import get_user_sampler
 
-from .common import (get_multi_hot_targets, get_label_mapping,
-                     get_user_num_images)
+from .common import get_label_mapping, get_multi_hot_targets, get_user_num_images
 
 
 class FLAIRDataset(torch.utils.data.Dataset):
@@ -71,7 +68,7 @@ def make_federated_dataset(hdf5_path: str, partition: str,
     """
     num_classes = len(get_label_mapping(hdf5_path, use_fine_grained_labels))
     user_num_images = get_user_num_images(hdf5_path, partition)
-    user_ids = sorted(list(user_num_images.keys()))
+    user_ids = sorted(user_num_images.keys())
     sampler = get_user_sampler('random', user_ids)
     flair_dataset = FLAIRDataset(hdf5_path, user_ids, partition, num_classes,
                                  use_fine_grained_labels, max_num_user_images)

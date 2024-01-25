@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-from abc import abstractmethod, abstractproperty
+from abc import abstractmethod
 from typing import Tuple
 
 from pfl.context import UserContext

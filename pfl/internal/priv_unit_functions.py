@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Implement the PrivUnit2 privacy mechanism.
@@ -33,7 +31,7 @@ def _compute_cap_offset_epsilon(cap_offset: float, num_dimensions: int):
     """
     Compute the privacy budget (ε in Theorem 1) for drawing a vector
     from a cap with cap_offset.
-    This is not the overall privacy parameter of PrivUnit2 as this doesn't 
+    This is not the overall privacy parameter of PrivUnit2 as this doesn't
     add upp the privacy budget for choosing the cap (ε_0 in Theorem 1)
 
     :param cap_offset:
@@ -42,7 +40,7 @@ def _compute_cap_offset_epsilon(cap_offset: float, num_dimensions: int):
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         d in the paper.
-    """
+    """  # noqa: RUF002
     if cap_offset < 0 or cap_offset >= 1:
         return math.inf
 
@@ -65,7 +63,7 @@ def _compute_pole_probability(overall_epsilon: float, cap_offset: float,
                               num_dimensions: int):
     """
     Compute the probability of drawing from the cap in the correct direction.
-    
+
     :param overall_epsilon:
         The overall privacy budget ε for PrivUnit2.
     :param cap_offset:
@@ -74,7 +72,7 @@ def _compute_pole_probability(overall_epsilon: float, cap_offset: float,
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         (d in the paper).
-    """
+    """  # noqa: RUF002
     cap_size_epsilon = _compute_cap_offset_epsilon(cap_offset, num_dimensions)
 
     pole_epsilon = overall_epsilon - cap_size_epsilon
@@ -91,7 +89,7 @@ def _compute_scaling(cap_offset: float, pole_probability: LogFloat,
     """
     Compute the scaling that should be applied in order to guarantee that
     the output of PrivUnit2 is unbiased (Equation (15) in Algorithm 1).
-    
+
     :param cap_offset:
         Where the cap starts, with 0 being the equator and 1 the pole.
         (γ in the paper).
@@ -101,7 +99,7 @@ def _compute_scaling(cap_offset: float, pole_probability: LogFloat,
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         (d in the paper).
-    """
+    """  # noqa: RUF002
     alpha = (num_dimensions - 1) / 2
     tau = (1 + cap_offset) / 2
 
@@ -127,7 +125,7 @@ def _compute_scaling(cap_offset: float, pole_probability: LogFloat,
 def _compute_variance(epsilon: float, cap_offset: float, num_dimensions: int):
     """
     Compute the variance of PrivUnit2 for a given cap_offset and dimension.
-    
+
     :param epsilon:
         The ε parameter of local differential privacy.
     :param cap_offset:
@@ -136,7 +134,7 @@ def _compute_variance(epsilon: float, cap_offset: float, num_dimensions: int):
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         (d in the paper).
-    """
+    """  # noqa: RUF002
     _, _, pole_probability = _compute_pole_probability(epsilon, cap_offset,
                                                        num_dimensions)
     scale = _compute_scaling(cap_offset, pole_probability, num_dimensions)
@@ -156,7 +154,7 @@ def _privatize_manual(epsilon: float, cap_offset: float,
         (γ in the paper).
     :param unit_vector:
         The vector to privatize.
-    """
+    """  # noqa: RUF002
     num_dimensions = unit_vector.size
     assert np.isclose(np.linalg.norm(unit_vector), 1, atol=1e-4)
 
@@ -204,7 +202,7 @@ def compute_optimal_cap_offset(epsilon: float,
 
     :return:
         A tuple of the scaling and the cap_offset that minimised the scaling.
-    """
+    """  # noqa: RUF002
 
     def cap_offset_scaling(cap_offset: float) -> LogFloat:
         cap_size_epsilon = _compute_cap_offset_epsilon(
@@ -235,7 +233,7 @@ def compute_optimal_cap_offset(epsilon: float,
 def privatize(epsilon, unit_vector: np.ndarray) -> np.ndarray:
     """
     Add noise for differential privacy to a unit vector using PrivUnit2.
-    This implements PrivUnit2 from Bhowmick et al. (2018) with 
+    This implements PrivUnit2 from Bhowmick et al. (2018) with
     the optimal parameters (p and gama in the paper).
     This is the optimal algorithm for mean estimation
     under local DP (Asi et al. (2022)).
@@ -247,7 +245,7 @@ def privatize(epsilon, unit_vector: np.ndarray) -> np.ndarray:
     """
     num_dimensions = unit_vector.size
 
-    # Find the optimal cap_offset parameter (γ in the paper) by
+    # Find the optimal cap_offset parameter (γ in the paper) by  # noqa: RUF003
     # applying binary-search over the possible values
     # and recording the best error
     _, optimal_cap_offset = compute_optimal_cap_offset(epsilon, num_dimensions)

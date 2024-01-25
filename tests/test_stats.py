@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import numpy as np
@@ -241,7 +239,7 @@ class TestElementWeightedMappedVectorStatistics:
         with pytest.raises(NotImplementedError):
             stats.reweight(1.0)
         with pytest.raises(NotImplementedError):
-            stats.weight == 1.0
+            stats.weight == 1.0  # noqa: B015
         with pytest.raises(NotImplementedError):
             _ = stats.weight
 

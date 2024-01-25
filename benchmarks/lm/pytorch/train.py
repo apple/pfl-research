@@ -1,27 +1,35 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import argparse
 import logging
 
 import numpy as np
 import torch
-
-from pfl.aggregate.simulate import SimulatedBackend
-from pfl.callback import (AggregateMetricsToDisk, CentralEvaluationCallback,
-                          StopwatchCallback, ModelCheckpointingCallback)
-from pfl.hyperparam import NNTrainHyperParams, NNEvalHyperParams
-from pfl.model.pytorch import PyTorchModel
-from pfl.privacy import CentrallyAppliedPrivacyMechanism
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_pytorch
-from utils.argument_parsing import (add_algorithm_arguments,
-                                    add_filepath_arguments, add_seed_arguments,
-                                    add_weighting_arguments, get_algorithm,
-                                    parse_weighting_strategy, parse_mechanism,
-                                    maybe_inject_arguments_from_config)
+from utils.argument_parsing import (
+    add_algorithm_arguments,
+    add_filepath_arguments,
+    add_seed_arguments,
+    add_weighting_arguments,
+    get_algorithm,
+    maybe_inject_arguments_from_config,
+    parse_mechanism,
+    parse_weighting_strategy,
+)
 from utils.callback.pytorch import CentralLRDecay
 from utils.logging import init_logging
+
+from pfl.aggregate.simulate import SimulatedBackend
+from pfl.callback import (
+    AggregateMetricsToDisk,
+    CentralEvaluationCallback,
+    ModelCheckpointingCallback,
+    StopwatchCallback,
+)
+from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
+from pfl.model.pytorch import PyTorchModel
+from pfl.privacy import CentrallyAppliedPrivacyMechanism
+
 from ..argument_parsing import add_lm_arguments
 
 
@@ -137,8 +145,7 @@ def main():
 
     if arguments.restore_model_path is not None:
         model.load(arguments.restore_model_path)
-        logger.info('Restored model from {}'.format(
-            arguments.restore_model_path))
+        logger.info(f'Restored model from {arguments.restore_model_path}')
 
     model = algorithm.run(algorithm_params=algorithm_params,
                           backend=backend,

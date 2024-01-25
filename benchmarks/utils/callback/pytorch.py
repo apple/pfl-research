@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 from typing import Callable, Optional, Tuple
 
+from pfl.callback import TrainingProcessCallback
 from pfl.metrics import Metrics
 from pfl.model.pytorch import PyTorchModel
-from pfl.callback import TrainingProcessCallback
 
 
 def polynomial_lr_lambda(current_step: int, lr_init: float, lr_end: float,

@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import json
 import os
+import typing
 from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Generic, List, Optional, Tuple, TypeVar
-import typing
 
 import numpy as np
 import xgboost as xgb
 
-from pfl.data.dataset import AbstractDatasetType, Dataset
+from pfl.data.dataset import AbstractDatasetType
 from pfl.hyperparam.base import ModelHyperParams
 from pfl.internal.ops.selector import get_default_framework_module, set_framework_module
 from pfl.internal.tree import GBDTClassifier, GBDTRegressor, Node
@@ -259,14 +257,14 @@ class GBDTModel(EvaluatableModel, Generic[GBDTKind]):
         """
         Incorporate parent with current observation to determine value of node.
 
-	    The parent value is computed from statistics aggregated for the parent
+        The parent value is computed from statistics aggregated for the parent
         node of the node whose value is being determined. The current value is
         computed from statistics aggregated for the current node. If
         ``self._alpha`` is not ``None``, the parent and current values are
         combined using ``a * parent_value + (1 - a) * value``, where
         ``a = self._alpha``. Else, the value of the node is ``value``.
 
-	    :param value:
+        :param value:
             Value of node as determined by gradients aggregated for this node.
         :param parent_value:
             Value of node as determined by gradients aggregated for parent node
@@ -397,7 +395,7 @@ class GBDTModel(EvaluatableModel, Generic[GBDTKind]):
         """
         Evaluate model performance using a dataset.
 
-	    The prediction of a datapoint used for evaluation is computed using:
+        The prediction of a datapoint used for evaluation is computed using:
 
         1. all the trees in a GBDT, when the most recently added tree of the
            GBDT is fully trained.

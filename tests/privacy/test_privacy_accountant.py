@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 '''
 Test privacy accountants for DP in privacy_accountant.py.
 '''
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
+
 import numpy as np
 import pytest
 from dp_accounting import dp_event
@@ -126,33 +125,32 @@ class TestPrivacyAccountants:
              fn_expected_delta, max_bound):
         # these are patches for hyperparameters for the binary search for the
         # noise parameter - these settings speed up the binary search for tests
-        with patch('pfl.privacy.privacy_accountant.MIN_BOUND_NOISE_PARAMETER',
-                   new=0.65):
-            with patch(
+        with patch(
+                'pfl.privacy.privacy_accountant.MIN_BOUND_NOISE_PARAMETER',
+                new=0.65), patch(
                     'pfl.privacy.privacy_accountant.MAX_BOUND_NOISE_PARAMETER',  # pylint: disable=line-too-long
                     new=max_bound):
-                with patch(
-                        'pfl.privacy.privacy_accountant.RTOL_NOISE_PARAMETER',  # pylint: disable=line-too-long
-                        new=0.1):
-                    accountant = accountant_class(
-                        num_compositions=num_compositions,
-                        sampling_probability=sampling_probability,
-                        mechanism=mechanism,
-                        epsilon=epsilon,
-                        delta=delta,
-                        noise_parameter=noise_parameter,
-                        noise_scale=noise_scale)
-                    cohort_noise_parameter = (
-                        accountant.cohort_noise_parameter / noise_scale)
+            with patch(
+                    'pfl.privacy.privacy_accountant.RTOL_NOISE_PARAMETER',  # pylint: disable=line-too-long
+                    new=0.1):
+                accountant = accountant_class(
+                    num_compositions=num_compositions,
+                    sampling_probability=sampling_probability,
+                    mechanism=mechanism,
+                    epsilon=epsilon,
+                    delta=delta,
+                    noise_parameter=noise_parameter,
+                    noise_scale=noise_scale)
+                cohort_noise_parameter = (accountant.cohort_noise_parameter /
+                                          noise_scale)
 
-                    expected_delta = fn_expected_delta(cohort_noise_parameter,
-                                                       sampling_probability,
-                                                       num_compositions,
-                                                       mechanism,
-                                                       accountant.epsilon)
+                expected_delta = fn_expected_delta(cohort_noise_parameter,
+                                                   sampling_probability,
+                                                   num_compositions, mechanism,
+                                                   accountant.epsilon)
 
-                    np.testing.assert_almost_equal(accountant.delta,
-                                                   expected_delta)
+                np.testing.assert_almost_equal(accountant.delta,
+                                               expected_delta)
 
     @pytest.mark.xfail(raises=(ValueError, AssertionError), strict=True)
     @pytest.mark.parametrize('accountant_class', [(PLDPrivacyAccountant),

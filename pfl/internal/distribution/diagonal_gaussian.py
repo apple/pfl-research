@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 A trainable multivariate Gaussian distribution with a diagonal variance.
@@ -55,7 +53,7 @@ class DiagonalGaussian(Distribution[np.ndarray]):  # pylint: disable=unsubscript
                 determinant)**(-.5)
 
     def __str__(self):
-        return f'𝒩({self._mean}, diag({self._variance}))'
+        return f'𝒩({self._mean}, diag({self._variance}))'  # noqa: RUF001
 
     @property
     def point_shape(self):

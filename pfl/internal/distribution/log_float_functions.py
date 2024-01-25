@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Functions that work on or return LogFloat.
@@ -49,7 +47,7 @@ def normal_cdf(x: float) -> LogFloat:
     The CDF of a standard normal 𝒩(0,1).
     The result is returned as a LogFloat, so that it is particularly accurate
     in the left tail.
-    """
+    """  # noqa: RUF002
     return LogFloat(+1, scipy.stats.norm.logcdf(x))
 
 

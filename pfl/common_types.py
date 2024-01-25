@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-from abc import ABC
+from abc import ABC, abstractmethod
 from enum import Enum
 
 
@@ -22,6 +20,7 @@ class Saveable(ABC):
     want to be able to resume training after a crash.
     """
 
+    @abstractmethod
     def save(self, dir_path: str) -> None:
         """
         Save state of object to disk. Should be able
@@ -32,6 +31,7 @@ class Saveable(ABC):
             Directory on disk to store state.
         """
 
+    @abstractmethod
     def load(self, dir_path: str) -> None:
         """
         Load checkpoint from disk, which is the state previously

@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-import pytest
-
-from model.numpy.metrics import ROCAUC, PRAUC, AveragedPrecision, AUC
-from pfl.internal.ops import get_tf_major_version
-from sklearn.metrics import (roc_auc_score, precision_recall_curve, auc,
-                             average_precision_score)
 import numpy as np
+import pytest
+from model.numpy.metrics import AUC, PRAUC, ROCAUC, AveragedPrecision
+from sklearn.metrics import auc, average_precision_score, precision_recall_curve, roc_auc_score
+
+from pfl.internal.ops import get_tf_major_version
 
 _seed = 42
 

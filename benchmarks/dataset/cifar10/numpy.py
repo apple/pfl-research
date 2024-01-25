@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import os
 import pickle
@@ -8,9 +6,9 @@ from typing import Any, Callable, Dict, Optional, Tuple
 import numpy as np
 
 from pfl.data import ArtificialFederatedDataset, FederatedDataset
+from pfl.data.dataset import Dataset
 from pfl.data.partition import partition_by_dirichlet_class_distribution
 from pfl.data.sampling import get_data_sampler, get_user_sampler
-from pfl.data.dataset import Dataset
 
 
 def load_and_preprocess(pickle_file_path: str,

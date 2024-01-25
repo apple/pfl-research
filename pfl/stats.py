@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, Protocol, Tuple, Type, TypeVar, Union
 
 import numpy as np

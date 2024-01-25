@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 A dataset is simply an iterator for iterating through datasets of individual
@@ -18,10 +16,10 @@ behaviour of each worker generating identical noise patterns.
 """
 
 import atexit
+import contextlib
 import queue
 from abc import ABC, abstractmethod
-from typing import (Any, Callable, Dict, Iterable, Optional, Tuple, Union,
-                    List)
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 import multiprocess as mp
 import numpy as np
@@ -164,7 +162,7 @@ class FederatedDatasetBase(ABC):
     def __iter__(self):
         return self
 
-    def next(self):
+    def next(self):  # noqa: A003
         # Python 2 support.
         return self.__next__()
 
@@ -354,13 +352,11 @@ class FederatedDataset(FederatedDatasetBase):
         self.sampler = iter(self._sample_fn)
 
     def _try_set_cohort_size(self, cohort_size: int):
-        try:
+        # Doesn't need a cohort to be set, can continue.
+        with contextlib.suppress(AttributeError):
             # pytype: disable=attribute-error
             self._sample_fn.set_cohort_size(cohort_size)
             # pytype: enable=attribute-error
-        except AttributeError:
-            # Doesn't need a cohort to be set, can continue.
-            pass
 
     def __next__(self) -> Tuple[AbstractDataset, int]:
         # Each worker will make a dataset with its own sampled user.

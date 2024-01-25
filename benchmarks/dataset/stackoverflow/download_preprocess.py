@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Download the StackOverflow dataset
@@ -12,14 +10,14 @@ Preprocess and save dataset as HDF5 on disk in ML-ready format.
 This script is a one-time procedure.
 """
 import argparse
-from collections import defaultdict
 import json
 import os
+from collections import defaultdict
 from typing import Dict
 
+import h5py
 import multiprocess as mp
 import numpy as np
-import h5py
 import tensorflow_federated as tff  # pytype: disable=import-error
 from tqdm import tqdm
 
@@ -41,9 +39,11 @@ def get_vocabulary(vocabulary_size: int) -> Dict[str, int]:
         * bos - 10002
         * eos - 10003
     """
-    vocab_list = [PAD] + list(
-        tff.simulation.datasets.stackoverflow.load_word_counts(
-            vocab_size=vocabulary_size).keys()) + [UNK, BOS, EOS]
+    vocab_list = [
+        PAD, *list(
+            tff.simulation.datasets.stackoverflow.load_word_counts(
+                vocab_size=vocabulary_size).keys()), UNK, BOS, EOS
+    ]
     vocab: defaultdict = defaultdict(lambda: vocab_list.index(UNK))
     vocab.update({t: i for i, t in enumerate(vocab_list)})
     return vocab
@@ -82,8 +82,11 @@ def _make_worker_fn(tff_dataset, partition, vocabulary, max_sequence_length,
 
         sentences = []
         for sentence_data in tfdata:
-            sentence_tokens = ['BOS'] + sentence_data['tokens'].numpy().decode(
-                'UTF-8').split(' ') + ['EOS']
+            sentence_tokens = [
+                'BOS',
+                *sentence_data['tokens'].numpy().decode('UTF-8').split(' '),
+                'EOS'
+            ]
             sentences.append(sentence_tokens)
 
         trimmed_sentences = [

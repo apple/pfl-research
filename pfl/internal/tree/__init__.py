@@ -1,9 +1,11 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
+
+from .gbdt import GBDTClassifier, GBDTRegressor
 from .node import Node
-from .gbdt import GBDTRegressor, GBDTClassifier
-from .questions import (FloatEquidistantQuestionGenerator,
-                        IntEquidistantQuestionGenerator,
-                        FloatRandomQuestionGenerator,
-                        IntRandomQuestionGenerator, BoolQuestionGenerator)
+from .questions import (
+    BoolQuestionGenerator,
+    FloatEquidistantQuestionGenerator,
+    FloatRandomQuestionGenerator,
+    IntEquidistantQuestionGenerator,
+    IntRandomQuestionGenerator,
+)

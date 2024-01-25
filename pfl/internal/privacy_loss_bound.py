@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Classes that represent bounds on privacy loss, to represent differential
@@ -145,7 +143,7 @@ class RenyiPrivacyLossBound:
     :param epsilon:
         The bound on the value of the Rényi divergence that the mechanism
         provides.
-    """
+    """  # noqa: RUF002
 
     def __init__(self, order: float, epsilon: float):
         self._order = order
@@ -189,7 +187,7 @@ class RenyiPrivacyLossBound:
             The epsilon parameter in terms of Rényi differential privacy.
         :param desired_delta:
             The desired delta parameter for the approximate DP bound.
-        """
+        """  # noqa: RUF002
         return ApproximatePrivacyLossBound(
             self.epsilon + (math.log(1 / desired_delta) / (self.order - 1)),
             desired_delta)

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import itertools
@@ -8,12 +6,11 @@ from dataclasses import dataclass
 from typing import Callable, Generator, Iterable, List, Optional, Tuple
 
 import numpy as np
-from pfl.data.dataset import AbstractDatasetType
 
+from pfl.data.dataset import AbstractDatasetType
 from pfl.hyperparam import ModelHyperParams
 from pfl.internal.distribution import DiagonalGaussian, LogFloat, Mixture
-from pfl.internal.distribution.distribution import (Distribution, any_product,
-                                                    any_sum)
+from pfl.internal.distribution.distribution import Distribution, any_product, any_sum
 from pfl.metrics import Metrics, StringMetricName, Weighted
 from pfl.model.base import EvaluatableModel
 from pfl.stats import MappedVectorStatistics

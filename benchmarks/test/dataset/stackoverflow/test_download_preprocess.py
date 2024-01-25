@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import json
 import os
-import pytest
+from unittest.mock import MagicMock, patch
 
 import h5py
-from mock import patch, MagicMock
 import numpy as np
+import pytest
 
 from pfl.internal.ops import get_tf_major_version
 
@@ -74,8 +72,7 @@ class TestDownloadPreprocess:
             assert_called_once_with(vocab_size=3)
 
     def test_dl_preprocess_and_dump_h5(self, tff, mock_tffdatas, tmp_path):
-        from dataset.stackoverflow.download_preprocess import (
-            dl_preprocess_and_dump_h5)
+        from dataset.stackoverflow.download_preprocess import dl_preprocess_and_dump_h5
         vocab_size = 3
         max_sequence_length = 2
         num_processes = 2

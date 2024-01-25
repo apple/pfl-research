@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
 
 from pfl.internal.ops import get_tf_major_version
 from pfl.internal.ops.selector import _internal_reset_framework_module

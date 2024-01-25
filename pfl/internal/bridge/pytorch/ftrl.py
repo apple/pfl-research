@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 #
 # Some of the code in this file is adapted from:
@@ -13,9 +11,11 @@ Reference: https://github.com/google-research/federated/blob/master/multi_epoch_
 """
 
 from typing import Tuple
+
 import torch
 
 from pfl.exception import MatrixFactorizationError
+
 from ..base import FTRLFrameworkBridge
 
 
@@ -50,9 +50,10 @@ class PyTorchFTRLBridge(FTRLFrameworkBridge[torch.Tensor]):
             loss, gradients = torch.trace(H @ A), _project_update(-H @ H.T)
             assert not torch.any(torch.isnan(loss)).item()
             assert not torch.any(torch.isnan(gradients)).item()
-            return loss, gradients
         except Exception as e:
             raise MatrixFactorizationError from e
+        else:
+            return loss, gradients
 
     @staticmethod
     @torch.no_grad()

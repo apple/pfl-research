@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import itertools
@@ -63,7 +61,7 @@ class TFTensorDataset(Dataset):
     def labels(self):
         return self._raw_data[1]
 
-    def iter(self, batch_size: Optional[int]):
+    def iter(self, batch_size: Optional[int]):  # noqa: A003
         # Alternative batch splitting that is faster than the generic
         # implementation in `Dataset`.
         if batch_size is None:
@@ -180,7 +178,7 @@ class TFDataDataset(AbstractDataset):
                 "once using `iter` before the dataset length is known.")
         return self._length
 
-    def iter(self, batch_size: Optional[int]):
+    def iter(self, batch_size: Optional[int]):  # noqa: A003
         length = 0
         data = self._raw_data.batch(batch_size)
         if self._prefetch > 0:

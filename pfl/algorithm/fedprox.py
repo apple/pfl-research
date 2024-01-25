@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-from dataclasses import dataclass, field
 import sys
+from dataclasses import dataclass, field
 from typing import Tuple, Union
 
 from pfl.algorithm.base import NNAlgorithmParams
@@ -12,7 +10,7 @@ from pfl.context import CentralContext
 from pfl.data.dataset import AbstractDatasetType
 from pfl.hyperparam.base import HyperParam, HyperParamClsOrFloat
 from pfl.internal.bridge import FrameworkBridgeFactory as bridges
-from pfl.metrics import (Metrics, StringMetricName, get_overall_value)
+from pfl.metrics import Metrics, StringMetricName, get_overall_value
 from pfl.model.base import ModelType, StatefulModel
 from pfl.stats import WeightedStatistics
 

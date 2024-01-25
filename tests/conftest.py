@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 # pylint: disable=too-many-lines
 import asyncio
@@ -802,9 +800,9 @@ def tensorflow_model_setup(request, tensorflow_ops, user_dataset, get_model,
         metrics=[loss2])
 
     variables = []
-    for l in model.layers:
-        if isinstance(l, tf.keras.layers.Layer):
-            variables.extend(l.weights)
+    for layer in model.layers:
+        if isinstance(layer, tf.keras.layers.Layer):
+            variables.extend(layer.weights)
 
     model_params = {'model': model, 'central_optimizer': central_optimizer}
     # Override any parameter of the model with parametrization of the fixture.
@@ -863,8 +861,8 @@ def pytorch_model_setup(request, pytorch_ops, user_dataset,
         def forward(self, x):  # pylint: disable=arguments-differ
             return torch.matmul(x, self.weight)
 
-        def loss(self, x, y, eval=False):
-            if eval:
+        def loss(self, x, y, is_eval=False):
+            if is_eval:
                 self.eval()
             else:
                 self.train()
@@ -873,7 +871,7 @@ def pytorch_model_setup(request, pytorch_ops, user_dataset,
             unreduced_loss = self._l1loss(self(x), y)
             return torch.mean(torch.sum(unreduced_loss, dim=1))
 
-        def loss2(self, x, y, eval=True):
+        def loss2(self, x, y, is_eval=True):
             self.eval()
             l1loss = torch.nn.L1Loss(reduction='none')
             # Sum loss across output dim, average across batches,

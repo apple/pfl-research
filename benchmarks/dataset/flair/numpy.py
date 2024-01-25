@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 from typing import Callable
+
 import h5py
 import numpy as np
 
-from pfl.data import FederatedDataset, ArtificialFederatedDataset
+from pfl.data import ArtificialFederatedDataset, FederatedDataset
 from pfl.data.dataset import Dataset
-from pfl.data.sampling import get_user_sampler, get_data_sampler
+from pfl.data.sampling import get_data_sampler, get_user_sampler
 
-from .common import (get_multi_hot_targets, get_label_mapping,
-                     get_user_num_images)
+from .common import get_label_mapping, get_multi_hot_targets, get_user_num_images
 
 
 def make_federated_dataset(
@@ -40,7 +38,7 @@ def make_federated_dataset(
     """
     num_classes = len(get_label_mapping(hdf5_path, use_fine_grained_labels))
     user_num_images = get_user_num_images(hdf5_path, partition)
-    user_ids = sorted(list(user_num_images.keys()))
+    user_ids = sorted(user_num_images.keys())
     sampler = get_user_sampler('random', user_ids)
 
     def make_dataset_fn(user_id):

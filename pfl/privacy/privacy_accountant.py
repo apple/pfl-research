@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 '''
 Privacy accountants for differential privacy.
@@ -110,7 +108,7 @@ class PLDPrivacyAccountant(PrivacyAccountant):
     Code: https://github.com/google/differential-privacy/blob/main/python/dp_accounting/pld/pld_privacy_accountant.py # pylint: disable=line-too-long
     The PLD algorithm is based on: “Tight on budget?: Tight bounds for r-fold
     approximate differential privacy.”, Meiser and Mohammadi, in CCS, pages
-    247–264, 2018, https://eprint.iacr.org/2017/1034.pdf
+    247-264, 2018, https://eprint.iacr.org/2017/1034.pdf
     The Connect-the-Docts algorithm is based on: “Connect the Dots: Tighter
     Discrete Approximations of Privacy Loss Distributions”, Doroshenko et al.,
     PoPETs 2022, https://arxiv.org/pdf/2207.04380.pdf
@@ -246,7 +244,7 @@ class PRVPrivacyAccountant(PrivacyAccountant):
     a lower bound, an estimated value, and an upper bound for the delta and
     epsilon respectively. The estimated value is used for all further
     computations.
-    
+
     :param eps_error:
         Maximum permitted error in epsilon. Typically around 0.1.
     :param delta_error:

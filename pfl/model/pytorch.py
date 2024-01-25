@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import logging
 import os
@@ -314,7 +312,7 @@ class PyTorchModel(StatefulModel):
         # are used.
         self._allows_distributed_evaluation = allows_distributed_evaluation
         if isinstance(metrics, MetricsZero):
-            raise RuntimeError(
+            raise RuntimeError(  # noqa: TRY004
                 f"Accumulated metrics were Zero for user with dataset {dataset}"
             )
         processed_metrics = Metrics([

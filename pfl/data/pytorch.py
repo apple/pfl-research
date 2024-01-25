@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import itertools
@@ -142,7 +140,7 @@ class PyTorchDataDataset(AbstractDataset):
     def __len__(self):
         return len(self._raw_data)
 
-    def iter(self, batch_size: Optional[int]):
+    def iter(self, batch_size: Optional[int]):  # noqa: A003
         return iter(
             torch.utils.data.DataLoader(self._raw_data,
                                         batch_size=batch_size,

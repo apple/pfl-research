@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 # Some of the code in this file is adapted from:
 #
@@ -16,7 +14,6 @@ from pytest_lazyfixture import lazy_fixture
 
 from pfl.internal.bridge.factory import FrameworkBridgeFactory as bridges
 from pfl.internal.ops import get_ops, get_pytorch_major_version, get_tf_major_version
-from pfl.privacy import PLDPrivacyAccountant
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism, ForwardSubstitution, FTRLMatrixFactorizer
 from pfl.stats import MappedVectorStatistics
 

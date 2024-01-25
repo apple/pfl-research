@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 #
 # Some of the code in this file is adapted from:
@@ -18,6 +16,7 @@ import tensorflow as tf
 
 from pfl.exception import MatrixFactorizationError
 from pfl.internal.ops.tensorflow_ops import tf_function
+
 from ..base import FTRLFrameworkBridge
 
 
@@ -57,9 +56,10 @@ class TFFTRLBridge(FTRLFrameworkBridge[tf.Tensor]):
             loss, gradient = _loss_and_gradient_tf(A, X)
             assert not bool(tf.reduce_any(tf.math.is_nan(loss)).numpy())
             assert not bool(tf.reduce_any(tf.math.is_nan(gradient)).numpy())
-            return loss, gradient
         except Exception as e:
             raise MatrixFactorizationError from e
+        else:
+            return loss, gradient
 
     @staticmethod
     @tf_function

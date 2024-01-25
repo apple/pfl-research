@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import argparse
 from typing import Any, Callable, Dict, Tuple
 
 import numpy as np
+from utils.argument_parsing import store_bool
 
 from pfl.data.dataset import Dataset
 from pfl.data.federated_dataset import FederatedDatasetBase
-from utils.argument_parsing import store_bool
 
 
 def add_dataset_arguments(

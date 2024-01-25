@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 from functools import partial
 from typing import Any, Dict, Tuple
@@ -10,9 +8,8 @@ from pfl.data.dataset import Dataset
 from pfl.data.sampling import get_user_sampler
 from pfl.data.tensorflow import TFFederatedDataset
 
-from .numpy import (get_metadata, get_fraction_of_users, get_user_weights,
-                    make_tensors_fn, make_central_dataset as
-                    make_central_dataset_numpy)
+from .numpy import get_fraction_of_users, get_metadata, get_user_weights, make_tensors_fn
+from .numpy import make_central_dataset as make_central_dataset_numpy
 
 
 def make_federated_dataset(hdf5_path: str,

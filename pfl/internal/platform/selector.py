@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import logging
 
 from pfl.internal.platform import (
-    generic_platform, )
+    generic_platform,
+)
 
 logger = logging.getLogger(name=__name__)
 _platform = None

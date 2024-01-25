@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import json
@@ -18,8 +16,7 @@ from pfl.internal.ops.framework_types import MLFramework
 from pfl.internal.platform.selector import get_platform
 from pfl.metrics import MetricValue
 
-from .distributed import (horovod_is_active, DistributedContext,
-                          HorovodDistributedContext)
+from .distributed import DistributedContext, HorovodDistributedContext, horovod_is_active
 
 logger = logging.getLogger(name=__name__)
 

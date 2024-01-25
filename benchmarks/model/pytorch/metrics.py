@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
+
+from typing import Dict
 
 import torch
 import torch.nn as nn
 
-from typing import Dict
 from pfl.metrics import Weighted
 
 

@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 '''
 Test adaptive_clipping.py.
 '''
 
+import math
 import typing
 from unittest.mock import MagicMock
 
-import math
 import numpy as np
 import pytest
 from pytest_lazyfixture import lazy_fixture
@@ -20,7 +18,6 @@ from pfl.internal.ops import get_pytorch_major_version, get_tf_major_version
 from pfl.metrics import MetricName, Metrics, get_overall_value
 from pfl.privacy.adaptive_clipping import AdaptiveClippingGaussianMechanism
 from pfl.privacy.gaussian_mechanism import GaussianMechanism
-from pfl.privacy.privacy_accountant import PLDPrivacyAccountant
 from pfl.stats import ElementWeightedMappedVectorStatistics, MappedVectorStatistics
 
 _clipping_indicator_name = "adaptive_clipping/clipping_indicator"

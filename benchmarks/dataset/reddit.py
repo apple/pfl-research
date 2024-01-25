@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-from collections import namedtuple
 import json
+from collections import namedtuple
 from typing import Any, Dict, List, Tuple
 
 import h5py
 import numpy as np
 
 from pfl.data import FederatedDataset
-from pfl.data.sampling import get_user_sampler
 from pfl.data.dataset import Dataset
+from pfl.data.sampling import get_user_sampler
 from pfl.internal.platform import get_platform
 
 UserId = namedtuple('UserId', ['name', 'start_index', 'end_index'])

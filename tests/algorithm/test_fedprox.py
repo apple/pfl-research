@@ -1,17 +1,13 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import numpy as np
 import pytest
 from pytest_lazyfixture import lazy_fixture
 
-from pfl.algorithm.fedprox import (AdaptMuOnMetricCallback, FedProx,
-                                   FedProxParams)
+from pfl.algorithm.fedprox import AdaptMuOnMetricCallback, FedProx, FedProxParams
 from pfl.common_types import Population
-from pfl.context import CentralContext
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
-from pfl.metrics import Metrics, get_overall_value, TrainMetricName
+from pfl.metrics import Metrics, TrainMetricName, get_overall_value
 from pfl.stats import MappedVectorStatistics
 
 
@@ -173,9 +169,11 @@ def testcase_skip_iteration():
                                           adapt_frequency=2,
                                           initial_value=1.0)
 
-    return dict(adaptive_mu=adaptive_mu,
-                metric_values=[0.5],
-                expected_mus=[1.0])
+    return {
+        'adaptive_mu': adaptive_mu,
+        'metric_values': [0.5],
+        'expected_mus': [1.0]
+    }
 
 
 @pytest.fixture
@@ -183,15 +181,16 @@ def testcase_decrease_increase_flat():
     adaptive_mu = AdaptMuOnMetricCallback(metric_name='meatballs',
                                           adapt_frequency=1,
                                           initial_value=1.0)
-    return dict(adaptive_mu=adaptive_mu,
-                metric_values=[
-                    5, 5, 5, 4, 3, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0, 1.9, 1.8, 1.7,
-                    3, 4, 5
-                ],
-                expected_mus=[
-                    0.9, 1.0, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1,
-                    0.0, 0.0, 0.1, 0.2, 0.3
-                ])
+    return {
+        'adaptive_mu':
+        adaptive_mu,
+        'metric_values':
+        [5, 5, 5, 4, 3, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0, 1.9, 1.8, 1.7, 3, 4, 5],
+        'expected_mus': [
+            0.9, 1.0, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0,
+            0.0, 0.1, 0.2, 0.3
+        ]
+    }
 
 
 @pytest.fixture
@@ -200,15 +199,16 @@ def testcase_decrease_increase_small_step():
                                           adapt_frequency=1,
                                           initial_value=1.0,
                                           step_size=0.01)
-    return dict(adaptive_mu=adaptive_mu,
-                metric_values=[
-                    5, 5, 5, 4, 3, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0, 1.9, 1.8, 1.7,
-                    3, 4, 5
-                ],
-                expected_mus=[
-                    0.99, 1.0, 1.0, 0.99, 0.98, 0.97, 0.96, 0.95, 0.94, 0.93,
-                    0.92, 0.91, 0.90, 0.89, 0.90, 0.91, 0.92
-                ])
+    return {
+        'adaptive_mu':
+        adaptive_mu,
+        'metric_values':
+        [5, 5, 5, 4, 3, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0, 1.9, 1.8, 1.7, 3, 4, 5],
+        'expected_mus': [
+            0.99, 1.0, 1.0, 0.99, 0.98, 0.97, 0.96, 0.95, 0.94, 0.93, 0.92,
+            0.91, 0.90, 0.89, 0.90, 0.91, 0.92
+        ]
+    }
 
 
 @pytest.fixture
@@ -218,9 +218,11 @@ def testcase_decrease_mu_after_consecutive_improvements():
         adapt_frequency=1,
         initial_value=1.0,
         decrease_mu_after_consecutive_improvements=3)
-    return dict(adaptive_mu=adaptive_mu,
-                metric_values=[9, 8, 7, 6, 5, 6, 5, 4, 3],
-                expected_mus=[1.0, 1.0, 0.9, 0.8, 0.7, 0.8, 0.8, 0.8, 0.7])
+    return {
+        'adaptive_mu': adaptive_mu,
+        'metric_values': [9, 8, 7, 6, 5, 6, 5, 4, 3],
+        'expected_mus': [1.0, 1.0, 0.9, 0.8, 0.7, 0.8, 0.8, 0.8, 0.7]
+    }
 
 
 @pytest.mark.parametrize('model_setup', model_setup_marks)

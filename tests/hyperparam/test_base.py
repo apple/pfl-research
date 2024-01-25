@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
-from pfl.callback import TrainingProcessCallback
-from pfl.hyperparam.base import HyperParam, NNEvalHyperParams, NNTrainHyperParams, get_param_value
-
 import pytest
+
+from pfl.callback import TrainingProcessCallback
+from pfl.hyperparam.base import HyperParam, NNTrainHyperParams
 
 
 class LearningRateStepDecay(HyperParam, TrainingProcessCallback):
@@ -18,10 +16,10 @@ class LearningRateStepDecay(HyperParam, TrainingProcessCallback):
 
     def after_central_iteration(self, aggregate_metrics, model,
                                 central_iteration):
-        if central_iteration >= self._decay_start - 1:
-            if (central_iteration - self._decay_start +
-                    1) % self._decay_period == 0:
-                self._value *= self._decay_factor
+        if central_iteration >= self._decay_start - 1 and (
+                central_iteration - self._decay_start +
+                1) % self._decay_period == 0:
+            self._value *= self._decay_factor
 
     def value(self):
         return self._value

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import numpy as np
 import pytest
@@ -7,8 +5,8 @@ import pytest
 from pfl.internal.ops import get_pytorch_major_version
 
 if get_pytorch_major_version():
-    from model.pytorch import lm_lstm
     import torch
+    from model.pytorch import lm_lstm
 
 _PAD_SYMBOL = 0
 _UNK_SYMBOL = 1

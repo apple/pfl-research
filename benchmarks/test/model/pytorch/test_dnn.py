@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 from typing import Tuple
@@ -10,8 +8,8 @@ import pytest
 from pfl.internal.ops import get_pytorch_major_version
 
 if get_pytorch_major_version():
-    from model.pytorch import simple_dnn as pytorch_dnn
     import torch
+    from model.pytorch import simple_dnn as pytorch_dnn
 
 
 @pytest.mark.skipif(not get_pytorch_major_version(),
@@ -23,7 +21,7 @@ class TestPyTorchDNN:
     def test_output_shape(self, input_shape: Tuple[int, ...],
                           output_shape: int):
         pytorch_model = pytorch_dnn(input_shape, output_shape)
-        inputs = np.random.normal(size=(1, ) + input_shape).astype(np.float32)
+        inputs = np.random.normal(size=(1, *input_shape)).astype(np.float32)
         logits = pytorch_model(torch.from_numpy(inputs))
         assert int(logits.shape[-1]) == output_shape
 

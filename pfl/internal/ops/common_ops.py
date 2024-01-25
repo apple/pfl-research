@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import os
+
 from packaging.version import Version
 
 from .selector import get_framework_module as get_ops
@@ -99,9 +98,10 @@ def check_pfl_tree_installed() -> bool:
     """
     try:
         import xgboost  # pylint: disable=unused-import
-        return True
     except ModuleNotFoundError:
         return False
+    else:
+        return True
 
 
 def is_pytest_running():

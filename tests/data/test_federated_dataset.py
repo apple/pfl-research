@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import itertools
@@ -10,9 +8,13 @@ import numpy as np
 import pytest
 from pytest_lazyfixture import lazy_fixture
 
-from pfl.data import (ArtificialFederatedDataset, CrossSiloUserSampler,
-                      FederatedDataset, MinimizeReuseUserSampler,
-                      FederatedDatasetMixture)
+from pfl.data import (
+    ArtificialFederatedDataset,
+    CrossSiloUserSampler,
+    FederatedDataset,
+    FederatedDatasetMixture,
+    MinimizeReuseUserSampler,
+)
 from pfl.data.dataset import Dataset, TabularDataset
 from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
 
@@ -162,13 +164,13 @@ class TestArtificialFederatedDataset(unittest.TestCase):
         def make(indices):
             return Dataset(indices)
 
-        for l in [1, 10]:
-            sample_len = lambda: l  # pylint: disable=cell-var-from-loop
+        for length in [1, 10]:
+            sample_len = lambda length=length: length  # pylint: disable=cell-var-from-loop
             it = ArtificialFederatedDataset(make, self.sampler, sample_len)
 
             # Expect dataset to contain the sampled indices.
             user_dataset, _ = next(it)
-            np.testing.assert_array_equal(list(range(l)),
+            np.testing.assert_array_equal(list(range(length)),
                                           user_dataset.raw_data)
 
 
@@ -289,7 +291,7 @@ def make_artificial_fed_data_numpy(user_id_to_weight):
     raw_data = np.arange(20) * 10
     sample_dataset_len = lambda: 1
     data_id_it = itertools.cycle(range(len(raw_data)))
-    data_sampler = lambda l: list(itertools.islice(data_id_it, l))
+    data_sampler = lambda length: list(itertools.islice(data_id_it, length))
 
     def make_dataset_fn(data_ids):
         return Dataset((raw_data[data_ids], ),

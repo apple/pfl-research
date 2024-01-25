@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Test whether the base classes for TrainingStatistics are suit for purpose
@@ -7,7 +5,9 @@ using specific examples of extending the base classes.
 """
 
 from collections import defaultdict
+
 from numpy.testing import assert_almost_equal
+
 from pfl.stats import TrainingStatistics, WeightedStatistics
 
 

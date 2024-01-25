@@ -420,7 +420,7 @@ def parse_mechanism(mechanism_name,
 
     else:
         raise AssertionError(
-            "Please specify `mechanism_name`. If you don't want to         use any privacy, specify 'none'."
+            "Please specify `mechanism_name`. If you don't want to use any privacy, specify 'none'."
         )
 
     if is_central:

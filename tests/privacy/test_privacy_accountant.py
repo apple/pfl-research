@@ -128,10 +128,10 @@ class TestPrivacyAccountants:
         with patch(
                 'pfl.privacy.privacy_accountant.MIN_BOUND_NOISE_PARAMETER',
                 new=0.65), patch(
-                    'pfl.privacy.privacy_accountant.MAX_BOUND_NOISE_PARAMETER',  # pylint: disable=line-too-long
+                    'pfl.privacy.privacy_accountant.MAX_BOUND_NOISE_PARAMETER',
                     new=max_bound):
             with patch(
-                    'pfl.privacy.privacy_accountant.RTOL_NOISE_PARAMETER',  # pylint: disable=line-too-long
+                    'pfl.privacy.privacy_accountant.RTOL_NOISE_PARAMETER',
                     new=0.1):
                 accountant = accountant_class(
                     num_compositions=num_compositions,

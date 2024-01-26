@@ -28,6 +28,7 @@ Researchers are invited to contribute to the framework. Please, see :doc:`suppor
    :maxdepth: 2
    :caption: Getting Started:
 
+   guides/fl_introduction
    guides/simulation_distributed
 
 .. toctree::

@@ -47,7 +47,7 @@ def normal_cdf(x: float) -> LogFloat:
     The CDF of a standard normal 𝒩(0,1).
     The result is returned as a LogFloat, so that it is particularly accurate
     in the left tail.
-    """  # noqa: RUF002
+    """
     return LogFloat(+1, scipy.stats.norm.logcdf(x))
 
 

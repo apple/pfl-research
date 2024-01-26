@@ -357,7 +357,7 @@ class NormClipping(SplitPrivacyMechanism):
         This must be a positive integer (e.g., `1` or `2`) or np.inf.
     :param clipping_bound:
         The norm bound for clipping.
-    """  # noqa: RUF002
+    """
 
     def __init__(self, order: float, clipping_bound: HyperParamClsOrFloat):
         self._order = order

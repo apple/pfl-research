@@ -80,7 +80,7 @@ class AdaptiveClippingGaussianMechanism(CentrallyAppliedPrivacyMechanism):
         the derivative of quantile estimation loss. Recommended value for the
         step size η is 0.2 (default value) as suggested in
         https://arxiv.org/pdf/1905.03871.pdf.
-    """  # noqa: RUF002
+    """
 
     # Hard-coded recipe key for clipping indicator scale matched with MLRuntime
     _CLIPPING_INDICATOR_SCALE_KEY = "ClippingIndicatorScale"
@@ -146,7 +146,7 @@ class AdaptiveClippingGaussianMechanism(CentrallyAppliedPrivacyMechanism):
         Update clipping bound in log space.
         C ← C · exp(-ηC (γ_emp - γ)) where γ_emp is the (noisy) empirical
         fraction of devices that had model updates <= C.
-        """  # noqa: RUF002
+        """
         updated_clipping_bound = get_param_value(
             self._mutable_clipping_bound) * math.exp(
                 -self._log_space_step_size *

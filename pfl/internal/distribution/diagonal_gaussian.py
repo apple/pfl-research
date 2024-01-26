@@ -53,7 +53,7 @@ class DiagonalGaussian(Distribution[np.ndarray]):  # pylint: disable=unsubscript
                 determinant)**(-.5)
 
     def __str__(self):
-        return f'𝒩({self._mean}, diag({self._variance}))'  # noqa: RUF001
+        return f'𝒩({self._mean}, diag({self._variance}))'
 
     @property
     def point_shape(self):

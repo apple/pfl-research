@@ -95,6 +95,7 @@ target-version = "py37"
 line-length = 120
 fix = true
 ignore-init-module-imports = true
+allowed-confusables = ["α", "𝒩", "γ", "ℓ", "η", "𝛾", "ε", "δ"]
 select = [
     # flake8-2020
     "YTT",

@@ -40,7 +40,7 @@ def _compute_cap_offset_epsilon(cap_offset: float, num_dimensions: int):
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         d in the paper.
-    """  # noqa: RUF002
+    """
     if cap_offset < 0 or cap_offset >= 1:
         return math.inf
 
@@ -72,7 +72,7 @@ def _compute_pole_probability(overall_epsilon: float, cap_offset: float,
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         (d in the paper).
-    """  # noqa: RUF002
+    """
     cap_size_epsilon = _compute_cap_offset_epsilon(cap_offset, num_dimensions)
 
     pole_epsilon = overall_epsilon - cap_size_epsilon
@@ -99,7 +99,7 @@ def _compute_scaling(cap_offset: float, pole_probability: LogFloat,
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         (d in the paper).
-    """  # noqa: RUF002
+    """
     alpha = (num_dimensions - 1) / 2
     tau = (1 + cap_offset) / 2
 
@@ -134,7 +134,7 @@ def _compute_variance(epsilon: float, cap_offset: float, num_dimensions: int):
     :param num_dimensions:
         The number of dimensions of the vector to be privatized.
         (d in the paper).
-    """  # noqa: RUF002
+    """
     _, _, pole_probability = _compute_pole_probability(epsilon, cap_offset,
                                                        num_dimensions)
     scale = _compute_scaling(cap_offset, pole_probability, num_dimensions)
@@ -154,7 +154,7 @@ def _privatize_manual(epsilon: float, cap_offset: float,
         (γ in the paper).
     :param unit_vector:
         The vector to privatize.
-    """  # noqa: RUF002
+    """
     num_dimensions = unit_vector.size
     assert np.isclose(np.linalg.norm(unit_vector), 1, atol=1e-4)
 
@@ -202,7 +202,7 @@ def compute_optimal_cap_offset(epsilon: float,
 
     :return:
         A tuple of the scaling and the cap_offset that minimised the scaling.
-    """  # noqa: RUF002
+    """
 
     def cap_offset_scaling(cap_offset: float) -> LogFloat:
         cap_size_epsilon = _compute_cap_offset_epsilon(
@@ -245,7 +245,7 @@ def privatize(epsilon, unit_vector: np.ndarray) -> np.ndarray:
     """
     num_dimensions = unit_vector.size
 
-    # Find the optimal cap_offset parameter (γ in the paper) by  # noqa: RUF003
+    # Find the optimal cap_offset parameter (γ in the paper) by
     # applying binary-search over the possible values
     # and recording the best error
     _, optimal_cap_offset = compute_optimal_cap_offset(epsilon, num_dimensions)

@@ -28,7 +28,6 @@ import h5py
 import multiprocess as mp
 import numpy as np
 import tensorflow as tf
-import tensorflow_federated as tff  # pytype: disable=import-error
 from tqdm import tqdm
 
 PAD = 'PAD'

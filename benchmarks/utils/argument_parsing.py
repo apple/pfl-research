@@ -419,7 +419,7 @@ def parse_mechanism(mechanism_name,
         mechanism = NormClippingOnly(order, clipping_bound)
 
     else:
-        raise AssertionError(
+        raise ValueError(
             "Please specify `mechanism_name`. If you don't want to use any privacy, specify 'none'."
         )
 

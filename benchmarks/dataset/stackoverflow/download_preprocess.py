@@ -18,6 +18,7 @@ import argparse
 import json
 import lzma
 import os
+import sqlite3
 import urllib.parse
 import urllib.request
 from collections import OrderedDict, defaultdict
@@ -26,8 +27,8 @@ from typing import Dict, Iterator, Optional
 import h5py
 import multiprocess as mp
 import numpy as np
-import tensorflow_federated as tff  # pytype: disable=import-error
 import tensorflow as tf
+import tensorflow_federated as tff  # pytype: disable=import-error
 from tqdm import tqdm
 
 PAD = 'PAD'
@@ -100,8 +101,7 @@ def fetch_client_ids(database_filepath: str,
     if split_name == "val":
         # heldout is used in the raw sqlite database
         split_name = "heldout"
-    connection = 
-    .connect(database_filepath)
+    connection = sqlite3.connect(database_filepath)
     query = "SELECT DISTINCT client_id FROM client_metadata"
     if split_name is not None:
         query += f" WHERE split_name = '{split_name}'"

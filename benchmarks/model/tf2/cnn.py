@@ -1,16 +1,9 @@
-
 # Copyright © 2023-2024 Apple Inc.
 from typing import Tuple
 
 import tensorflow as tf  # type: ignore
 from tensorflow.keras.layers import (  # type: ignore
-    Conv2D,
-    Dense,
-    Dropout,
-    Flatten,
-    GlobalAveragePooling2D,
-    Input,
-    MaxPool2D,
+    Conv2D, Dense, Dropout, Flatten, GlobalAveragePooling2D, Input, MaxPool2D,
 )
 from tensorflow_addons.layers.normalizations import GroupNormalization  # type: ignore
 

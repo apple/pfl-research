@@ -24,7 +24,6 @@ repos:
       - id: check-shebang-scripts-are-executable
       - id: check-toml
       - id: check-yaml
-      - id: fix-encoding-pragma --remove
   # Formatting consistency
   # TODO: can't use main yapf while this issue is open
   # https://github.com/google/yapf/issues/1164

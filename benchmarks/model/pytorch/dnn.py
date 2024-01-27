@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
-from typing import List, Tuple
 import functools
 import types
+from typing import List, Tuple
 
-import torch.nn as nn
 import numpy as np
+import torch.nn as nn
 
-from .metrics import image_classification_metrics, image_classification_loss
+from .metrics import image_classification_loss, image_classification_metrics
 
 
 def dnn(input_shape: Tuple[int, ...], hidden_dims: Tuple[int, ...],

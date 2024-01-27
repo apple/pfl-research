@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Approximate local privacy mechanisms with a central implementation for speed.
@@ -155,7 +153,7 @@ class GaussianApproximatedPrivacyMechanism(CentralPrivacyMechanism):
 
     def _central_metric_format(self, name_formatting_fn):
 
-        def format(n):
+        def format(n):  # noqa: A001
             return name_formatting_fn(f'(approx. local) {n}')
 
         return format

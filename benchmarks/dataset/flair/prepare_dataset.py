@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import argparse
+import json
+import logging
 import os
 import sys
-import logging
-import tqdm
-import h5py
-import json
-import numpy as np
-
+from collections import Counter, defaultdict
 from typing import Dict, Tuple
-from collections import defaultdict, Counter
+
+import h5py
+import numpy as np
+import tqdm
 from PIL import Image
 
 logger = logging.getLogger(name=__name__)
@@ -146,8 +144,7 @@ def preprocess_federated_dataset(image_dir: str, labels_file: str,
                                   data=np.stack(image_array))
 
             if (i + 1) % LOG_INTERVAL == 0:
-                logger.info("Processed {0}/{1} users".format(
-                    i + 1, len(user_metadata)))
+                logger.info(f"Processed {i + 1}/{len(user_metadata)} users")
 
         # Write metadata
         h5file['/metadata/label_mapping'] = json.dumps(label_to_index)
@@ -192,8 +189,7 @@ def preprocess_central_dataset(image_dir: str, labels_file: str,
                     metadata["fine_grained_labels"])
 
             if (i + 1) % LOG_INTERVAL == 0:
-                logger.info("Processed {0}/{1} users".format(
-                    i + 1, len(user_metadata)))
+                logger.info(f"Processed {i + 1}/{len(user_metadata)} users")
 
         # Write metadata
         h5file['/metadata/label_mapping'] = json.dumps(label_counter)

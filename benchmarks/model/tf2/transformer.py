@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import tensorflow as tf
 
-from model.tf2.layer import PositionalEmbedding, CausalEncoderLayer
+from model.tf2.layer import CausalEncoderLayer, PositionalEmbedding
 
 
 def lm_transformer(embedding_size: int,

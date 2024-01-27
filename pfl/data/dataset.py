@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterable, List, Optional, Tuple, TypeVar
 
 import numpy as np
@@ -67,7 +65,7 @@ class AbstractDataset(ABC):
         pass
 
     @abstractmethod
-    def iter(self, batch_size: Optional[int]) -> Iterable:
+    def iter(self, batch_size: Optional[int]) -> Iterable:  # noqa: A003
         pass
 
     @abstractmethod
@@ -226,7 +224,7 @@ class Dataset(AbstractDataset):
         """
         return self._first_tensor_length(self.raw_data)
 
-    def iter(self, batch_size: Optional[int]):
+    def iter(self, batch_size: Optional[int]):  # noqa: A003
         if batch_size is None:
             yield self.raw_data
             return
@@ -388,7 +386,7 @@ class DatasetSplit(AbstractDataset):
     def __len__(self):
         return len(self._train_dataset)
 
-    def iter(self, batch_size: Optional[int]):
+    def iter(self, batch_size: Optional[int]):  # noqa: A003
         raise NotImplementedError(
             "Can't iterate DatasetSplit, need to split it first")
 

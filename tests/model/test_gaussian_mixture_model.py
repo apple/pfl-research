@@ -1,29 +1,20 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
-import pickle
-from tempfile import TemporaryDirectory
-from unittest.mock import Mock
-from typing import Callable, Tuple
 import math
 import os
+import pickle
+from tempfile import TemporaryDirectory
+from typing import Callable, Tuple
+from unittest.mock import Mock
 
-import pytest
 import numpy as np
+import pytest
 
 from pfl.data.dataset import AbstractDataset, Dataset
-
-from pfl.internal.distribution import (Mixture, DiagonalGaussian,
-                                       diagonal_standard_gaussian)
-
+from pfl.internal.distribution import DiagonalGaussian, Mixture, diagonal_standard_gaussian
 from pfl.internal.distribution.distribution import any_sum
-from pfl.metrics import (MetricName, MetricValue, Metrics, StringMetricName,
-                         Weighted)
-
-from pfl.model.gaussian_mixture_model import (GaussianMixtureModel,
-                                              GMMHyperParams)
-
+from pfl.metrics import MetricName, Metrics, MetricValue, StringMetricName, Weighted
+from pfl.model.gaussian_mixture_model import GaussianMixtureModel, GMMHyperParams
 from pfl.stats import MappedVectorStatistics
 
 

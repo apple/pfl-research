@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Download the CIFAR10 dataset from
@@ -8,13 +6,13 @@ and preprocess into pickles, one for train set and
 one for test set.
 """
 import argparse
-from glob import glob
 import os
 import pickle
 import subprocess
-import urllib3
+from glob import glob
 
 import numpy as np
+import urllib3
 
 URL = "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
 

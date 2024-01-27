@@ -1,20 +1,17 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import json
 import os
-import pytest
+from unittest.mock import patch
 
 import h5py
-from mock import patch
 import numpy as np
+import pytest
+from dataset.stackoverflow.numpy import get_fraction_of_users, get_metadata, get_user_weights
 from pytest_lazyfixture import lazy_fixture
+
 from pfl.data.sampling import MinimizeReuseUserSampler
 from pfl.internal.ops import get_pytorch_major_version, get_tf_major_version
 from pfl.internal.ops.selector import _internal_reset_framework_module, set_framework_module
-
-from dataset.stackoverflow.numpy import (get_metadata, get_fraction_of_users,
-                                         get_user_weights)
 
 
 @pytest.fixture
@@ -59,6 +56,7 @@ def numpy_so_module():
 @pytest.fixture
 def tf2_so_module():
     from dataset.stackoverflow import tensorflow_v2
+
     from pfl.internal.ops import tensorflow_ops
     _internal_reset_framework_module()
     set_framework_module(tensorflow_ops)
@@ -72,6 +70,7 @@ def tf2_so_module():
 @pytest.fixture
 def pytorch_so_module():
     from dataset.stackoverflow import pytorch
+
     from pfl.internal.ops import pytorch_ops
     _internal_reset_framework_module()
     set_framework_module(pytorch_ops)

@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
-import os
-import sys
 import argparse
-import subprocess
-import multiprocessing
 import functools
 import logging
-
+import multiprocessing
+import os
+import subprocess
+import sys
 from urllib.parse import urljoin
 from urllib.request import urlretrieve
 
@@ -81,13 +78,13 @@ if __name__ == '__main__':
                      os.path.basename(LABEL_RELATIONSHIP_URL)))
     # download and decompress all images
     for image_url in SMALL_IMAGE_URLS:
-        logger.info("Downloading small image: {}".format(image_url))
+        logger.info(f"Downloading small image: {image_url}")
         urlretrieve(
             image_url,
             os.path.join(arguments.dataset_dir, os.path.basename(image_url)))
     if arguments.download_raw:
         for image_url in RAW_IMAGE_URLS:
-            logger.info("Downloading raw image: {}".format(image_url))
+            logger.info(f"Downloading raw image: {image_url}")
             urlretrieve(
                 image_url,
                 os.path.join(arguments.dataset_dir,

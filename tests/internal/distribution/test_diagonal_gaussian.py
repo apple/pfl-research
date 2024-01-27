@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Test diagonal_gaussian.py
@@ -42,17 +40,17 @@ def test_properties():
 
 def test_failed_initialization():
     with pytest.raises(Exception):
-        g = DiagonalGaussian([1.], [2., 3.])  # different dims
+        DiagonalGaussian([1.], [2., 3.])  # different dims
     with pytest.raises(Exception):
-        g = DiagonalGaussian([1., 3.], [2.])  # different dims
+        DiagonalGaussian([1., 3.], [2.])  # different dims
     with pytest.raises(Exception):
-        g = DiagonalGaussian(np.ones((3, 1)), np.ones((3, 1)))  # 2D not 1D
+        DiagonalGaussian(np.ones((3, 1)), np.ones((3, 1)))  # 2D not 1D
     with pytest.raises(Exception):
-        g = DiagonalGaussian(np.ones((2, 2)), np.ones((2, 2)))  # 2D not 1D
+        DiagonalGaussian(np.ones((2, 2)), np.ones((2, 2)))  # 2D not 1D
     with pytest.raises(Exception):
-        g = DiagonalGaussian([1., 4.], [0., 2.])  # variance <= 0
+        DiagonalGaussian([1., 4.], [0., 2.])  # variance <= 0
     with pytest.raises(Exception):
-        g = DiagonalGaussian([1., 4.], [-1., 2.])  # variance <= 0
+        DiagonalGaussian([1., 4.], [-1., 2.])  # variance <= 0
 
 
 def test_normalization():

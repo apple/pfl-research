@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Test mixture.py
@@ -75,9 +73,9 @@ def test_responsibilities(components, mixture):
     assert r[1].value == pytest.approx(3 * 4 / total)
     assert r[2].value == pytest.approx(2 * 7 / total)
 
-    assert components[0].density.called_with(7)
-    assert components[1].density.called_with(7)
-    assert components[2].density.called_with(7)
+    components[0].density.assert_called_with(7)
+    components[1].density.assert_called_with(7)
+    components[2].density.assert_called_with(7)
 
 
 def test_density(components, mixture):
@@ -87,9 +85,9 @@ def test_density(components, mixture):
 
     assert density.value == pytest.approx(expected_density)
 
-    assert components[0].density.called_with(3)
-    assert components[1].density.called_with(3)
-    assert components[2].density.called_with(3)
+    components[0].density.assert_called_with(3)
+    components[1].density.assert_called_with(3)
+    components[2].density.assert_called_with(3)
 
 
 @pytest.mark.parametrize('values, denominator', [

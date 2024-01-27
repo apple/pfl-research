@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 See the following pages for information about conftest.py files:
@@ -13,7 +11,6 @@ import pytest
 
 from pfl.hyperparam import NNTrainHyperParams
 from pfl.internal.bridge import FrameworkBridgeFactory as bridges
-from pfl.internal.ops import get_tf_major_version
 from pfl.metrics import StringMetricName, get_overall_value
 
 

@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import io
 import os
 import pickle
 import tarfile
+from unittest.mock import MagicMock, patch
 
-from mock import patch, MagicMock
 import numpy as np
 import pytest
-
 from dataset.cifar10.download_preprocess import dl_preprocess_and_dump
 
 

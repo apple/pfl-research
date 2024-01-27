@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import logging
-
 from typing import Callable
 
-from .common import (make_central_datasets, get_channel_mean_stddevs,
-                     get_label_mapping)
+from .common import get_channel_mean_stddevs, get_label_mapping, make_central_datasets
 
 logger = logging.getLogger(name=__name__)
 

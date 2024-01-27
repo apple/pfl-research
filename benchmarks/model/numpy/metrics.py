@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 from abc import ABC
 from enum import Enum
@@ -214,7 +212,7 @@ class BucketConfusionMatrix:
                         dtype=np.float32)
 
     def __repr__(self):
-        return 'ConfusionMatrix({})'.format(self._shape)
+        return f'ConfusionMatrix({self._shape})'
 
 
 class AUCSummationMethod(Enum):
@@ -280,8 +278,8 @@ class AUC(MetricValue, ABC):
                       for i in range(num_thresholds - 2)]
         # Add an endpoint "threshold" below zero and above one for either
         # threshold method to account for floating point imprecisions.
-        self._thresholds = np.array([0.0 - _SMALL_VALUE] + thresholds +
-                                    [1.0 + _SMALL_VALUE])
+        self._thresholds = np.array(
+            [0.0 - _SMALL_VALUE, *thresholds, 1.0 + _SMALL_VALUE])
 
         self._summation_method = summation_method
         self._multi_label = multi_label
@@ -474,7 +472,7 @@ class MacroWeighted(MetricValue):
         return np.mean(np.nan_to_num(weighted_value))
 
     def __repr__(self):
-        return '({}/{})'.format(self._weighted_value, self._weight)
+        return f'({self._weighted_value}/{self._weight})'
 
     def from_vector(self, vector: np.ndarray) -> 'MacroWeighted':
         assert len(vector) == 2

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Weighting strategies are :class:`~pfl.postprocessor.base.Postprocessor`

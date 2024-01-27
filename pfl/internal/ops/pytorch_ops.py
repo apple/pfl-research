@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
+import contextlib
 import logging
 import os
 from typing import List, Optional, Tuple, Union
@@ -13,19 +12,17 @@ from pfl.internal.ops.framework_types import MLFramework
 from pfl.internal.platform.selector import get_platform
 
 from .common_ops import get_pytorch_major_version, is_pytest_running
-from .distributed import (horovod_is_active, DistributedContext,
-                          HorovodDistributedContext)
+from .distributed import DistributedContext, HorovodDistributedContext, horovod_is_active
 
 logger = logging.getLogger(name=__name__)
 
 FRAMEWORK_TYPE = MLFramework.PYTORCH
 
-try:
-    # Comment this out to cause segfault. Must be used to make
-    # DataLoader and distributed training work together.
+# Without suppressing the exception, this out to cause segfault.
+# Must be used to make DataLoader and distributed training work
+# together.
+with contextlib.suppress(RuntimeError):
     torch.multiprocessing.set_start_method('forkserver')
-except RuntimeError:
-    pass
 
 
 def get_default_device():

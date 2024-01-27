@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 Algorithms of base class :class:`~pfl.algorithm.base.FederatedAlgorithm` implement local training of models and processing of central model updates. It is these two parts of the end-to-end training loop that define the behaviour of a specific federated algorithm. The remaining parts define the private federated learning framework itself and do not change with different training algorithms.
@@ -397,11 +395,8 @@ class FederatedNNAlgorithm(FederatedAlgorithm[NNAlgorithmParamsType,
         static_model_train_params: ModelHyperParamsType = \
             model_train_params.static_clone()
         static_model_eval_params: Optional[ModelHyperParamsType]
-        if model_eval_params is None:
-            static_model_eval_params = None
-        else:
-            static_model_eval_params = \
-                model_eval_params.static_clone()
+        static_model_eval_params = None if model_eval_params is None else model_eval_params.static_clone(
+        )
 
         configs: List[CentralContext[
             NNAlgorithmParamsType, ModelHyperParamsType]] = [

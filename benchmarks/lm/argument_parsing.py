@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 import argparse
 import os
 
-from utils.argument_parsing import (add_dnn_training_arguments,
-                                    add_mechanism_arguments, store_bool)
+from utils.argument_parsing import add_dnn_training_arguments, add_mechanism_arguments, store_bool
 
 
 def add_lm_arguments(argument_parser):

@@ -1,28 +1,34 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import argparse
 import logging
 import os
 import sys
-import yaml
-
-from .weighting import (WeightByTokens, WeightByCubeRootTokens,
-                        WeightByLogTokens, WeightByTokensClipped,
-                        WeightBySqrtTokens)
 
 import numpy as np
+import yaml
 
 from pfl.aggregate.weighting import WeightByUser
-from pfl.algorithm import (FederatedAlgorithm, NNAlgorithmParams,
-                           FederatedAveraging, FedProx, FedProxParams)
-from pfl.privacy import (CentrallyApplicablePrivacyMechanism,
-                         CentrallyAppliedPrivacyMechanism, NoPrivacy,
-                         GaussianMechanism, LaplaceMechanism,
-                         GaussianMechanism, NormClippingOnly,
-                         PrivUnitMechanism, PLDPrivacyAccountant)
+from pfl.algorithm import FederatedAlgorithm, FederatedAveraging, FedProx, FedProxParams, NNAlgorithmParams
+from pfl.privacy import (
+    CentrallyApplicablePrivacyMechanism,
+    CentrallyAppliedPrivacyMechanism,
+    GaussianMechanism,
+    LaplaceMechanism,
+    NoPrivacy,
+    NormClippingOnly,
+    PLDPrivacyAccountant,
+    PrivUnitMechanism,
+)
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism
+
+from .weighting import (
+    WeightByCubeRootTokens,
+    WeightByLogTokens,
+    WeightBySqrtTokens,
+    WeightByTokens,
+    WeightByTokensClipped,
+)
 
 logger = logging.getLogger(name=__name__)
 
@@ -34,7 +40,7 @@ def maybe_inject_arguments_from_config():
     temp_args, _ = arg_parser.parse_known_args()
 
     if temp_args.args_config:
-        with open(temp_args.args_config, 'r') as file:
+        with open(temp_args.args_config) as file:
             config = yaml.safe_load(file)
 
         # Inject config arguments into sys.argv
@@ -119,12 +125,12 @@ class store_bool(argparse.Action):
         argparse.Action.__init__(self, option_strings, dest, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
-        false_values = set(['false', 'no'])
-        true_values = set(['true', 'yes'])
+        false_values = {'false', 'no'}
+        true_values = {'true', 'yes'}
 
         values = values.lower()
 
-        if not values in (false_values | true_values):
+        if values not in (false_values | true_values):
             raise argparse.ArgumentError(
                 self, 'Value must be either "true" or "false"')
         value = (values in true_values)
@@ -257,7 +263,7 @@ def add_mechanism_arguments(argument_parser):
         def __init__(self, option_strings, dest, nargs=None, **kwargs):
             if nargs is not None:
                 raise ValueError("nargs not allowed")
-            super(OrderAction, self).__init__(option_strings, dest, **kwargs)
+            super().__init__(option_strings, dest, **kwargs)
 
         def __call__(self, parser, namespace, values, option_string=None):
             if values is None:
@@ -413,8 +419,9 @@ def parse_mechanism(mechanism_name,
         mechanism = NormClippingOnly(order, clipping_bound)
 
     else:
-        assert False, "Please specify `mechanism_name`. If you don't want to \
-        use any privacy, specify 'none'."
+        raise ValueError(
+            "Please specify `mechanism_name`. If you don't want to use any privacy, specify 'none'."
+        )
 
     if is_central:
         assert isinstance(mechanism, CentrallyApplicablePrivacyMechanism), (

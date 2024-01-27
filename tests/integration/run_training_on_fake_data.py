@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import argparse
@@ -28,8 +26,8 @@ from pfl.privacy import (
     LaplaceMechanism,
     NoPrivacy,
     NormClippingOnly,
-    PrivUnitMechanism,
     PLDPrivacyAccountant,
+    PrivUnitMechanism,
 )
 
 
@@ -374,8 +372,8 @@ def _make_pytorch_model():
                 torch.matmul(a1, self.w2) + self.b2)
             return a2
 
-        def loss(self, x, y, eval=False):
-            if eval:
+        def loss(self, x, y, is_eval=False):
+            if is_eval:
                 self.eval()
             else:
                 self.train()
@@ -383,7 +381,7 @@ def _make_pytorch_model():
             return l1loss(self(torch.FloatTensor(x)), torch.FloatTensor(y))
 
         def metrics(self, x, y):
-            loss_value = self.loss(x, y, eval=True)
+            loss_value = self.loss(x, y, is_eval=True)
             num_samples = len(y)
             return {'loss': Weighted(loss_value, num_samples)}
 

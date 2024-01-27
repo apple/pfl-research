@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 """
 A callback provides hooks into the training process. Different methods provides
@@ -23,8 +21,7 @@ from pfl.exception import CheckpointNotFoundError
 from pfl.hyperparam.base import ModelHyperParams
 from pfl.internal import ops
 from pfl.internal.ops.selector import get_default_framework_module as get_ops
-from pfl.metrics import (MetricName, MetricNamePostfix, Metrics,
-                         StringMetricName, get_overall_value)
+from pfl.metrics import MetricName, MetricNamePostfix, Metrics, StringMetricName, get_overall_value
 from pfl.model.base import EvaluatableModelType, ModelType, StatefulModel
 from pfl.model.ema import CentralExponentialMovingAverage
 
@@ -875,7 +872,7 @@ class AggregateMetricsToDisk(TrainingProcessCallback):
             if check_existing_file:
                 assert not os.path.exists(
                     output_path), "File {output_path} already exists"
-            self._fp = open(self._output_path, 'w')
+            self._fp = open(self._output_path, 'w')  # noqa: SIM115
 
     # For mockability
     def platform(self):
@@ -908,7 +905,7 @@ class AggregateMetricsToDisk(TrainingProcessCallback):
 
         with open(self._output_path, 'w') as f:
             f.writelines(lines)
-        self._fp = open(self._output_path, 'a')
+        self._fp = open(self._output_path, 'a')  # noqa: SIM115
 
     def after_central_iteration(
             self, aggregate_metrics: Metrics, model: ModelType, *,

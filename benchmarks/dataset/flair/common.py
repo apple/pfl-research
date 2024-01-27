@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import json
 import random
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 
 import h5py
 import numpy as np
@@ -153,7 +151,7 @@ def make_central_datasets(hdf5_path: str, partition: str,
     inputs_all_list, targets_all_list = [], []
 
     with h5py.File(hdf5_path, 'r') as h5:
-        for user_id in h5[f'/{partition}'].keys():
+        for user_id in h5[f'/{partition}']:
             inputs = np.array(h5[f'/{partition}/{user_id}/images'])
             targets_shape = (len(inputs), num_classes)
             targets = get_multi_hot_targets(targets_shape, h5, partition,

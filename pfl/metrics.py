@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import itertools
 import typing
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional, Tuple, Union
 from numbers import Number
+from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 

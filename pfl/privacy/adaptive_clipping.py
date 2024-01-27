@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 
 import math
@@ -144,9 +142,11 @@ class AdaptiveClippingGaussianMechanism(CentrallyAppliedPrivacyMechanism):
             self._mutable_clipping_bound)
 
     def _geometric_update(self, noisy_norm_quantile: float):
-        # Update clipping bound in log space.
-        # C ← C · exp(−ηC (γ_emp − γ)) where γ_emp is the (noisy) empirical
-        # fraction of devices that had model updates <= C.
+        """
+        Update clipping bound in log space.
+        C ← C · exp(-ηC (γ_emp - γ)) where γ_emp is the (noisy) empirical
+        fraction of devices that had model updates <= C.
+        """
         updated_clipping_bound = get_param_value(
             self._mutable_clipping_bound) * math.exp(
                 -self._log_space_step_size *

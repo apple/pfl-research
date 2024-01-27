@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright © 2023-2024 Apple Inc.
 '''
 Test privacy_mechanism.py.
@@ -25,7 +23,6 @@ from pfl.privacy.approximate_mechanism import SquaredErrorLocalPrivacyMechanism
 from pfl.privacy.gaussian_mechanism import GaussianMechanism
 from pfl.privacy.laplace_mechanism import LaplaceMechanism
 from pfl.privacy.priv_unit_mechanism import PrivUnitMechanism
-from pfl.privacy.privacy_accountant import PLDPrivacyAccountant
 from pfl.privacy.privacy_mechanism import (
     CentrallyAppliedPrivacyMechanism,
     NoPrivacy,

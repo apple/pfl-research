@@ -2,8 +2,7 @@
 import logging
 
 from pfl.internal.platform import (
-    generic_platform,
-)
+    generic_platform, )
 
 logger = logging.getLogger(name=__name__)
 _platform = None

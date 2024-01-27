@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
 import tensorflow as tf
 
 
 def _apply_mask(y_true, sample_weight, masked_tokens, dtype):
-    if sample_weight is None:
-        sample_weight = tf.ones_like(y_true, dtype)
-    else:
-        sample_weight = tf.cast(sample_weight, dtype)
+    sample_weight = tf.ones_like(y_true, dtype) if sample_weight is None else tf.cast(sample_weight, dtype)
     for token in masked_tokens:
         mask = tf.cast(tf.not_equal(y_true, token), dtype)
         sample_weight = sample_weight * mask

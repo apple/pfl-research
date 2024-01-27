@@ -1,13 +1,18 @@
-# -*- coding: utf-8 -*-
 
 # Copyright © 2023-2024 Apple Inc.
 from typing import Tuple
 
 import tensorflow as tf  # type: ignore
 from tensorflow.keras.layers import (  # type: ignore
-    GlobalAveragePooling2D, Input, Conv2D, Dense, Dropout, MaxPool2D, Flatten)
-from tensorflow_addons.layers.normalizations import (  # type: ignore
-    GroupNormalization)
+    Conv2D,
+    Dense,
+    Dropout,
+    Flatten,
+    GlobalAveragePooling2D,
+    Input,
+    MaxPool2D,
+)
+from tensorflow_addons.layers.normalizations import GroupNormalization  # type: ignore
 
 
 def simple_cnn(input_shape: Tuple[int, ...],

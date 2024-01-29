@@ -24,7 +24,9 @@ from pfl.privacy import (
     PrivUnitMechanism,
 )
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism
-from pfl.data.user_state import InMemoryUserStateStorage, DiskUserStateStorage
+from pfl.data.user_state import (AbstractUserStateStorage,
+                                 InMemoryUserStateStorage,
+                                 DiskUserStateStorage)
 
 from .weighting import (
     WeightByCubeRootTokens,
@@ -538,7 +540,7 @@ def get_algorithm(args: argparse.Namespace):
     algorithm_name = args.algorithm_name.lower()
     logger.info(f'initializing algorithm {algorithm_name}')
     callbacks = []
- 
+
     algorithm: FederatedAlgorithm
     if algorithm_name == 'fedavg':
         algorithm_params = NNAlgorithmParams(
@@ -570,6 +572,7 @@ def get_algorithm(args: argparse.Namespace):
             mu=mu)
         algorithm = FedProx()
     elif algorithm_name == 'scaffold':
+        user_state_storage: AbstractUserStateStorage
         if args.scaffold_states_dir is None:
             user_state_storage = InMemoryUserStateStorage()
         else:

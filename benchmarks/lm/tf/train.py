@@ -29,6 +29,8 @@ from pfl.callback import (
     ModelCheckpointingCallback,
     StopwatchCallback,
     TensorBoardCallback,
+    TrackBestOverallMetrics,
+    WandbCallback,
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.internal.platform import get_platform
@@ -129,7 +131,7 @@ def main():
                                val_data=val_federated_dataset,
                                postprocessors=postprocessors)
 
-    algorithm, algorithm_params = get_algorithm(arguments)
+    algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
 
     model_train_params = NNTrainHyperParams(
         local_learning_rate=arguments.local_learning_rate,
@@ -144,8 +146,11 @@ def main():
         CentralEvaluationCallback(central_data,
                                   model_eval_params=model_eval_params,
                                   frequency=arguments.evaluation_frequency),
-        ModelCheckpointingCallback('./checkpoints'),
+        # Uncomment to save central model checkpoints during training.
+        #ModelCheckpointingCallback('./checkpoints'),
         AggregateMetricsToDisk('./metrics.csv'),
+        TrackBestOverallMetrics(
+            lower_is_better_metric_names=['Central val | perplexity']),
     ]
     if arguments.central_lr_num_warmup_iterations > 0:
         central_lr_warmup_cb = CentralLRDecay(
@@ -178,6 +183,19 @@ def main():
                 write_weights=False,
                 write_graph=False,
                 tensorboard_port=int(tb_port) if tb_port else None))
+
+    callbacks.extend(algorithm_callbacks)
+
+    if arguments.wandb_project_id:
+        assert 'TASK_ID' in os.environ, "Wandb needs a task id"
+        callbacks.append(
+            WandbCallback(
+                wandb_project_id=arguments.wandb_project_id,
+                wandb_experiment_name=os.environ['TASK_ID'],
+                # List of dicts to one dict.
+                wandb_config=dict(vars(arguments)),
+                tags=os.environ.get('WANDB_TAGS', 'empty-tag').split(','),
+                group=os.environ.get('WANDB_GROUP', None)))
 
     model = algorithm.run(algorithm_params=algorithm_params,
                           backend=backend,

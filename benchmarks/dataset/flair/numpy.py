@@ -54,7 +54,8 @@ def make_federated_dataset(
             targets = numpy_to_tensor(targets[data_order])
         return Dataset(raw_data=[inputs, targets],
                        train_kwargs={"eval": False},
-                       eval_kwargs={"eval": True})
+                       eval_kwargs={"eval": True},
+                       user_id=user_id)
 
     return FederatedDataset(make_dataset_fn,
                             sampler,

@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import os
 
 import numpy as np
 import torch
@@ -26,8 +27,11 @@ from pfl.callback import (
     CentralEvaluationCallback,
     ModelCheckpointingCallback,
     StopwatchCallback,
+    TrackBestOverallMetrics,
+    WandbCallback,
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
+from pfl.internal.ops import pytorch_ops
 from pfl.model.pytorch import PyTorchModel
 
 from .argument_parsing import add_flair_training_arguments
@@ -83,8 +87,7 @@ def main():
         # default float32. This function is faster for FLAIR since the input image
         # has dtype uint8, and changing dtype is very slow with as_tensor.
         tensor = torch.as_tensor(values)
-        if torch.cuda.is_available():
-            tensor = tensor.cuda()
+        tensor = tensor.to(device=pytorch_ops.get_default_device())
         return tensor
 
     arguments.numpy_to_tensor = to_tensor
@@ -120,7 +123,7 @@ def main():
                                val_data=val_federated_dataset,
                                postprocessors=[local_privacy, central_privacy])
 
-    algorithm, algorithm_params = get_algorithm(arguments)
+    algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
 
     model_train_params = NNTrainHyperParams(
         local_learning_rate=arguments.local_learning_rate,
@@ -137,18 +140,34 @@ def main():
                                   model_eval_params=model_eval_params,
                                   frequency=arguments.evaluation_frequency),
         StopwatchCallback(),
-        ModelCheckpointingCallback('./checkpoints'),
+        # Uncomment to save central model checkpoints during training.
+        #ModelCheckpointingCallback('./checkpoints'),
         AggregateMetricsToDisk('./metrics.csv'),
         CentralLRDecay(arguments.learning_rate,
                        0.02,
                        arguments.central_num_iterations,
                        30,
-                       linear_warmup=True)
+                       linear_warmup=True),
+        TrackBestOverallMetrics(
+            higher_is_better_metric_names=['Central val | macro AP']),
     ]
 
     if arguments.restore_model_path is not None:
         model.load(arguments.restore_model_path)
         logger.info(f'Restored model from {arguments.restore_model_path}')
+
+    callbacks.extend(algorithm_callbacks)
+
+    if arguments.wandb_project_id:
+        assert 'TASK_ID' in os.environ, "Wandb needs a task id"
+        callbacks.append(
+            WandbCallback(
+                wandb_project_id=arguments.wandb_project_id,
+                wandb_experiment_name=os.environ['TASK_ID'],
+                # List of dicts to one dict.
+                wandb_config=dict(vars(arguments)),
+                tags=os.environ.get('WANDB_TAGS', 'empty-tag').split(','),
+                group=os.environ.get('WANDB_GROUP', None)))
 
     model = algorithm.run(algorithm_params=algorithm_params,
                           backend=backend,

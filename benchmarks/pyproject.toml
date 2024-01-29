@@ -8,6 +8,7 @@ authors = ["Apple"]
 [tool.poetry.dependencies]
 # Use newer python versions at your own risk, they have not been fully tested with `pfl`.
 python = ">=3.10,<3.11"
+awscli = "^1.32.29"
 h5py = "^3.8.0"
 multiprocess = "^0.70.12"
 tqdm = "^4.63.1"
@@ -24,8 +25,8 @@ torchvision = [
 ]
 # Installs pfl from source.
 pfl = [
-    { path = "../", extras = ["tf"], markers="extra=='tf'"},
-    { path = "../", extras = ["pytorch"], markers="extra=='pytorch'"},
+    { path = "../", extras = ["tf"], markers="extra=='tf'", develop = true },
+    { path = "../", extras = ["pytorch"], markers="extra=='pytorch'", develop = true },
 ]
 pillow = ">=8.2.0"
 

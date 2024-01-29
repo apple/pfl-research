@@ -1,6 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
 import argparse
 import logging
+import os
 
 import numpy as np
 import tensorflow as tf  # type: ignore
@@ -26,6 +27,8 @@ from pfl.callback import (
     CentralEvaluationCallback,
     ModelCheckpointingCallback,
     StopwatchCallback,
+    TrackBestOverallMetrics,
+    WandbCallback,
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.model.tensorflow import TFModel
@@ -105,7 +108,7 @@ def main():
                                val_data=val_federated_dataset,
                                postprocessors=postprocessors)
 
-    algorithm, algorithm_params = get_algorithm(arguments)
+    algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
 
     model_train_params = NNTrainHyperParams(
         local_learning_rate=arguments.local_learning_rate,
@@ -126,17 +129,34 @@ def main():
         model.load(arguments.restore_model_path)
         logger.info(f'Restored model from {arguments.restore_model_path}')
 
+    callbacks = [
+        StopwatchCallback(),
+        central_evaluation_cb,
+        # Uncomment to save central model checkpoints during training.
+        #ModelCheckpointingCallback('./checkpoints'),
+        AggregateMetricsToDisk('./metrics.csv'),
+        TrackBestOverallMetrics(
+            higher_is_better_metric_names=['Central val | accuracy']),
+    ]
+    callbacks.extend(algorithm_callbacks)
+
+    if arguments.wandb_project_id:
+        assert 'TASK_ID' in os.environ, "Wandb needs a task id"
+        callbacks.append(
+            WandbCallback(
+                wandb_project_id=arguments.wandb_project_id,
+                wandb_experiment_name=os.environ['TASK_ID'],
+                # List of dicts to one dict.
+                wandb_config=dict(vars(arguments)),
+                tags=os.environ.get('WANDB_TAGS', 'empty-tag').split(','),
+                group=os.environ.get('WANDB_GROUP', None)))
+
     model = algorithm.run(algorithm_params=algorithm_params,
                           backend=backend,
                           model=model,
                           model_train_params=model_train_params,
                           model_eval_params=model_eval_params,
-                          callbacks=[
-                              StopwatchCallback(),
-                              central_evaluation_cb,
-                              ModelCheckpointingCallback('./checkpoints'),
-                              AggregateMetricsToDisk('./metrics.csv'),
-                          ])
+                          callbacks=callbacks)
 
 
 if __name__ == '__main__':

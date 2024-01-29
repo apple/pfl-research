@@ -29,3 +29,16 @@ pretrained: true
 # - dataset: flair_iid
 mean_datapoints_per_user: 50 # estimated from dataset
 datapoints_per_user_distribution: constant
+
+#wandb_project_id: testing
+add_all_arguments: true
+
+# FedProx params from benchmark-algos/sweep-fedprox
+mu: 0.01
+
+# AdaFedProx override default params
+adafedprox_metric_name: "Central val | macro loss"
+adafedprox_adapt_frequency: 20
+
+# SCAFFOLD override default params
+scaffold_population: 41131

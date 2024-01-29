@@ -5,7 +5,8 @@ from typing import Any, Callable, Dict, Optional, Tuple
 
 import numpy as np
 
-from pfl.data import Dataset, FederatedDataset
+from pfl.data import FederatedDataset
+from pfl.data.dataset import Dataset
 from pfl.data.partition import partition_by_dirichlet_class_distribution
 from pfl.data.sampling import get_data_sampler, get_user_sampler
 

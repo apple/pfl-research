@@ -78,6 +78,11 @@ def add_filepath_arguments(
                         required=True,
                         help='The path from which the dataset will be read.')
 
+    parser.add_argument("--save_model_path",
+                        default=None,
+                        help=('Save model to this directory path. '
+                              'If `None`, Don\'t save model'))
+
     parser.add_argument("--restore_model_path",
                         default=None,
                         help='Path to model checkpoint to restore')
@@ -464,8 +469,9 @@ def add_algorithm_arguments(
         "--add_all_arguments",
         action=store_bool,
         default=False,
-        help='If `True`, add arguments for all algorithms. Can be useful '
-        'if you are sweeping multiple algorithms')
+        help=('This result in all algorithm parameters being added, '
+              'even though you only select 1 algorithm. Useful for '
+              'reusing the same config for multiple algorithms.'))
 
     # Get the value of `algorithm_name` argument and dynamically add
     # arguments depending on which algorithm is chosen.

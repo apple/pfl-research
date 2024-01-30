@@ -52,8 +52,12 @@ central_privacy_clipping_bound: 1.0
 central_order: 2
 population: 1e6
 use_tensorboard: False
+#save_model_path: './checkpoints'
 
 #wandb_project_id: testing
+# This result in all algorithm parameters being added, even though
+# you only select 1 algorithm. Useful for reusing the same config
+# for multiple algorithms.
 add_all_arguments: true
 
 # FedProx params from benchmark-algos/sweep-fedprox

@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+from uuid import uuid4
 
 import numpy as np
 import tensorflow as tf  # type: ignore
@@ -146,8 +147,6 @@ def main():
         CentralEvaluationCallback(central_data,
                                   model_eval_params=model_eval_params,
                                   frequency=arguments.evaluation_frequency),
-        # Uncomment to save central model checkpoints during training.
-        #ModelCheckpointingCallback('./checkpoints'),
         AggregateMetricsToDisk('./metrics.csv'),
         TrackBestOverallMetrics(
             lower_is_better_metric_names=['Central val | perplexity']),
@@ -186,12 +185,15 @@ def main():
 
     callbacks.extend(algorithm_callbacks)
 
+    if arguments.save_model_path is not None:
+        callbacks.append(ModelCheckpointingCallback(arguments.save_model_path))
+
     if arguments.wandb_project_id:
-        assert 'TASK_ID' in os.environ, "Wandb needs a task id"
         callbacks.append(
             WandbCallback(
                 wandb_project_id=arguments.wandb_project_id,
-                wandb_experiment_name=os.environ['TASK_ID'],
+                wandb_experiment_name=os.environ.get('WANDB_TASK_ID',
+                                                     str(uuid4())),
                 # List of dicts to one dict.
                 wandb_config=dict(vars(arguments)),
                 tags=os.environ.get('WANDB_TAGS', 'empty-tag').split(','),

@@ -74,7 +74,7 @@ def make_iid_federated_dataset(
     images = numpy_to_tensor(images)
     labels = numpy_to_tensor(labels)
     start_ix = 0
-    users_to_data = {}
+    users_to_data: Dict = {}
     while True:
         dataset_len = user_dataset_len_sampler()
         user_slice = slice(start_ix, start_ix + dataset_len)

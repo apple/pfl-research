@@ -33,6 +33,7 @@ weight_by_samples: false
 evaluation_frequency: 10
 local_batch_size: 10
 central_eval_batch_size: 10000
+#save_model_path: './checkpoints'
 
 #wandb_project_id: testing
 # This result in all algorithm parameters being added, even though

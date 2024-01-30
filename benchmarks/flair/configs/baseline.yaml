@@ -24,6 +24,7 @@ local_learning_rate: 0.01
 evaluation_frequency: 20
 central_eval_batch_size: 512
 pretrained: true
+#save_model_path: './checkpoints'
 
 # Simulate I.I.D. data by ignoring user ID
 # - dataset: flair_iid
@@ -31,6 +32,9 @@ mean_datapoints_per_user: 50 # estimated from dataset
 datapoints_per_user_distribution: constant
 
 #wandb_project_id: testing
+# This result in all algorithm parameters being added, even though
+# you only select 1 algorithm. Useful for reusing the same config
+# for multiple algorithms.
 add_all_arguments: true
 
 # FedProx params from benchmark-algos/sweep-fedprox

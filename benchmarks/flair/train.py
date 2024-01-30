@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+from functools import partial
 
 import numpy as np
 import torch
@@ -87,7 +88,9 @@ def main():
             tensor = tensor.cuda()
         return tensor
 
-    arguments.numpy_to_tensor = to_tensor
+    # to_tensor is float32 by default,
+    # training faster if input images remain in uint8.
+    arguments.numpy_to_tensor = partial(to_tensor, dtype=None)
     (training_federated_dataset, val_federated_dataset, central_data,
      metadata) = get_datasets(arguments)
 

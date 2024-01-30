@@ -471,11 +471,12 @@ def to_numpy(tensor: tf.Tensor) -> np.ndarray:
     return tensor.numpy()
 
 
-def to_tensor(values: Union[List, np.ndarray]) -> tf.Tensor:
+def to_tensor(values: Union[List, np.ndarray],
+              dtype: Optional[str] = 'float32') -> tf.Tensor:
     """
     Convert a list of values or a numpy array to a TF tensor.
     """
-    return tf.convert_to_tensor(values)
+    return tf.convert_to_tensor(values, dtype=dtype)
 
 
 def _shared_name(variable: tf.Variable):

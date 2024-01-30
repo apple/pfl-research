@@ -373,14 +373,20 @@ def to_numpy(tensor: torch.Tensor) -> np.ndarray:
         return detached_tensor.numpy()
 
 
-def to_tensor(values: Union[List, np.ndarray]) -> torch.Tensor:
+def to_tensor(values: Union[List, np.ndarray],
+              dtype: Optional[str] = 'float32') -> torch.Tensor:
     """
     Convert a list of values or a numpy array to a float32 Torch tensor.
     """
+    if dtype is not None and isinstance(dtype, str):
+        torch_dtype = getattr(torch, dtype)
+    else:
+        torch_dtype = dtype
+
     if isinstance(values, torch.Tensor):
         return values
 
-    tensor = torch.as_tensor(values, dtype=torch.float32)
+    tensor = torch.as_tensor(values, dtype=torch_dtype)
     tensor = tensor.to(device=get_default_device())
     return tensor
 

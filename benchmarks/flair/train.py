@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+from functools import partial
 
 import numpy as np
 import torch
@@ -28,6 +29,7 @@ from pfl.callback import (
     StopwatchCallback,
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
+from pfl.internal.ops.pytorch_ops import to_tensor
 from pfl.model.pytorch import PyTorchModel
 
 from .argument_parsing import add_flair_training_arguments
@@ -78,16 +80,9 @@ def main():
         min_separation=arguments.min_separation,
         is_central=True)
 
-    def to_tensor(values: np.ndarray) -> torch.Tensor:
-        # Different than pytorch_ops.to_tensor as this does not change the dtype to
-        # default float32. This function is faster for FLAIR since the input image
-        # has dtype uint8, and changing dtype is very slow with as_tensor.
-        tensor = torch.as_tensor(values)
-        if torch.cuda.is_available():
-            tensor = tensor.cuda()
-        return tensor
-
-    arguments.numpy_to_tensor = to_tensor
+    # to_tensor is float32 by default,
+    # training faster if input images remain in uint8.
+    arguments.numpy_to_tensor = partial(to_tensor, dtype=None)
     (training_federated_dataset, val_federated_dataset, central_data,
      metadata) = get_datasets(arguments)
 

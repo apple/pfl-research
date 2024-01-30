@@ -234,12 +234,13 @@ def reshape(vector: np.ndarray,
     return weights
 
 
-def to_tensor(tensor: np.ndarray) -> np.ndarray:
+def to_tensor(tensor: np.ndarray,
+              dtype: Optional[str] = 'float32') -> np.ndarray:
     """
     Convert a numpy array to numpy array,
     i.e. identity in this case.
     """
-    return np.asarray(tensor)
+    return np.asarray(tensor, dtype=dtype)
 
 
 to_numpy = to_tensor

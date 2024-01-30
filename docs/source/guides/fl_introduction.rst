@@ -15,9 +15,11 @@ themselves. The section does not provide an exhaustive list
 of algorithms implemented in ``pfl`` but rather a few simple examples
 to get started.
 
-For a more complete view, the official benchmarks are available in the ``benchmarks``
-directory, using a variety of realistic dataset-model combinations with
-and without differential privacy.
+For a more complete view,
+`our benchmarks <https://github.com/apple/pfl-research/tree/main/benchmarks>`_
+include examples of realistic dataset-model combinations with
+and without differential privacy and `several tutorials <https://github.com/apple/pfl-research/tree/main/tutorials>`_
+are also available.
 
 Cross-device federated learning
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -155,7 +157,10 @@ The dataset can be iterated through, sampling a user dataset each call.
 
 
 For more information on how to prepare datasets and federated datasets,
-please see the tutorial in TODO and benchmarks in TODO.
+please see
+`our tutorial on creating federated datasets <https://github.com/apple/pfl-research/blob/main/tutorials/Creating%20Federated%20Dataset%20for%20PFL%20Experiment.ipynb>`_
+and
+`our benchmarks <https://github.com/apple/pfl-research/tree/main/benchmarks>`_.
 
 Defining a model
 ^^^^^^^^^^^^^^^^
@@ -394,5 +399,7 @@ that is why we may want to incorporate differential privacy (DP) into FL.
 Private federated learning (PFL) is simply FL with
 DP, which can in practice be combined with secure aggregation.
 For more information on how to do incorporate DP into FL
-simulations using ``pfl``, please see TODO and benchmarks
-in folder ``benchmarks/`` of this repository.
+simulations using ``pfl``, please see
+`our benchmarks <https://github.com/apple/pfl-research/tree/main/benchmarks>`_
+and
+`tutorials <https://github.com/apple/pfl-research/tree/main/tutorials>`_.

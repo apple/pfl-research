@@ -3,6 +3,8 @@
 import argparse
 import logging
 from functools import partial
+import os
+from uuid import uuid4
 
 import numpy as np
 import torch
@@ -27,6 +29,8 @@ from pfl.callback import (
     CentralEvaluationCallback,
     ModelCheckpointingCallback,
     StopwatchCallback,
+    TrackBestOverallMetrics,
+    WandbCallback,
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.internal.ops.pytorch_ops import to_tensor
@@ -115,7 +119,7 @@ def main():
                                val_data=val_federated_dataset,
                                postprocessors=[local_privacy, central_privacy])
 
-    algorithm, algorithm_params = get_algorithm(arguments)
+    algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
 
     model_train_params = NNTrainHyperParams(
         local_learning_rate=arguments.local_learning_rate,
@@ -132,18 +136,35 @@ def main():
                                   model_eval_params=model_eval_params,
                                   frequency=arguments.evaluation_frequency),
         StopwatchCallback(),
-        ModelCheckpointingCallback('./checkpoints'),
         AggregateMetricsToDisk('./metrics.csv'),
         CentralLRDecay(arguments.learning_rate,
                        0.02,
                        arguments.central_num_iterations,
                        30,
-                       linear_warmup=True)
+                       linear_warmup=True),
+        TrackBestOverallMetrics(
+            higher_is_better_metric_names=['Central val | macro AP']),
     ]
 
     if arguments.restore_model_path is not None:
         model.load(arguments.restore_model_path)
         logger.info(f'Restored model from {arguments.restore_model_path}')
+
+    callbacks.extend(algorithm_callbacks)
+
+    if arguments.save_model_path is not None:
+        callbacks.append(ModelCheckpointingCallback(arguments.save_model_path))
+
+    if arguments.wandb_project_id:
+        callbacks.append(
+            WandbCallback(
+                wandb_project_id=arguments.wandb_project_id,
+                wandb_experiment_name=os.environ.get('WANDB_TASK_ID',
+                                                     str(uuid4())),
+                # List of dicts to one dict.
+                wandb_config=dict(vars(arguments)),
+                tags=os.environ.get('WANDB_TAGS', 'empty-tag').split(','),
+                group=os.environ.get('WANDB_GROUP', None)))
 
     model = algorithm.run(algorithm_params=algorithm_params,
                           backend=backend,

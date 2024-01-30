@@ -9,7 +9,10 @@ import numpy as np
 import yaml
 
 from pfl.aggregate.weighting import WeightByUser
-from pfl.algorithm import FederatedAlgorithm, FederatedAveraging, FedProx, FedProxParams, NNAlgorithmParams
+from pfl.algorithm import (AdaptMuOnMetricCallback, FederatedAlgorithm,
+                           FederatedAveraging, FedProx, FedProxParams,
+                           NNAlgorithmParams)
+from pfl.algorithm.scaffold import SCAFFOLD, SCAFFOLDParams
 from pfl.privacy import (
     CentrallyApplicablePrivacyMechanism,
     CentrallyAppliedPrivacyMechanism,
@@ -21,6 +24,9 @@ from pfl.privacy import (
     PrivUnitMechanism,
 )
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism
+from pfl.data.user_state import (AbstractUserStateStorage,
+                                 InMemoryUserStateStorage,
+                                 DiskUserStateStorage)
 
 from .weighting import (
     WeightByCubeRootTokens,
@@ -72,9 +78,18 @@ def add_filepath_arguments(
                         required=True,
                         help='The path from which the dataset will be read.')
 
+    parser.add_argument("--save_model_path",
+                        default=None,
+                        help=('Save model to this directory path. '
+                              'If `None`, Don\'t save model'))
+
     parser.add_argument("--restore_model_path",
                         default=None,
                         help='Path to model checkpoint to restore')
+
+    parser.add_argument('--wandb_project_id',
+                        default=None,
+                        help='If set, record training run with Weights&Biases')
 
     return parser
 
@@ -444,24 +459,78 @@ def add_algorithm_arguments(
                         choices=[
                             'fedavg',
                             'fedprox',
+                            'adafedprox',
+                            'scaffold',
                         ],
                         default='fedavg',
                         help='Which algorithm to train with.')
+
+    parser.add_argument(
+        "--add_all_arguments",
+        action=store_bool,
+        default=False,
+        help=('This result in all algorithm parameters being added, '
+              'even though you only select 1 algorithm. Useful for '
+              'reusing the same config for multiple algorithms.'))
 
     # Get the value of `algorithm_name` argument and dynamically add
     # arguments depending on which algorithm is chosen.
     known_args, _ = parser.parse_known_args()
 
-    if known_args.algorithm_name == 'fedavg':
+    if (known_args.algorithm_name == 'fedavg' or known_args.add_all_arguments):
         # No additional parameters.
         pass
 
-    if known_args.algorithm_name == 'fedprox':
+    if (known_args.algorithm_name == 'fedprox'
+            or known_args.add_all_arguments):
         parser.add_argument(
             "--mu",
             type=float,
             default=1.0,
             help='Scales the additional loss term added by FedProx.')
+
+    if (known_args.algorithm_name == 'scaffold'
+            or known_args.add_all_arguments):
+        parser.add_argument(
+            "--scaffold_use_gradient_as_control_variate",
+            action=store_bool,
+            default=True,
+            help='If True, use Option I for updating c_i in Scaffold '
+            'according to paper, if False, use Option II')
+
+        parser.add_argument("--scaffold_population",
+                            type=int,
+                            required=True,
+                            help='')
+
+        parser.add_argument("--scaffold_states_dir",
+                            type=str,
+                            default=None,
+                            help='')
+
+    if (known_args.algorithm_name == 'adafedprox'
+            or known_args.add_all_arguments):
+        parser.add_argument(
+            "--adafedprox_metric_name",
+            required=True,
+            help='String metric name to monitor for adapting mu')
+
+        parser.add_argument("--adafedprox_adapt_frequency",
+                            type=int,
+                            default=1,
+                            help='Adapt mu every this many iterations.')
+
+        parser.add_argument(
+            "--adafedprox_decrease_mu_after_consecutive_improvements",
+            type=int,
+            default=1,
+            help='')
+
+        parser.add_argument("--adafedprox_metric_is_from_central_evaluation",
+                            action=store_bool,
+                            default=True,
+                            help='If True, do central evaluation and expect '
+                            '`metric_name` to be among the returned metrics')
 
     return parser
 
@@ -476,6 +545,7 @@ def get_algorithm(args: argparse.Namespace):
     assert 'algorithm_name' in vars(args)
     algorithm_name = args.algorithm_name.lower()
     logger.info(f'initializing algorithm {algorithm_name}')
+    callbacks = []
 
     algorithm: FederatedAlgorithm
     if algorithm_name == 'fedavg':
@@ -493,7 +563,38 @@ def get_algorithm(args: argparse.Namespace):
             val_cohort_size=args.val_cohort_size,
             mu=args.mu)
         algorithm = FedProx()
+    elif algorithm_name == 'adafedprox':
+        mu = AdaptMuOnMetricCallback(
+            metric_name=args.adafedprox_metric_name,
+            adapt_frequency=args.adafedprox_adapt_frequency,
+            decrease_mu_after_consecutive_improvements=args.
+            adafedprox_decrease_mu_after_consecutive_improvements)
+        callbacks.append(mu)
+        algorithm_params = FedProxParams(
+            central_num_iterations=args.central_num_iterations,
+            evaluation_frequency=args.evaluation_frequency,
+            train_cohort_size=args.cohort_size,
+            val_cohort_size=args.val_cohort_size,
+            mu=mu)
+        algorithm = FedProx()
+    elif algorithm_name == 'scaffold':
+        user_state_storage: AbstractUserStateStorage
+        if args.scaffold_states_dir is None:
+            user_state_storage = InMemoryUserStateStorage()
+        else:
+            user_state_storage = DiskUserStateStorage(args.scaffold_states_dir)
+        algorithm_params = SCAFFOLDParams(
+            central_num_iterations=args.central_num_iterations,
+            evaluation_frequency=args.evaluation_frequency,
+            train_cohort_size=args.cohort_size,
+            val_cohort_size=args.val_cohort_size,
+            population=args.scaffold_population,
+            use_gradient_as_control_variate=args.
+            scaffold_use_gradient_as_control_variate,
+            user_state_storage=user_state_storage)
+        algorithm = SCAFFOLD()
     else:
         raise TypeError(f'Algorithm {algorithm_name} not found.')
+    logger.info(f'using algorithm parameters {algorithm_params}')
 
-    return algorithm, algorithm_params
+    return algorithm, algorithm_params, callbacks

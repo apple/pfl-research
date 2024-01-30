@@ -33,3 +33,20 @@ weight_by_samples: false
 evaluation_frequency: 10
 local_batch_size: 10
 central_eval_batch_size: 10000
+#save_model_path: './checkpoints'
+
+#wandb_project_id: testing
+# This result in all algorithm parameters being added, even though
+# you only select 1 algorithm. Useful for reusing the same config
+# for multiple algorithms.
+add_all_arguments: true
+
+# FedProx params from benchmark-algos/sweep-fedprox
+mu: 0.01
+
+# AdaFedProx override default params
+adafedprox_metric_name: "Central val | loss"
+adafedprox_adapt_frequency: 10
+
+# SCAFFOLD override default params
+scaffold_population: 1000

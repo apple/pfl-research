@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, Optional, Tuple
 
 import numpy as np
 
-from pfl.data import ArtificialFederatedDataset, FederatedDataset
+from pfl.data import FederatedDataset
 from pfl.data.dataset import Dataset
 from pfl.data.partition import partition_by_dirichlet_class_distribution
 from pfl.data.sampling import get_data_sampler, get_user_sampler
@@ -62,20 +62,30 @@ def make_iid_federated_dataset(
         images: np.ndarray,
         labels: np.ndarray,
         user_dataset_len_sampler: Callable,
-        numpy_to_tensor: Callable = lambda x: x) -> ArtificialFederatedDataset:
+        numpy_to_tensor: Callable = lambda x: x) -> FederatedDataset:
     """
-    Create an artificial federated dataset from the CIFAR10 dataset.
+    Create a federated dataset with IID users from the CIFAR10 dataset.
 
-    An artificial federated dataset generates an infinite amount of users
-    by sampling datapoints from the original central dataset.
+    Users are created by first sampling the dataset length from
+    ``user_dataset_len_sampler`` and then sampling the datapoints IID.
     """
-    data_sampler = get_data_sampler('random', len(images))
+    data_order = np.random.permutation(len(images))
+    images, labels = images[data_order], labels[data_order]
     images = numpy_to_tensor(images)
     labels = numpy_to_tensor(labels)
+    start_ix = 0
+    users_to_data: Dict = {}
+    while True:
+        dataset_len = user_dataset_len_sampler()
+        user_slice = slice(start_ix, start_ix + dataset_len)
+        users_to_data[len(users_to_data)] = (images[user_slice],
+                                             labels[user_slice])
+        start_ix += dataset_len
+        if start_ix >= len(images):
+            break
 
-    return ArtificialFederatedDataset.from_slices([images, labels],
-                                                  data_sampler,
-                                                  user_dataset_len_sampler)
+    user_sampler = get_user_sampler('random', range(len(users_to_data)))
+    return FederatedDataset.from_slices(users_to_data, user_sampler)
 
 
 def make_central_dataset(images: np.ndarray, labels: np.ndarray) -> Dataset:
@@ -94,7 +104,7 @@ def make_cifar10_datasets(
     alpha: float = 0.1,
 ) -> Tuple[FederatedDataset, FederatedDataset, Dataset, Dict[str, Any]]:
     """
-    Create a train and val ``ArtificialFederatedDataset`` as well as a
+    Create a train and val ``FederatedDataset`` as well as a
     central dataset from the CIFAR10 dataset.
 
     Here, users are created as proposed by Hsu et al. https://arxiv.org/abs/1909.06335,
@@ -122,10 +132,9 @@ def make_cifar10_datasets(
 def make_cifar10_iid_datasets(
     data_dir: str, user_dataset_len_sampler: Callable,
     numpy_to_tensor: Callable
-) -> Tuple[ArtificialFederatedDataset, ArtificialFederatedDataset, Dataset,
-           Dict[str, Any]]:
+) -> Tuple[FederatedDataset, FederatedDataset, Dataset, Dict[str, Any]]:
     """
-    Create a train and val ``ArtificialFederatedDataset`` as well as a
+    Create a train and val ``FederatedDataset`` with IID users as well as a
     central dataset from the CIFAR10 dataset.
 
     Here, infinite users are created by continously sampling datapoints iid

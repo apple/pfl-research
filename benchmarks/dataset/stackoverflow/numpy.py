@@ -85,7 +85,8 @@ def make_dataset_fn(hdf5_path, partition, max_user_sentences, user_id):
                               user_id)
     return Dataset(raw_data=tensors,
                    train_kwargs={"eval": False},
-                   eval_kwargs={"eval": True})
+                   eval_kwargs={"eval": True},
+                   user_id=user_id)
 
 
 def make_federated_dataset(hdf5_path: str,

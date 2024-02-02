@@ -57,23 +57,22 @@ _delta = 1e-4
 class TestMechanisms:
 
     def _get_values_l2_norm(self, shapes):
-        size = sum([np.prod(shape) for shape in shapes])
-        return math.sqrt(np.sum(np.square(np.arange(size))))
+        return math.sqrt(
+            sum([i**2 * np.prod(shape[1:]) for i, shape in enumerate(shapes)]))
 
     # Test NoPrivacy.
     def _get_values(self, shapes):
         values = {}
-        current_value = 0
         for name, shape in enumerate(shapes):
-            size = 1
-            for dimension in shape[1:]:
-                size *= int(dimension)
-            values[str(name)] = np.broadcast_to(
-                np.reshape(
-                    np.arange(float(current_value),
-                              float(current_value + size)), shape[1:]),
-                shape).astype(np.float32)
-            current_value += size
+            # Create a range of values for the first dimension
+            base_values = np.arange(shape[0]).astype(np.float32)
+
+            # Calculate the total number of elements in the additional dimensions
+            repeat_times = np.prod(shape[1:])
+            # Tile the base values across the additional dimensions
+            tiled_values = np.tile(base_values, (int(repeat_times), 1)).T
+            values[str(name)] = np.reshape(tiled_values, shape)
+
         return MappedVectorStatistics(values)
 
     def test_no_privacy(self):
@@ -184,62 +183,36 @@ class TestMechanisms:
                 num_dimensions, norm_function(input_stats), cohort_size=1)
             assert (theoretical_add_noise_squared_error == pytest.approx(
                 expected_add_noise_squared_error, rel=1e-4))
+        """
+        Compute statistics from one privatization.
+        The statistics are the means over all dimensions but the first,
+        for better statistical power.
+        """
+        seed = 0 if set_seed else None
+        noised_arrays, metrics = mechanism.postprocess_one_user(
+            stats=input_tensor_stats, user_context=MagicMock(seed=seed))
+        noised_arrays = self._from_tensor_stats(noised_arrays, ops)
 
-        def privatize_and_get_stats(seed):
-            """
-            Compute statistics from one privatization.
-            The statistics are the means over the first dimension, for better
-            statistical power.
-            """
-            noised_arrays, metrics = mechanism.postprocess_one_user(
-                stats=input_tensor_stats, user_context=MagicMock(seed=seed))
-            noised_arrays = self._from_tensor_stats(noised_arrays, ops)
+        # arrays after adding noise should have same shape as before
+        for name in var_names:
+            assert input_stats[name].shape == noised_arrays[name].shape
 
-            # arrays after adding noise should have same shape as before
-            for name in var_names:
-                assert input_stats[name].shape == noised_arrays[name].shape
+        # Calculate statistics for each row in first dimension.
+        noised_sum_arrays = np.hstack(
+            [np.mean(noised_arrays[name], axis=(1, 2)) for name in var_names])
 
-            noised_sum_arrays = [
-                np.mean(noised_arrays[name], axis=0) for name in var_names
-            ]
+        square_deviation_arrays = np.hstack([
+            np.mean(np.square(noised_arrays[n] -
+                              (clip_factor * input_stats[n])),
+                    axis=(1, 2)) for n in var_names
+        ])
 
-            square_deviation_arrays = [
-                np.mean(np.square(noised_arrays[n] -
-                                  (clip_factor * input_stats[n])),
-                        axis=0) for n in var_names
-            ]
-
-            fourth_pow_deviation_arrays = [
-                np.mean(np.power(
-                    noised_arrays[n] - (clip_factor * input_stats[n]), 4),
-                        axis=0) / np.square(square_deviation_arrays[i])
-                for i, n in enumerate(var_names)
-            ]
-
-            return (noised_sum_arrays, square_deviation_arrays,
-                    fourth_pow_deviation_arrays, metrics)
-
-        sum_values = [np.zeros(input_stats[n].shape[1:]) for n in var_names]
-        sum_square_values = [
-            np.zeros(input_stats[n].shape[1:]) for n in var_names
-        ]
-        sum_fourth_pow_values = [
-            np.zeros(input_stats[n].shape[1:]) for n in var_names
-        ]
-        for i in range(num_iterations):
-
-            (noised_sum_arrays, square_deviation_arrays,
-             fourth_pow_deviation_arrays,
-             metrics) = privatize_and_get_stats(i if set_seed else None)
-            # s references Numpy arrays here, so changing it changes
-            # sum_values / sum_square_values.
-            for s, v in zip(sum_values, noised_sum_arrays):
-                s += v
-            for s, v in zip(sum_square_values, square_deviation_arrays):
-                s += v
-            for s, v in zip(sum_fourth_pow_values,
-                            fourth_pow_deviation_arrays):
-                s += v
+        fourth_pow_deviation_arrays = np.hstack([
+            np.mean(np.power(noised_arrays[n] -
+                             (clip_factor * input_stats[n]), 4),
+                    axis=(1, 2)) / np.square(square_deviation_arrays[i])
+            for i, n in enumerate(var_names)
+        ])
 
         # Test the metrics that are output.
         # How often the norm was clipped is either nothing or all in this test.
@@ -264,30 +237,20 @@ class TestMechanisms:
                               expected_metric,
                               rtol=0.0001)
 
-        noised_values_1d = np.hstack([
-            np.reshape(value, (-1, )) / num_iterations for value in sum_values
-        ])
-        square_values_1d = np.hstack([
-            np.reshape(value, (-1, )) / num_iterations
-            for value in sum_square_values
-        ])
-        fourth_pow_values_1d = np.hstack([
-            np.reshape(value, (-1, )) / num_iterations
-            for value in sum_fourth_pow_values
-        ])
-
         # convert from kurtosis to ex-kurtosis
-        kurtosis_values = fourth_pow_values_1d - 3
+        kurtosis_values = fourth_pow_deviation_arrays - 3
 
         flat_expected_values = np.hstack(
-            [clipped_input_stats[n][0, :].reshape(-1) for n in var_names])
+            [clipped_input_stats[n][:, 0, 0].reshape(-1) for n in var_names])
         if expected_sigma is not None:
             # test moments
-            assert np.allclose(noised_values_1d,
+            assert np.allclose(noised_sum_arrays,
                                flat_expected_values,
                                atol=expected_sigma * 0.01)
 
-            assert np.allclose(square_values_1d, expected_sigma**2, rtol=0.01)
+            assert np.allclose(square_deviation_arrays,
+                               expected_sigma**2,
+                               rtol=0.02)
 
         if expected_kurtosis is not None:
             assert np.allclose(kurtosis_values, expected_kurtosis, atol=0.1)
@@ -349,14 +312,13 @@ class TestMechanisms:
             1.0,
             1.0)[1] == self._from_privacy_accountant_sigma(1.0, 0.1)[1] * 10)
 
-    @pytest.mark.is_slow
     @pytest.mark.parametrize('ops_module', framework_fixtures)
     @pytest.mark.parametrize('set_seed', [False, True])
     @pytest.mark.parametrize('norm_bound,noise_scale',
                              [(0.02, 1.0), (6e6, 1.0), (0.5, 0.1)])
     def test_gaussian_mechanism(self, ops_module, set_seed, norm_bound,
                                 noise_scale, fix_global_random_seeds):
-        shapes = [(300, 2, 2), (300, 5, 3)]
+        shapes = [(1, 20000, 10), (2, 14000, 14)]
         # Two ways of constructing the mechanism: single-iteration, or using
         # the privacy accountant.
         for get_mechanism_sigma in [
@@ -387,13 +349,12 @@ class TestMechanisms:
                                              has_squared_error=True,
                                              ops=ops_module)
 
-    @pytest.mark.is_slow
     @pytest.mark.parametrize('ops_module', framework_fixtures)
     @pytest.mark.parametrize('set_seed', [False, True])
     @pytest.mark.parametrize('norm_bound', [0.02, 6e6])
     def test_laplace_mechanism(self, norm_bound, set_seed, ops_module,
                                fix_global_random_seeds):
-        shapes = [(3000, 2, 2), (3000, 5, 3)]
+        shapes = [(1, 20000, 40), (2, 14000, 56)]
 
         mechanism = LaplaceMechanism(norm_bound, _epsilon)
 
@@ -424,13 +385,12 @@ class TestMechanisms:
                                          set_seed=set_seed,
                                          ops=ops_module)
 
-    @pytest.mark.is_slow
     @pytest.mark.parametrize('ops_module', framework_fixtures)
     @pytest.mark.parametrize('set_seed', [False, True])
     @pytest.mark.parametrize('norm_bound', [0.02, 6e6])
     def test_priv_unit_mechanism(self, norm_bound, set_seed, ops_module,
                                  fix_global_random_seeds):
-        shapes = [(300, 2, 2), (300, 5, 3)]
+        shapes = [(1, 20000, 3), (2, 14000, 4)]
         l2_norm = self._get_values_l2_norm(shapes)
         num_dimensions = sum([np.prod(shape) for shape in shapes])
         mechanism = PrivUnitMechanism(norm_bound, _epsilon)

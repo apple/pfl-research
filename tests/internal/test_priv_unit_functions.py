@@ -88,44 +88,53 @@ class TestPrivUnit:
                                                          rel=.1)
 
                 results.append((cap_size_epsilon, cap_size_epsilon_back))
-                print(cap_size_epsilon, cap_size_epsilon_back)
         for cap_size_epsilon, cap_size_epsilon_back in results:
             assert cap_size_epsilon * 1.001 > cap_size_epsilon_back
             assert cap_size_epsilon == pytest.approx(cap_size_epsilon_back,
                                                      rel=.1)
 
-    @pytest.mark.is_slow
-    @pytest.mark.parametrize('num_dimensions', [10000, 1000, 100, 10])
-    @pytest.mark.parametrize(
-        'num_samples',
-        [
-            1, 10, 100, 1000
-            # Only run the higher numbers of samples over lunch.
-            # , 10000, 100000,
-        ])
+    @pytest.mark.parametrize('num_dimensions,num_samples', [
+        (10, 1),
+        (100, 1),
+        (1000, 1),
+        (10000, 1),
+        (10, 10),
+        (100, 10),
+        (1000, 10),
+        (10, 100),
+        (100, 100),
+        (10, 1000),
+    ])
     def test_mean_expectation(self, num_dimensions, num_samples):
         np.random.seed(77)
 
         epsilon = 8.
         gamma = .01
+        value_for_unitnorm = np.sqrt(1 / num_samples)
 
         # Make a unit vector.
         vector = np.zeros(num_dimensions)
-        vector[0] = 1.
+        vector[0] = value_for_unitnorm
         # vector = math.sqrt(1 / num_dimensions) * np.ones(num_dimensions)
-
-        assert np.linalg.norm(vector) == pytest.approx(1)
 
         mean_statistics = np.zeros(vector.shape)
         variance_statistics = np.zeros(vector.shape)
 
-        for _ in range(num_samples):
-            privatized_vector = _privatize_manual(epsilon, gamma, vector)
-            mean_statistics += privatized_vector
-            variance_statistics += np.square(privatized_vector)
+        # Tile the base values across the additional dimension instead of
+        # sampling `num_samples` times.
+        concat_vectors = np.tile(vector, (num_samples, 1)).T.reshape(-1)
+        assert np.linalg.norm(concat_vectors) == pytest.approx(1)
+
+        privatized_concat_vectors = _privatize_manual(epsilon, gamma,
+                                                      concat_vectors)
+        privatized_vectors = np.reshape(privatized_concat_vectors,
+                                        (len(vector), num_samples))
+
+        mean_statistics = privatized_vectors.mean(axis=1)
+        variance_statistics = np.square(privatized_vectors).mean(axis=1)
 
         theoretical_variance = _compute_variance(epsilon, gamma,
-                                                 num_dimensions)
+                                                 num_dimensions * num_samples)
 
         mean = mean_statistics / num_samples
         mean_tolerance = (
@@ -143,10 +152,10 @@ class TestPrivUnit:
         # Since all samples are on the unit spere, the variance is
         # surprisingly exact (relative to the exact mean).
 
-        variance = sum((variance_statistics / num_samples) - np.square(vector))
+        variance = sum(variance_statistics - np.square(vector))
 
-        assert variance == pytest.approx(
-            _compute_variance(epsilon, gamma, num_dimensions))
+        assert variance * num_samples == pytest.approx(
+            _compute_variance(epsilon, gamma, num_dimensions * num_samples))
 
     @pytest.mark.parametrize(
         'gamma,num_dimensions',

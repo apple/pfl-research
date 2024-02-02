@@ -26,7 +26,7 @@ def _run_test_two_workers(tmp_path,
     def make_cmd_arguments(output_path):
         return [
             sys.executable, train_script_path, '--local_num_epochs', '2',
-            '--cohort_size', '10', '--backend_framework', backend_framework,
+            '--cohort_size', '3', '--backend_framework', backend_framework,
             '--use_metric_spec',
             str(use_metric_spec), '--local_privacy_mechanism',
             local_privacy_mechanism, '--central_privacy_mechanism',
@@ -107,7 +107,6 @@ def _run_test_two_workers(tmp_path,
     check_equal_stats(stats_single, stats_worker1)
 
 
-@pytest.mark.is_slow
 class TestMultiWorker:
     """
     Test cases for checking that running with multiple workers

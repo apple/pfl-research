@@ -284,16 +284,13 @@ class PyTorchModel(StatefulModel):
 
         postprocess_fns = []
         allows_distributed_evaluation = True
-        # TODO: Use Dataset.iter interface.
-        for start_index in range(0, len(dataset), batch_size):
+        for batch_ix, (batch_inputs,
+                       batch_labels) in enumerate(dataset.iter(batch_size)):
             metrics_one_batch = Metrics()
-            data_batch = [
-                get_framework_module().to_tensor(data[start_index:start_index +
-                                                      batch_size])
-                for data in dataset.raw_data
-            ]
             for name, metric_value in self._model.metrics(
-                    *data_batch, **dataset.eval_kwargs).items():
+                    get_framework_module().to_tensor(batch_inputs),
+                    get_framework_module().to_tensor(batch_labels),
+                    **dataset.eval_kwargs).items():
                 if isinstance(metric_value, tuple):
                     # Is tuple with metric postprocess function as 2nd
                     # argument.
@@ -301,7 +298,7 @@ class PyTorchModel(StatefulModel):
                     allows_distributed_evaluation = False
                 else:
                     postprocess_fn = lambda x: x
-                if start_index == 0:
+                if batch_ix == 0:
                     # Save for later when postprocessing.
                     postprocess_fns.append(postprocess_fn)
 

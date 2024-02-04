@@ -2,6 +2,8 @@
 from typing import Tuple
 
 import tensorflow as tf  # type: ignore
+
+# yapf: disable
 from tensorflow.keras.layers import (
     Conv2D,
     Dense,
@@ -12,7 +14,7 @@ from tensorflow.keras.layers import (
     MaxPool2D,
 )
 
-# yapf: disable
+# yapf: enable
 from tensorflow_addons.layers.normalizations import GroupNormalization  # type: ignore
 
 

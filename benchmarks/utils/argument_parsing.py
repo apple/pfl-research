@@ -9,10 +9,16 @@ import numpy as np
 import yaml
 
 from pfl.aggregate.weighting import WeightByUser
-from pfl.algorithm import (AdaptMuOnMetricCallback, FederatedAlgorithm,
-                           FederatedAveraging, FedProx, FedProxParams,
-                           NNAlgorithmParams)
+from pfl.algorithm import (
+    AdaptMuOnMetricCallback,
+    FederatedAlgorithm,
+    FederatedAveraging,
+    FedProx,
+    FedProxParams,
+    NNAlgorithmParams,
+)
 from pfl.algorithm.scaffold import SCAFFOLD, SCAFFOLDParams
+from pfl.data.user_state import AbstractUserStateStorage, DiskUserStateStorage, InMemoryUserStateStorage
 from pfl.privacy import (
     CentrallyApplicablePrivacyMechanism,
     CentrallyAppliedPrivacyMechanism,
@@ -24,9 +30,6 @@ from pfl.privacy import (
     PrivUnitMechanism,
 )
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism
-from pfl.data.user_state import (AbstractUserStateStorage,
-                                 InMemoryUserStateStorage,
-                                 DiskUserStateStorage)
 
 from .weighting import (
     WeightByCubeRootTokens,

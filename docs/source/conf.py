@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -8,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'pfl'
-copyright = '2023, Filip Granqvist'
-author = 'Filip Granqvist'
+copyright = '2023, Apple Inc.'  # noqa: A001
+author = 'Apple Inc.'
 with open('../../VERSION') as f:
     release = f.read().strip()
 

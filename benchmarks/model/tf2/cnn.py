@@ -2,9 +2,19 @@
 from typing import Tuple
 
 import tensorflow as tf  # type: ignore
-from tensorflow.keras.layers import (  # type: ignore
-    Conv2D, Dense, Dropout, Flatten, GlobalAveragePooling2D, Input, MaxPool2D,
+
+# yapf: disable
+from tensorflow.keras.layers import (
+    Conv2D,
+    Dense,
+    Dropout,
+    Flatten,
+    GlobalAveragePooling2D,
+    Input,
+    MaxPool2D,
 )
+
+# yapf: enable
 from tensorflow_addons.layers.normalizations import GroupNormalization  # type: ignore
 
 

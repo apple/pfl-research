@@ -378,10 +378,8 @@ def to_tensor(values: Union[List, np.ndarray],
     """
     Convert a list of values or a numpy array to a float32 Torch tensor.
     """
-    if dtype is not None and isinstance(dtype, str):
-        torch_dtype = getattr(torch, dtype)
-    else:
-        torch_dtype = dtype
+    torch_dtype = getattr(torch, dtype) if dtype is not None and isinstance(
+        dtype, str) else dtype
 
     if isinstance(values, torch.Tensor):
         return values

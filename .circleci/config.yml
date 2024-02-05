@@ -115,6 +115,26 @@ jobs:
               --args_config image_classification/configs/baseline.yaml \
               --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
 
+  check-run-flair:
+    executor: linux-python
+    steps:
+      - benchmark_install_steps
+      - run:
+          name: "Download data"
+          command: |
+            mkdir -p ./benchmarks/data/flair
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/flair/flair_federated_ci.hdf5 \
+              -o ./benchmarks/data/flair/flair_federated_ci.hdf5
+      - run:
+          name: "(PyTorch) run a few iterations of training"
+          command: |
+            cd benchmarks
+            poetry run python -m flair.train \
+              --args_config flair/configs/baseline.yaml \
+              --data_path ./data/flair/flair_federated_ci.hdf5 \
+              --central_num_iterations 3 --cohort_size 2 --val_cohort_size 2
+
+
   publish-wheel:
     executor: linux-python
     steps:

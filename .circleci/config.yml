@@ -169,6 +169,7 @@ workflows:
       - test-pytorch
       - test-benchmarks
       - check-run-cifar10
+      - check-run-flair
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))
       #- build-images:
@@ -218,7 +219,9 @@ workflows:
       - check-run-cifar10:
           requires:
             - hold
-
+      - check-run-flair:
+          requires:
+            - hold
 
 
 

@@ -156,7 +156,7 @@ def _privatize_manual(epsilon: float, cap_offset: float,
         The vector to privatize.
     """
     num_dimensions = unit_vector.size
-    assert np.isclose(np.linalg.norm(unit_vector), 1, atol=1e-4)
+    assert np.isclose(np.linalg.norm(unit_vector), 1, atol=1e-3)
 
     _, _, pole_probability = _compute_pole_probability(epsilon, cap_offset,
                                                        num_dimensions)

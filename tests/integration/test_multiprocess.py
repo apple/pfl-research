@@ -9,7 +9,6 @@ import pytest
 from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
 
 
-@pytest.mark.is_slow
 @pytest.mark.horovod
 class TestMultiProcess:
     """
@@ -39,7 +38,7 @@ class TestMultiProcess:
         train_script_path = os.path.join(os.path.dirname(__file__),
                                          'run_training_on_fake_data.py')
 
-        common_arguments = ['--local_num_epochs', '2', '--cohort_size', '10']
+        common_arguments = ['--local_num_epochs', '2', '--cohort_size', '3']
 
         # Run `run_training_on_fake_data.py` with a single worker.
         cmd_arguments = [

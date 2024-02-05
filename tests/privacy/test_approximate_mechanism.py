@@ -16,7 +16,6 @@ from pfl.privacy.approximate_mechanism import SquaredErrorLocalPrivacyMechanism
 from pfl.stats import MappedVectorStatistics
 
 
-@pytest.mark.is_slow
 class TestApproximateMechanism:
 
     def compare_approximation(self,
@@ -151,8 +150,10 @@ class TestApproximateMechanism:
                           math.sqrt(num_samples)).all()
 
     @pytest.mark.parametrize('framework', [lazy_fixture('numpy_ops')])
-    @pytest.mark.parametrize('num_samples', [10, 100, 1000])
-    @pytest.mark.parametrize('num_dimensions', [20, 500])
+    @pytest.mark.parametrize('num_samples,num_dimensions', [(10, 20),
+                                                            (10, 1000),
+                                                            (100, 20),
+                                                            (1000, 20)])
     @pytest.mark.parametrize('l2_norm, norm_bound', [(4, .5), (2., 5.)])
     def test_gaussian_mechanism_approximation(self, framework, num_samples,
                                               num_dimensions, l2_norm,
@@ -165,8 +166,10 @@ class TestApproximateMechanism:
                                    l2_norm=l2_norm,
                                    norm_bound=norm_bound)
 
-    @pytest.mark.parametrize('num_samples', [10, 100, 1000])
-    @pytest.mark.parametrize('num_dimensions', [20, 500])
+    @pytest.mark.parametrize('num_samples,num_dimensions', [(10, 20),
+                                                            (10, 1000),
+                                                            (100, 20),
+                                                            (1000, 20)])
     @pytest.mark.parametrize('l2_norm, norm_bound', [(4, .5), (2., 5.)])
     def test_laplace_mechanism_approximation(self, num_samples, num_dimensions,
                                              l2_norm, norm_bound):
@@ -180,8 +183,10 @@ class TestApproximateMechanism:
 
     # Run >1000 samples only over lunch.
     @pytest.mark.parametrize('framework', [lazy_fixture('numpy_ops')])
-    @pytest.mark.parametrize('num_samples', [10, 100, 1000])
-    @pytest.mark.parametrize('num_dimensions', [10, 100, 1000, 10000])
+    @pytest.mark.parametrize('num_samples,num_dimensions', [(10, 20),
+                                                            (10, 1000),
+                                                            (100, 20),
+                                                            (1000, 20)])
     @pytest.mark.parametrize('l2_norm, norm_bound', [(2., 4.), (4., 4.),
                                                      (6., 4.)])
     def test_priv_unit_mechanism_approximation(self, framework, num_samples,

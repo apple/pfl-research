@@ -148,6 +148,26 @@ jobs:
       - run_lm:
           framework: tf
 
+  check-run-flair:
+    executor: linux-python
+    steps:
+      - benchmark_install_steps
+      - run:
+          name: "Download data"
+          command: |
+            mkdir -p ./benchmarks/data/flair
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/flair/flair_federated_ci.hdf5 \
+              -o ./benchmarks/data/flair/flair_federated_ci.hdf5
+      - run:
+          name: "(PyTorch) run a few iterations of training"
+          command: |
+            cd benchmarks
+            poetry run python -m flair.train \
+              --args_config flair/configs/baseline.yaml \
+              --data_path ./data/flair/flair_federated_ci.hdf5 \
+              --central_num_iterations 3 --cohort_size 2 --val_cohort_size 2
+
+
   publish-wheel:
     executor: linux-python
     steps:
@@ -183,6 +203,7 @@ workflows:
       - test-benchmarks
       - check-run-cifar10
       - check-run-lm
+      - check-run-flair
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))
       #- build-images:
@@ -232,7 +253,9 @@ workflows:
       - check-run-cifar10:
           requires:
             - hold
-
+      - check-run-flair:
+          requires:
+            - hold
 
 
 

@@ -33,6 +33,34 @@ commands:
             pip install poetry
             poetry install -E tf -E pytorch --no-root || true
             echo 'export PYTHONPATH=.' >> $BASH_ENV
+  run_cifar10:
+    description: "Run a few iterations of CIFAR10 training"
+    parameters:
+      framework:
+        type: string
+    steps:
+      - run:
+          name: "(<< parameters.framework >>) run a few iterations of CIFAR10 training"
+          command: |
+            cd benchmarks
+            poetry run python image_classification/<< parameters.framework >>/train.py \
+              --args_config image_classification/configs/baseline.yaml \
+              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+  run_lm:
+    description: "Run a few iterations of LM training"
+    parameters:
+      framework:
+        type: string
+    steps:
+      - run:
+          name: "(<< parameters.framework >>) run a few iterations of LM training"
+          command: |
+            cd benchmarks
+            poetry run python -m lm.<< parameters.framework >>.train \
+              --args_config lm/configs/baseline.yaml \
+              --data_path ./data/stackoverflow/stackoverflow_ci.hdf5 \
+              --central_num_iterations 3 --cohort_size 2 --val_cohort_size 2 \
+              --central_data_fraction 1.0
 
 jobs:
   code-quality:
@@ -100,20 +128,25 @@ jobs:
               -o ./benchmarks/data/cifar10/cifar10_train.p
             curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_test.p \
               -o ./benchmarks/data/cifar10/cifar10_test.p
+      - run_cifar10:
+          framework: pytorch
+      - run_cifar10:
+          framework: tf
+
+  check-run-lm:
+    executor: linux-python
+    steps:
+      - benchmark_install_steps
       - run:
-          name: "(PyTorch) run a few iterations of training"
+          name: "Download data"
           command: |
-            cd benchmarks
-            poetry run python image_classification/pytorch/train.py \
-              --args_config image_classification/configs/baseline.yaml \
-              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
-      - run:
-          name: "(TF) run a few iterations of training"
-          command: |
-            cd benchmarks
-            poetry run python image_classification/tf/train.py \
-              --args_config image_classification/configs/baseline.yaml \
-              --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+            mkdir -p ./benchmarks/data/stackoverflow
+            curl https://pfl-data.s3.us-east-2.amazonaws.com/stackoverflow/stackoverflow_ci.hdf5 \
+              -o ./benchmarks/data/stackoverflow/stackoverflow_ci.hdf5
+      - run_lm:
+          framework: pytorch
+      - run_lm:
+          framework: tf
 
   check-run-flair:
     executor: linux-python
@@ -169,6 +202,7 @@ workflows:
       - test-pytorch
       - test-benchmarks
       - check-run-cifar10
+      - check-run-lm
       - check-run-flair
 
       # TODO: rdar://120414177 (optional CI for docker image (build only))

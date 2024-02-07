@@ -1094,7 +1094,7 @@ description = "Simulation framework for Private Federated Learning"
 optional = true
 python-versions = ">=3.10,<3.12"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 cmake = "^3.27.5"
@@ -2334,4 +2334,4 @@ tf = ["pfl", "pfl", "tensorflow", "tensorflow_addons"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "9a19c1e2330418a0b7452211cc504e4d36c0d5182374a8d18539a91fd9c014bc"
+content-hash = "a1b62d9c96490ac3a54ab78ae3e0f7446be7ad93222ab61b5a74ec76f603577b"

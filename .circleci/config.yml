@@ -16,13 +16,17 @@ commands:
     steps:
       - checkout
       - run:
+          # Cannot set parameters.extras directly in cache key
+          name: Set extras environment variable
+          command: echo 'export EXTRAS=<< parameters.extras >>' >> $BASH_ENV
+      - run:
           name: Install Poetry and configure virtualenv location
           command: |
             pip install poetry
             poetry config virtualenvs.in-project true
       - restore_cache:
           keys:
-            - v1-poetry-deps-{{ checksum "poetry.lock" }}-{{ parameters.extras }}
+            - v1-poetry-deps-{{ checksum "poetry.lock" }}-${EXTRAS}
       - run:
           name: Install dependencies
           command: |
@@ -30,7 +34,7 @@ commands:
       - save_cache:
           paths:
             - .venv
-          key: v1-poetry-deps-{{ checksum "poetry.lock" }}-{{ parameters.extras }}
+          key: v1-poetry-deps-{{ checksum "poetry.lock" }}-${EXTRAS}
   benchmark_install_steps:
     steps:
       - checkout

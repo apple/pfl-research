@@ -26,7 +26,7 @@ commands:
             poetry config virtualenvs.in-project true
       - restore_cache:
           keys:
-            - v1-poetry-deps-{{ checksum "poetry.lock" }}-{{ checksum "extras.txt" }}
+            - v2-poetry-deps-{{ checksum "poetry.lock" }}-{{ checksum "extras.txt" }}
       - run:
           name: Install dependencies
           command: |
@@ -35,7 +35,7 @@ commands:
       - save_cache:
           paths:
             - .venv
-          key: v1-poetry-deps-{{ checksum "poetry.lock" }}-{{ checksum "extras.txt" }}
+          key: v2-poetry-deps-{{ checksum "poetry.lock" }}-{{ checksum "extras.txt" }}
   benchmark_install_steps:
     steps:
       - checkout

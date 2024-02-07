@@ -71,7 +71,7 @@ jobs:
       - run:
           name: "Test with TensorFlow"
           command: |
-            python -m pip uninstall -y torch
+            poetry run pip uninstall -y torch
             make test
 
   test-pytorch:
@@ -82,7 +82,7 @@ jobs:
       - run:
           name: "Test with PyTorch"
           command: |
-            python -m pip uninstall -y tensorflow
+            poetry run pip uninstall -y tensorflow
             make test
 
   test-benchmarks:

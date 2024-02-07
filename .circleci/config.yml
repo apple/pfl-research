@@ -27,14 +27,6 @@ commands:
             - .venv
           key: v1-poetry-deps-{{ checksum "poetry.lock" }}
 
-  dev_install_steps:
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            pip install poetry
-            poetry install --only dev -q || true
   benchmark_install_steps:
     steps:
       - checkout
@@ -45,6 +37,22 @@ commands:
             pip install poetry
             poetry install -E tf -E pytorch --no-root || true
             echo 'export PYTHONPATH=.' >> $BASH_ENV
+  
+  prepare_tox_environment:
+    description: "Prepare the Tox environment without running tests"
+    steps:
+      - restore_cache:
+          keys:
+            - v1-tox-env-{{ checksum "poetry.lock" }}
+            # Ensure dependencies cache is also restored
+            - v1-poetry-deps-{{ checksum "poetry.lock" }}
+      - run:
+          name: Prepare tox environment
+          command: poetry run tox --notest
+      - save_cache:
+          paths:
+            - .tox
+          key: v1-tox-env-{{ checksum "poetry.lock" }}
 
 jobs:
   code-quality:
@@ -76,7 +84,8 @@ jobs:
     executor: linux-python
     resource_class: large
     steps:
-      - dev_install_steps
+      - full_install_steps
+      - prepare_tox_environment
       - run:
           name: "Test with TensorFlow"
           command: poetry run tox -e 'py310-test-tf'
@@ -85,7 +94,8 @@ jobs:
     executor: linux-python
     resource_class: large
     steps:
-      - dev_install_steps
+      - full_install_steps
+      - prepare_tox_environment
       - run:
           name: "Test with PyTorch"
           command: poetry run tox -e 'py310-test-pytorch'

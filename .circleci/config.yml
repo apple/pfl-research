@@ -11,10 +11,22 @@ commands:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install Poetry and configure virtualenv location
           command: |
             pip install poetry
+            poetry config virtualenvs.in-project true
+      - restore_cache:
+          keys:
+            - v1-poetry-deps-{{ checksum "poetry.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
             poetry install -E tf -E pytorch -E trees -q || true
+      - save_cache:
+          paths:
+            - .venv
+          key: v1-poetry-deps-{{ checksum "poetry.lock" }}
+
   dev_install_steps:
     steps:
       - checkout

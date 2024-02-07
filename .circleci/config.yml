@@ -8,6 +8,11 @@ executors:
 
 commands:
   full_install_steps:
+    parameters:
+      extras:
+        type: string
+        # Default to installing all extras
+        default: "tf pytorch trees"
     steps:
       - checkout
       - run:
@@ -17,15 +22,15 @@ commands:
             poetry config virtualenvs.in-project true
       - restore_cache:
           keys:
-            - v1-poetry-deps-{{ checksum "poetry.lock" }}
+            - v1-poetry-deps-{{ checksum "poetry.lock" }}-{{ parameters.extras }}
       - run:
           name: Install dependencies
           command: |
-            poetry install -E tf -E pytorch -E trees -q || true
+            poetry install -E << parameters.extras >> -q || true
       - save_cache:
           paths:
             - .venv
-          key: v1-poetry-deps-{{ checksum "poetry.lock" }}
+          key: v1-poetry-deps-{{ checksum "poetry.lock" }}-{{ parameters.extras }}
   benchmark_install_steps:
     steps:
       - checkout
@@ -52,7 +57,8 @@ jobs:
   build-documentation-wheel:
     executor: linux-python
     steps:
-      - full_install_steps
+      - full_install_steps:
+          extras: "tf pytorch trees"
       - run:
           name: "Build documentation"
           command: make docs
@@ -67,7 +73,8 @@ jobs:
     executor: linux-python
     resource_class: large
     steps:
-      - full_install_steps
+      - full_install_steps:
+          extras: "tf trees"
       - run:
           name: "Test with TensorFlow"
           command: |
@@ -78,7 +85,8 @@ jobs:
     executor: linux-python
     resource_class: large
     steps:
-      - full_install_steps
+      - full_install_steps:
+          extras: "pytorch trees"
       - run:
           name: "Test with PyTorch"
           command: |
@@ -156,7 +164,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "1f:58:50:56:ce:6c:63:5c:77:c1:34:a0:f5:bd:9f:b7"
-      - full_install_steps
+      - full_install_steps:
+          extras: "tf pytorch trees"
       - run:
           name: "Publish docs"
           command: make docs-and-publish

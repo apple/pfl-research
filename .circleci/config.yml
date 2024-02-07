@@ -31,6 +31,7 @@ commands:
           name: Install dependencies
           command: |
             poetry install -E "<< parameters.extras >>" -q || true
+            poetry run ./build_scripts/install_horovod.sh "<< parameters.extras >>" true
       - save_cache:
           paths:
             - .venv
@@ -81,9 +82,7 @@ jobs:
           extras: "tf trees"
       - run:
           name: "Test with TensorFlow"
-          command: |
-            poetry run pip uninstall -y torch
-            make test
+          command: make test
 
   test-pytorch:
     executor: linux-python
@@ -93,9 +92,7 @@ jobs:
           extras: "pytorch trees"
       - run:
           name: "Test with PyTorch"
-          command: |
-            poetry run pip uninstall -y tensorflow
-            make test
+          command: make test
 
   test-benchmarks:
     executor: linux-python

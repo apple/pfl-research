@@ -68,7 +68,7 @@ FROM base as tf
 WORKDIR /pfl/
 COPY --from=base /pfl /pfl
 RUN poetry install -E tf -E trees
-RUN poetry run ./build_scripts/install_horovod.sh true false true
+RUN poetry run ./build_scripts/install_horovod.sh "tf" true
 RUN rm -rf /pfl
 
 # docker build -f Dockerfile -t pfl:latest-pytorch . --build-arg CUDA_VERSION=11.8.0 --build-arg RUNTIME_TYPE=devel --target pytorch
@@ -76,7 +76,7 @@ FROM base as pytorch
 WORKDIR /pfl/
 COPY --from=base /pfl /pfl
 RUN poetry install -E pytorch -E trees
-RUN poetry run ./build_scripts/install_horovod.sh false true true
+RUN poetry run ./build_scripts/install_horovod.sh "pytorch" true
 RUN rm -rf /pfl
 
 # docker build -f Dockerfile -t pfl:latest-ci . --build-arg CUDA_VERSION=11.8.0 --build-arg RUNTIME_TYPE=devel --target ci
@@ -84,5 +84,5 @@ FROM base as ci
 WORKDIR /pfl/
 COPY --from=base /pfl /pfl
 RUN poetry install -E tf -E pytorch -E trees
-RUN poetry run ./build_scripts/install_horovod.sh true true true
+RUN poetry run ./build_scripts/install_horovod.sh "tf pytorch" true
 RUN rm -rf /pfl

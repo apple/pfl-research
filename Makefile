@@ -25,7 +25,7 @@ cov: ## Run test coverage
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@poetry run pytest -svx
+	@poetry run pytest -svx tests/
 
 .PHONY: build
 build: clean-build ## Build wheel file using poetry

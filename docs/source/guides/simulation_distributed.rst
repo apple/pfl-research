@@ -51,10 +51,9 @@ In most cases, you can also use our setup script available in the ``pfl`` reposi
 .. code-block::
 
    git clone https://github.com/apple/pfl-research.git
-   # arg1: Install for TF
-   # arg2: Install for PyTorch
-   # arg3: Install non-Python dependencies on Linux.
-   ./pfl-research/build_scripts/install_horovod.sh true true false
+   # arg1: "tf", "pytorch" or "tf pytorch".
+   # arg2: Install non-Python dependencies on Linux.
+   ./pfl-research/build_scripts/install_horovod.sh "tf pytorch" false
 
 
 .. _multi-GPU_training:

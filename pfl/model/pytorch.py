@@ -2,6 +2,7 @@
 import logging
 import os
 from typing import Callable, Dict, Optional, Tuple
+import numpy
 
 import torch
 

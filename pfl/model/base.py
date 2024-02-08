@@ -6,6 +6,7 @@ the specific deep learning framework you have implemented your model with.
 from abc import abstractmethod
 from typing import Callable, Generic, Optional, Tuple, TypeVar
 
+import os
 from pfl.common_types import Saveable
 from pfl.data.dataset import AbstractDatasetType
 from pfl.hyperparam.base import ModelHyperParamsType

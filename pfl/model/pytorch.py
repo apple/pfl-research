@@ -275,6 +275,16 @@ class PyTorchModel(StatefulModel):
                 variable).sub_(other_parameters[variable_name])
         return model_diff
 
+    @staticmethod
+    def _prepare_batch(batch):
+        if isinstance(batch, Dict):
+            return {
+                k: get_framework_module().to_tensor(v)
+                for k, v in batch.items()
+            }
+        else:
+            return [get_framework_module().to_tensor(data) for data in batch]
+
     def do_multiple_epochs_of(self, user_dataset: AbstractDatasetType,
                               train_params: NNTrainHyperParams,
                               train_step_fn: Callable, **kwargs) -> None:
@@ -315,27 +325,16 @@ class PyTorchModel(StatefulModel):
             learning_rate=train_params.local_learning_rate)
 
         steps = 0
-        total_steps = num_epochs * (train_params.get('local_batch_size') or 1)
+        local_optimizer.zero_grad()
         for _ in range(num_epochs):
             for _batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):
-                steps += 1
                 if steps == train_params.get('local_num_steps'):
                     break
-
-                if isinstance(batch, Dict):
-                    batch = {
-                        k: get_framework_module().to_tensor(v)
-                        for k, v in batch.items()
-                    }
-                else:
-                    batch = [
-                        get_framework_module().to_tensor(data)
-                        for data in batch
-                    ]
+                steps += 1
+                batch = self._prepare_batch(batch)
                 kwargs['optimizer_should_update'] = (
-                    steps % train_params.grad_accumulation_steps == 0
-                    or steps == total_steps)
+                    steps % train_params.grad_accumulation_steps == 0)
                 train_step_fn(self._model, local_optimizer, batch,
                               user_dataset.train_kwargs, **kwargs)
 
@@ -356,21 +355,14 @@ class PyTorchModel(StatefulModel):
         autocast_context = self._autocast_context or contextlib.nullcontext()
         for batch_ix, batch in enumerate(dataset.iter(batch_size)):
             metrics_one_batch = Metrics()
-            if isinstance(batch, Dict):
-                batch = {
-                    k: get_framework_module().to_tensor(v)
-                    for k, v in batch.items()
-                }
-                with autocast_context:
+            batch = self._prepare_batch(batch)
+            with autocast_context:
+                if isinstance(batch, Dict):
                     metrics_outputs = self._model.metrics(**{
                         **batch,
                         **dataset.eval_kwargs
                     })
-            else:
-                batch = [
-                    get_framework_module().to_tensor(data) for data in batch
-                ]
-                with autocast_context:
+                else:
                     metrics_outputs = self._model.metrics(
                         *batch, **dataset.eval_kwargs)
 

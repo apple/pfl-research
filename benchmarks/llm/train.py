@@ -64,12 +64,14 @@ def main():
     params = [p for p in hf_model.parameters() if p.requires_grad]
     central_optimizer = torch.optim.SGD(params, arguments.learning_rate)
 
-    model = PyTorchModel(hf_model,
+    model = PyTorchModel(model=hf_model,
                          local_optimizer_create=torch.optim.SGD,
                          central_optimizer=central_optimizer,
                          autocast_float_format=getattr(
                              torch, arguments.autocast_float_format),
-                         grad_scaling=arguments.grad_scaling)
+                         grad_scaling=arguments.grad_scaling,
+                         model_precision_same_as_autocast=arguments.
+                         model_precision_same_as_autocast)
 
     backend = SimulatedBackend(training_data=training_data,
                                val_data=val_data,

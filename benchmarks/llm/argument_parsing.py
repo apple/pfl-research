@@ -93,6 +93,14 @@ def add_llm_arguments(argument_parser):
         ' mixed precision training.')
 
     argument_parser.add_argument(
+        '--model_precision_same_as_autocast',
+        action=store_bool,
+        default=False,
+        help='Cast the model weights precision to the same as used in '
+        'autocast. This saves memory but may cause divergence due to '
+        'lower precision.')
+
+    argument_parser.add_argument(
         '--local_max_grad_norm',
         type=float,
         default=None,

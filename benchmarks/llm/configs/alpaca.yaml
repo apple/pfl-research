@@ -2,10 +2,12 @@ dataset: alpaca
 mean_datapoints_per_user: 16
 
 # Model config
-hugging_face_model_name_or_path: gpt2
+hugging_face_model_name_or_path: facebook/opt-1.3b
 model_max_length: 512
 use_fast_tokenizer: True
 padding_side: right
+autocast_float_format: bfloat16
+model_precision_same_as_autocast: False
 
 central_optimizer: adam
 adaptivity_degree: 0.01

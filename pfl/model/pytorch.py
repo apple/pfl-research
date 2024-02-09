@@ -1,4 +1,5 @@
 # Copyright © 2023-2024 Apple Inc.
+import contextlib
 import inspect
 import logging
 import os
@@ -85,7 +86,8 @@ class PyTorchModel(StatefulModel):
                  local_optimizer_create,
                  central_optimizer,
                  autocast_float_format: Optional[torch.dtype] = None,
-                 grad_scaling: bool = False):
+                 grad_scaling: bool = False,
+                 model_precision_same_as_autocast: bool = False):
         super().__init__()
         assert hasattr(model, "loss") and hasattr(model, "metrics"), (
             "PyTorch module needs to implement `loss` and `metrics` functions."
@@ -110,6 +112,11 @@ class PyTorchModel(StatefulModel):
         self._model_diff = MappedVectorStatistics()
         self._setup_mixed_precision_training(autocast_float_format,
                                              grad_scaling)
+        if model_precision_same_as_autocast and self._autocast_context:
+            logger.warning("Casting model weight to dtype: "
+                           f"{self._autocast_context.fast_dtype}, "
+                           "which may cause training to diverge")
+            self._model.type(self._autocast_context.fast_dtype)
 
     def _setup_mixed_precision_training(
             self, autocast_float_format: Optional[torch.dtype],
@@ -135,8 +142,12 @@ class PyTorchModel(StatefulModel):
             self._autocast_context = torch.amp.autocast(
                 "cuda" if torch.cuda.is_available() else "cpu",
                 autocast_float_format)
+            logger.info(
+                "Mixed precision training with PyTorch AMP float type: "
+                f"{self._autocast_context.fast_dtype}")
             if grad_scaling and torch.cuda.is_available():
                 self._grad_scaler = torch.cuda.amp.GradScaler()
+                logger.info("Gradient scaling enabled.")
 
     @property
     def allows_distributed_evaluation(self) -> Optional[bool]:
@@ -342,6 +353,7 @@ class PyTorchModel(StatefulModel):
 
         postprocess_fns = []
         allows_distributed_evaluation = True
+        autocast_context = self._autocast_context or contextlib.nullcontext()
         for batch_ix, batch in enumerate(dataset.iter(batch_size)):
             metrics_one_batch = Metrics()
             if isinstance(batch, Dict):
@@ -349,16 +361,18 @@ class PyTorchModel(StatefulModel):
                     k: get_framework_module().to_tensor(v)
                     for k, v in batch.items()
                 }
-                metrics_outputs = self._model.metrics(**{
-                    **batch,
-                    **dataset.eval_kwargs
-                })
+                with autocast_context:
+                    metrics_outputs = self._model.metrics(**{
+                        **batch,
+                        **dataset.eval_kwargs
+                    })
             else:
                 batch = [
                     get_framework_module().to_tensor(data) for data in batch
                 ]
-                metrics_outputs = self._model.metrics(*batch,
-                                                      **dataset.eval_kwargs)
+                with autocast_context:
+                    metrics_outputs = self._model.metrics(
+                        *batch, **dataset.eval_kwargs)
 
             for name, metric_value in metrics_outputs.items():
                 if isinstance(metric_value, tuple):

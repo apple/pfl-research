@@ -78,7 +78,7 @@ def add_filepath_arguments(
         help='Path to YAML configuration file containing the arguments.')
 
     parser.add_argument('--data_path',
-                        required=True,
+                        default=None,
                         help='The path from which the dataset will be read.')
 
     parser.add_argument("--save_model_path",
@@ -217,6 +217,12 @@ def add_dnn_training_arguments(argument_parser):
         type=int,
         default=None,
         help='Batch size for local training of one user.')
+
+    argument_parser.add_argument(
+        '--local_eval_batch_size',
+        type=int,
+        default=None,
+        help='Batch size for local evaluation of one user.')
 
     argument_parser.add_argument(
         '--local_learning_rate',

@@ -182,6 +182,7 @@ class NNTrainHyperParams(NNEvalHyperParams):
     local_learning_rate: HyperParamClsOrFloat
     local_max_grad_norm: Optional[HyperParamClsOrFloat] = None
     local_num_steps: Optional[HyperParamClsOrInt] = None
+    grad_accumulation_steps: int = 1
 
     def __post_init__(self):
         super().__post_init__()

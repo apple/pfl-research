@@ -1,4 +1,5 @@
 # Copyright © 2023-2024 Apple Inc.
+import inspect
 import logging
 import os
 from typing import Callable, Dict, Optional, Tuple
@@ -79,8 +80,16 @@ class PyTorchModel(StatefulModel):
     _MODEL_CKPT_NAME = "checkpoint.pt"
     _CENTRAL_OPTIMIZER_CKPT_NAME = "central_optimizer.pt"
 
-    def __init__(self, model, local_optimizer_create, central_optimizer):
+    def __init__(self,
+                 model,
+                 local_optimizer_create,
+                 central_optimizer,
+                 autocast_float_format: Optional[torch.dtype] = None,
+                 grad_scaling: bool = False):
         super().__init__()
+        assert hasattr(model, "loss") and hasattr(model, "metrics"), (
+            "PyTorch module needs to implement `loss` and `metrics` functions."
+        )
 
         self._model = model.to(pytorch_ops.get_default_device())
         self._local_optimizer_create = local_optimizer_create
@@ -99,6 +108,35 @@ class PyTorchModel(StatefulModel):
 
         self._original_values: Dict = {}
         self._model_diff = MappedVectorStatistics()
+        self._setup_mixed_precision_training(autocast_float_format,
+                                             grad_scaling)
+
+    def _setup_mixed_precision_training(
+            self, autocast_float_format: Optional[torch.dtype],
+            grad_scaling: bool):
+        self._autocast_context = None
+        self._grad_scaler = None
+        if autocast_float_format is not None:
+            if pytorch_ops.get_default_device() == torch.device("mps"):
+                logger.info("Autocast is disabled on MPS")
+                autocast_float_format = torch.float32
+            if (pytorch_ops.get_default_device() == torch.device("cpu")
+                    and autocast_float_format == torch.float16):
+                logger.info("Autocast to float16 is disabled on CPU")
+                autocast_float_format = torch.float32
+            if torch.cuda.is_available():
+                if (autocast_float_format == torch.bfloat16
+                        and not torch.cuda.is_bf16_supported()):
+                    logger.info(
+                        "Autocast to bfloat16 is not supported on this GPU.")
+                    autocast_float_format = torch.float32
+
+        if autocast_float_format != torch.float32:
+            self._autocast_context = torch.amp.autocast(
+                "cuda" if torch.cuda.is_available() else "cpu",
+                autocast_float_format)
+            if grad_scaling and torch.cuda.is_available():
+                self._grad_scaler = torch.cuda.amp.GradScaler()
 
     @property
     def allows_distributed_evaluation(self) -> Optional[bool]:
@@ -254,19 +292,39 @@ class PyTorchModel(StatefulModel):
             * kwargs - other keyword arguments that a custom ``train_step_fn``
             might have.
         """
+        train_step_signature = inspect.signature(train_step_fn)
+        if "autocast_context" in train_step_signature.parameters:
+            kwargs["autocast_context"] = self._autocast_context
+        if "grad_scaler" in train_step_signature.parameters:
+            kwargs["grad_scaler"] = self._grad_scaler
+
         num_epochs = (1 if train_params.local_num_epochs is None else
                       train_params.get('local_num_epochs'))
         local_optimizer = self.new_local_optimizer(
             learning_rate=train_params.local_learning_rate)
 
+        steps = 0
+        total_steps = num_epochs * (train_params.get('local_batch_size') or 1)
         for _ in range(num_epochs):
-            for batch_ix, batch in enumerate(
+            for _batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):
-                if batch_ix == train_params.get('local_num_steps'):
+                steps += 1
+                if steps == train_params.get('local_num_steps'):
                     break
-                batch = [
-                    get_framework_module().to_tensor(data) for data in batch
-                ]
+
+                if isinstance(batch, Dict):
+                    batch = {
+                        k: get_framework_module().to_tensor(v)
+                        for k, v in batch.items()
+                    }
+                else:
+                    batch = [
+                        get_framework_module().to_tensor(data)
+                        for data in batch
+                    ]
+                kwargs['optimizer_should_update'] = (
+                    steps % train_params.grad_accumulation_steps == 0
+                    or steps == total_steps)
                 train_step_fn(self._model, local_optimizer, batch,
                               user_dataset.train_kwargs, **kwargs)
 
@@ -284,13 +342,25 @@ class PyTorchModel(StatefulModel):
 
         postprocess_fns = []
         allows_distributed_evaluation = True
-        for batch_ix, (batch_inputs,
-                       batch_labels) in enumerate(dataset.iter(batch_size)):
+        for batch_ix, batch in enumerate(dataset.iter(batch_size)):
             metrics_one_batch = Metrics()
-            for name, metric_value in self._model.metrics(
-                    get_framework_module().to_tensor(batch_inputs),
-                    get_framework_module().to_tensor(batch_labels),
-                    **dataset.eval_kwargs).items():
+            if isinstance(batch, Dict):
+                batch = {
+                    k: get_framework_module().to_tensor(v)
+                    for k, v in batch.items()
+                }
+                metrics_outputs = self._model.metrics(**{
+                    **batch,
+                    **dataset.eval_kwargs
+                })
+            else:
+                batch = [
+                    get_framework_module().to_tensor(data) for data in batch
+                ]
+                metrics_outputs = self._model.metrics(*batch,
+                                                      **dataset.eval_kwargs)
+
+            for name, metric_value in metrics_outputs.items():
                 if isinstance(metric_value, tuple):
                     # Is tuple with metric postprocess function as 2nd
                     # argument.

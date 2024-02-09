@@ -1,0 +1,28 @@
+dataset: alpaca
+mean_datapoints_per_user: 16
+
+# Model config
+hugging_face_model_name_or_path: gpt2
+model_max_length: 512
+use_fast_tokenizer: True
+padding_side: right
+
+central_optimizer: adam
+adaptivity_degree: 0.01
+
+evaluation_frequency: 10
+
+learning_rate: 0.1
+cohort_size: 10
+val_cohort_size: 0
+
+central_num_iterations: 2000
+local_batch_size: 4
+local_eval_batch_size: 4
+local_num_epochs: 2
+local_learning_rate: 0.1
+
+use_tensorboard: False
+
+# PEFT
+peft_type: lora

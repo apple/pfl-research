@@ -382,7 +382,7 @@ def to_tensor(values: Union[List, np.ndarray],
         dtype, str) else dtype
 
     if isinstance(values, torch.Tensor):
-        return values
+        return values.to(device=get_default_device())
 
     tensor = torch.as_tensor(values, dtype=torch_dtype)
     tensor = tensor.to(device=get_default_device())

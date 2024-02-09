@@ -20,7 +20,7 @@ def add_dataset_arguments(
                         choices=[
                             'cifar10', 'cifar10_iid', 'femnist',
                             'femnist_digits', 'reddit', 'flair', 'flair_iid',
-                            'flair_pytorch', 'stackoverflow'
+                            'flair_pytorch', 'stackoverflow', 'alpaca'
                         ],
                         default='cifar10',
                         help='Which dataset to train on')
@@ -83,6 +83,9 @@ def add_dataset_arguments(
                             type=int,
                             default=100,
                             help='Maximum number of images per user')
+
+    elif known_args.dataset == 'alpaca':
+        parser = add_artificial_fed_dataset_arguments(parser)
 
     return parser
 
@@ -236,6 +239,16 @@ def get_datasets(
             data_path=args.data_path,
             use_fine_grained_labels=args.use_fine_grained_labels,
             max_num_user_images=args.max_num_user_images)
+    elif args.dataset == 'alpaca':
+        from .hugging_face.alpaca import make_alpaca_iid_federated_datasets
+        assert hasattr(args, 'tokenizer'), (
+            "Hugging Face tokenizer is required to parse Alpaca dataset")
+        user_dataset_len_sampler = parse_draw_num_datapoints_per_user(
+            args.datapoints_per_user_distribution,
+            args.mean_datapoints_per_user,
+            args.minimum_num_datapoints_per_user)
+        datasets = make_alpaca_iid_federated_datasets(
+            args.tokenizer, user_dataset_len_sampler)
     else:
         raise ValueError(f'{args.dataset} is not supported')
     return datasets

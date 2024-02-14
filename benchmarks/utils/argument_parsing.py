@@ -219,12 +219,6 @@ def add_dnn_training_arguments(argument_parser):
         help='Batch size for local training of one user.')
 
     argument_parser.add_argument(
-        '--local_eval_batch_size',
-        type=int,
-        default=None,
-        help='Batch size for local evaluation of one user.')
-
-    argument_parser.add_argument(
         '--local_learning_rate',
         type=float,
         default=0.1,

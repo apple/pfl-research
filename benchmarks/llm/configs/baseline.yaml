@@ -28,8 +28,8 @@ val_cohort_size: 0
 
 central_num_iterations: 2000
 local_batch_size: 4
-local_eval_batch_size: 4
-local_num_epochs: 2
+central_eval_batch_size: 8
+local_num_epochs: 1
 local_learning_rate: 0.1
 
 use_tensorboard: False

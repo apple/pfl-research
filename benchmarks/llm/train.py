@@ -114,7 +114,7 @@ def main():
         grad_accumulation_steps=arguments.grad_accumulation_steps)
 
     model_eval_params = NNEvalHyperParams(
-        local_batch_size=arguments.local_eval_batch_size)
+        local_batch_size=arguments.central_eval_batch_size)
 
     callbacks = [
         StopwatchCallback(),

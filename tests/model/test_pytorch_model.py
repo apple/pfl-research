@@ -1,4 +1,6 @@
 # Copyright © 2023-2024 Apple Inc.
+from unittest.mock import Mock
+
 import numpy as np
 import pytest
 
@@ -32,6 +34,31 @@ class TestPyTorchModel:
             pytorch_model_setup.model._model.parameters(),  # pylint: disable=protected-access
             lr=1.0)
         check_save_and_load_central_optimizer_impl(pytorch_model_setup)
+
+    @pytest.mark.parametrize('grad_accumulation_steps', [1, 2, 4])
+    def test_grad_accumulation(self, grad_accumulation_steps,
+                               pytorch_model_setup, user_dataset):
+        local_learning_rate = 0.1
+        local_num_epochs = 4
+        mock_local_optimizer = torch.optim.SGD(
+            pytorch_model_setup.model._model.parameters(), local_learning_rate)
+        mock_local_optimizer.step = Mock()
+
+        def new_local_optimizer(*args, **kwargs):
+            return mock_local_optimizer
+
+        pytorch_model_setup.model.new_local_optimizer = new_local_optimizer
+        bridges.sgd_bridge().do_sgd(
+            pytorch_model_setup.model, user_dataset,
+            NNTrainHyperParams(
+                local_learning_rate=local_learning_rate,
+                local_num_epochs=local_num_epochs,
+                local_batch_size=1,
+                grad_accumulation_steps=grad_accumulation_steps))
+
+        total_steps = 2 * local_num_epochs
+        assert (mock_local_optimizer.step.call_count == total_steps //
+                grad_accumulation_steps)
 
 
 @pytest.fixture(scope='function')

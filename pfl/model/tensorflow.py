@@ -305,6 +305,9 @@ class TFModel(StatefulModel):
         num_epochs = (1 if train_params.local_num_epochs is None else
                       train_params.get('local_num_epochs'))
 
+        assert train_params.grad_accumulation_steps == 1, (
+            "Gradient accumulation is not yet supported in TensorFlow")
+
         for _ in range(num_epochs):
             for batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):

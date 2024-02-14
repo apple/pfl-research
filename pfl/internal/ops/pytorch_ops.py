@@ -43,7 +43,7 @@ def get_default_device():
     return default_device
 
 
-def setup_amp(amp_dtype: torch.dtype, grad_scaling: bool):
+def setup_amp(amp_dtype: Optional[torch.dtype], grad_scaling: bool):
     amp_context, grad_scaler = None, None
     if amp_dtype is not None:
         if get_default_device() == torch.device("mps"):
@@ -61,7 +61,7 @@ def setup_amp(amp_dtype: torch.dtype, grad_scaling: bool):
                 )
                 amp_dtype = torch.float32
 
-    if amp_dtype != torch.float32:
+    if amp_dtype is not None and amp_dtype != torch.float32:
         amp_context = torch.amp.autocast(
             "cuda" if torch.cuda.is_available() else "cpu", amp_dtype)
         logger.info("Mixed precision training with PyTorch AMP float type: "

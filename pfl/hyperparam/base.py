@@ -177,6 +177,11 @@ class NNTrainHyperParams(NNEvalHyperParams):
         ``local_num_steps`` if iterated through dataset.
         This can be useful if the user dataset is very large and training
         less than an epoch is appropriate.
+    :param grad_accumulation_steps:
+        Number of steps to accumulate gradients before apply a local optimizer
+        update. The effective batch size is ``local_batch_size`` multiplied by
+        this number. This is useful to simulate a larger local batch size when
+        memory is limited. Currently only supported for PyTorch.
     """
     local_num_epochs: Optional[HyperParamClsOrInt]
     local_learning_rate: HyperParamClsOrFloat

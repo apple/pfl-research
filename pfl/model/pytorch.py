@@ -105,8 +105,6 @@ class PyTorchModel(StatefulModel):
             for name, variable in model.named_parameters()
             if variable.requires_grad
         }
-
-        self._original_values: Dict = {}
         self._model_diff = MappedVectorStatistics()
 
         self._amp_context, self._grad_scaler = pytorch_ops.setup_amp(
@@ -295,9 +293,9 @@ class PyTorchModel(StatefulModel):
         steps = 0
         local_optimizer.zero_grad()
         for _ in range(num_epochs):
-            for _batch_ix, batch in enumerate(
+            for batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):
-                if steps == train_params.get('local_num_steps'):
+                if batch_ix == train_params.get('local_num_steps'):
                     break
                 steps += 1
                 batch = self._prepare_batch(batch)

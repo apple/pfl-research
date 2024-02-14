@@ -1,14 +1,12 @@
 # Copyright © 2023-2024 Apple Inc.
 from typing import Dict
 
-import torch
-
 from pfl.data.dataset import AbstractDatasetType
 from pfl.hyperparam.base import NNTrainHyperParams
 from pfl.model.pytorch import PyTorchModel
 
 from ..base import SGDFrameworkBridge
-from .common import get_train_step_args
+from .common import clip_norm_and_update, get_train_step_args
 
 
 def _sgd_train_step(pytorch_model, local_optimizer, raw_data, train_kwargs,
@@ -26,20 +24,10 @@ def _sgd_train_step(pytorch_model, local_optimizer, raw_data, train_kwargs,
 
     if train_step_args.grad_scaler is None:
         loss.backward()
-        if train_step_args.optimizer_should_update:
-            if train_step_args.max_grad_norm is not None:
-                torch.nn.utils.clip_grad_norm_(pytorch_model.parameters(),
-                                               train_step_args.max_grad_norm)
-            local_optimizer.step()
     else:
         train_step_args.grad_scaler.scale(loss).backward()
-        if train_step_args.optimizer_should_update:
-            if train_step_args.max_grad_norm is not None:
-                train_step_args.grad_scaler.unscale_(local_optimizer)
-                torch.nn.utils.clip_grad_norm_(pytorch_model.parameters(),
-                                               train_step_args.max_grad_norm)
-            train_step_args.grad_scaler.step(local_optimizer)
-            train_step_args.grad_scaler.update()
+
+    clip_norm_and_update(pytorch_model, local_optimizer, train_step_args)
 
 
 class PyTorchSGDBridge(SGDFrameworkBridge[PyTorchModel, NNTrainHyperParams]):

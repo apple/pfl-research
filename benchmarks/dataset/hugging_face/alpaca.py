@@ -1,3 +1,7 @@
+"""
+Some of the code is adapted from: https://github.com/tatsu-lab/stanford_alpaca
+"""
+
 import copy
 import logging
 from dataclasses import dataclass

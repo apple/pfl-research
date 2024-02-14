@@ -1,3 +1,8 @@
+"""
+Some of the code is adapted from: https://github.com/h2oai/h2o-llmstudio/
+"""
+
+
 import logging
 from collections import defaultdict
 from typing import Dict, List

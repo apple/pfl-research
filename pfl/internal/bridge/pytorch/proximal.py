@@ -31,6 +31,11 @@ def _proximal_train_step(pytorch_model, local_optimizer, raw_data,
 
         loss /= train_step_args.grad_accumulation_steps
 
+    if train_step_args.grad_scaler is None:
+        loss.backward()
+    else:
+        train_step_args.grad_scaler.scale(loss).backward()
+
     clip_norm_and_update(pytorch_model, local_optimizer, train_step_args)
 
 

@@ -5,18 +5,20 @@ from typing import Callable, Dict, List, Sequence, Tuple
 
 import torch
 from datasets import load_dataset
-from transformers import PreTrainedModel, PreTrainedTokenizer
+from transformers import PreTrainedTokenizer
 
-from pfl.data import ArtificialFederatedDataset
+from pfl.data import FederatedDataset
 from pfl.data.pytorch import PyTorchDataDataset
-from pfl.data.sampling import get_data_sampler
+from pfl.data.sampling import get_user_sampler
+
+from . import IGNORE_INDEX, ListDictDataset, add_special_tokens, smart_embedding_resize
 
 logger = logging.getLogger(__name__)
 
-IGNORE_INDEX = -100
 PROMPT_DICT = {
     "prompt_input":
-    ("Below is an instruction that describes a task, paired with an input that provides further context. "
+    ("Below is an instruction that describes a task, paired with an input "
+     "that provides further context. "
      "Write a response that appropriately completes the request.\n\n"
      "### Instruction:\n{instruction}\n\n### Input:\n{input}\n\n### Response:"
      ),
@@ -76,21 +78,6 @@ def preprocess_alpaca(hf_dataset, tokenizer: PreTrainedTokenizer) -> Tuple:
     return input_ids, labels
 
 
-class AlpacaDataset(torch.utils.data.Dataset):
-    """Dataset for supervised fine-tuning."""
-
-    def __init__(self, input_ids: Sequence, labels: Sequence):
-        super().__init__()
-        self.input_ids = input_ids
-        self.labels = labels
-
-    def __len__(self):
-        return len(self.input_ids)
-
-    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
-        return {"input_ids": self.input_ids[i], "labels": self.labels[i]}
-
-
 @dataclass
 class AlpacaDataCollator:
     """Collate examples for supervised fine-tuning."""
@@ -114,78 +101,72 @@ class AlpacaDataCollator:
         }
 
 
-def make_iid_federated_dataset(input_ids: Sequence, labels: Sequence,
-                               tokenizer: PreTrainedTokenizer,
-                               user_dataset_len_sampler: Callable):
-    data_collator = AlpacaDataCollator(tokenizer)
-
-    def make_dataset_fn(indices: List):
-        user_input_ids, user_labels = [], []
-        for i in indices:
-            user_input_ids.append(input_ids[i])
-            user_labels.append(labels[i])
-        return PyTorchDataDataset(raw_data=AlpacaDataset(
-            user_input_ids, user_labels),
-                                  collate_fn=data_collator)
-
-    data_sampler = get_data_sampler("random", max_bound=len(input_ids))
-    return ArtificialFederatedDataset(make_dataset_fn, data_sampler,
-                                      user_dataset_len_sampler)
-
-
-def smart_tokenizer_and_embedding_resize(
-    num_new_tokens: int,
-    tokenizer: PreTrainedTokenizer,
-    model: PreTrainedModel,
-):
-    """Resize tokenizer and embedding.
-
-    Note: This is the unoptimized version that may make your embedding size not be divisible by 64.
-    """
-    logger.info(f"Resizing model's token embedding to {len(tokenizer)} "
-                f"with {num_new_tokens} new tokens.")
-    model.resize_token_embeddings(len(tokenizer))
-
-    if num_new_tokens > 0:
-        input_embeddings = model.get_input_embeddings().weight.data
-        output_embeddings = model.get_output_embeddings().weight.data
-
-        input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(
-            dim=0, keepdim=True)
-        output_embeddings_avg = output_embeddings[:-num_new_tokens].mean(
-            dim=0, keepdim=True)
-
-        input_embeddings[-num_new_tokens:] = input_embeddings_avg
-        output_embeddings[-num_new_tokens:] = output_embeddings_avg
+def iid_user_partition(
+        input_ids: Sequence, labels: Sequence,
+        user_dataset_len_sampler: Callable) -> Dict[str, List[Dict]]:
+    start_ix = 0
+    users_to_data: Dict = {}
+    while True:
+        dataset_len = user_dataset_len_sampler()
+        dataset_len = min(dataset_len, len(input_ids) - start_ix)
+        user_data = [{
+            "input_ids": input_ids[i],
+            "labels": labels[i]
+        } for i in range(start_ix, start_ix + dataset_len)]
+        users_to_data[str(len(users_to_data))] = user_data
+        start_ix += dataset_len
+        if start_ix >= len(input_ids):
+            break
+    return users_to_data
 
 
-def make_alpaca_iid_federated_datasets(
-    tokenizer: PreTrainedTokenizer,
-    user_dataset_len_sampler: Callable,
-):
+def make_iid_federated_dataset(user_dataset: Dict[str, List[Dict]],
+                               tokenizer: PreTrainedTokenizer):
+    collator = AlpacaDataCollator(tokenizer)
+    user_sampler = get_user_sampler('random', list(user_dataset.keys()))
+    return FederatedDataset(
+        lambda u: PyTorchDataDataset(raw_data=ListDictDataset(user_dataset[u]),
+                                     user_id=u,
+                                     collate_fn=collator), user_sampler)
+
+
+def make_central_dataset(user_dataset: Dict[str, List[Dict]],
+                         tokenizer: PreTrainedTokenizer):
+    collator = AlpacaDataCollator(tokenizer)
+    list_dataset = []
+    for u in user_dataset:
+        list_dataset += user_dataset[u]
+    return PyTorchDataDataset(raw_data=ListDictDataset(list_dataset),
+                              collate_fn=collator)
+
+
+def make_alpaca_iid_datasets(tokenizer: PreTrainedTokenizer,
+                             user_dataset_len_sampler: Callable,
+                             train_split_ratio: float = 0.9):
     hf_dataset = load_dataset("tatsu-lab/alpaca")["train"]
 
-    special_tokens_dict = {}
-    if tokenizer.pad_token is None:
-        special_tokens_dict["pad_token"] = "[PAD]"  # noqa: S105
-    if tokenizer.eos_token is None:
-        special_tokens_dict["eos_token"] = "</s>"  # noqa: S105
-    if tokenizer.bos_token is None:
-        special_tokens_dict["bos_token"] = "<s>"  # noqa: S105
-    if tokenizer.unk_token is None:
-        special_tokens_dict["unk_token"] = "<unk>"  # noqa: S105
-    num_new_tokens = tokenizer.add_special_tokens(special_tokens_dict)
-
+    num_new_tokens = add_special_tokens(tokenizer)
     input_ids, labels = preprocess_alpaca(hf_dataset, tokenizer)
-    federated_dataset = make_iid_federated_dataset(input_ids, labels,
-                                                   tokenizer,
-                                                   user_dataset_len_sampler)
+    user_dataset = iid_user_partition(input_ids, labels,
+                                      user_dataset_len_sampler)
+    users = list(user_dataset.keys())
+    num_train_users = int(train_split_ratio * len(users))
+    train_user_dataset = {u: user_dataset[u] for u in users[:num_train_users]}
+    val_user_dataset = {u: user_dataset[u] for u in users[num_train_users:]}
+
+    train_federated_dataset = make_iid_federated_dataset(
+        train_user_dataset, tokenizer)
+    val_federated_dataset = make_iid_federated_dataset(val_user_dataset,
+                                                       tokenizer)
+    central_dataset = make_central_dataset(val_user_dataset, tokenizer)
+    logger.info(f"# of train users = {len(train_user_dataset)}, "
+                f"# of val users = {len(val_user_dataset)}")
 
     def postprocessing_model_fn(model):
-        smart_tokenizer_and_embedding_resize(num_new_tokens, tokenizer, model)
+        smart_embedding_resize(num_new_tokens, tokenizer, model)
 
     metadata = {
         'num_new_tokens': num_new_tokens,
         'postprocessing_model_fn': postprocessing_model_fn,
     }
-    return federated_dataset, None, None, metadata
+    return train_federated_dataset, val_federated_dataset, central_dataset, metadata

@@ -79,7 +79,7 @@ def add_llm_arguments(argument_parser):
 
     # LLM training args
     argument_parser.add_argument(
-        '--autocast_float_format',
+        '--amp_dtype',
         type=str,
         default='float32',
         choices=['float32', 'float16', 'bfloat16'],
@@ -93,18 +93,12 @@ def add_llm_arguments(argument_parser):
         ' mixed precision training.')
 
     argument_parser.add_argument(
-        '--model_precision_same_as_autocast',
+        '--model_dtype_same_as_amp',
         action=store_bool,
         default=False,
         help='Cast the model weights precision to the same as used in '
         'autocast. This saves memory but may cause divergence due to '
         'lower precision.')
-
-    argument_parser.add_argument(
-        '--local_max_grad_norm',
-        type=float,
-        default=None,
-        help='Gradient clipping bound in local SGD training.')
 
     argument_parser.add_argument(
         '--grad_accumulation_steps',

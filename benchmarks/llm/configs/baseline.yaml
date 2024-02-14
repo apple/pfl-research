@@ -1,19 +1,27 @@
-dataset: alpaca
-mean_datapoints_per_user: 16
+# Dataset config
+#dataset: alpaca
+#mean_datapoints_per_user: 16
+dataset: oasst
 
 # Model config
 hugging_face_model_name_or_path: facebook/opt-1.3b
 model_max_length: 512
 use_fast_tokenizer: True
 padding_side: right
-autocast_float_format: bfloat16
-model_precision_same_as_autocast: False
+amp_dtype: bfloat16
+model_dtype_same_as_amp: True
 
-central_optimizer: adam
-adaptivity_degree: 0.01
+central_optimizer: sgd
+#adaptivity_degree: 0.01
+
+central_privacy_mechanism: gaussian_moments_accountant
+central_epsilon: 2.0
+central_delta: 1e-6
+central_privacy_clipping_bound: 1.0
+central_order: 2
+population: 1e6
 
 evaluation_frequency: 10
-
 learning_rate: 0.1
 cohort_size: 10
 val_cohort_size: 0

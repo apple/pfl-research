@@ -18,9 +18,17 @@ def add_dataset_arguments(
 
     parser.add_argument('--dataset',
                         choices=[
-                            'cifar10', 'cifar10_iid', 'femnist',
-                            'femnist_digits', 'reddit', 'flair', 'flair_iid',
-                            'flair_pytorch', 'stackoverflow', 'alpaca'
+                            'cifar10',
+                            'cifar10_iid',
+                            'femnist',
+                            'femnist_digits',
+                            'reddit',
+                            'flair',
+                            'flair_iid',
+                            'flair_pytorch',
+                            'stackoverflow',
+                            'alpaca',
+                            'oasst',
                         ],
                         default='cifar10',
                         help='Which dataset to train on')
@@ -240,15 +248,21 @@ def get_datasets(
             use_fine_grained_labels=args.use_fine_grained_labels,
             max_num_user_images=args.max_num_user_images)
     elif args.dataset == 'alpaca':
-        from .hugging_face.alpaca import make_alpaca_iid_federated_datasets
+        from .hugging_face.alpaca import make_alpaca_iid_datasets
         assert hasattr(args, 'tokenizer'), (
             "Hugging Face tokenizer is required to parse Alpaca dataset")
         user_dataset_len_sampler = parse_draw_num_datapoints_per_user(
             args.datapoints_per_user_distribution,
             args.mean_datapoints_per_user,
             args.minimum_num_datapoints_per_user)
-        datasets = make_alpaca_iid_federated_datasets(
-            args.tokenizer, user_dataset_len_sampler)
+        datasets = make_alpaca_iid_datasets(args.tokenizer,
+                                            user_dataset_len_sampler)
+    elif args.dataset == 'oasst':
+        from .hugging_face.oasst import make_oasst_datasets
+        assert hasattr(args, 'tokenizer'), (
+            "Hugging Face tokenizer is required to parse OpenAssistant dataset"
+        )
+        datasets = make_oasst_datasets(args.tokenizer)
     else:
         raise ValueError(f'{args.dataset} is not supported')
     return datasets

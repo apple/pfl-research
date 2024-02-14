@@ -7,16 +7,18 @@ import transformers
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.hugging_face import wrap_hugging_face_model
 from utils.argument_parsing import (
+    add_algorithm_arguments,
     add_filepath_arguments,
     add_seed_arguments,
+    get_algorithm,
     maybe_inject_arguments_from_config,
+    parse_mechanism,
 )
 from utils.logging import init_logging
 
 from llm.argument_parsing import add_llm_arguments, parse_peft_config
 from pfl.aggregate.simulate import SimulatedBackend
-from pfl.algorithm import FederatedAveraging, NNAlgorithmParams
-from pfl.callback import StopwatchCallback
+from pfl.callback import AggregateMetricsToDisk, CentralEvaluationCallback, StopwatchCallback
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.model.pytorch import PyTorchModel
 
@@ -30,6 +32,7 @@ def main():
         description=
         'Train a model using private federated learning in simulation.')
 
+    parser = add_algorithm_arguments(parser)
     parser = add_filepath_arguments(parser)
     parser = add_dataset_arguments(parser)
     parser = add_seed_arguments(parser)
@@ -38,6 +41,25 @@ def main():
 
     np.random.seed(arguments.seed)
     torch.random.manual_seed(arguments.seed)
+    local_privacy = parse_mechanism(
+        mechanism_name=arguments.local_privacy_mechanism,
+        clipping_bound=arguments.local_privacy_clipping_bound,
+        epsilon=arguments.local_epsilon,
+        delta=arguments.local_delta,
+        order=arguments.local_order)
+
+    central_privacy = parse_mechanism(
+        mechanism_name=arguments.central_privacy_mechanism,
+        clipping_bound=arguments.central_privacy_clipping_bound,
+        epsilon=arguments.central_epsilon,
+        delta=arguments.central_delta,
+        order=arguments.central_order,
+        cohort_size=arguments.cohort_size,
+        noise_cohort_size=arguments.noise_cohort_size,
+        num_epochs=arguments.central_num_iterations,
+        population=arguments.population,
+        min_separation=arguments.min_separation,
+        is_central=True)
 
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         arguments.hugging_face_model_name_or_path,
@@ -62,20 +84,27 @@ def main():
     hf_model = wrap_hugging_face_model(hf_model, peft_config)
 
     params = [p for p in hf_model.parameters() if p.requires_grad]
-    central_optimizer = torch.optim.SGD(params, arguments.learning_rate)
+    if arguments.central_optimizer == 'adam':
+        # Hyperparameters for stability, see S. Reddi et al. 2020 Appendix C.1.
+        central_optimizer = torch.optim.Adam(params,
+                                             arguments.learning_rate,
+                                             eps=arguments.adaptivity_degree,
+                                             betas=(0.9, 0.99))
+    else:
+        assert arguments.central_optimizer == 'sgd'
+        central_optimizer = torch.optim.SGD(params, arguments.learning_rate)
 
-    model = PyTorchModel(model=hf_model,
-                         local_optimizer_create=torch.optim.SGD,
-                         central_optimizer=central_optimizer,
-                         autocast_float_format=getattr(
-                             torch, arguments.autocast_float_format),
-                         grad_scaling=arguments.grad_scaling,
-                         model_precision_same_as_autocast=arguments.
-                         model_precision_same_as_autocast)
+    model = PyTorchModel(
+        model=hf_model,
+        local_optimizer_create=torch.optim.SGD,
+        central_optimizer=central_optimizer,
+        amp_dtype=getattr(torch, arguments.amp_dtype),
+        grad_scaling=arguments.grad_scaling,
+        model_dtype_same_as_amp=arguments.model_dtype_same_as_amp)
 
     backend = SimulatedBackend(training_data=training_data,
                                val_data=val_data,
-                               postprocessors=[])
+                               postprocessors=[local_privacy, central_privacy])
 
     model_train_params = NNTrainHyperParams(
         local_learning_rate=arguments.local_learning_rate,
@@ -87,14 +116,16 @@ def main():
     model_eval_params = NNEvalHyperParams(
         local_batch_size=arguments.local_eval_batch_size)
 
-    callbacks = [StopwatchCallback()]
+    callbacks = [
+        StopwatchCallback(),
+        CentralEvaluationCallback(central_data,
+                                  model_eval_params=model_eval_params,
+                                  frequency=arguments.evaluation_frequency),
+        AggregateMetricsToDisk('./metrics.csv')
+    ]
+    algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
+    callbacks.extend(algorithm_callbacks)
 
-    algorithm_params = NNAlgorithmParams(
-        central_num_iterations=arguments.central_num_iterations,
-        evaluation_frequency=arguments.evaluation_frequency,
-        train_cohort_size=arguments.cohort_size,
-        val_cohort_size=0)
-    algorithm = FederatedAveraging()
     logger.info("Starts federated learning.")
     model = algorithm.run(algorithm_params=algorithm_params,
                           backend=backend,

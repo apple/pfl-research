@@ -21,6 +21,10 @@ def wrap_hugging_face_model(
                     f"all params: {all_param:,d} || "
                     f"trainable%: {100 * trainable_params / all_param}")
 
+    if hasattr(model, "loss") and hasattr(model, "metrics"):
+        return model
+
+    # PFL requires PyTorch module to implement loss and metrics functions.
     forward_signature = inspect.signature(model.forward)
 
     def compute_loss(self: PreTrainedModel, **kwargs):
@@ -40,6 +44,7 @@ def wrap_hugging_face_model(
         return outputs["loss"] if isinstance(outputs, dict) else outputs[0]
 
     def compute_metrics(self: PreTrainedModel, **kwargs):
+        # TODO: include customized evaluation
         loss = compute_loss(self, **kwargs).item()
         return {"loss": Weighted.from_unweighted(loss)}
 

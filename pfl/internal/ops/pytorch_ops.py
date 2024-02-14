@@ -43,6 +43,35 @@ def get_default_device():
     return default_device
 
 
+def setup_amp(amp_dtype: torch.dtype, grad_scaling: bool):
+    amp_context, grad_scaler = None, None
+    if amp_dtype is not None:
+        if get_default_device() == torch.device("mps"):
+            logger.warning("PyTorch AMP is disabled on MPS")
+            amp_dtype = torch.float32
+        if (get_default_device() == torch.device("cpu")
+                and amp_dtype == torch.float16):
+            logger.warning("PyTorch AMP cast to float16 is disabled on CPU")
+            amp_dtype = torch.float32
+        if torch.cuda.is_available():
+            if (amp_dtype == torch.bfloat16
+                    and not torch.cuda.is_bf16_supported()):
+                logger.warning(
+                    "PyTorch AMP cast to bfloat16 is not supported on this GPU."
+                )
+                amp_dtype = torch.float32
+
+    if amp_dtype != torch.float32:
+        amp_context = torch.amp.autocast(
+            "cuda" if torch.cuda.is_available() else "cpu", amp_dtype)
+        logger.info("Mixed precision training with PyTorch AMP float type: "
+                    f"{amp_context.fast_dtype}")
+        if grad_scaling and torch.cuda.is_available():
+            grad_scaler = torch.cuda.amp.GradScaler()
+            logger.info("Gradient scaling enabled.")
+    return amp_context, grad_scaler
+
+
 class PyTorchDistributedContext(DistributedContext):
     """
     Distributed training operations for PyTorch tensors using

@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import transformers
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
-from model.hugging_face import wrap_hugging_face_model
+from model.hugging_face import causal_lm_metrics_fn, wrap_hugging_face_model
 from utils.argument_parsing import (
     add_algorithm_arguments,
     add_filepath_arguments,
@@ -81,7 +81,8 @@ def main():
 
     # Parameter efficient fine-tuning
     peft_config = parse_peft_config(arguments)
-    hf_model = wrap_hugging_face_model(hf_model, peft_config)
+    hf_model = wrap_hugging_face_model(hf_model, peft_config,
+                                       causal_lm_metrics_fn)
 
     params = [p for p in hf_model.parameters() if p.requires_grad]
     if arguments.central_optimizer == 'adam':

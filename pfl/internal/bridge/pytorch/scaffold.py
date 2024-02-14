@@ -36,7 +36,7 @@ def _control_variate_train_step(pytorch_model, local_optimizer, raw_data,
 
     if train_step_args.grad_scaler is None:
         loss.backward()
-        if kwargs.get("optimizer_should_update", True):
+        if train_step_args.optimizer_should_update:
             grad_postprocessing()
             if train_step_args.max_grad_norm is not None:
                 torch.nn.utils.clip_grad_norm_(pytorch_model.parameters(),
@@ -44,7 +44,7 @@ def _control_variate_train_step(pytorch_model, local_optimizer, raw_data,
             local_optimizer.step()
     else:
         train_step_args.grad_scaler.scale(loss).backward()
-        if kwargs.get("optimizer_should_update", True):
+        if train_step_args.optimizer_should_update:
             grad_postprocessing()
             if train_step_args.max_grad_norm is not None:
                 train_step_args.grad_scaler.unscale_(local_optimizer)

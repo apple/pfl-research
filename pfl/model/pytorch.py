@@ -72,6 +72,19 @@ class PyTorchModel(StatefulModel):
     :param central_optimizer:
         A torch.optim.optimizer.Optimizer instance, which is used to apply the
         central model updates to the variables.
+    :param central_learning_rate_scheduler:
+        A torch.optim.lr_scheduler.LRScheduler instance, which is used to apply
+        the learning rate scheduling of central_optimizer.
+    :param amp_dtype:
+        A torch.dtype for mixed precision training with torch.amp.autocast. If
+        set to None or torch.float32, no mixed precision training is enabled.
+    :param grad_scaling:
+        A boolean indicating whether to apply gradient scaling when using
+        mixed precision training.
+    :param model_dtype_same_as_amp:
+        A boolean indicating whether to cast the model parameter dtype to the
+        same as amp_dtype when using mixed precision training. Note that lower
+        precision model parameters might cause divergence during training.
     """
 
     set_framework_module(pytorch_ops)
@@ -79,11 +92,13 @@ class PyTorchModel(StatefulModel):
     # Checkpoint constants
     _MODEL_CKPT_NAME = "checkpoint.pt"
     _CENTRAL_OPTIMIZER_CKPT_NAME = "central_optimizer.pt"
+    _CENTRAL_LR_SCHEDULER_CKPT_NAME = "central_learning_rate_scheduler.pt"
 
     def __init__(self,
                  model,
                  local_optimizer_create,
                  central_optimizer,
+                 central_learning_rate_scheduler=None,
                  amp_dtype: Optional[torch.dtype] = None,
                  grad_scaling: bool = False,
                  model_dtype_same_as_amp: bool = False):
@@ -94,6 +109,7 @@ class PyTorchModel(StatefulModel):
         self._model = model.to(pytorch_ops.get_default_device())
         self._local_optimizer_create = local_optimizer_create
         self._central_optimizer = central_optimizer
+        self._central_learning_rate_scheduler = central_learning_rate_scheduler
 
         # Calculate this later dynamically in `evaluate`.
         self._allows_distributed_evaluation: Optional[bool] = None
@@ -105,7 +121,7 @@ class PyTorchModel(StatefulModel):
             for name, variable in model.named_parameters()
             if variable.requires_grad
         }
-        self._model_diff = MappedVectorStatistics()
+        self._model_diff: MappedVectorStatistics = MappedVectorStatistics()
 
         self._amp_context, self._grad_scaler = pytorch_ops.setup_amp(
             amp_dtype, grad_scaling)
@@ -168,6 +184,13 @@ class PyTorchModel(StatefulModel):
             dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME)
         if os.path.exists(central_optimizer_path):
             self._load_central_optimizer(central_optimizer_path)
+        # load central learning rate scheduler if it exits
+        if self._central_learning_rate_scheduler is not None:
+            central_learning_rate_scheduler_path = os.path.join(
+                dir_path, self._CENTRAL_LR_SCHEDULER_CKPT_NAME)
+            if os.path.exists(central_learning_rate_scheduler_path):
+                self._central_learning_rate_scheduler.load_state_dict(
+                    torch.load(central_learning_rate_scheduler_path))
 
     def _save_central_optimizer(self, dir_path: str) -> None:
         if self.central_optimizer_variable_map is not None:
@@ -176,6 +199,10 @@ class PyTorchModel(StatefulModel):
             torch.save(
                 self.central_optimizer_variable_map,
                 os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME))
+        if self._central_learning_rate_scheduler is not None:
+            torch.save(
+                self._central_learning_rate_scheduler.state_dict(),
+                os.path.join(dir_path, self._CENTRAL_LR_SCHEDULER_CKPT_NAME))
 
     def _load_central_optimizer(self, path: str) -> None:
         # dummy pass to initialize central optimizer variables
@@ -380,6 +407,8 @@ class PyTorchModel(StatefulModel):
                     -1 * pytorch_ops.to_tensor(difference))
 
         self._central_optimizer.step()
+        if self._central_learning_rate_scheduler is not None:
+            self._central_learning_rate_scheduler.step()
 
         metrics[StringMetricName('learning rate')] = Weighted.from_unweighted(
             self._central_optimizer.param_groups[0]['lr'])

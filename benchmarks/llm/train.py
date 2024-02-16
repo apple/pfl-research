@@ -16,7 +16,7 @@ from utils.argument_parsing import (
 )
 from utils.logging import init_logging
 
-from llm.argument_parsing import add_llm_arguments, parse_peft_config
+from llm.argument_parsing import add_llm_arguments, parse_central_lr_scheduler, parse_peft_config
 from pfl.aggregate.simulate import SimulatedBackend
 from pfl.callback import AggregateMetricsToDisk, CentralEvaluationCallback, StopwatchCallback
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
@@ -95,10 +95,13 @@ def main():
         assert arguments.central_optimizer == 'sgd'
         central_optimizer = torch.optim.SGD(params, arguments.learning_rate)
 
+    central_learning_rate_scheduler = parse_central_lr_scheduler(
+        arguments, central_optimizer)
     model = PyTorchModel(
         model=hf_model,
         local_optimizer_create=torch.optim.SGD,
         central_optimizer=central_optimizer,
+        central_learning_rate_scheduler=central_learning_rate_scheduler,
         amp_dtype=getattr(torch, arguments.amp_dtype),
         grad_scaling=arguments.grad_scaling,
         model_dtype_same_as_amp=arguments.model_dtype_same_as_amp)

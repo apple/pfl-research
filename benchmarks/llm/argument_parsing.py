@@ -3,6 +3,12 @@ from typing import Optional
 
 from lm.argument_parsing import add_lm_arguments
 from peft import LoraConfig, PeftConfig, TaskType
+from transformers import (
+    get_constant_schedule_with_warmup,
+    get_cosine_schedule_with_warmup,
+    get_linear_schedule_with_warmup,
+    get_polynomial_decay_schedule_with_warmup,
+)
 from utils.argument_parsing import store_bool
 
 
@@ -50,9 +56,59 @@ def add_peft_arguments(argument_parser):
     return argument_parser
 
 
+def add_central_lr_scheduler_arguments(argument_parser):
+    argument_parser.add_argument(
+        '--central_lr_scheduler',
+        type=str,
+        default=None,
+        choices=['constant', 'linear', 'cosine', 'polynomial'],
+        help='Central learning scheduler.')
+
+    known_args, _ = argument_parser.parse_known_args()
+    if known_args.central_lr_scheduler == 'cosine':
+        argument_parser.add_argument(
+            '--cosine_num_cycles',
+            type=float,
+            default=0.5,
+            help='Number of waves in cosine learning rate scheduler.')
+    if known_args.central_lr_scheduler == 'polynomial':
+        argument_parser.add_argument(
+            '--polynomial_power',
+            type=float,
+            default=1.0,
+            help='Power in polynomial learning rate scheduler.')
+    return argument_parser
+
+
+def parse_central_lr_scheduler(arguments, optimizer):
+    if arguments.central_lr_scheduler == 'constant':
+        return get_constant_schedule_with_warmup(
+            optimizer,
+            num_warmup_steps=arguments.central_lr_num_warmup_iterations)
+    if arguments.central_lr_scheduler == 'linear':
+        return get_linear_schedule_with_warmup(
+            optimizer,
+            num_warmup_steps=arguments.central_lr_num_warmup_iterations,
+            num_training_steps=arguments.central_num_iterations)
+    if arguments.central_lr_scheduler == 'cosine':
+        return get_cosine_schedule_with_warmup(
+            optimizer,
+            num_warmup_steps=arguments.central_lr_num_warmup_iterations,
+            num_training_steps=arguments.central_num_iterations,
+            num_cycles=arguments.cosine_num_cycles)
+    if arguments.central_lr_scheduler == 'polynomial':
+        return get_polynomial_decay_schedule_with_warmup(
+            optimizer,
+            num_warmup_steps=arguments.central_lr_num_warmup_iterations,
+            num_training_steps=arguments.central_num_iterations,
+            power=arguments.polynomial_power)
+    return None
+
+
 def add_llm_arguments(argument_parser):
     argument_parser = add_lm_arguments(argument_parser)
     argument_parser = add_peft_arguments(argument_parser)
+    argument_parser = add_central_lr_scheduler_arguments(argument_parser)
 
     # Hugging Face model args
     argument_parser.add_argument('--hugging_face_model_name_or_path',
@@ -75,7 +131,7 @@ def add_llm_arguments(argument_parser):
         '--padding_side',
         type=str,
         default=None,
-        help='Set use_fast argument when loading Hugging Face tokenizer.')
+        help='Set padding_side argument when loading Hugging Face tokenizer.')
 
     # LLM training args
     argument_parser.add_argument(

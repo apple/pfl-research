@@ -23,7 +23,7 @@ population: 1e6
 
 evaluation_frequency: 10
 learning_rate: 0.1
-cohort_size: 10
+cohort_size: 100
 val_cohort_size: 0
 
 central_num_iterations: 2000

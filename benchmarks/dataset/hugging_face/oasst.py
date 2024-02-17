@@ -2,7 +2,6 @@
 Some of the code is adapted from: https://github.com/h2oai/h2o-llmstudio/
 """
 
-
 import logging
 from collections import defaultdict
 from typing import Dict, List
@@ -12,11 +11,17 @@ from datasets import Dataset as HuggingFaceDataset
 from datasets import load_dataset
 from transformers import PreTrainedTokenizer, default_data_collator
 
-from pfl.data import FederatedDataset
 from pfl.data.pytorch import PyTorchDataDataset
 from pfl.data.sampling import get_user_sampler
 
-from . import IGNORE_INDEX, ListDictDataset, add_special_tokens, smart_embedding_resize
+from . import (
+    IGNORE_INDEX,
+    HuggingFaceFederatedDataset,
+    ListDictDataset,
+    UserDataset,
+    add_special_tokens,
+    smart_embedding_resize,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -75,13 +80,17 @@ def preprocess_oasst_for_causal_lm(
     return user_dataset
 
 
-def make_federated_dataset(user_dataset: Dict[str, List[Dict]]):
+def make_federated_dataset(user_dataset: Dict[str, List[Dict]],
+                           dataloader_kwargs: Dict):
+
     user_sampler = get_user_sampler('random', list(user_dataset.keys()))
-    return FederatedDataset(
-        lambda u: PyTorchDataDataset(raw_data=ListDictDataset(user_dataset[u]),
-                                     user_id=u,
-                                     collate_fn=default_data_collator),
-        user_sampler)
+    user_id_to_weight = {k: len(v) for k, v in user_dataset.items()}
+    return HuggingFaceFederatedDataset(UserDataset(user_dataset),
+                                       user_sampler,
+                                       user_id_to_weight=user_id_to_weight,
+                                       batch_size=None,
+                                       collate_fn=default_data_collator,
+                                       **dataloader_kwargs)
 
 
 def make_central_dataset(user_dataset: Dict[str, List[Dict]]):
@@ -93,6 +102,7 @@ def make_central_dataset(user_dataset: Dict[str, List[Dict]]):
 
 
 def make_oasst_datasets(tokenizer: PreTrainedTokenizer,
+                        dataloader_kwargs: Dict,
                         train_split_ratio: float = 0.9):
     hf_dataset = load_dataset("OpenAssistant/oasst2", split="train+validation")
     num_new_tokens = add_special_tokens(tokenizer)
@@ -102,8 +112,10 @@ def make_oasst_datasets(tokenizer: PreTrainedTokenizer,
     train_user_dataset = {u: user_dataset[u] for u in users[:num_train_users]}
     val_user_dataset = {u: user_dataset[u] for u in users[num_train_users:]}
 
-    train_federated_dataset = make_federated_dataset(train_user_dataset)
-    val_federated_dataset = make_federated_dataset(val_user_dataset)
+    train_federated_dataset = make_federated_dataset(train_user_dataset,
+                                                     dataloader_kwargs)
+    val_federated_dataset = make_federated_dataset(val_user_dataset,
+                                                   dataloader_kwargs)
     central_dataset = make_central_dataset(val_user_dataset)
     logger.info(f"# of train users = {len(train_user_dataset)}, "
                 f"# of val users = {len(val_user_dataset)}")

@@ -15,7 +15,14 @@ from pfl.data import FederatedDataset
 from pfl.data.pytorch import PyTorchDataDataset
 from pfl.data.sampling import get_user_sampler
 
-from . import IGNORE_INDEX, ListDictDataset, add_special_tokens, smart_embedding_resize
+from . import (
+    IGNORE_INDEX,
+    HuggingFaceFederatedDataset,
+    ListDictDataset,
+    UserDataset,
+    add_special_tokens,
+    smart_embedding_resize,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -125,27 +132,31 @@ def iid_user_partition(
 
 
 def make_iid_federated_dataset(user_dataset: Dict[str, List[Dict]],
-                               tokenizer: PreTrainedTokenizer):
-    collator = AlpacaDataCollator(tokenizer)
+                               tokenizer: PreTrainedTokenizer,
+                               dataloader_kwargs: Dict):
     user_sampler = get_user_sampler('random', list(user_dataset.keys()))
-    return FederatedDataset(
-        lambda u: PyTorchDataDataset(raw_data=ListDictDataset(user_dataset[u]),
-                                     user_id=u,
-                                     collate_fn=collator), user_sampler)
+    user_id_to_weight = {k: len(v) for k, v in user_dataset.items()}
+    return HuggingFaceFederatedDataset(
+        UserDataset(user_dataset),
+        user_sampler,
+        user_id_to_weight=user_id_to_weight,
+        batch_size=None,
+        collate_fn=AlpacaDataCollator(tokenizer),
+        **dataloader_kwargs)
 
 
 def make_central_dataset(user_dataset: Dict[str, List[Dict]],
                          tokenizer: PreTrainedTokenizer):
-    collator = AlpacaDataCollator(tokenizer)
     list_dataset = []
     for u in user_dataset:
         list_dataset += user_dataset[u]
     return PyTorchDataDataset(raw_data=ListDictDataset(list_dataset),
-                              collate_fn=collator)
+                              collate_fn=AlpacaDataCollator(tokenizer))
 
 
 def make_alpaca_iid_datasets(tokenizer: PreTrainedTokenizer,
                              user_dataset_len_sampler: Callable,
+                             dataloader_kwargs: Dict,
                              train_split_ratio: float = 0.9):
     hf_dataset = load_dataset("tatsu-lab/alpaca")["train"]
 
@@ -159,9 +170,10 @@ def make_alpaca_iid_datasets(tokenizer: PreTrainedTokenizer,
     val_user_dataset = {u: user_dataset[u] for u in users[num_train_users:]}
 
     train_federated_dataset = make_iid_federated_dataset(
-        train_user_dataset, tokenizer)
+        train_user_dataset, tokenizer, dataloader_kwargs)
     val_federated_dataset = make_iid_federated_dataset(val_user_dataset,
-                                                       tokenizer)
+                                                       tokenizer,
+                                                       dataloader_kwargs)
     central_dataset = make_central_dataset(val_user_dataset, tokenizer)
     logger.info(f"# of train users = {len(train_user_dataset)}, "
                 f"# of val users = {len(val_user_dataset)}")

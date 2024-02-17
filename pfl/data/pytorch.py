@@ -230,7 +230,8 @@ class PyTorchFederatedDataset(FederatedDataset):
 
         assert (
             'batch_size' not in dataloader_kwargs
-            or dataloader_kwargs.batch_size == 1
+            or dataloader_kwargs['batch_size'] == 1
+            or dataloader_kwargs['batch_size'] is None
         ), ('pfl requires batch_size=1 because you should load the '
             'full batch of the user dataset in your `Dataset.__getitem__`. '
             'Either do not specify batch_size in `dataloader_kwargs` or '
@@ -241,6 +242,14 @@ class PyTorchFederatedDataset(FederatedDataset):
 
         super().__init__(self._tensors_to_pfl_dataset, user_sampler,
                          user_id_to_weight)
+
+        self._prefetch_factor = 0
+        dataloader_num_workers = dataloader_kwargs.get("num_workers", 0)
+        if dataloader_num_workers > 0:
+            # prefetch_factor is default to 2 in PyTorch data loader
+            prefetch_factor = dataloader_kwargs.get("prefetch_factor") or 2
+            self._prefetch_factor = dataloader_num_workers * prefetch_factor
+
         self._pt_dataset = dataset
         self._dataloader_kwargs = dataloader_kwargs
         self.sampler = self._get_pt_sampler(self.sampler)
@@ -264,6 +273,11 @@ class PyTorchFederatedDataset(FederatedDataset):
             tuple([process_tensor(tensor) for tensor in tensors]),
             **self._dataset_kwargs)
 
+    def _try_set_cohort_size(self, cohort_size: int):
+        # Prefetch so that data loader won't be blocked and hanging
+        # when using _SortedCohortSampler
+        super()._try_set_cohort_size(cohort_size * (self._prefetch_factor + 1))
+
     def _get_pt_sampler(self, sampler):
         # PyTorch asserts that sampler must inherit
         # from `torch.utils.data.Sampler`.
@@ -276,13 +290,20 @@ class PyTorchFederatedDataset(FederatedDataset):
                 return self
 
             def __next__(self):
-                return next(self._underlying_iterator)
+                sampled = next(self._underlying_iterator)
+                return sampled
 
         # We need to iterate through the data and the seeds in order, but
         # separately.
         sampler_1, sampler_2 = itertools.tee(sampler)
         underlying_data_iterator = (data for (data, _seed) in sampler_1)
         seed_iterator = (seed for (_data, seed) in sampler_2)
+
+        if self._prefetch_factor > 0:
+            # Prefetch so that data loader won't be blocked and hanging
+            # when using _SortedCohortSampler
+            self._try_set_cohort_size(self._prefetch_factor *
+                                      pytorch_ops.distributed.world_size)
 
         dl_iter = iter(
             torch.utils.data.DataLoader(

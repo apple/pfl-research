@@ -4,12 +4,14 @@ from typing import Dict, List
 import torch
 from transformers import PreTrainedModel, PreTrainedTokenizer
 
+from pfl.data.pytorch import PyTorchDataDataset, PyTorchFederatedDataset
+
 IGNORE_INDEX = -100
 logger = logging.getLogger(__name__)
 
 
 class ListDictDataset(torch.utils.data.Dataset):
-    """Dataset for supervised fine-tuning."""
+    """List of dictionary of tensors."""
 
     def __init__(self, data: List[Dict[str, torch.Tensor]]):
         super().__init__()
@@ -20,6 +22,33 @@ class ListDictDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, i) -> Dict[str, torch.Tensor]:
         return self.data[i]
+
+
+class DictDataset(torch.utils.data.Dataset):
+    """ Dictionary of tensors."""
+
+    def __init__(self, data: Dict[str, torch.Tensor]):
+        super().__init__()
+        self.data = data
+
+    def __len__(self):
+        return len(next(iter(self.data.values())))
+
+    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
+        return {k: v[i] for k, v in self.data.items()}
+
+
+class UserDataset(torch.utils.data.Dataset):
+
+    def __init__(self, user_dataset: Dict[str, List[Dict[str, torch.Tensor]]]):
+        super().__init__()
+        self.user_dataset = user_dataset
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, u) -> List[Dict[str, torch.Tensor]]:
+        return self.user_dataset[u]
 
 
 def add_special_tokens(tokenizer: PreTrainedTokenizer):
@@ -59,3 +88,10 @@ def smart_embedding_resize(
 
         input_embeddings[-num_new_tokens:] = input_embeddings_avg
         output_embeddings[-num_new_tokens:] = output_embeddings_avg
+
+
+class HuggingFaceFederatedDataset(PyTorchFederatedDataset):
+
+    def _tensors_to_pfl_dataset(self, tensors):
+        assert isinstance(tensors, Dict)
+        return PyTorchDataDataset(DictDataset(tensors), **self._dataset_kwargs)

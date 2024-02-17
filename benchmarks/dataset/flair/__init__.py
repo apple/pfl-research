@@ -1,7 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
 
 import logging
-from typing import Callable
+from typing import Callable, Dict
 
 from .common import get_channel_mean_stddevs, get_label_mapping, make_central_datasets
 
@@ -68,7 +68,8 @@ def make_flair_iid_datasets(data_path: str, use_fine_grained_labels: bool,
 
 
 def make_flair_pytorch_datasets(data_path: str, use_fine_grained_labels: bool,
-                                max_num_user_images: int):
+                                max_num_user_images: int,
+                                dataloader_kwargs: Dict):
     """
     Create a train and val ``FederatedDataset`` as well as a
     central dataset from the FLAIR dataset.
@@ -76,10 +77,12 @@ def make_flair_pytorch_datasets(data_path: str, use_fine_grained_labels: bool,
     from .pytorch import make_federated_dataset
 
     training_federated_dataset = make_federated_dataset(
-        data_path, 'train', use_fine_grained_labels, max_num_user_images)
+        data_path, 'train', use_fine_grained_labels, max_num_user_images,
+        dataloader_kwargs)
     val_federated_dataset = make_federated_dataset(data_path, 'val',
                                                    use_fine_grained_labels,
-                                                   max_num_user_images)
+                                                   max_num_user_images,
+                                                   dataloader_kwargs)
 
     central_data, metadata = get_central_data_and_metadata(
         data_path, use_fine_grained_labels)

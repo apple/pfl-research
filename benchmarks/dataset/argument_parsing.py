@@ -9,6 +9,45 @@ from pfl.data.dataset import Dataset
 from pfl.data.federated_dataset import FederatedDatasetBase
 
 
+def add_pytorch_dataloader_arguments(
+        parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    parser.add_argument('--dataloader_num_workers',
+                        type=int,
+                        default=0,
+                        help='Number of subprocesses to use for data loading.')
+    parser.add_argument(
+        '--dataloader_pin_memory',
+        action=store_bool,
+        default=False,
+        help='Whether dataloader copy Tensors into device/CUDA '
+        'pinned memory before returning them.')
+    parser.add_argument('--dataloader_prefetch_factor',
+                        type=int,
+                        default=None,
+                        help='Number of batches loaded in advance by '
+                        'each worker.')
+    parser.add_argument('--multiprocessing_sharing_strategy',
+                        type=str,
+                        default=None,
+                        choices=['file_descriptor', 'file_system'],
+                        help='PyTorch multiprocessing sharing_strategy.')
+    return parser
+
+
+def parse_pytorch_dataloader_kwargs(args: argparse.Namespace) -> Dict:
+    if (args.dataloader_num_workers > 0
+            and args.multiprocessing_sharing_strategy is not None):
+        import torch.multiprocessing
+        torch.multiprocessing.set_sharing_strategy(
+            args.multiprocessing_sharing_strategy)
+
+    return {
+        "num_workers": args.dataloader_num_workers,
+        "pin_memory": args.dataloader_pin_memory,
+        "prefetch_factor": args.dataloader_prefetch_factor,
+    }
+
+
 def add_dataset_arguments(
         parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     """
@@ -94,6 +133,9 @@ def add_dataset_arguments(
 
     elif known_args.dataset == 'alpaca':
         parser = add_artificial_fed_dataset_arguments(parser)
+
+    if known_args.dataset in ['alpaca', 'oasst', 'flair_pytorch']:
+        parser = add_pytorch_dataloader_arguments(parser)
 
     return parser
 
@@ -246,7 +288,8 @@ def get_datasets(
         datasets = make_flair_pytorch_datasets(
             data_path=args.data_path,
             use_fine_grained_labels=args.use_fine_grained_labels,
-            max_num_user_images=args.max_num_user_images)
+            max_num_user_images=args.max_num_user_images,
+            dataloader_kwargs=parse_pytorch_dataloader_kwargs(args))
     elif args.dataset == 'alpaca':
         from .hugging_face.alpaca import make_alpaca_iid_datasets
         assert hasattr(args, 'tokenizer'), (
@@ -255,14 +298,16 @@ def get_datasets(
             args.datapoints_per_user_distribution,
             args.mean_datapoints_per_user,
             args.minimum_num_datapoints_per_user)
-        datasets = make_alpaca_iid_datasets(args.tokenizer,
-                                            user_dataset_len_sampler)
+        datasets = make_alpaca_iid_datasets(
+            args.tokenizer, user_dataset_len_sampler,
+            parse_pytorch_dataloader_kwargs(args))
     elif args.dataset == 'oasst':
         from .hugging_face.oasst import make_oasst_datasets
         assert hasattr(args, 'tokenizer'), (
             "Hugging Face tokenizer is required to parse OpenAssistant dataset"
         )
-        datasets = make_oasst_datasets(args.tokenizer)
+        datasets = make_oasst_datasets(args.tokenizer,
+                                       parse_pytorch_dataloader_kwargs(args))
     else:
         raise ValueError(f'{args.dataset} is not supported')
     return datasets

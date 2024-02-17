@@ -1,7 +1,10 @@
 # Dataset config
 #dataset: alpaca
 #mean_datapoints_per_user: 16
+#datapoints_per_user_distribution: poisson
+
 dataset: oasst
+multiprocessing_sharing_strategy: file_system
 
 # Model config
 hugging_face_model_name_or_path: facebook/opt-1.3b

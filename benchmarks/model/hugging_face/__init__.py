@@ -35,7 +35,7 @@ def causal_lm_metrics_fn(model: PreTrainedModel,
     loss = outputs["loss"].item() * num_tokens
     metrics: Dict[str, MetricValue] = {
         "loss": Weighted(loss, num_tokens),
-        "num tokens": Summed(num_tokens)
+        "number of tokens": Summed(num_tokens)
     }
     if "logits" in outputs:
         # Add LM next token prediction accuracy

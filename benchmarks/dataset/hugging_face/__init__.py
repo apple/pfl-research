@@ -1,54 +1,27 @@
 import logging
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import torch
 from transformers import PreTrainedModel, PreTrainedTokenizer
 
-from pfl.data.pytorch import PyTorchDataDataset, PyTorchFederatedDataset
+from pfl.data.pytorch import PyTorchFederatedDataset, PyTorchTensorDataset
 
 IGNORE_INDEX = -100
 logger = logging.getLogger(__name__)
 
 
-class ListDictDataset(torch.utils.data.Dataset):
-    """List of dictionary of tensors."""
+class GetItemDataset(torch.utils.data.Dataset):
+    """ Wraps a dataset that has __getitem__. """
 
-    def __init__(self, data: List[Dict[str, torch.Tensor]]):
+    def __init__(self, data: Union[Dict, List]):
         super().__init__()
         self.data = data
 
     def __len__(self):
         return len(self.data)
 
-    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
+    def __getitem__(self, i):
         return self.data[i]
-
-
-class DictDataset(torch.utils.data.Dataset):
-    """ Dictionary of tensors."""
-
-    def __init__(self, data: Dict[str, torch.Tensor]):
-        super().__init__()
-        self.data = data
-
-    def __len__(self):
-        return len(next(iter(self.data.values())))
-
-    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
-        return {k: v[i] for k, v in self.data.items()}
-
-
-class UserDataset(torch.utils.data.Dataset):
-
-    def __init__(self, user_dataset: Dict[str, List[Dict[str, torch.Tensor]]]):
-        super().__init__()
-        self.user_dataset = user_dataset
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, u) -> List[Dict[str, torch.Tensor]]:
-        return self.user_dataset[u]
 
 
 def add_special_tokens(tokenizer: PreTrainedTokenizer):
@@ -94,4 +67,4 @@ class HuggingFaceFederatedDataset(PyTorchFederatedDataset):
 
     def _tensors_to_pfl_dataset(self, tensors):
         assert isinstance(tensors, Dict)
-        return PyTorchDataDataset(DictDataset(tensors), **self._dataset_kwargs)
+        return PyTorchTensorDataset(tensors, **self._dataset_kwargs)

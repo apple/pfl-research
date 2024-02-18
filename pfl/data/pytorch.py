@@ -1,7 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
 
 import itertools
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
 
 import torch
 
@@ -18,7 +18,7 @@ class PyTorchTensorDataset(Dataset):
     the class and its parameters.
 
     :param tensors:
-        A list of tensors which can be accepted into your model's
+        A list or dictionary of tensors which can be accepted into your model's
         ``loss`` and ``metrics`` functions like this:
 
         .. code-block:: python
@@ -31,18 +31,30 @@ class PyTorchTensorDataset(Dataset):
     """
 
     def __init__(self,
-                 tensors: Tuple[torch.Tensor, ...],
+                 tensors: Union[Tuple[torch.Tensor, ...], Dict[str,
+                                                               torch.Tensor]],
                  user_id: Optional[str] = None,
                  metadata: Optional[Dict[str, Any]] = None,
                  val_indices: Optional[List[int]] = None,
                  train_kwargs: Optional[Dict[str, Any]] = None,
                  eval_kwargs: Optional[Dict[str, Any]] = None):
+        self._tensor_keys = None
+        if isinstance(tensors, Dict):
+            self._tensor_keys = list(tensors.keys())
+            tensors = tuple(tensors[key] for key in self._tensor_keys)
+
         super().__init__(tensors,
                          user_id=user_id,
                          metadata=metadata,
                          val_indices=val_indices,
                          train_kwargs=train_kwargs,
                          eval_kwargs=eval_kwargs)
+
+    def iter(self, batch_size: Optional[int]):  # noqa: A003
+        for batch in super().iter(batch_size):
+            if self._tensor_keys is not None:
+                batch = dict(zip(self._tensor_keys, batch))
+            yield batch
 
 
 class _ShardedDataset(torch.utils.data.Dataset):
@@ -240,15 +252,17 @@ class PyTorchFederatedDataset(FederatedDataset):
         self._dataset_cls = Dataset if dataset_cls is None else dataset_cls
         self._dataset_kwargs = dataset_kwargs or {}
 
-        super().__init__(self._tensors_to_pfl_dataset, user_sampler,
-                         user_id_to_weight)
-
-        self._prefetch_factor = 0
-        dataloader_num_workers = dataloader_kwargs.get("num_workers", 0)
-        if dataloader_num_workers > 0:
+        prefetch_factor = 0
+        if dataloader_kwargs.get("num_workers", 0) > 0:
             # prefetch_factor is default to 2 in PyTorch data loader
             prefetch_factor = dataloader_kwargs.get("prefetch_factor") or 2
-            self._prefetch_factor = dataloader_num_workers * prefetch_factor
+
+        if prefetch_factor > 0:
+            # TODO: supports _SortedCohortSampler with prefetching
+            user_id_to_weight = None
+
+        super().__init__(self._tensors_to_pfl_dataset, user_sampler,
+                         user_id_to_weight)
 
         self._pt_dataset = dataset
         self._dataloader_kwargs = dataloader_kwargs
@@ -273,11 +287,6 @@ class PyTorchFederatedDataset(FederatedDataset):
             tuple([process_tensor(tensor) for tensor in tensors]),
             **self._dataset_kwargs)
 
-    def _try_set_cohort_size(self, cohort_size: int):
-        # Prefetch so that data loader won't be blocked and hanging
-        # when using _SortedCohortSampler
-        super()._try_set_cohort_size(cohort_size * (self._prefetch_factor + 1))
-
     def _get_pt_sampler(self, sampler):
         # PyTorch asserts that sampler must inherit
         # from `torch.utils.data.Sampler`.
@@ -298,12 +307,6 @@ class PyTorchFederatedDataset(FederatedDataset):
         sampler_1, sampler_2 = itertools.tee(sampler)
         underlying_data_iterator = (data for (data, _seed) in sampler_1)
         seed_iterator = (seed for (_data, seed) in sampler_2)
-
-        if self._prefetch_factor > 0:
-            # Prefetch so that data loader won't be blocked and hanging
-            # when using _SortedCohortSampler
-            self._try_set_cohort_size(self._prefetch_factor *
-                                      pytorch_ops.distributed.world_size)
 
         dl_iter = iter(
             torch.utils.data.DataLoader(

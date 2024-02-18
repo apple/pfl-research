@@ -16,9 +16,8 @@ from pfl.data.sampling import get_user_sampler
 
 from . import (
     IGNORE_INDEX,
+    GetItemDataset,
     HuggingFaceFederatedDataset,
-    ListDictDataset,
-    UserDataset,
     add_special_tokens,
     smart_embedding_resize,
 )
@@ -82,10 +81,9 @@ def preprocess_oasst_for_causal_lm(
 
 def make_federated_dataset(user_dataset: Dict[str, List[Dict]],
                            dataloader_kwargs: Dict):
-
     user_sampler = get_user_sampler('random', list(user_dataset.keys()))
     user_id_to_weight = {k: len(v) for k, v in user_dataset.items()}
-    return HuggingFaceFederatedDataset(UserDataset(user_dataset),
+    return HuggingFaceFederatedDataset(GetItemDataset(user_dataset),
                                        user_sampler,
                                        user_id_to_weight=user_id_to_weight,
                                        batch_size=None,
@@ -97,7 +95,7 @@ def make_central_dataset(user_dataset: Dict[str, List[Dict]]):
     list_dataset = []
     for u in user_dataset:
         list_dataset += user_dataset[u]
-    return PyTorchDataDataset(raw_data=ListDictDataset(list_dataset),
+    return PyTorchDataDataset(raw_data=GetItemDataset(list_dataset),
                               collate_fn=default_data_collator)
 
 

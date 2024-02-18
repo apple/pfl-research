@@ -256,14 +256,12 @@ class PyTorchFederatedDataset(FederatedDataset):
         self._dataset_cls = Dataset if dataset_cls is None else dataset_cls
         self._dataset_kwargs = dataset_kwargs or {}
 
-        prefetch_factor = 0
+        self._prefetch_factor = 0
         if dataloader_kwargs.get("num_workers", 0) > 0:
             # prefetch_factor is default to 2 in PyTorch data loader
-            prefetch_factor = dataloader_kwargs.get("prefetch_factor") or 2
-
-        if prefetch_factor > 0:
-            # TODO: support _SortedCohortSampler with prefetching
-            user_id_to_weight = None
+            self._prefetch_factor = dataloader_kwargs.get(
+                "prefetch_factor") or 2
+            self._prefetch_factor *= dataloader_kwargs["num_workers"]
 
         super().__init__(self._tensors_to_pfl_dataset, user_sampler,
                          user_id_to_weight)
@@ -291,6 +289,11 @@ class PyTorchFederatedDataset(FederatedDataset):
             tuple([process_tensor(tensor) for tensor in tensors]),
             **self._dataset_kwargs)
 
+    def _try_set_cohort_size(self, cohort_size: int):
+        # Set cohort size with prefetching
+        for _ in range(self._prefetch_factor + 1):
+            super()._try_set_cohort_size(cohort_size)
+
     def _get_pt_sampler(self, sampler):
         # PyTorch asserts that sampler must inherit
         # from `torch.utils.data.Sampler`.
@@ -310,6 +313,10 @@ class PyTorchFederatedDataset(FederatedDataset):
         sampler_1, sampler_2 = itertools.tee(sampler)
         underlying_data_iterator = (data for (data, _seed) in sampler_1)
         seed_iterator = (seed for (_data, seed) in sampler_2)
+
+        if self._prefetch_factor > 0:
+            # Prefetching so that the following call won't be blocked
+            self._try_set_cohort_size(pytorch_ops.distributed.world_size)
 
         dl_iter = iter(
             torch.utils.data.DataLoader(

@@ -40,6 +40,9 @@ class PyTorchTensorDataset(Dataset):
                  eval_kwargs: Optional[Dict[str, Any]] = None):
         self._tensor_keys = None
         if isinstance(tensors, Dict):
+            # If the input tensors are from a dictionary
+            # (e.g. commonly used in Hugging Face models), save the keys
+            # and prepare the batch in `iter` as a dictionary.
             self._tensor_keys = list(tensors.keys())
             tensors = tuple(tensors[key] for key in self._tensor_keys)
 
@@ -53,6 +56,7 @@ class PyTorchTensorDataset(Dataset):
     def iter(self, batch_size: Optional[int]):  # noqa: A003
         for batch in super().iter(batch_size):
             if self._tensor_keys is not None:
+                # Return a dictionary of input tensors
                 batch = dict(zip(self._tensor_keys, batch))
             yield batch
 
@@ -258,7 +262,7 @@ class PyTorchFederatedDataset(FederatedDataset):
             prefetch_factor = dataloader_kwargs.get("prefetch_factor") or 2
 
         if prefetch_factor > 0:
-            # TODO: supports _SortedCohortSampler with prefetching
+            # TODO: support _SortedCohortSampler with prefetching
             user_id_to_weight = None
 
         super().__init__(self._tensors_to_pfl_dataset, user_sampler,
@@ -299,8 +303,7 @@ class PyTorchFederatedDataset(FederatedDataset):
                 return self
 
             def __next__(self):
-                sampled = next(self._underlying_iterator)
-                return sampled
+                return next(self._underlying_iterator)
 
         # We need to iterate through the data and the seeds in order, but
         # separately.

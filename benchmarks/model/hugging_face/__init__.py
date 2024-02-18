@@ -7,7 +7,7 @@ import torch
 from peft import PeftConfig, get_peft_model
 from transformers import PreTrainedModel
 
-from pfl.metrics import MetricValue, Summed, Weighted
+from pfl.metrics import MetricValue, Weighted
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def causal_lm_metrics_fn(model: PreTrainedModel,
     loss = outputs["loss"].item() * num_tokens
     metrics: Dict[str, MetricValue] = {
         "loss": Weighted(loss, num_tokens),
-        "number of tokens": Summed(num_tokens)
+        "number of tokens": Weighted.from_unweighted(num_tokens)
     }
     if "logits" in outputs:
         # Add LM next token prediction accuracy

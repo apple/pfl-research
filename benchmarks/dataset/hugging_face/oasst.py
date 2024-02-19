@@ -18,11 +18,29 @@ from . import (
     IGNORE_INDEX,
     GetItemDataset,
     HuggingFaceFederatedDataset,
-    add_special_tokens,
-    smart_embedding_resize,
 )
 
 logger = logging.getLogger(__name__)
+
+
+def append_eos(encoding: torch.Tensor, eos_token_id: int):
+    return torch.cat([encoding, torch.tensor([eos_token_id])], dim=0)
+
+
+def encode(text, tokenizer, max_length):
+    encodings = tokenizer(text, return_tensors="pt", add_special_tokens=False)
+    return append_eos(encodings["input_ids"][0][:max_length],
+                      tokenizer.eos_token_id)
+
+
+def pad(token_ids, pad_token_id, max_length):
+    attention_mask = torch.zeros(max_length)
+    attention_mask[-len(token_ids):] = torch.ones_like(token_ids)
+    if len(token_ids) < max_length:
+        padded_token_ids = torch.full((max_length, ), pad_token_id)
+        padded_token_ids[-len(token_ids):] = token_ids
+        return padded_token_ids, attention_mask
+    return token_ids, attention_mask
 
 
 def preprocess_oasst_for_causal_lm(
@@ -40,41 +58,25 @@ def preprocess_oasst_for_causal_lm(
 
     max_length = tokenizer.model_max_length // 2 - 1  # minus 1 to include EOS
 
-    def append_eos_token_id(encoding: torch.Tensor, eos_token_id: int):
-        return torch.cat([encoding, torch.tensor([eos_token_id])], dim=0)
-
-    def encode(text):
-        encodings = tokenizer(text,
-                              return_tensors="pt",
-                              add_special_tokens=False)
-        return append_eos_token_id(encodings["input_ids"][0][:max_length],
-                                   tokenizer.eos_token_id)
-
-    def pad(token_ids, pad_token_id):
-        attention_mask = torch.zeros(tokenizer.model_max_length)
-        attention_mask[-len(token_ids):] = torch.ones_like(token_ids)
-        if len(token_ids) < tokenizer.model_max_length:
-            padded_token_ids = torch.full((tokenizer.model_max_length, ),
-                                          pad_token_id)
-            padded_token_ids[-len(token_ids):] = token_ids
-            return padded_token_ids, attention_mask
-        return token_ids, attention_mask
-
     user_dataset = defaultdict(list)
     for user_id, instruction, output in zip(user_ids, instructions, outputs):
-        instruction_ids = encode(instruction)
-        output_ids = encode(output)
+        instruction_ids = encode(instruction, tokenizer, max_length)
+        output_ids = encode(output, tokenizer, max_length)
         input_ids = torch.cat([instruction_ids, output_ids])
         labels = input_ids.clone()
         instruction_mask = torch.cat(
             [torch.ones_like(instruction_ids),
              torch.zeros_like(output_ids)])
         labels.masked_fill_(instruction_mask, IGNORE_INDEX)
-        input_ids, attention_masks = pad(input_ids, tokenizer.pad_token_id)
+        input_ids, attention_masks = pad(input_ids, tokenizer.pad_token_id,
+                                         tokenizer.model_max_length)
         user_dataset[user_id].append({
-            "input_ids": input_ids,
-            "attention_masks": attention_masks,
-            "labels": pad(labels, IGNORE_INDEX)[0],
+            "input_ids":
+            input_ids,
+            "attention_masks":
+            attention_masks,
+            "labels":
+            pad(labels, IGNORE_INDEX, tokenizer.model_max_length)[0],
         })
     return user_dataset
 
@@ -103,7 +105,6 @@ def make_oasst_datasets(tokenizer: PreTrainedTokenizer,
                         dataloader_kwargs: Dict,
                         train_split_ratio: float = 0.9):
     hf_dataset = load_dataset("OpenAssistant/oasst2", split="train+validation")
-    num_new_tokens = add_special_tokens(tokenizer)
     user_dataset = preprocess_oasst_for_causal_lm(hf_dataset, tokenizer)
     users = list(user_dataset.keys())
     num_train_users = int(train_split_ratio * len(users))
@@ -118,11 +119,4 @@ def make_oasst_datasets(tokenizer: PreTrainedTokenizer,
     logger.info(f"# of train users = {len(train_user_dataset)}, "
                 f"# of val users = {len(val_user_dataset)}")
 
-    def postprocessing_model_fn(model):
-        smart_embedding_resize(num_new_tokens, tokenizer, model)
-
-    metadata = {
-        'num_new_tokens': num_new_tokens,
-        'postprocessing_model_fn': postprocessing_model_fn,
-    }
-    return train_federated_dataset, val_federated_dataset, central_dataset, metadata
+    return train_federated_dataset, val_federated_dataset, central_dataset, {}

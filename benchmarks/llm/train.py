@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import transformers
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
-from model.hugging_face import causal_lm_metrics_fn, wrap_hugging_face_model
+from model.hugging_face import add_special_tokens, causal_lm_metrics_fn, smart_embedding_resize, wrap_hugging_face_model
 from utils.argument_parsing import (
     add_algorithm_arguments,
     add_filepath_arguments,
@@ -14,6 +14,7 @@ from utils.argument_parsing import (
     maybe_inject_arguments_from_config,
     parse_mechanism,
 )
+from utils.callback.hugging_face import HuggingFaceModelCheckpointingCallback
 from utils.logging import init_logging
 
 from llm.argument_parsing import add_llm_arguments, parse_central_lr_scheduler, parse_peft_config
@@ -66,6 +67,8 @@ def main():
         model_max_length=arguments.model_max_length,
         padding_side=arguments.padding_side,
         use_fast=arguments.use_fast_tokenizer)
+    num_new_tokens = add_special_tokens(tokenizer)
+    logger.info(f"Added {num_new_tokens} new tokens to the tokenizer.")
     arguments.tokenizer = tokenizer
 
     logger.info("Loading dataset.")
@@ -74,10 +77,8 @@ def main():
     logger.info(f"Loading model from "
                 f"{arguments.hugging_face_model_name_or_path}.")
     hf_model = transformers.AutoModelForCausalLM.from_pretrained(
-        arguments.hugging_face_model_name_or_path)
-    if "postprocessing_model_fn" in metadata:
-        # Additional post-processing with loaded model
-        metadata["postprocessing_model_fn"](hf_model)
+        arguments.hugging_face_model_name_or_path, trust_remote_code=True)
+    smart_embedding_resize(num_new_tokens, tokenizer, hf_model)
 
     # Parameter efficient fine-tuning
     peft_config = parse_peft_config(arguments)
@@ -125,7 +126,9 @@ def main():
         CentralEvaluationCallback(central_data,
                                   model_eval_params=model_eval_params,
                                   frequency=arguments.evaluation_frequency),
-        AggregateMetricsToDisk('./metrics.csv')
+        AggregateMetricsToDisk('./metrics.csv'),
+        HuggingFaceModelCheckpointingCallback(hf_model, tokenizer,
+                                              "hf_checkpoint")
     ]
     algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
     callbacks.extend(algorithm_callbacks)

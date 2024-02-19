@@ -67,6 +67,7 @@ def add_dataset_arguments(
                             'flair_pytorch',
                             'stackoverflow',
                             'alpaca',
+                            'aya',
                             'oasst',
                         ],
                         default='cifar10',
@@ -134,7 +135,7 @@ def add_dataset_arguments(
     elif known_args.dataset == 'alpaca':
         parser = add_artificial_fed_dataset_arguments(parser)
 
-    if known_args.dataset in ['alpaca', 'oasst', 'flair_pytorch']:
+    if known_args.dataset in ['alpaca', 'aya', 'oasst', 'flair_pytorch']:
         parser = add_pytorch_dataloader_arguments(parser)
 
     return parser
@@ -301,6 +302,12 @@ def get_datasets(
         datasets = make_alpaca_iid_datasets(
             args.tokenizer, user_dataset_len_sampler,
             parse_pytorch_dataloader_kwargs(args))
+    elif args.dataset == 'aya':
+        from .hugging_face.aya import make_aya_datasets
+        assert hasattr(args, 'tokenizer'), (
+            "Hugging Face tokenizer is required to parse Aya dataset")
+        datasets = make_aya_datasets(args.tokenizer,
+                                     parse_pytorch_dataloader_kwargs(args))
     elif args.dataset == 'oasst':
         from .hugging_face.oasst import make_oasst_datasets
         assert hasattr(args, 'tokenizer'), (

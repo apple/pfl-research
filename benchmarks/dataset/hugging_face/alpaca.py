@@ -18,8 +18,6 @@ from . import (
     IGNORE_INDEX,
     GetItemDataset,
     HuggingFaceFederatedDataset,
-    add_special_tokens,
-    smart_embedding_resize,
 )
 
 logger = logging.getLogger(__name__)
@@ -158,7 +156,6 @@ def make_alpaca_iid_datasets(tokenizer: PreTrainedTokenizer,
                              train_split_ratio: float = 0.9):
     hf_dataset = load_dataset("tatsu-lab/alpaca")["train"]
 
-    num_new_tokens = add_special_tokens(tokenizer)
     input_ids, labels = preprocess_alpaca(hf_dataset, tokenizer)
     user_dataset = iid_user_partition(input_ids, labels,
                                       user_dataset_len_sampler)
@@ -176,11 +173,4 @@ def make_alpaca_iid_datasets(tokenizer: PreTrainedTokenizer,
     logger.info(f"# of train users = {len(train_user_dataset)}, "
                 f"# of val users = {len(val_user_dataset)}")
 
-    def postprocessing_model_fn(model):
-        smart_embedding_resize(num_new_tokens, tokenizer, model)
-
-    metadata = {
-        'num_new_tokens': num_new_tokens,
-        'postprocessing_model_fn': postprocessing_model_fn,
-    }
-    return train_federated_dataset, val_federated_dataset, central_dataset, metadata
+    return train_federated_dataset, val_federated_dataset, central_dataset, {}

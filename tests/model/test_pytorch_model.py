@@ -35,11 +35,11 @@ class TestPyTorchModel:
             lr=1.0)
         check_save_and_load_central_optimizer_impl(pytorch_model_setup)
 
-    @pytest.mark.parametrize('grad_accumulation_steps', [1, 2, 4])
+    @pytest.mark.parametrize('grad_accumulation_steps', [1, 2, 3, 4])
     def test_grad_accumulation(self, grad_accumulation_steps,
                                pytorch_model_setup, user_dataset):
         local_learning_rate = 0.1
-        local_num_epochs = 4
+        local_num_epochs = 5
         mock_local_optimizer = torch.optim.SGD(
             pytorch_model_setup.model._model.parameters(), local_learning_rate)
         mock_local_optimizer.step = Mock()
@@ -57,8 +57,10 @@ class TestPyTorchModel:
                 grad_accumulation_steps=grad_accumulation_steps))
 
         total_steps = 2 * local_num_epochs
-        assert (mock_local_optimizer.step.call_count == total_steps //
-                grad_accumulation_steps)
+        expected_optimizer_calls = (
+            total_steps // grad_accumulation_steps +
+            int(total_steps % grad_accumulation_steps != 0))
+        assert mock_local_optimizer.step.call_count == expected_optimizer_calls
 
 
 @pytest.fixture(scope='function')

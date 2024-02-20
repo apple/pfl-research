@@ -138,8 +138,8 @@ def add_dataset_arguments(
     elif known_args.dataset == 'aya':
         parser.add_argument('--max_user_instructions',
                             type=int,
-                            default=100,
-                            help='Maximum number of instructions per user')
+                            default=64,
+                            help='Maximum number of instructions per user.')
 
     if known_args.dataset in ['alpaca', 'aya', 'oasst', 'flair_pytorch']:
         parser = add_pytorch_dataloader_arguments(parser)

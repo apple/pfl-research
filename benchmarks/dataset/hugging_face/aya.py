@@ -59,7 +59,7 @@ def preprocess_aya_for_causal_lm(
 def make_aya_datasets(tokenizer: PreTrainedTokenizer,
                       max_user_instructions: int,
                       dataloader_kwargs: Dict,
-                      train_split_ratio: float = 0.9):
+                      train_split_ratio: float = 0.95):
     hf_dataset = load_dataset("CohereForAI/aya_dataset", split="train+test")
     user_dataset = preprocess_aya_for_causal_lm(hf_dataset, tokenizer,
                                                 max_user_instructions)

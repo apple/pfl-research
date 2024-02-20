@@ -135,6 +135,12 @@ def add_dataset_arguments(
     elif known_args.dataset == 'alpaca':
         parser = add_artificial_fed_dataset_arguments(parser)
 
+    elif known_args.dataset == 'aya':
+        parser.add_argument('--max_user_instructions',
+                            type=int,
+                            default=100,
+                            help='Maximum number of instructions per user')
+
     if known_args.dataset in ['alpaca', 'aya', 'oasst', 'flair_pytorch']:
         parser = add_pytorch_dataloader_arguments(parser)
 
@@ -307,6 +313,7 @@ def get_datasets(
         assert hasattr(args, 'tokenizer'), (
             "Hugging Face tokenizer is required to parse Aya dataset")
         datasets = make_aya_datasets(args.tokenizer,
+                                     args.max_user_instructions,
                                      parse_pytorch_dataloader_kwargs(args))
     elif args.dataset == 'oasst':
         from .hugging_face.oasst import make_oasst_datasets

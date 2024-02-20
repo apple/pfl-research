@@ -1,4 +1,5 @@
 import logging
+import math
 from collections import defaultdict
 from typing import Dict, List
 
@@ -14,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 def preprocess_aya_for_causal_lm(
-        dataset: HuggingFaceDataset,
-        tokenizer: PreTrainedTokenizer) -> Dict[str, List[Dict]]:
+        dataset: HuggingFaceDataset, tokenizer: PreTrainedTokenizer,
+        max_user_instructions: int) -> Dict[str, List[Dict]]:
     max_length = tokenizer.model_max_length // 2 - 1  # minus 1 to include EOS
     user_dataset = defaultdict(list)
     # Reusing the same preprocessing as OpenAssistant for now
@@ -39,14 +40,28 @@ def preprocess_aya_for_causal_lm(
             "labels":
             pad(labels, IGNORE_INDEX, tokenizer.model_max_length)[0],
         })
+
+    for user_id in list(user_dataset.keys()):
+        local_dataset = user_dataset[user_id]
+        if len(local_dataset) > max_user_instructions:
+            user_dataset[user_id] = local_dataset[:max_user_instructions]
+            extra_subsets = int(
+                math.ceil(len(local_dataset) / max_user_instructions)) - 1
+            for i in range(1, extra_subsets + 1):
+                subset = local_dataset[i * max_user_instructions:(i + 1) *
+                                       max_user_instructions]
+                user_dataset[f"{user_id}-{i}"] = subset
+
     return user_dataset
 
 
 def make_aya_datasets(tokenizer: PreTrainedTokenizer,
+                      max_user_instructions: int,
                       dataloader_kwargs: Dict,
                       train_split_ratio: float = 0.9):
     hf_dataset = load_dataset("CohereForAI/aya_dataset", split="train+test")
-    user_dataset = preprocess_aya_for_causal_lm(hf_dataset, tokenizer)
+    user_dataset = preprocess_aya_for_causal_lm(hf_dataset, tokenizer,
+                                                max_user_instructions)
     users = list(user_dataset.keys())
     num_train_users = int(train_split_ratio * len(users))
     train_user_dataset = {u: user_dataset[u] for u in users[:num_train_users]}

@@ -44,6 +44,7 @@ def preprocess_aya_for_causal_lm(
     for user_id in list(user_dataset.keys()):
         local_dataset = user_dataset[user_id]
         if len(local_dataset) > max_user_instructions:
+            # Split the power user's local dataset into multiple subsets
             user_dataset[user_id] = local_dataset[:max_user_instructions]
             extra_subsets = int(
                 math.ceil(len(local_dataset) / max_user_instructions)) - 1

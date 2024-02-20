@@ -127,8 +127,10 @@ def main():
                                   model_eval_params=model_eval_params,
                                   frequency=arguments.evaluation_frequency),
         AggregateMetricsToDisk('./metrics.csv'),
-        HuggingFaceModelCheckpointingCallback(hf_model, tokenizer,
-                                              "hf_checkpoint")
+        HuggingFaceModelCheckpointingCallback(hf_model,
+                                              tokenizer,
+                                              "hf_checkpoint",
+                                              checkpoint_frequency=1)
     ]
     algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
     callbacks.extend(algorithm_callbacks)

@@ -85,6 +85,9 @@ class PyTorchModel(StatefulModel):
         A boolean indicating whether to cast the model parameter dtype to the
         same as amp_dtype when using mixed precision training. Note that lower
         precision model parameters might cause divergence during training.
+    :param use_torch_compile:
+        A boolean indicating whether to use `torch.compile` which can speed up
+        the training and inference.
     """
 
     set_framework_module(pytorch_ops)
@@ -101,7 +104,8 @@ class PyTorchModel(StatefulModel):
                  central_learning_rate_scheduler=None,
                  amp_dtype: Optional[torch.dtype] = None,
                  grad_scaling: bool = False,
-                 model_dtype_same_as_amp: bool = False):
+                 model_dtype_same_as_amp: bool = False,
+                 use_torch_compile: bool = False):
         super().__init__()
         assert hasattr(model, "loss") and hasattr(model, "metrics"), (
             "PyTorch module needs to implement `loss` and `metrics` functions."
@@ -130,6 +134,9 @@ class PyTorchModel(StatefulModel):
                            f"{self._amp_context.fast_dtype}, "
                            "which may cause training to diverge")
             self._model.type(self._amp_context.fast_dtype)
+
+        if use_torch_compile and hasattr(torch, "compile"):
+            self._model = torch.compile(self._model)
 
     @property
     def allows_distributed_evaluation(self) -> Optional[bool]:

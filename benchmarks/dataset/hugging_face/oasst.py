@@ -66,7 +66,7 @@ def preprocess_oasst_for_causal_lm(
         labels = input_ids.clone()
         instruction_mask = torch.cat(
             [torch.ones_like(instruction_ids),
-             torch.zeros_like(output_ids)])
+             torch.zeros_like(output_ids)]).bool()
         labels.masked_fill_(instruction_mask, IGNORE_INDEX)
         input_ids, attention_masks = pad(input_ids, tokenizer.pad_token_id,
                                          tokenizer.model_max_length)

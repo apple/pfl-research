@@ -163,4 +163,10 @@ def add_llm_arguments(argument_parser):
         help='Effective local batch size is local batch size '
         'multiplied by this number.')
 
+    argument_parser.add_argument(
+        '--use_torch_compile',
+        action=store_bool,
+        default=False,
+        help='Whether to use `torch.compile` on the PyTorch module.')
+
     return argument_parser

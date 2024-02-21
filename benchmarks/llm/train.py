@@ -105,7 +105,8 @@ def main():
         central_learning_rate_scheduler=central_learning_rate_scheduler,
         amp_dtype=getattr(torch, arguments.amp_dtype),
         grad_scaling=arguments.grad_scaling,
-        model_dtype_same_as_amp=arguments.model_dtype_same_as_amp)
+        model_dtype_same_as_amp=arguments.model_dtype_same_as_amp,
+        use_torch_compile=arguments.use_torch_compile)
 
     backend = SimulatedBackend(training_data=training_data,
                                val_data=val_data,

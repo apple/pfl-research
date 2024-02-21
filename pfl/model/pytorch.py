@@ -118,15 +118,7 @@ class PyTorchModel(StatefulModel):
         # Calculate this later dynamically in `evaluate`.
         self._allows_distributed_evaluation: Optional[bool] = None
 
-        # Calculate the variable mapping once here because the graph will expand
-        # later.
-        self._variable_map = {
-            name: variable
-            for name, variable in model.named_parameters()
-            if variable.requires_grad
-        }
-        self._model_diff: MappedVectorStatistics = MappedVectorStatistics()
-
+        # Set up PyTorch native mix precision training
         self._amp_context, self._grad_scaler = pytorch_ops.setup_amp(
             amp_dtype, grad_scaling)
         if model_dtype_same_as_amp and self._amp_context:
@@ -135,8 +127,18 @@ class PyTorchModel(StatefulModel):
                            "which may cause training to diverge")
             self._model.type(self._amp_context.fast_dtype)
 
+        # Compile the model
         if use_torch_compile and hasattr(torch, "compile"):
             self._model = torch.compile(self._model)
+
+        # Calculate the variable mapping once here because the graph will expand
+        # later.
+        self._variable_map = {
+            name: variable
+            for name, variable in self._model.named_parameters()
+            if variable.requires_grad
+        }
+        self._model_diff: MappedVectorStatistics = MappedVectorStatistics()
 
     @property
     def allows_distributed_evaluation(self) -> Optional[bool]:

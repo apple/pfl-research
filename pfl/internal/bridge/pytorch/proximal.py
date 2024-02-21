@@ -27,7 +27,8 @@ def _proximal_train_step(pytorch_model, local_optimizer, raw_data,
 
         # Add proximal term (Definition 2)
         for name, param in pytorch_model.named_parameters():
-            loss += mu / 2 * torch.norm(param - global_weights[name])**2
+            if param.requires_grad:
+                loss += mu / 2 * torch.norm(param - global_weights[name])**2
 
         loss /= train_step_args.grad_accumulation_steps
 

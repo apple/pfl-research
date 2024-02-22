@@ -27,7 +27,6 @@ from pfl.privacy import (
     NoPrivacy,
     NormClippingOnly,
     PLDPrivacyAccountant,
-    PrivUnitMechanism,
 )
 
 
@@ -92,8 +91,8 @@ def add_mechanism_arguments(argument_parser):
     argument_parser.add_argument(
         '--local_privacy_mechanism',
         choices=[
-            'none', 'gaussian', 'privunit', 'laplace', 'norm_clipping_only',
-            'separated', 'local_dp_separated'
+            'none', 'gaussian', 'laplace', 'norm_clipping_only', 'separated',
+            'local_dp_separated'
         ],
         default='none',
         help='The type of privacy mechanism to apply for each user.')
@@ -198,11 +197,6 @@ def parse_mechanism(mechanism_name,
         assert epsilon is not None and delta is not None
         mechanism = GaussianMechanism.construct_single_iteration(
             clipping_bound, epsilon, delta)
-
-    elif mechanism_name == 'privunit':
-        assert clipping_bound is not None
-        assert epsilon is not None
-        mechanism = PrivUnitMechanism(clipping_bound, epsilon)
 
     elif mechanism_name == 'gaussian_privacy_accountant':
         assert clipping_bound is not None

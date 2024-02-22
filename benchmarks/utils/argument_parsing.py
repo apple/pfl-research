@@ -27,7 +27,6 @@ from pfl.privacy import (
     NoPrivacy,
     NormClippingOnly,
     PLDPrivacyAccountant,
-    PrivUnitMechanism,
 )
 from pfl.privacy.ftrl_mechanism import BandedMatrixFactorizationMechanism
 
@@ -247,7 +246,6 @@ def add_mechanism_arguments(argument_parser):
         choices=[
             'none',
             'gaussian',
-            'privunit',
             'laplace',
             'norm_clipping_only',
         ],
@@ -371,11 +369,6 @@ def parse_mechanism(mechanism_name,
         assert epsilon is not None and delta is not None
         mechanism = GaussianMechanism.construct_single_iteration(
             clipping_bound, epsilon, delta)
-
-    elif mechanism_name == 'privunit':
-        assert clipping_bound is not None
-        assert epsilon is not None
-        mechanism = PrivUnitMechanism(clipping_bound, epsilon)
 
     elif mechanism_name == 'gaussian_moments_accountant':
         assert clipping_bound is not None

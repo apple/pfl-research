@@ -28,9 +28,6 @@ Privacy mechanisms
 .. automodule:: pfl.privacy.ftrl_mechanism
    :members:
 
-.. automodule:: pfl.privacy.priv_unit_mechanism
-   :members:
-
 Privacy accountants
 -------------------
 

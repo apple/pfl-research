@@ -14,7 +14,5 @@ We include the reference here anyway because the modules implement many useful u
    distribution
    ops
    platform
-   priv_unit_functions
    privacy_loss_bound
-   random
    tree

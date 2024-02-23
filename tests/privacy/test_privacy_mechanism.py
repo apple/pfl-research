@@ -16,13 +16,11 @@ from pfl.context import CentralContext, UserContext
 from pfl.hyperparam import ModelHyperParams
 from pfl.hyperparam.base import AlgorithmHyperParams
 from pfl.internal.ops import get_pytorch_major_version, get_tf_major_version
-from pfl.internal.priv_unit_functions import compute_optimal_cap_offset
 from pfl.metrics import Metrics, get_overall_value
 from pfl.privacy import compute_parameters
 from pfl.privacy.approximate_mechanism import SquaredErrorLocalPrivacyMechanism
 from pfl.privacy.gaussian_mechanism import GaussianMechanism
 from pfl.privacy.laplace_mechanism import LaplaceMechanism
-from pfl.privacy.priv_unit_mechanism import PrivUnitMechanism
 from pfl.privacy.privacy_mechanism import (
     CentrallyAppliedPrivacyMechanism,
     NoPrivacy,
@@ -381,42 +379,6 @@ class TestMechanisms:
                                          kurtosis,
                                          expected_metrics,
                                          _num_iterations,
-                                         has_squared_error=True,
-                                         set_seed=set_seed,
-                                         ops=ops_module)
-
-    @pytest.mark.parametrize('ops_module', framework_fixtures)
-    @pytest.mark.parametrize('set_seed', [False, True])
-    @pytest.mark.parametrize('norm_bound', [0.02, 6e6])
-    def test_priv_unit_mechanism(self, norm_bound, set_seed, ops_module,
-                                 fix_global_random_seeds):
-        shapes = [(1, 20000, 3), (2, 14000, 4)]
-        l2_norm = self._get_values_l2_norm(shapes)
-        num_dimensions = sum([np.prod(shape) for shape in shapes])
-        mechanism = PrivUnitMechanism(norm_bound, _epsilon)
-
-        scaling, _ = compute_optimal_cap_offset(_epsilon, num_dimensions)
-        reference_bias = ((l2_norm /
-                           norm_bound) if l2_norm < norm_bound else 1)
-        squared_error = (scaling**2).value - reference_bias**2
-        theoretical_squared_error = (scaling**2).value - 1**2
-        sigma = math.sqrt(squared_error / num_dimensions) * norm_bound
-
-        expected_metrics = Metrics([
-            (PrivacyMetricName('DP squared error', is_local_privacy=True),
-             theoretical_squared_error * (norm_bound**2))
-        ])
-
-        self._check_mechanism_properties(mechanism=mechanism,
-                                         norm_function=self._compute_l2_norm,
-                                         shapes=shapes,
-                                         epsilon=_epsilon,
-                                         delta=_delta,
-                                         norm_bound=norm_bound,
-                                         expected_sigma=sigma,
-                                         expected_kurtosis=None,
-                                         expected_metrics=expected_metrics,
-                                         num_iterations=_num_iterations,
                                          has_squared_error=True,
                                          set_seed=set_seed,
                                          ops=ops_module)

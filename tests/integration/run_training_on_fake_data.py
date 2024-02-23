@@ -91,8 +91,10 @@ def add_mechanism_arguments(argument_parser):
     argument_parser.add_argument(
         '--local_privacy_mechanism',
         choices=[
-            'none', 'gaussian', 'laplace', 'norm_clipping_only', 'separated',
-            'local_dp_separated'
+            'none',
+            'gaussian',
+            'laplace',
+            'norm_clipping_only',
         ],
         default='none',
         help='The type of privacy mechanism to apply for each user.')

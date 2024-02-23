@@ -43,7 +43,23 @@ def get_default_device():
     return default_device
 
 
-def setup_amp(amp_dtype: Optional[torch.dtype], grad_scaling: bool):
+def setup_amp(
+    amp_dtype: Optional[torch.dtype], grad_scaling: bool
+) -> Tuple[Optional[torch.amp.autocast], Optional[torch.cuda.amp.GradScaler]]:
+    """
+    Setup `torch.amp.autocast` context and `torch.cuda.amp.GradScaler` for
+    PyTorch native mixed precision training. Gradient scaling is only used
+    when training on CUDA.
+
+    :param amp_dtype:
+        An optional `torch.dtype` indicating the precision level. If set to
+        `None` then mix precision training is not enabled.
+    :param grad_scaling:
+        Whether to turn on gradient scaling when training on CUDA.
+    :return:
+        A tuple of `torch.amp.autocast` context and `torch.cuda.amp.GradScaler`.
+    """
+
     amp_context, grad_scaler = None, None
     if amp_dtype is not None:
         if get_default_device() == torch.device("mps"):

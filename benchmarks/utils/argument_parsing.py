@@ -225,12 +225,6 @@ def add_dnn_training_arguments(argument_parser):
         help='Learning rate for training on the client.')
 
     argument_parser.add_argument(
-        '--local_max_grad_norm',
-        type=float,
-        default=None,
-        help='Gradient clipping bound in local SGD training.')
-
-    argument_parser.add_argument(
         '--weight_by_samples',
         action=store_bool,
         default=False,

@@ -18,7 +18,7 @@ from utils.argument_parsing import (
     parse_mechanism,
     parse_weighting_strategy,
 )
-from utils.callback.pytorch import CentralLRDecay
+from utils.callback.pytorch import get_polynomial_decay_schedule_with_warmup
 from utils.logging import init_logging
 
 from pfl.aggregate.simulate import SimulatedBackend
@@ -100,9 +100,18 @@ def main():
         assert arguments.central_optimizer == 'sgd'
         central_optimizer = torch.optim.SGD(params, arguments.learning_rate)
 
+    central_lr_scheduler = None
+    if arguments.central_lr_num_warmup_iterations > 0:
+        central_lr_scheduler = get_polynomial_decay_schedule_with_warmup(
+            central_optimizer,
+            num_warmup_steps=arguments.central_lr_num_warmup_iterations,
+            num_training_steps=arguments.central_num_iterations,
+            lr_end=arguments.learning_rate)
+
     model = PyTorchModel(model=pytorch_model,
                          local_optimizer_create=torch.optim.SGD,
-                         central_optimizer=central_optimizer)
+                         central_optimizer=central_optimizer,
+                         central_learning_rate_scheduler=central_lr_scheduler)
 
     weighting_strategy = parse_weighting_strategy(arguments.weighting,
                                                   arguments.weight_clip)
@@ -135,14 +144,6 @@ def main():
         TrackBestOverallMetrics(
             lower_is_better_metric_names=['Central val | perplexity']),
     ]
-    if arguments.central_lr_num_warmup_iterations > 0:
-        central_lr_warmup_cb = CentralLRDecay(
-            arguments.learning_rate,
-            arguments.learning_rate,
-            arguments.central_num_iterations,
-            arguments.central_lr_num_warmup_iterations,
-            linear_warmup=True)
-        callbacks.append(central_lr_warmup_cb)
     if arguments.fedsgd_after_amount_trained is not None:
         raise NotImplementedError(
             "TODO: rdar://109165050 Implement DecayToFedSGD "

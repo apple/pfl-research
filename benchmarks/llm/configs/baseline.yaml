@@ -3,9 +3,6 @@
 #mean_datapoints_per_user: 16
 #datapoints_per_user_distribution: poisson
 
-dataset: oasst
-multiprocessing_sharing_strategy: file_system
-
 # Model config
 hugging_face_model_name_or_path: facebook/opt-1.3b
 model_max_length: 512
@@ -14,10 +11,10 @@ padding_side: right
 amp_dtype: bfloat16
 model_dtype_same_as_amp: True
 
-central_optimizer: sgd
-#adaptivity_degree: 0.01
+central_optimizer: adam
+adaptivity_degree: 0.01
 
-central_privacy_mechanism: gaussian_moments_accountant
+central_privacy_mechanism: none
 central_epsilon: 2.0
 central_delta: 1e-6
 central_privacy_clipping_bound: 1.0

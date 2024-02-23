@@ -12,14 +12,14 @@ from .common import clip_norm_and_update, get_train_step_args
 def _sgd_train_step(pytorch_model, local_optimizer, raw_data, train_kwargs,
                     **kwargs):
     train_step_args = get_train_step_args(**kwargs)
-    if train_step_args.optimizer_should_update:
-        local_optimizer.zero_grad()
 
     with train_step_args.amp_context:
         if isinstance(raw_data, Dict):
             loss = pytorch_model.loss(**{**raw_data, **train_kwargs})
         else:
             loss = pytorch_model.loss(*raw_data, **train_kwargs)
+
+        # Scale the loss to get the correct scale for the gradients.
         loss /= train_step_args.grad_accumulation_steps
 
     if train_step_args.grad_scaler is None:

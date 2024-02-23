@@ -169,4 +169,10 @@ def add_llm_arguments(argument_parser):
         default=False,
         help='Whether to use `torch.compile` on the PyTorch module.')
 
+    argument_parser.add_argument(
+        '--local_max_grad_norm',
+        type=float,
+        default=None,
+        help='Gradient clipping bound in local SGD training.')
+
     return argument_parser

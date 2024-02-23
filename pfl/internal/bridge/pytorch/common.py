@@ -39,7 +39,7 @@ class TrainStepArgs:
     amp_context: Union[torch.amp.autocast, contextlib.AbstractContextManager]
     grad_accumulation_steps: int
     grad_scaler: Optional[torch.cuda.amp.GradScaler]
-    max_grad_norm: float
+    max_grad_norm: Optional[float]
     optimizer_should_update: bool
 
 
@@ -68,6 +68,9 @@ def clip_norm_and_update(pytorch_model, local_optimizer, train_step_args):
                                                train_step_args.max_grad_norm)
             train_step_args.grad_scaler.step(local_optimizer)
             train_step_args.grad_scaler.update()
+
+    if train_step_args.optimizer_should_update:
+        local_optimizer.zero_grad()
 
 
 class PyTorchCommonBridge(CommonFrameworkBridge[PyTorchModel,

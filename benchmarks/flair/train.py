@@ -20,7 +20,7 @@ from utils.argument_parsing import (
     maybe_inject_arguments_from_config,
     parse_mechanism,
 )
-from utils.callback.pytorch import CentralLRDecay
+from utils.callback.pytorch import get_polynomial_decay_schedule_with_warmup
 from utils.logging import init_logging
 
 from pfl.aggregate.simulate import SimulatedBackend
@@ -111,9 +111,16 @@ def main():
             arguments.learning_rate,
             weight_decay=arguments.weight_decay)
 
+    central_lr_scheduler = get_polynomial_decay_schedule_with_warmup(
+        central_optimizer,
+        num_warmup_steps=30,
+        num_training_steps=arguments.central_num_iterations,
+        lr_end=0.02)
+
     model = PyTorchModel(model=pytorch_model,
                          local_optimizer_create=torch.optim.SGD,
-                         central_optimizer=central_optimizer)
+                         central_optimizer=central_optimizer,
+                         central_learning_rate_scheduler=central_lr_scheduler)
 
     backend = SimulatedBackend(training_data=training_federated_dataset,
                                val_data=val_federated_dataset,
@@ -137,11 +144,6 @@ def main():
                                   frequency=arguments.evaluation_frequency),
         StopwatchCallback(),
         AggregateMetricsToDisk('./metrics.csv'),
-        CentralLRDecay(arguments.learning_rate,
-                       0.02,
-                       arguments.central_num_iterations,
-                       30,
-                       linear_warmup=True),
         TrackBestOverallMetrics(
             higher_is_better_metric_names=['Central val | macro AP']),
     ]

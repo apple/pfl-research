@@ -10,10 +10,11 @@ if get_pytorch_major_version() > 0:
 
 @pytest.mark.skipif(not get_pytorch_major_version(),
                     reason='PyTorch not installed')
-@pytest.mark.parametrize('amp_dtype',
-                         [torch.bfloat16, torch.float16, torch.float32, None])
+@pytest.mark.parametrize('amp_dtype', ['bfloat16', 'float16', 'float32', None])
 @pytest.mark.parametrize('grad_scaling', [True, False])
 def test_setup_amp(amp_dtype, grad_scaling):
+    if isinstance(amp_dtype, str):
+        amp_dtype = getattr(torch, amp_dtype)
     amp_context, grad_scaler = pytorch_ops.setup_amp(amp_dtype, grad_scaling)
     assert grad_scaler is None  # only enable on cuda
     if (amp_dtype is None or amp_dtype == torch.float32

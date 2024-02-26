@@ -328,6 +328,7 @@ class PyTorchModel(StatefulModel):
         local_optimizer = self.new_local_optimizer(
             learning_rate=train_params.local_learning_rate)
 
+        local_optimizer.zero_grad()
         for _ in range(num_epochs):
             for batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):

@@ -8,7 +8,7 @@ from pfl.hyperparam.base import NNTrainHyperParams
 from pfl.model.pytorch import PyTorchModel
 
 from ..base import FedProxFrameworkBridge
-from .common import clip_norm_and_update, get_train_step_args
+from .common import GradAccumulationState, clip_norm_and_update, get_train_step_args
 
 
 def _proximal_train_step(pytorch_model, local_optimizer, raw_data,
@@ -28,12 +28,13 @@ def _proximal_train_step(pytorch_model, local_optimizer, raw_data,
                 loss += mu / 2 * torch.norm(param - global_weights[name])**2
 
         # Scale the loss to get the correct scale for the gradients.
-        loss /= train_step_args.grad_accumulation_steps
+        loss /= train_step_args.grad_accumulation_state.accumulation_steps
 
     if train_step_args.grad_scaler is None:
         loss.backward()
     else:
         train_step_args.grad_scaler.scale(loss).backward()
+    train_step_args.grad_accumulation_state.accumulate()
 
     clip_norm_and_update(pytorch_model, local_optimizer, train_step_args)
 
@@ -49,8 +50,15 @@ class PyTorchFedProxBridge(FedProxFrameworkBridge[PyTorchModel,
     def do_proximal_sgd(model: PyTorchModel, user_dataset: AbstractDatasetType,
                         train_params: NNTrainHyperParams, mu: float) -> None:
         global_weights = dict(model.get_parameters().items())
-        model.do_multiple_epochs_of(user_dataset,
-                                    train_params,
-                                    _proximal_train_step,
-                                    global_weights=global_weights,
-                                    mu=mu)
+        grad_accumulation_state = GradAccumulationState(
+            train_params, len(user_dataset))
+        model.do_multiple_epochs_of(
+            user_dataset,
+            train_params,
+            _proximal_train_step,
+            global_weights=global_weights,
+            mu=mu,
+            max_grad_norm=train_params.local_max_grad_norm,
+            grad_accumulation_state=grad_accumulation_state,
+            amp_context=model.amp_context,
+            grad_scaler=model.grad_scaler)

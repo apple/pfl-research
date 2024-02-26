@@ -7,7 +7,7 @@ from pfl.model.pytorch import PyTorchModel
 from pfl.stats import MappedVectorStatistics
 
 from ..base import SCAFFOLDFrameworkBridge
-from .common import clip_norm_and_update, get_train_step_args
+from .common import GradAccumulationState, clip_norm_and_update, get_train_step_args
 
 
 def _control_variate_train_step(pytorch_model, local_optimizer, raw_data,
@@ -22,14 +22,15 @@ def _control_variate_train_step(pytorch_model, local_optimizer, raw_data,
             loss = pytorch_model.loss(*raw_data, **train_kwargs)
 
         # Scale the loss to get the correct scale for the gradients.
-        loss /= train_step_args.grad_accumulation_steps
+        loss /= train_step_args.grad_accumulation_state.accumulation_steps
 
     if train_step_args.grad_scaler is None:
         loss.backward()
     else:
         train_step_args.grad_scaler.scale(loss).backward()
+    train_step_args.grad_accumulation_state.accumulate()
 
-    if train_step_args.optimizer_should_update:
+    if train_step_args.grad_accumulation_state.optimizer_should_update:
         for name, var in pytorch_model.named_parameters():
             if not var.requires_grad:
                 # Frozen variable
@@ -54,8 +55,15 @@ class PyTorchSCAFFOLDBridge(SCAFFOLDFrameworkBridge[PyTorchModel,
         local_c: MappedVectorStatistics,
         server_c: MappedVectorStatistics,
     ) -> None:
-        model.do_multiple_epochs_of(user_dataset,
-                                    train_params,
-                                    _control_variate_train_step,
-                                    local_c=local_c,
-                                    server_c=server_c)
+        grad_accumulation_state = GradAccumulationState(
+            train_params, len(user_dataset))
+        model.do_multiple_epochs_of(
+            user_dataset,
+            train_params,
+            _control_variate_train_step,
+            local_c=local_c,
+            server_c=server_c,
+            max_grad_norm=train_params.local_max_grad_norm,
+            grad_accumulation_state=grad_accumulation_state,
+            amp_context=model.amp_context,
+            grad_scaler=model.grad_scaler)

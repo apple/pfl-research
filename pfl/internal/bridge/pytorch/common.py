@@ -33,35 +33,79 @@ def _stats_tensors_to_device(item):
     return item
 
 
-@dataclass
+class GradAccumulationState:
+    """ Track gradient accumulation during local training. """
+
+    def __init__(self, train_params: Optional[NNTrainHyperParams],
+                 user_data_length: Optional[int]):
+        if train_params is not None and user_data_length is not None:
+            num_epochs = (1 if train_params.local_num_epochs is None else
+                          train_params.get('local_num_epochs'))
+            local_batch_size = train_params.get('local_batch_size')
+            if train_params.get('local_num_steps') is not None:
+                num_steps = train_params.get('local_num_steps')
+            else:
+                num_steps = num_epochs
+                if local_batch_size is not None:
+                    # Multiply by number of batches per epoch
+                    num_steps *= (
+                        user_data_length // local_batch_size +
+                        int(user_data_length % local_batch_size != 0))
+            self._num_steps = num_steps
+            self._accumulation_steps = train_params.grad_accumulation_steps
+        else:
+            self._num_steps = 1
+            self._accumulation_steps = 1
+        self._accumulated_steps = 0
+
+    @property
+    def optimizer_should_update(self) -> bool:
+        """ Update every `grad_accumulation_steps` or is the last step """
+        return (self._accumulated_steps % self._accumulation_steps == 0
+                or self._accumulated_steps == self._num_steps)
+
+    @property
+    def accumulation_steps(self):
+        return self._accumulation_steps
+
+    def accumulate(self):
+        self._accumulated_steps += 1
+
+    def reset(self):
+        self._accumulated_steps = 0
+
+
+@dataclass(frozen=True)
 class TrainStepArgs:
     # Common args used by different local training algorithms in PyTorch
     amp_context: Union[torch.amp.autocast, contextlib.AbstractContextManager]
-    grad_accumulation_steps: int
     grad_scaler: Optional[torch.cuda.amp.GradScaler]
     max_grad_norm: Optional[float]
-    optimizer_should_update: bool
+    grad_accumulation_state: GradAccumulationState
 
 
 def get_train_step_args(**kwargs) -> TrainStepArgs:
-    return TrainStepArgs(
-        amp_context=kwargs.get("amp_context") or contextlib.nullcontext(),
-        grad_accumulation_steps=kwargs.get("grad_accumulation_steps", 1),
-        grad_scaler=kwargs.get("grad_scaler"),
-        max_grad_norm=kwargs.get("max_grad_norm"),
-        optimizer_should_update=kwargs.get("optimizer_should_update", True))
+    return TrainStepArgs(amp_context=kwargs.get("amp_context")
+                         or contextlib.nullcontext(),
+                         grad_scaler=kwargs.get("grad_scaler"),
+                         max_grad_norm=kwargs.get("max_grad_norm"),
+                         grad_accumulation_state=kwargs.get(
+                             'grad_accumulation_state',
+                             GradAccumulationState(None, None)))
 
 
-def clip_norm_and_update(pytorch_model, local_optimizer, train_step_args):
+def clip_norm_and_update(pytorch_model, local_optimizer,
+                         train_step_args: TrainStepArgs):
+    grad_accumulation_state = train_step_args.grad_accumulation_state
     # Clipping the gradients followed by a local optimizer step
     if train_step_args.grad_scaler is None:
-        if train_step_args.optimizer_should_update:
+        if grad_accumulation_state.optimizer_should_update:
             if train_step_args.max_grad_norm is not None:
                 torch.nn.utils.clip_grad_norm_(pytorch_model.parameters(),
                                                train_step_args.max_grad_norm)
             local_optimizer.step()
     else:
-        if train_step_args.optimizer_should_update:
+        if grad_accumulation_state.optimizer_should_update:
             if train_step_args.max_grad_norm is not None:
                 train_step_args.grad_scaler.unscale_(local_optimizer)
                 torch.nn.utils.clip_grad_norm_(pytorch_model.parameters(),
@@ -69,8 +113,9 @@ def clip_norm_and_update(pytorch_model, local_optimizer, train_step_args):
             train_step_args.grad_scaler.step(local_optimizer)
             train_step_args.grad_scaler.update()
 
-    if train_step_args.optimizer_should_update:
+    if grad_accumulation_state.optimizer_should_update:
         local_optimizer.zero_grad()
+        grad_accumulation_state.reset()
 
 
 class PyTorchCommonBridge(CommonFrameworkBridge[PyTorchModel,

@@ -6,7 +6,7 @@ from pfl.hyperparam.base import NNTrainHyperParams
 from pfl.model.pytorch import PyTorchModel
 
 from ..base import SGDFrameworkBridge
-from .common import clip_norm_and_update, get_train_step_args
+from .common import GradAccumulationState, clip_norm_and_update, get_train_step_args
 
 
 def _sgd_train_step(pytorch_model, local_optimizer, raw_data, train_kwargs,
@@ -20,12 +20,13 @@ def _sgd_train_step(pytorch_model, local_optimizer, raw_data, train_kwargs,
             loss = pytorch_model.loss(*raw_data, **train_kwargs)
 
         # Scale the loss to get the correct scale for the gradients.
-        loss /= train_step_args.grad_accumulation_steps
+        loss /= train_step_args.grad_accumulation_state.accumulation_steps
 
     if train_step_args.grad_scaler is None:
         loss.backward()
     else:
         train_step_args.grad_scaler.scale(loss).backward()
+    train_step_args.grad_accumulation_state.accumulate()
 
     clip_norm_and_update(pytorch_model, local_optimizer, train_step_args)
 
@@ -39,5 +40,13 @@ class PyTorchSGDBridge(SGDFrameworkBridge[PyTorchModel, NNTrainHyperParams]):
     @staticmethod
     def do_sgd(model: PyTorchModel, user_dataset: AbstractDatasetType,
                train_params: NNTrainHyperParams) -> None:
-        model.do_multiple_epochs_of(user_dataset, train_params,
-                                    _sgd_train_step)
+        grad_accumulation_state = GradAccumulationState(
+            train_params, len(user_dataset))
+        model.do_multiple_epochs_of(
+            user_dataset,
+            train_params,
+            _sgd_train_step,
+            max_grad_norm=train_params.local_max_grad_norm,
+            grad_accumulation_state=grad_accumulation_state,
+            amp_context=model.amp_context,
+            grad_scaler=model.grad_scaler)

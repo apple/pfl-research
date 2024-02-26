@@ -26,7 +26,7 @@ def _sgd_train_step(pytorch_model, local_optimizer, raw_data, train_kwargs,
         loss.backward()
     else:
         train_step_args.grad_scaler.scale(loss).backward()
-    train_step_args.grad_accumulation_state.accumulate()
+    train_step_args.grad_accumulation_state.increment()
 
     clip_norm_and_update(pytorch_model, local_optimizer, train_step_args)
 

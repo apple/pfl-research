@@ -28,7 +28,7 @@ def _control_variate_train_step(pytorch_model, local_optimizer, raw_data,
         loss.backward()
     else:
         train_step_args.grad_scaler.scale(loss).backward()
-    train_step_args.grad_accumulation_state.accumulate()
+    train_step_args.grad_accumulation_state.increment()
 
     if train_step_args.grad_accumulation_state.optimizer_should_update:
         for name, var in pytorch_model.named_parameters():

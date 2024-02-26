@@ -39,6 +39,7 @@ class GradAccumulationState:
     def __init__(self, train_params: Optional[NNTrainHyperParams],
                  user_data_length: Optional[int]):
         if train_params is not None and user_data_length is not None:
+            # Get the total number of steps in local training
             num_epochs = (1 if train_params.local_num_epochs is None else
                           train_params.get('local_num_epochs'))
             local_batch_size = train_params.get('local_batch_size')
@@ -54,25 +55,22 @@ class GradAccumulationState:
             self._num_steps = num_steps
             self._accumulation_steps = train_params.grad_accumulation_steps
         else:
-            self._num_steps = 1
+            self._num_steps = None
             self._accumulation_steps = 1
-        self._accumulated_steps = 0
+        self._steps = 0
 
     @property
     def optimizer_should_update(self) -> bool:
         """ Update every `grad_accumulation_steps` or is the last step """
-        return (self._accumulated_steps % self._accumulation_steps == 0
-                or self._accumulated_steps == self._num_steps)
+        return (self._steps % self._accumulation_steps == 0
+                or self._steps == self._num_steps)
 
     @property
     def accumulation_steps(self):
         return self._accumulation_steps
 
-    def accumulate(self):
-        self._accumulated_steps += 1
-
-    def reset(self):
-        self._accumulated_steps = 0
+    def increment(self):
+        self._steps += 1
 
 
 @dataclass(frozen=True)
@@ -115,7 +113,6 @@ def clip_norm_and_update(pytorch_model, local_optimizer,
 
     if grad_accumulation_state.optimizer_should_update:
         local_optimizer.zero_grad()
-        grad_accumulation_state.reset()
 
 
 class PyTorchCommonBridge(CommonFrameworkBridge[PyTorchModel,

@@ -77,7 +77,7 @@ def add_filepath_arguments(
         help='Path to YAML configuration file containing the arguments.')
 
     parser.add_argument('--data_path',
-                        required=True,
+                        default=None,
                         help='The path from which the dataset will be read.')
 
     parser.add_argument("--save_model_path",

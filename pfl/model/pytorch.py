@@ -1,4 +1,5 @@
 # Copyright © 2023-2024 Apple Inc.
+import contextlib
 import logging
 import os
 from typing import Callable, Dict, Optional, Tuple
@@ -71,6 +72,22 @@ class PyTorchModel(StatefulModel):
     :param central_optimizer:
         A torch.optim.optimizer.Optimizer instance, which is used to apply the
         central model updates to the variables.
+    :param central_learning_rate_scheduler:
+        A torch.optim.lr_scheduler.LRScheduler instance, which is used to apply
+        the learning rate scheduling of central_optimizer.
+    :param amp_dtype:
+        A torch.dtype for mixed precision training with torch.amp.autocast. If
+        set to None or torch.float32, no mixed precision training is enabled.
+    :param grad_scaling:
+        A boolean indicating whether to apply gradient scaling when using
+        mixed precision training.
+    :param model_dtype_same_as_amp:
+        A boolean indicating whether to cast the model parameter dtype to the
+        same as amp_dtype when using mixed precision training. Note that lower
+        precision model parameters might cause divergence during training.
+    :param use_torch_compile:
+        A boolean indicating whether to use `torch.compile` which can speed up
+        the training and inference.
     """
 
     set_framework_module(pytorch_ops)
@@ -78,27 +95,58 @@ class PyTorchModel(StatefulModel):
     # Checkpoint constants
     _MODEL_CKPT_NAME = "checkpoint.pt"
     _CENTRAL_OPTIMIZER_CKPT_NAME = "central_optimizer.pt"
+    _CENTRAL_LR_SCHEDULER_CKPT_NAME = "central_learning_rate_scheduler.pt"
 
-    def __init__(self, model, local_optimizer_create, central_optimizer):
+    def __init__(self,
+                 model,
+                 local_optimizer_create,
+                 central_optimizer,
+                 central_learning_rate_scheduler=None,
+                 amp_dtype: Optional[torch.dtype] = None,
+                 grad_scaling: bool = False,
+                 model_dtype_same_as_amp: bool = False,
+                 use_torch_compile: bool = False):
         super().__init__()
-
+        assert hasattr(model, "loss") and hasattr(model, "metrics"), (
+            "PyTorch module needs to implement `loss` and `metrics` functions."
+        )
         self._model = model.to(pytorch_ops.get_default_device())
         self._local_optimizer_create = local_optimizer_create
         self._central_optimizer = central_optimizer
+        self._central_learning_rate_scheduler = central_learning_rate_scheduler
 
         # Calculate this later dynamically in `evaluate`.
         self._allows_distributed_evaluation: Optional[bool] = None
+
+        # Set up PyTorch native mix precision training
+        self._amp_context, self._grad_scaler = pytorch_ops.setup_amp(
+            amp_dtype, grad_scaling)
+        if model_dtype_same_as_amp and self._amp_context:
+            logger.warning("Casting model weight to dtype: "
+                           f"{self._amp_context.fast_dtype}, "
+                           "which may cause training to diverge")
+            self._model.type(self._amp_context.fast_dtype)
+
+        # Compile the model
+        if use_torch_compile and hasattr(torch, "compile"):
+            self._model = torch.compile(self._model)
 
         # Calculate the variable mapping once here because the graph will expand
         # later.
         self._variable_map = {
             name: variable
-            for name, variable in model.named_parameters()
+            for name, variable in self._model.named_parameters()
             if variable.requires_grad
         }
+        self._model_diff: MappedVectorStatistics = MappedVectorStatistics()
 
-        self._original_values: Dict = {}
-        self._model_diff = MappedVectorStatistics()
+    @property
+    def amp_context(self) -> Optional[torch.amp.autocast]:
+        return self._amp_context
+
+    @property
+    def grad_scaler(self) -> Optional[torch.cuda.amp.GradScaler]:
+        return self._grad_scaler
 
     @property
     def allows_distributed_evaluation(self) -> Optional[bool]:
@@ -153,6 +201,13 @@ class PyTorchModel(StatefulModel):
             dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME)
         if os.path.exists(central_optimizer_path):
             self._load_central_optimizer(central_optimizer_path)
+        # load central learning rate scheduler if it exits
+        if self._central_learning_rate_scheduler is not None:
+            central_learning_rate_scheduler_path = os.path.join(
+                dir_path, self._CENTRAL_LR_SCHEDULER_CKPT_NAME)
+            if os.path.exists(central_learning_rate_scheduler_path):
+                self._central_learning_rate_scheduler.load_state_dict(
+                    torch.load(central_learning_rate_scheduler_path))
 
     def _save_central_optimizer(self, dir_path: str) -> None:
         if self.central_optimizer_variable_map is not None:
@@ -161,6 +216,10 @@ class PyTorchModel(StatefulModel):
             torch.save(
                 self.central_optimizer_variable_map,
                 os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME))
+        if self._central_learning_rate_scheduler is not None:
+            torch.save(
+                self._central_learning_rate_scheduler.state_dict(),
+                os.path.join(dir_path, self._CENTRAL_LR_SCHEDULER_CKPT_NAME))
 
     def _load_central_optimizer(self, path: str) -> None:
         # dummy pass to initialize central optimizer variables
@@ -226,6 +285,33 @@ class PyTorchModel(StatefulModel):
                 variable).sub_(other_parameters[variable_name])
         return model_diff
 
+    @staticmethod
+    def _prepare_batch(batch):
+        if isinstance(batch, Dict):
+            return {
+                k: get_framework_module().to_tensor(v)
+                for k, v in batch.items()
+            }
+        else:
+            return [get_framework_module().to_tensor(data) for data in batch]
+
+    @staticmethod
+    def _get_local_num_steps(train_params: NNTrainHyperParams,
+                             user_data_length: int):
+        # Get the total number of steps in local training
+        num_epochs = (1 if train_params.local_num_epochs is None else
+                      train_params.get('local_num_epochs'))
+        local_batch_size = train_params.get('local_batch_size')
+        if train_params.get('local_num_steps') is not None:
+            num_steps = train_params.get('local_num_steps')
+        else:
+            num_steps = num_epochs
+            if local_batch_size is not None:
+                # Multiply by number of batches per epoch
+                num_steps *= (user_data_length // local_batch_size +
+                              int(user_data_length % local_batch_size != 0))
+        return num_steps
+
     def do_multiple_epochs_of(self, user_dataset: AbstractDatasetType,
                               train_params: NNTrainHyperParams,
                               train_step_fn: Callable, **kwargs) -> None:
@@ -251,6 +337,9 @@ class PyTorchModel(StatefulModel):
             * train_kwargs - the ``train_kwargs`` property from the user
             dataset. With this, you can pass user-specific metadata to local
             training.
+            * train_step_args - an instance of
+            :class:`~pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs`
+            that contains common arguments for PyTorch local training.
             * kwargs - other keyword arguments that a custom ``train_step_fn``
             might have.
         """
@@ -259,16 +348,24 @@ class PyTorchModel(StatefulModel):
         local_optimizer = self.new_local_optimizer(
             learning_rate=train_params.local_learning_rate)
 
+        local_optimizer.zero_grad()
+        # Common arguments used in `train_step_fn`
+        train_step_args = pytorch_ops.PyTorchTrainStepArgs(
+            amp_context=self._amp_context or contextlib.nullcontext(),
+            grad_scaler=self._grad_scaler,
+            max_grad_norm=train_params.local_max_grad_norm,
+            grad_accumulation_state=pytorch_ops.GradAccumulationState(
+                self._get_local_num_steps(train_params, len(user_dataset)),
+                train_params.grad_accumulation_steps))
         for _ in range(num_epochs):
             for batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):
                 if batch_ix == train_params.get('local_num_steps'):
                     break
-                batch = [
-                    get_framework_module().to_tensor(data) for data in batch
-                ]
+                batch = self._prepare_batch(batch)
                 train_step_fn(self._model, local_optimizer, batch,
-                              user_dataset.train_kwargs, **kwargs)
+                              user_dataset.train_kwargs, train_step_args,
+                              **kwargs)
 
     def evaluate(self,
                  dataset: AbstractDatasetType,
@@ -284,13 +381,21 @@ class PyTorchModel(StatefulModel):
 
         postprocess_fns = []
         allows_distributed_evaluation = True
-        for batch_ix, (batch_inputs,
-                       batch_labels) in enumerate(dataset.iter(batch_size)):
+        amp_context = self._amp_context or contextlib.nullcontext()
+        for batch_ix, batch in enumerate(dataset.iter(batch_size)):
             metrics_one_batch = Metrics()
-            for name, metric_value in self._model.metrics(
-                    get_framework_module().to_tensor(batch_inputs),
-                    get_framework_module().to_tensor(batch_labels),
-                    **dataset.eval_kwargs).items():
+            batch = self._prepare_batch(batch)
+            with amp_context:
+                if isinstance(batch, Dict):
+                    metrics_outputs = self._model.metrics(**{
+                        **batch,
+                        **dataset.eval_kwargs
+                    })
+                else:
+                    metrics_outputs = self._model.metrics(
+                        *batch, **dataset.eval_kwargs)
+
+            for name, metric_value in metrics_outputs.items():
                 if isinstance(metric_value, tuple):
                     # Is tuple with metric postprocess function as 2nd
                     # argument.
@@ -338,6 +443,8 @@ class PyTorchModel(StatefulModel):
                     -1 * pytorch_ops.to_tensor(difference))
 
         self._central_optimizer.step()
+        if self._central_learning_rate_scheduler is not None:
+            self._central_learning_rate_scheduler.step()
 
         metrics[StringMetricName('learning rate')] = Weighted.from_unweighted(
             self._central_optimizer.param_groups[0]['lr'])

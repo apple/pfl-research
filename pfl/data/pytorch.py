@@ -1,7 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
 
 import itertools
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
 
 import torch
 
@@ -18,7 +18,7 @@ class PyTorchTensorDataset(Dataset):
     the class and its parameters.
 
     :param tensors:
-        A list of tensors which can be accepted into your model's
+        A list or dictionary of tensors which can be accepted into your model's
         ``loss`` and ``metrics`` functions like this:
 
         .. code-block:: python
@@ -31,18 +31,34 @@ class PyTorchTensorDataset(Dataset):
     """
 
     def __init__(self,
-                 tensors: Tuple[torch.Tensor, ...],
+                 tensors: Union[Tuple[torch.Tensor, ...], Dict[str,
+                                                               torch.Tensor]],
                  user_id: Optional[str] = None,
                  metadata: Optional[Dict[str, Any]] = None,
                  val_indices: Optional[List[int]] = None,
                  train_kwargs: Optional[Dict[str, Any]] = None,
                  eval_kwargs: Optional[Dict[str, Any]] = None):
+        self._tensor_keys = None
+        if isinstance(tensors, Dict):
+            # If the input tensors are from a dictionary
+            # (e.g. commonly used in Hugging Face models), save the keys
+            # and prepare the batch in `iter` as a dictionary.
+            self._tensor_keys = list(tensors.keys())
+            tensors = tuple(tensors[key] for key in self._tensor_keys)
+
         super().__init__(tensors,
                          user_id=user_id,
                          metadata=metadata,
                          val_indices=val_indices,
                          train_kwargs=train_kwargs,
                          eval_kwargs=eval_kwargs)
+
+    def iter(self, batch_size: Optional[int]):  # noqa: A003
+        for batch in super().iter(batch_size):
+            if self._tensor_keys is not None:
+                # Return a dictionary of input tensors
+                batch = dict(zip(self._tensor_keys, batch))
+            yield batch
 
 
 class _ShardedDataset(torch.utils.data.Dataset):
@@ -197,7 +213,7 @@ class PyTorchFederatedDataset(FederatedDataset):
     :param dataset_cls:
         The dataset class to wrap around tensors returned from
         ``torch.utils.data.DataLoader``. This is
-        :class:`~pfl.data.dataset.Dataset` by default and doesn't
+        :class:`~pfl.data.pytorch.PyTorchTensorDataset` by default and doesn't
         need to be changed in most cases.
     :param dataset_kwargs:
         A dictionary for keyword arguments when constructing the pfl dataset.
@@ -230,17 +246,26 @@ class PyTorchFederatedDataset(FederatedDataset):
 
         assert (
             'batch_size' not in dataloader_kwargs
-            or dataloader_kwargs.batch_size == 1
+            or dataloader_kwargs['batch_size'] == 1
+            or dataloader_kwargs['batch_size'] is None
         ), ('pfl requires batch_size=1 because you should load the '
             'full batch of the user dataset in your `Dataset.__getitem__`. '
             'Either do not specify batch_size in `dataloader_kwargs` or '
-            'set it to 1.')
+            'set it to 1 or None.')
 
-        self._dataset_cls = Dataset if dataset_cls is None else dataset_cls
+        self._dataset_cls = dataset_cls or PyTorchTensorDataset
         self._dataset_kwargs = dataset_kwargs or {}
+
+        self._prefetch_factor = 0
+        if dataloader_kwargs.get("num_workers", 0) > 0:
+            # prefetch_factor is default to 2 in PyTorch data loader
+            self._prefetch_factor = dataloader_kwargs.get(
+                "prefetch_factor") or 2
+            self._prefetch_factor *= dataloader_kwargs["num_workers"]
 
         super().__init__(self._tensors_to_pfl_dataset, user_sampler,
                          user_id_to_weight)
+
         self._pt_dataset = dataset
         self._dataloader_kwargs = dataloader_kwargs
         self.sampler = self._get_pt_sampler(self.sampler)
@@ -248,6 +273,11 @@ class PyTorchFederatedDataset(FederatedDataset):
     def _tensors_to_pfl_dataset(self, tensors):
         # This is a hack, but `tensors` is now the dataset already loaded
         # by DataLoader instead of the user ID.
+
+        if isinstance(tensors, Dict):
+            # The tensors are from a dictionary, no need to do extra processing
+            # on the tensors as below.
+            return self._dataset_cls(tensors, **self._dataset_kwargs)
 
         def process_tensor(tensor):
             assert tensor.shape[0] == 1, (
@@ -263,6 +293,11 @@ class PyTorchFederatedDataset(FederatedDataset):
         return self._dataset_cls(
             tuple([process_tensor(tensor) for tensor in tensors]),
             **self._dataset_kwargs)
+
+    def _try_set_cohort_size(self, cohort_size: int):
+        # Set cohort size with prefetching
+        for _ in range(self._prefetch_factor + 1):
+            super()._try_set_cohort_size(cohort_size)
 
     def _get_pt_sampler(self, sampler):
         # PyTorch asserts that sampler must inherit
@@ -283,6 +318,10 @@ class PyTorchFederatedDataset(FederatedDataset):
         sampler_1, sampler_2 = itertools.tee(sampler)
         underlying_data_iterator = (data for (data, _seed) in sampler_1)
         seed_iterator = (seed for (_data, seed) in sampler_2)
+
+        if self._prefetch_factor > 0:
+            # Prefetching so that the following call won't be blocked
+            self._try_set_cohort_size(pytorch_ops.distributed.world_size)
 
         dl_iter = iter(
             torch.utils.data.DataLoader(

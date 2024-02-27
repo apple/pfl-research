@@ -1,6 +1,6 @@
 # Copyright © 2023-2024 Apple Inc.
 
-from typing import List
+from typing import Dict, List
 
 import h5py
 import numpy as np
@@ -48,7 +48,8 @@ class FLAIRDataset(torch.utils.data.Dataset):
 
 def make_federated_dataset(hdf5_path: str, partition: str,
                            use_fine_grained_labels: bool,
-                           max_num_user_images: int) -> FederatedDataset:
+                           max_num_user_images: int,
+                           dataloader_kwargs: Dict) -> FederatedDataset:
     """
     Create federated dataset from the flair dataset, to use in simulations.
     The federated dataset samples user datasets. A user dataset is
@@ -63,6 +64,8 @@ def make_federated_dataset(hdf5_path: str, partition: str,
     :param max_num_user_images:
         Maximum number of images each user can have. Users with more images
         than this number will be splitted into multiple fake users.
+    :param dataloader_kwargs:
+        Keyword arguments for PyTorch data loader.
     :return:
         Federated dataset from the HDF5 data file.
     """
@@ -74,4 +77,5 @@ def make_federated_dataset(hdf5_path: str, partition: str,
                                  use_fine_grained_labels, max_num_user_images)
     return PyTorchFederatedDataset(flair_dataset,
                                    sampler,
-                                   user_id_to_weight=user_num_images)
+                                   user_id_to_weight=user_num_images,
+                                   **dataloader_kwargs)

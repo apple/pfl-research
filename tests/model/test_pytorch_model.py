@@ -1,4 +1,6 @@
 # Copyright © 2023-2024 Apple Inc.
+from unittest.mock import Mock
+
 import numpy as np
 import pytest
 
@@ -32,6 +34,63 @@ class TestPyTorchModel:
             pytorch_model_setup.model._model.parameters(),  # pylint: disable=protected-access
             lr=1.0)
         check_save_and_load_central_optimizer_impl(pytorch_model_setup)
+
+    @pytest.mark.parametrize('grad_accumulation_steps', [1, 2, 3, 4])
+    def test_grad_accumulation(self, grad_accumulation_steps,
+                               pytorch_model_setup, user_dataset):
+        local_learning_rate = 0.1
+        local_num_epochs = 5
+        # Get the gradient for 1 backward pass
+        per_data_grads = [
+            np.asarray([-1., -1., -0., -0.], dtype=np.float32),
+            np.asarray([-0., -0., -2., -2.], dtype=np.float32)
+        ]
+        expected_step_grads = []
+        # Expected behavior of gradient accumulation
+        accumulated_grads = np.zeros(4, dtype=np.float32)
+        for i in range(local_num_epochs):
+            for j in range(2):
+                accumulated_grads += per_data_grads[j] / grad_accumulation_steps
+                if (i * 2 + j + 1) % grad_accumulation_steps == 0:
+                    expected_step_grads.append(accumulated_grads)
+                    accumulated_grads = np.zeros(4, dtype=np.float32)
+        if (local_num_epochs * 2) % grad_accumulation_steps != 0:
+            expected_step_grads.append(accumulated_grads)
+
+        parameters = list(pytorch_model_setup.model._model.parameters())
+        get_grads = lambda: np.concatenate(
+            [p.grad.numpy().flatten() for p in parameters])
+        mock_local_optimizer = torch.optim.SGD(parameters, local_learning_rate)
+        step_grads = []
+
+        def step_side_effect():
+            step_grads.append(get_grads())
+
+        mock_local_optimizer.step = Mock(side_effect=step_side_effect)
+
+        def new_local_optimizer(*args, **kwargs):
+            return mock_local_optimizer
+
+        pytorch_model_setup.model.new_local_optimizer = new_local_optimizer
+        bridges.sgd_bridge().do_sgd(
+            pytorch_model_setup.model, user_dataset,
+            NNTrainHyperParams(
+                local_learning_rate=local_learning_rate,
+                local_num_epochs=local_num_epochs,
+                local_batch_size=1,
+                grad_accumulation_steps=grad_accumulation_steps))
+
+        # Check if optimizer step is called correct number of times
+        total_steps = 2 * local_num_epochs
+        expected_optimizer_calls = (
+            total_steps // grad_accumulation_steps +
+            int(total_steps % grad_accumulation_steps != 0))
+        assert mock_local_optimizer.step.call_count == expected_optimizer_calls
+
+        # Check if each step the gradient is accumulated correctly
+        assert len(step_grads) == len(expected_step_grads)
+        for grads, expected_grads in zip(step_grads, expected_step_grads):
+            np.testing.assert_array_equal(grads, expected_grads)
 
 
 @pytest.fixture(scope='function')

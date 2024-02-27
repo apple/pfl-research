@@ -1,3 +1,5 @@
+# Copyright © 2023-2024 Apple Inc.
+
 import logging
 import math
 from collections import defaultdict
@@ -17,6 +19,9 @@ logger = logging.getLogger(__name__)
 def preprocess_aya_for_causal_lm(
         dataset: HuggingFaceDataset, tokenizer: PreTrainedTokenizer,
         max_user_instructions: int) -> Dict[str, List[Dict]]:
+    """
+    Preprocess the Aya dataset by tokenizing the instructions and outputs.
+    """
     max_length = tokenizer.model_max_length // 2 - 1  # minus 1 to include EOS
     user_dataset = defaultdict(list)
     # Reusing the same preprocessing as OpenAssistant for now
@@ -60,6 +65,10 @@ def make_aya_datasets(tokenizer: PreTrainedTokenizer,
                       max_user_instructions: int,
                       dataloader_kwargs: Dict,
                       train_split_ratio: float = 0.95):
+    """
+    Create a train and test ``FederatedDataset`` as well as a
+    central dataset for Aya dataset.
+    """
     hf_dataset = load_dataset("CohereForAI/aya_dataset", split="train+test")
     user_dataset = preprocess_aya_for_causal_lm(hf_dataset, tokenizer,
                                                 max_user_instructions)

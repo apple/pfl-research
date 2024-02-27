@@ -213,7 +213,7 @@ class PyTorchFederatedDataset(FederatedDataset):
     :param dataset_cls:
         The dataset class to wrap around tensors returned from
         ``torch.utils.data.DataLoader``. This is
-        :class:`~pfl.data.dataset.Dataset` by default and doesn't
+        :class:`~pfl.data.pytorch.PyTorchTensorDataset` by default and doesn't
         need to be changed in most cases.
     :param dataset_kwargs:
         A dictionary for keyword arguments when constructing the pfl dataset.
@@ -251,9 +251,9 @@ class PyTorchFederatedDataset(FederatedDataset):
         ), ('pfl requires batch_size=1 because you should load the '
             'full batch of the user dataset in your `Dataset.__getitem__`. '
             'Either do not specify batch_size in `dataloader_kwargs` or '
-            'set it to 1.')
+            'set it to 1 or None.')
 
-        self._dataset_cls = Dataset if dataset_cls is None else dataset_cls
+        self._dataset_cls = dataset_cls or PyTorchTensorDataset
         self._dataset_kwargs = dataset_kwargs or {}
 
         self._prefetch_factor = 0
@@ -273,6 +273,11 @@ class PyTorchFederatedDataset(FederatedDataset):
     def _tensors_to_pfl_dataset(self, tensors):
         # This is a hack, but `tensors` is now the dataset already loaded
         # by DataLoader instead of the user ID.
+
+        if isinstance(tensors, Dict):
+            # The tensors are from a dictionary, no need to do extra processing
+            # on the tensors as below.
+            return self._dataset_cls(tensors, **self._dataset_kwargs)
 
         def process_tensor(tensor):
             assert tensor.shape[0] == 1, (

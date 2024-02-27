@@ -1,9 +1,9 @@
+# Copyright © 2023-2024 Apple Inc.
+
 import logging
 from typing import Dict, List, Union
 
 import torch
-
-from pfl.data.pytorch import PyTorchFederatedDataset, PyTorchTensorDataset
 
 IGNORE_INDEX = -100
 logger = logging.getLogger(__name__)
@@ -21,10 +21,3 @@ class GetItemDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, i):
         return self.data[i]
-
-
-class HuggingFaceFederatedDataset(PyTorchFederatedDataset):
-
-    def _tensors_to_pfl_dataset(self, tensors):
-        assert isinstance(tensors, Dict)
-        return PyTorchTensorDataset(tensors, **self._dataset_kwargs)

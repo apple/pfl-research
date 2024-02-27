@@ -1,3 +1,5 @@
+# Copyright © 2023-2024 Apple Inc.
+
 import inspect
 import logging
 import types
@@ -14,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def add_special_tokens(tokenizer: PreTrainedTokenizer):
+    """ Add special tokens if they don't exist in the tokenzier. """
     special_tokens_dict = {}
     if tokenizer.pad_token is None:
         special_tokens_dict["pad_token"] = "[PAD]"  # noqa: S105
@@ -63,6 +66,7 @@ def _get_forward_inputs(forward_signature: inspect.Signature,
 
 def causal_lm_metrics_fn(model: PreTrainedModel,
                          **kwargs) -> Dict[str, MetricValue]:
+    """ Add common metrics used in Causal LM model. """
     forward_signature = inspect.signature(model.forward)
     inputs = _get_forward_inputs(forward_signature, **kwargs)
     inputs["return_dict"] = True
@@ -89,6 +93,10 @@ def wrap_hugging_face_model(
     peft_config: Optional[PeftConfig] = None,
     metrics_fn: Optional[Callable] = None,
 ) -> PreTrainedModel:
+    """
+    Wrap a Hugging Face model, so it has `loss` and `metrics` functions and
+    can be used in `pfl`.
+    """
     if peft_config is not None:
         model = get_peft_model(model, peft_config)
         trainable_params, all_param = model.get_nb_trainable_parameters()

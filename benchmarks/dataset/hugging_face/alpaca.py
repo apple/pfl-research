@@ -1,3 +1,4 @@
+# Copyright © 2023-2024 Apple Inc.
 """
 Some of the code is adapted from: https://github.com/tatsu-lab/stanford_alpaca
 """
@@ -11,13 +12,12 @@ import torch
 from datasets import load_dataset
 from transformers import PreTrainedTokenizer
 
-from pfl.data.pytorch import PyTorchDataDataset
+from pfl.data.pytorch import PyTorchDataDataset, PyTorchFederatedDataset
 from pfl.data.sampling import get_user_sampler
 
 from . import (
     IGNORE_INDEX,
     GetItemDataset,
-    HuggingFaceFederatedDataset,
 )
 
 logger = logging.getLogger(__name__)
@@ -111,6 +111,7 @@ class AlpacaDataCollator:
 def iid_user_partition(
         input_ids: Sequence, labels: Sequence,
         user_dataset_len_sampler: Callable) -> Dict[str, List[Dict]]:
+    """ Partition the dataset into artificial users. """
     start_ix = 0
     users_to_data: Dict = {}
     while True:
@@ -130,19 +131,25 @@ def iid_user_partition(
 def make_iid_federated_dataset(user_dataset: Dict[str, List[Dict]],
                                tokenizer: PreTrainedTokenizer,
                                dataloader_kwargs: Dict):
+    """ Split the dataset into IID artificial users. """
     user_sampler = get_user_sampler('random', list(user_dataset.keys()))
     user_id_to_weight = {k: len(v) for k, v in user_dataset.items()}
-    return HuggingFaceFederatedDataset(
-        GetItemDataset(user_dataset),
-        user_sampler,
-        user_id_to_weight=user_id_to_weight,
-        batch_size=None,
-        collate_fn=AlpacaDataCollator(tokenizer),
-        **dataloader_kwargs)
+    return PyTorchFederatedDataset(GetItemDataset(user_dataset),
+                                   user_sampler,
+                                   user_id_to_weight=user_id_to_weight,
+                                   batch_size=None,
+                                   collate_fn=AlpacaDataCollator(tokenizer),
+                                   **dataloader_kwargs)
 
 
 def make_central_dataset(user_dataset: Dict[str, List[Dict]],
                          tokenizer: PreTrainedTokenizer):
+    """
+    Create central dataset (represented as a ``Dataset``) from Alpaca.
+    This ``Dataset`` can be used for central evaluation with
+    ``CentralEvaluationCallback``.
+    """
+
     list_dataset = []
     for u in user_dataset:
         list_dataset += user_dataset[u]
@@ -154,6 +161,12 @@ def make_alpaca_iid_datasets(tokenizer: PreTrainedTokenizer,
                              user_dataset_len_sampler: Callable,
                              dataloader_kwargs: Dict,
                              train_split_ratio: float = 0.9):
+    """
+    Create a federated dataset with IID users from the Alpaca dataset.
+
+    Users are created by first sampling the dataset length from
+    ``user_dataset_len_sampler`` and then sampling the datapoints IID.
+    """
     hf_dataset = load_dataset("tatsu-lab/alpaca")["train"]
 
     input_ids, labels = preprocess_alpaca(hf_dataset, tokenizer)

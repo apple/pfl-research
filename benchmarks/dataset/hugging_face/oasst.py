@@ -1,3 +1,4 @@
+# Copyright © 2023-2024 Apple Inc.
 """
 Some of the code is adapted from: https://github.com/h2oai/h2o-llmstudio/
 """
@@ -11,29 +12,31 @@ from datasets import Dataset as HuggingFaceDataset
 from datasets import load_dataset
 from transformers import PreTrainedTokenizer, default_data_collator
 
-from pfl.data.pytorch import PyTorchDataDataset
+from pfl.data.pytorch import PyTorchDataDataset, PyTorchFederatedDataset
 from pfl.data.sampling import get_user_sampler
 
 from . import (
     IGNORE_INDEX,
     GetItemDataset,
-    HuggingFaceFederatedDataset,
 )
 
 logger = logging.getLogger(__name__)
 
 
 def append_eos(encoding: torch.Tensor, eos_token_id: int):
+    """ Append an EOS token id to the tokenized input. """
     return torch.cat([encoding, torch.tensor([eos_token_id])], dim=0)
 
 
 def encode(text, tokenizer, max_length):
+    """ Tokenize the input text to max length. """
     encodings = tokenizer(text, return_tensors="pt", add_special_tokens=False)
     return append_eos(encodings["input_ids"][0][:max_length],
                       tokenizer.eos_token_id)
 
 
 def pad(token_ids, pad_token_id, max_length):
+    """ Pad the tokenized input with `pad_token_id`. """
     attention_mask = torch.zeros(max_length)
     attention_mask[-len(token_ids):] = torch.ones_like(token_ids)
     if len(token_ids) < max_length:
@@ -46,6 +49,9 @@ def pad(token_ids, pad_token_id, max_length):
 def preprocess_oasst_for_causal_lm(
         dataset: HuggingFaceDataset,
         tokenizer: PreTrainedTokenizer) -> Dict[str, List[Dict]]:
+    """
+    Preprocess the OpenAssistant dataset by tokenizing the instructions and outputs.
+    """
     df = dataset.to_pandas()
     df_assistant = df[(df.role == "assistant")].copy()
     df_prompter = df[(df.role == "prompter")].copy()
@@ -83,17 +89,25 @@ def preprocess_oasst_for_causal_lm(
 
 def make_federated_dataset(user_dataset: Dict[str, List[Dict]],
                            dataloader_kwargs: Dict):
+    """
+    Creates a `PyTorchFederatedDataset` for the `user_dataset`.
+    """
     user_sampler = get_user_sampler('random', list(user_dataset.keys()))
     user_id_to_weight = {k: len(v) for k, v in user_dataset.items()}
-    return HuggingFaceFederatedDataset(GetItemDataset(user_dataset),
-                                       user_sampler,
-                                       user_id_to_weight=user_id_to_weight,
-                                       batch_size=None,
-                                       collate_fn=default_data_collator,
-                                       **dataloader_kwargs)
+    return PyTorchFederatedDataset(GetItemDataset(user_dataset),
+                                   user_sampler,
+                                   user_id_to_weight=user_id_to_weight,
+                                   batch_size=None,
+                                   collate_fn=default_data_collator,
+                                   **dataloader_kwargs)
 
 
 def make_central_dataset(user_dataset: Dict[str, List[Dict]]):
+    """
+    Create central dataset (represented as a ``Dataset``) from `user_dataset`.
+    This ``Dataset`` can be used for central evaluation with
+    ``CentralEvaluationCallback``.
+    """
     list_dataset = []
     for u in user_dataset:
         list_dataset += user_dataset[u]
@@ -104,6 +118,10 @@ def make_central_dataset(user_dataset: Dict[str, List[Dict]]):
 def make_oasst_datasets(tokenizer: PreTrainedTokenizer,
                         dataloader_kwargs: Dict,
                         train_split_ratio: float = 0.9):
+    """
+    Create a train and test ``FederatedDataset`` as well as a
+    central dataset for OpenAssistant dataset.
+    """
     hf_dataset = load_dataset("OpenAssistant/oasst2", split="train+validation")
     user_dataset = preprocess_oasst_for_causal_lm(hf_dataset, tokenizer)
     users = list(user_dataset.keys())

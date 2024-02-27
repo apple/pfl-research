@@ -2,8 +2,7 @@
 import contextlib
 import logging
 import os
-from dataclasses import dataclass
-from typing import Callable, Dict, Optional, Tuple, Union
+from typing import Callable, Dict, Optional, Tuple
 
 import torch
 
@@ -17,57 +16,6 @@ from pfl.model.base import StatefulModel
 from pfl.stats import MappedVectorStatistics
 
 logger = logging.getLogger(name=__name__)
-
-
-class _GradAccumulationState:
-    """ Track gradient accumulation during local training. """
-
-    def __init__(self, train_params: Optional[NNTrainHyperParams],
-                 user_data_length: Optional[int]):
-        if train_params is not None and user_data_length is not None:
-            # Get the total number of steps in local training
-            num_epochs = (1 if train_params.local_num_epochs is None else
-                          train_params.get('local_num_epochs'))
-            local_batch_size = train_params.get('local_batch_size')
-            if train_params.get('local_num_steps') is not None:
-                num_steps = train_params.get('local_num_steps')
-            else:
-                num_steps = num_epochs
-                if local_batch_size is not None:
-                    # Multiply by number of batches per epoch
-                    num_steps *= (
-                        user_data_length // local_batch_size +
-                        int(user_data_length % local_batch_size != 0))
-            self._num_steps = num_steps
-            self._accumulation_steps = train_params.grad_accumulation_steps
-        else:
-            self._num_steps = None
-            self._accumulation_steps = 1
-        self._steps = 0
-
-    @property
-    def optimizer_should_update(self) -> bool:
-        """ Update every `grad_accumulation_steps` or is the last step """
-        return (self._steps % self._accumulation_steps == 0
-                or self._steps == self._num_steps)
-
-    @property
-    def accumulation_steps(self):
-        return self._accumulation_steps
-
-    def increment(self):
-        self._steps += 1
-
-
-@dataclass(frozen=True)
-class PyTorchTrainStepArgs:
-    """
-    Common args used by different local training algorithms in PyTorch.
-    """
-    amp_context: Union[torch.amp.autocast, contextlib.AbstractContextManager]
-    grad_scaler: Optional[torch.cuda.amp.GradScaler]
-    max_grad_norm: Optional[float]
-    grad_accumulation_state: _GradAccumulationState
 
 
 class PyTorchModel(StatefulModel):
@@ -347,6 +295,23 @@ class PyTorchModel(StatefulModel):
         else:
             return [get_framework_module().to_tensor(data) for data in batch]
 
+    @staticmethod
+    def _get_local_num_steps(train_params: NNTrainHyperParams,
+                             user_data_length: int):
+        # Get the total number of steps in local training
+        num_epochs = (1 if train_params.local_num_epochs is None else
+                      train_params.get('local_num_epochs'))
+        local_batch_size = train_params.get('local_batch_size')
+        if train_params.get('local_num_steps') is not None:
+            num_steps = train_params.get('local_num_steps')
+        else:
+            num_steps = num_epochs
+            if local_batch_size is not None:
+                # Multiply by number of batches per epoch
+                num_steps *= (user_data_length // local_batch_size +
+                              int(user_data_length % local_batch_size != 0))
+        return num_steps
+
     def do_multiple_epochs_of(self, user_dataset: AbstractDatasetType,
                               train_params: NNTrainHyperParams,
                               train_step_fn: Callable, **kwargs) -> None:
@@ -372,6 +337,9 @@ class PyTorchModel(StatefulModel):
             * train_kwargs - the ``train_kwargs`` property from the user
             dataset. With this, you can pass user-specific metadata to local
             training.
+            * train_step_args - an instance of
+            :class:`~pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs`
+            that contains common arguments for PyTorch local training.
             * kwargs - other keyword arguments that a custom ``train_step_fn``
             might have.
         """
@@ -381,12 +349,14 @@ class PyTorchModel(StatefulModel):
             learning_rate=train_params.local_learning_rate)
 
         local_optimizer.zero_grad()
-        train_step_args = PyTorchTrainStepArgs(
+        # Common arguments used in `train_step_fn`
+        train_step_args = pytorch_ops.PyTorchTrainStepArgs(
             amp_context=self._amp_context or contextlib.nullcontext(),
             grad_scaler=self._grad_scaler,
             max_grad_norm=train_params.local_max_grad_norm,
-            grad_accumulation_state=_GradAccumulationState(
-                train_params, len(user_dataset)))
+            grad_accumulation_state=pytorch_ops.GradAccumulationState(
+                self._get_local_num_steps(train_params, len(user_dataset)),
+                train_params.grad_accumulation_steps))
         for _ in range(num_epochs):
             for batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):

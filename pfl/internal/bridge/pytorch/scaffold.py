@@ -7,7 +7,7 @@ from pfl.model.pytorch import PyTorchModel
 from pfl.stats import MappedVectorStatistics
 
 from ..base import SCAFFOLDFrameworkBridge
-from .common import clip_norm_and_update
+from .utils import clip_norm_and_update
 
 
 def _control_variate_train_step(pytorch_model, local_optimizer, raw_data,

@@ -6,13 +6,11 @@ from pfl.hyperparam.base import NNTrainHyperParams
 from pfl.model.pytorch import PyTorchModel
 
 from ..base import SGDFrameworkBridge
-from .common import GradAccumulationState, clip_norm_and_update, get_train_step_args
+from .common import clip_norm_and_update
 
 
 def _sgd_train_step(pytorch_model, local_optimizer, raw_data, train_kwargs,
-                    **kwargs):
-    train_step_args = get_train_step_args(**kwargs)
-
+                    train_step_args):
     with train_step_args.amp_context:
         if isinstance(raw_data, Dict):
             loss = pytorch_model.loss(**{**raw_data, **train_kwargs})
@@ -40,13 +38,5 @@ class PyTorchSGDBridge(SGDFrameworkBridge[PyTorchModel, NNTrainHyperParams]):
     @staticmethod
     def do_sgd(model: PyTorchModel, user_dataset: AbstractDatasetType,
                train_params: NNTrainHyperParams) -> None:
-        grad_accumulation_state = GradAccumulationState(
-            train_params, len(user_dataset))
-        model.do_multiple_epochs_of(
-            user_dataset,
-            train_params,
-            _sgd_train_step,
-            max_grad_norm=train_params.local_max_grad_norm,
-            grad_accumulation_state=grad_accumulation_state,
-            amp_context=model.amp_context,
-            grad_scaler=model.grad_scaler)
+        model.do_multiple_epochs_of(user_dataset, train_params,
+                                    _sgd_train_step)

@@ -8,13 +8,12 @@ from pfl.hyperparam.base import NNTrainHyperParams
 from pfl.model.pytorch import PyTorchModel
 
 from ..base import FedProxFrameworkBridge
-from .common import GradAccumulationState, clip_norm_and_update, get_train_step_args
+from .common import clip_norm_and_update
 
 
 def _proximal_train_step(pytorch_model, local_optimizer, raw_data,
-                         train_kwargs, **kwargs):
+                         train_kwargs, train_step_args, **kwargs):
     global_weights, mu = kwargs["global_weights"], kwargs["mu"]
-    train_step_args = get_train_step_args(**kwargs)
 
     with train_step_args.amp_context:
         if isinstance(raw_data, Dict):
@@ -50,15 +49,8 @@ class PyTorchFedProxBridge(FedProxFrameworkBridge[PyTorchModel,
     def do_proximal_sgd(model: PyTorchModel, user_dataset: AbstractDatasetType,
                         train_params: NNTrainHyperParams, mu: float) -> None:
         global_weights = dict(model.get_parameters().items())
-        grad_accumulation_state = GradAccumulationState(
-            train_params, len(user_dataset))
-        model.do_multiple_epochs_of(
-            user_dataset,
-            train_params,
-            _proximal_train_step,
-            global_weights=global_weights,
-            mu=mu,
-            max_grad_norm=train_params.local_max_grad_norm,
-            grad_accumulation_state=grad_accumulation_state,
-            amp_context=model.amp_context,
-            grad_scaler=model.grad_scaler)
+        model.do_multiple_epochs_of(user_dataset,
+                                    train_params,
+                                    _proximal_train_step,
+                                    global_weights=global_weights,
+                                    mu=mu)

@@ -7,13 +7,12 @@ from pfl.model.pytorch import PyTorchModel
 from pfl.stats import MappedVectorStatistics
 
 from ..base import SCAFFOLDFrameworkBridge
-from .common import GradAccumulationState, clip_norm_and_update, get_train_step_args
+from .common import clip_norm_and_update
 
 
 def _control_variate_train_step(pytorch_model, local_optimizer, raw_data,
-                                train_kwargs, **kwargs):
+                                train_kwargs, train_step_args, **kwargs):
     local_c, server_c = kwargs["local_c"], kwargs["server_c"]
-    train_step_args = get_train_step_args(**kwargs)
 
     with train_step_args.amp_context:
         if isinstance(raw_data, Dict):
@@ -55,15 +54,8 @@ class PyTorchSCAFFOLDBridge(SCAFFOLDFrameworkBridge[PyTorchModel,
         local_c: MappedVectorStatistics,
         server_c: MappedVectorStatistics,
     ) -> None:
-        grad_accumulation_state = GradAccumulationState(
-            train_params, len(user_dataset))
-        model.do_multiple_epochs_of(
-            user_dataset,
-            train_params,
-            _control_variate_train_step,
-            local_c=local_c,
-            server_c=server_c,
-            max_grad_norm=train_params.local_max_grad_norm,
-            grad_accumulation_state=grad_accumulation_state,
-            amp_context=model.amp_context,
-            grad_scaler=model.grad_scaler)
+        model.do_multiple_epochs_of(user_dataset,
+                                    train_params,
+                                    _control_variate_train_step,
+                                    local_c=local_c,
+                                    server_c=server_c)

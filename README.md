@@ -16,6 +16,8 @@ We hope that `pfl` will promote open research in FL and its effective disseminat
 * Support other models in addition to neural networks, e.g. GBDTs. Switching between types of models is seamless.
 * Tight integration with privacy features, including common mechanisms for local and central differential privacy.
 
+Results from benchmarks are maintained in [this Weights & Biases report](https://api.wandb.ai/links/pfl/5scd5f66).
+
 ## Installation
 
 Installation instructions can be found here `<TODO>`.
@@ -41,3 +43,14 @@ To try out `pfl` immediately without installation, we provide several colab note
 
 Researchers are invited to contribute to the framework. Please, see `<TODO>` for more details.
 
+## Citing pfl-research
+
+```
+@software{pfl2024,
+  author = {Filip Granqvist and Congzheng Song and Áine Cahill and Rogier van Dalen and Martin Pelikan and Yi Sheng Chan and Xiaojun Feng and Natarajan Krishnaswami and Mona Chitnis and Vojta Jina},
+  title = {{pfl}: simulation framework for accelerating research in Private Federated Learning},
+  url = {https://github.com/apple/pfl-research},
+  version = {0.0},
+  year = {2024},
+}
+```

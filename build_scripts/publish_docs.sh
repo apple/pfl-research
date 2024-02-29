@@ -15,12 +15,12 @@ poetry run make docs
 # Step 2: Publish to GitHub Pages
 # Copy the built documentation to a temporary directory
 mkdir -p /tmp/docs
-rm -r ./*
 cp -R docs/build/* /tmp/docs/
 
 git checkout -B gh-pages
 
 # Copy the built docs from the temporary directory
+rm -r ./*
 cp -R /tmp/docs/* .
 
 # https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#static-site-generators

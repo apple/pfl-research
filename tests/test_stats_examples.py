@@ -119,10 +119,10 @@ class TestNGramStatistics:
         })
         counts2 = NGramStatistics(
             2, {
-                ('Ramsay', ): 17,
+                ('Broccoli', ): 17,
                 ('this', 'is'): 3,
-                ('Ramsay', 'is'): 5,
-                ('Ramsay', 'is', 'great'): 4,
+                ('Broccoli', 'is'): 5,
+                ('Broccoli', 'is', 'great'): 4,
             })
 
         total = counts1 + counts2
@@ -133,9 +133,9 @@ class TestNGramStatistics:
         assert total_counts[('I', )] == 10
         assert total_counts[('this', 'is')] == 8
         assert total_counts[('I', 'am')] == 1
-        assert total_counts[('Ramsay', )] == 17
-        assert total_counts[('Ramsay', 'is')] == 5
-        assert total_counts[('Ramsay', 'is', 'great')] == 4
+        assert total_counts[('Broccoli', )] == 17
+        assert total_counts[('Broccoli', 'is')] == 5
+        assert total_counts[('Broccoli', 'is', 'great')] == 4
 
         total.reweight(1)
         total_counts = total.counts
@@ -143,6 +143,6 @@ class TestNGramStatistics:
         assert_almost_equal(total_counts[('I', )], 10 / 3)
         assert_almost_equal(total_counts[('this', 'is')], 8 / 3)
         assert_almost_equal(total_counts[('I', 'am')], 1 / 3)
-        assert_almost_equal(total_counts[('Ramsay', )], 17 / 3)
-        assert_almost_equal(total_counts[('Ramsay', 'is')], 5 / 3)
-        assert_almost_equal(total_counts[('Ramsay', 'is', 'great')], 4 / 3)
+        assert_almost_equal(total_counts[('Broccoli', )], 17 / 3)
+        assert_almost_equal(total_counts[('Broccoli', 'is')], 5 / 3)
+        assert_almost_equal(total_counts[('Broccoli', 'is', 'great')], 4 / 3)

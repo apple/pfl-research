@@ -20,7 +20,7 @@ Results from benchmarks are maintained in [this Weights & Biases report](https:/
 
 ## Installation
 
-Installation instructions can be found [here](https://shiny-broccoli-z4lqlg4.pages.github.io/installation.html).
+Installation instructions can be found [here](http://apple.github.io/pfl-research/installation.html).
 `pfl` is available on PyPI and a full installation be done with pip:
 
 ```
@@ -41,7 +41,7 @@ To try out `pfl` immediately without installation, we provide several colab note
 
 ## Contributing
 
-Researchers are invited to contribute to the framework. Please, see [here](https://shiny-broccoli-z4lqlg4.pages.github.io/support/contributing.html) for more details.
+Researchers are invited to contribute to the framework. Please, see [here](http://apple.github.io/pfl-research/support/contributing.html) for more details.
 
 ## Citing pfl-research
 

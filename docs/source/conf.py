@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'pfl'
-copyright = '2023, Filip Granqvist'  # noqa: A001
-author = 'Filip Granqvist'
+copyright = 'Copyright © 2024 Apple Inc.'  # noqa: A001
+author = 'Apple Inc.'
 with open('../../VERSION') as f:
     release = f.read().strip()
 

@@ -6,7 +6,7 @@ Contributing
 We welcome contributions from anyone who wish to improve ``pfl`` for research.
 The framework is maintained in `pfl-research Git repository`_ and anything related to benchmarking and new research goes into `pfl-research Git repository`_.
 Below are guidelines on how to make contributions to ``pfl`` that follow our best practices.
-Reach out to us on ``fgranqvist@apple.com`` if you have any questions about developing on ``pfl`` and see `open issues <https://github.com/apple/pfl-research/issues>`_ for community reported bugs and beginner friendly tasks.
+See `open issues <https://github.com/apple/pfl-research/issues>`_ for community reported bugs and beginner friendly tasks.
 
 Setting up development environment
 ----------------------------------
@@ -260,7 +260,6 @@ Finally, you can go do a pull request from the Github UI: go to ``https://github
 
 The next step is to wait for the CI builds to pass (progress is shown at the bottom of the PR).
 Contributors with admin status may have to kickstart the CI for you.
-Contact us by mentioning Apple team members in the PR or reach out to ``fgranqvist@apple.com``.
 
 **Checklist for a PR to pass review**
 

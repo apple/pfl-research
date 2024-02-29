@@ -16,14 +16,14 @@ UserId = namedtuple('UserId', ['name', 'start_index', 'end_index'])
 
 def _pad_batch(inputs, targets, masks, local_batch_size, max_sequence_len,
                pad_symbol):
-    # Extend dataset with dummy sentences to make divisible by local_batch_size.
+    # Extend dataset with placeholder sentences to make divisible by local_batch_size.
     if len(inputs) % local_batch_size != 0:
-        num_dummy = local_batch_size - len(inputs) % local_batch_size
-        dummy_sentences = np.tile(pad_symbol, (num_dummy, max_sequence_len))
-        inputs = np.concatenate([inputs, dummy_sentences], axis=0)
-        targets = np.concatenate([targets, dummy_sentences], axis=0)
-        dummy_masks = np.zeros((num_dummy, max_sequence_len))
-        masks = np.concatenate([masks, dummy_masks], axis=0)
+        num_placeholder = local_batch_size - len(inputs) % local_batch_size
+        placeholder_sentences = np.tile(pad_symbol, (num_placeholder, max_sequence_len))
+        inputs = np.concatenate([inputs, placeholder_sentences], axis=0)
+        targets = np.concatenate([targets, placeholder_sentences], axis=0)
+        placeholder_masks = np.zeros((num_placeholder, max_sequence_len))
+        masks = np.concatenate([masks, placeholder_masks], axis=0)
     return inputs, targets, masks
 
 

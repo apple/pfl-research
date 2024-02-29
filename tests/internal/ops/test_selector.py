@@ -20,7 +20,7 @@ def test_no_framework_module():
 def test_set_framework_module():
     _internal_reset_framework_module()
 
-    module = ['dummy']
+    module = ['example']
     set_framework_module(module)
 
     assert has_framework_module()

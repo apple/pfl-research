@@ -222,7 +222,7 @@ class PyTorchModel(StatefulModel):
                 os.path.join(dir_path, self._CENTRAL_LR_SCHEDULER_CKPT_NAME))
 
     def _load_central_optimizer(self, path: str) -> None:
-        # dummy pass to initialize central optimizer variables
+        # call to initialize central optimizer variables
         self.apply_model_update(
             MappedVectorStatistics({
                 name: torch.zeros(*variable.shape)

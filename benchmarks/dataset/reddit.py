@@ -19,7 +19,8 @@ def _pad_batch(inputs, targets, masks, local_batch_size, max_sequence_len,
     # Extend dataset with placeholder sentences to make divisible by local_batch_size.
     if len(inputs) % local_batch_size != 0:
         num_placeholder = local_batch_size - len(inputs) % local_batch_size
-        placeholder_sentences = np.tile(pad_symbol, (num_placeholder, max_sequence_len))
+        placeholder_sentences = np.tile(pad_symbol,
+                                        (num_placeholder, max_sequence_len))
         inputs = np.concatenate([inputs, placeholder_sentences], axis=0)
         targets = np.concatenate([targets, placeholder_sentences], axis=0)
         placeholder_masks = np.zeros((num_placeholder, max_sequence_len))

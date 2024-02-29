@@ -1,10 +1,8 @@
-============
-Contributing
-============
+# Contributing
 
 Thank you for your interest in contributing! Your contributions are very welcome and are greatly appreciated.
 
-Please see `https://shiny-broccoli-z4lqlg4.pages.github.io/support/contributing.html` for more information on how to contribute to pfl-research.
+Please see the [documentation for contributing](https://shiny-broccoli-z4lqlg4.pages.github.io/support/contributing.html) for more information on how to contribute to pfl-research.
 
 ## Before you get started
 

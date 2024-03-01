@@ -48,12 +48,9 @@ docs-and-publish:
 
 .PHONY: publish
 publish: ## publish a release to pypi.
-	@echo "🚀 Publishing: Dry run."
+	@echo "🚀 Publishing."
 	@poetry config pypi-token.pypi $(PYPI_TOKEN)
-	@poetry publish --dry-run
-	# TODO: uncomment this before ready for initial release.
-	#@echo "🚀 Publishing."
-	#@poetry publish
+	@poetry publish
 
 .PHONY: build-and-publish
 build-and-publish: build publish ## Build and publish.

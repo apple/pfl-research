@@ -17,6 +17,6 @@
 
 ## v0.1.0
 
-TODO: date
+2024-03-01
 
 * Initial release!

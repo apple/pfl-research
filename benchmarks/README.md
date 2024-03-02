@@ -53,7 +53,7 @@ There are multiple official benchmarks for `pfl` to simulate various scenarios, 
 ## Run distributed simulations
 
 Each benchmark can run in distributed mode with multiple cores, GPUs and machines.
-See the [distributed simulation guide](https://pages.github.apple.com/apple/pfl-research/tutorials/simulation_distributed.html) on how it works.
+See the [distributed simulation guide](https://apple.github.io/pfl-research/guides/simulation_distributed.html) on how it works.
 In summary, to quickly get started running distributed simulations:
 1. Install [Horovod](https://horovod.readthedocs.io/en/stable/install_include.html). We have a helper script [here](https://github.com/apple/pfl-research/blob/main/build_scripts/install_horovod.sh).
 2. Invoke your Python script with the `horovodrun` command. E.g. to run the same CIFAR10 training as described above in the quickstart, but train with 2 processes on the same machine, the command will look like this:

@@ -6,7 +6,7 @@ import pytest
 
 from pfl.aggregate.base import Backend, get_total_weight_name
 from pfl.algorithm.expectation_maximization_gmm import (
-    EMMGMMHyperParams,
+    EMGMMHyperParams,
     ExpectationMaximizationGMM,
     make_compute_new_num_components,
 )
@@ -144,7 +144,7 @@ class TestExpectationMaximizationGMM:
             max_num_components=64,
             step_components=2)
 
-        algorithm_params = EMMGMMHyperParams(
+        algorithm_params = EMGMMHyperParams(
             central_num_iterations=central_num_iterations,
             evaluation_frequency=1,
             val_cohort_size=fixed_val_cohort_size,

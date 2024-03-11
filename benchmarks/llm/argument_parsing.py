@@ -16,10 +16,15 @@ def parse_peft_config(args) -> Optional[PeftConfig]:
     if args.peft_type is None:
         return None
     assert args.peft_type == 'lora', "Currently only supports PEFT with LoRA."
+    target_modules = None
+    if args.lora_target_modules is not None:
+        target_modules = args.lora_target_modules.split(',')
+
     return LoraConfig(task_type=args.peft_task_type,
                       r=args.lora_r,
                       lora_alpha=args.lora_alpha,
-                      lora_dropout=args.lora_dropout)
+                      lora_dropout=args.lora_dropout,
+                      target_modules=target_modules)
 
 
 def add_peft_arguments(argument_parser):
@@ -52,6 +57,14 @@ def add_peft_arguments(argument_parser):
                                      type=float,
                                      default=0.0,
                                      help='LoRA dropout.')
+
+        argument_parser.add_argument('--lora_target_modules',
+                                     type=str,
+                                     default=None,
+                                     help='Modules in the model to apply LoRA.'
+                                     'Use comma to add multiple modules, e.g.'
+                                     '`query,key,value` applies LoRA on all '
+                                     '`query`, `key` and `value` modules.')
 
     return argument_parser
 

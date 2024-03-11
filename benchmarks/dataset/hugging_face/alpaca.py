@@ -15,10 +15,7 @@ from transformers import PreTrainedTokenizer
 from pfl.data.pytorch import PyTorchDataDataset, PyTorchFederatedDataset
 from pfl.data.sampling import get_user_sampler
 
-from . import (
-    IGNORE_INDEX,
-    GetItemDataset,
-)
+from . import IGNORE_INDEX, GetItemDataset
 
 logger = logging.getLogger(__name__)
 

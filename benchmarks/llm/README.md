@@ -21,10 +21,10 @@ dataset=alpaca
 
 LLM benchmark no DP:
 ```
-python -m llm.train --args_config llm/configs/{dataset}_baseline.yaml
+python -m llm.train --args_config llm/configs/{dataset}.yaml
 ```
 
 LLM benchmark Central DP:
 ```
-python -m llm.train --args_config llm/configs/{dataset}_baseline.yaml --central_privacy_mechanism gaussian_moments_accountant
+python -m llm.train --args_config llm/configs/{dataset}.yaml --central_privacy_mechanism gaussian_moments_accountant
 ```

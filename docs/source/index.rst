@@ -6,6 +6,8 @@
 pfl: Python framework for Private Federated Learning simulations
 ================================================================
 
+**Github repo available at** https://github.com/apple/pfl-research.
+
 ``pfl`` is a Python framework developed at Apple to enable researchers to `run efficient simulations with privacy-preserving federated learning (FL)` and `disseminate the results of their research in FL`.
 The framework is `not` intended to be used for third-party FL deployments but the results of the simulations can be tremendously useful in actual FL deployments.
 We hope that ``pfl`` will promote open research in FL and its effective dissemination.

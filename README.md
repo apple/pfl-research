@@ -1,5 +1,7 @@
 # `pfl`: Python framework for Private Federated Learning simulations
 
+**Documentation website:** https://apple.github.io/pfl-research
+
 `pfl` is a Python framework developed at Apple to empower researchers to run efficient simulations with privacy-preserving federated learning (FL) and disseminate the results of their research in FL. We are a team comprising engineering and research expertise, and we encourage researchers to publish their papers, with this code, with confidence.
 
 The framework is `not` intended to be used for third-party FL deployments but the results of the simulations can be tremendously useful in actual FL deployments.
@@ -31,6 +33,8 @@ pip install 'pfl[tf,pytorch,trees]'
 
 To try out `pfl` immediately without installation, we provide several colab notebooks for learning the different components in `pfl` hands-on.
 `<TODO push notebooks to colab>`
+
+Also available as Jupyter notebooks [here](https://github.com/apple/pfl-research/tree/develop/tutorials).
 
 ## Getting started - benchmarks
 

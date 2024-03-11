@@ -1,5 +1,9 @@
 # `pfl`: Python framework for Private Federated Learning simulations
 
+[![GitHub License](https://img.shields.io/github/license/apple/pfl-research)](https://github.com/apple/pfl-research/blob/main/LICENSE)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/apple/pfl-research/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/apple/pfl-research/tree/main)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pfl)](https://github.com/apple/pfl-research/blob/main/pyproject.toml#L18)
+
 **Documentation website:** https://apple.github.io/pfl-research
 
 `pfl` is a Python framework developed at Apple to empower researchers to run efficient simulations with privacy-preserving federated learning (FL) and disseminate the results of their research in FL. We are a team comprising engineering and research expertise, and we encourage researchers to publish their papers, with this code, with confidence.

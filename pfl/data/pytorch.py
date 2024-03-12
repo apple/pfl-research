@@ -277,7 +277,8 @@ class PyTorchFederatedDataset(FederatedDataset):
         if isinstance(tensors, Dict):
             # The tensors are from a dictionary, no need to do extra processing
             # on the tensors as below.
-            return self._dataset_cls(tensors, **self._dataset_kwargs)
+            user_id = tensors.pop("user_id") if "user_id" in tensors else None
+            return self._dataset_cls(tensors, user_id, **self._dataset_kwargs)
 
         def process_tensor(tensor):
             assert tensor.shape[0] == 1, (

@@ -15,7 +15,7 @@ from transformers import PreTrainedTokenizer
 from pfl.data.pytorch import PyTorchDataDataset, PyTorchFederatedDataset
 from pfl.data.sampling import get_user_sampler
 
-from . import IGNORE_INDEX, GetItemDataset
+from . import IGNORE_INDEX, GetItemDataset, UserIDCollatorWrapper
 
 logger = logging.getLogger(__name__)
 
@@ -131,11 +131,12 @@ def make_iid_federated_dataset(user_dataset: Dict[str, List[Dict]],
     """ Split the dataset into IID artificial users. """
     user_sampler = get_user_sampler('random', list(user_dataset.keys()))
     user_id_to_weight = {k: len(v) for k, v in user_dataset.items()}
-    return PyTorchFederatedDataset(GetItemDataset(user_dataset),
+    collate_fn = UserIDCollatorWrapper(AlpacaDataCollator(tokenizer))
+    return PyTorchFederatedDataset(GetItemDataset(user_dataset, True),
                                    user_sampler,
                                    user_id_to_weight=user_id_to_weight,
                                    batch_size=None,
-                                   collate_fn=AlpacaDataCollator(tokenizer),
+                                   collate_fn=collate_fn,
                                    **dataloader_kwargs)
 
 

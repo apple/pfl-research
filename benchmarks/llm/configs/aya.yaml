@@ -31,7 +31,7 @@ local_num_epochs: 1
 local_learning_rate: 0.1
 local_max_grad_norm: 1.0
 
-central_privacy_mechanism: gaussian_moments_accountant
+central_privacy_mechanism: none # gaussian_moments_accountant
 central_epsilon: 2.0
 central_delta: 1e-6
 central_privacy_clipping_bound: 0.1
@@ -43,6 +43,6 @@ use_tensorboard: False
 add_all_arguments: True
 algorithm_name: fedavg
 mu: 0.01
-scaffold_population: 4000
-adafedprox_metric_name: accuracy
+scaffold_population: 4089
+adafedprox_metric_name: "Central val | loss"
 adafedprox_adapt_frequency: 20

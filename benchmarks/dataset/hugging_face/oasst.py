@@ -15,7 +15,7 @@ from transformers import PreTrainedTokenizer, default_data_collator
 from pfl.data.pytorch import PyTorchDataDataset, PyTorchFederatedDataset
 from pfl.data.sampling import get_user_sampler
 
-from . import IGNORE_INDEX, GetItemDataset
+from . import IGNORE_INDEX, GetItemDataset, UserIDCollatorWrapper
 
 logger = logging.getLogger(__name__)
 
@@ -91,11 +91,12 @@ def make_federated_dataset(user_dataset: Dict[str, List[Dict]],
     """
     user_sampler = get_user_sampler('random', list(user_dataset.keys()))
     user_id_to_weight = {k: len(v) for k, v in user_dataset.items()}
-    return PyTorchFederatedDataset(GetItemDataset(user_dataset),
+    collate_fn = UserIDCollatorWrapper(default_data_collator)
+    return PyTorchFederatedDataset(GetItemDataset(user_dataset, True),
                                    user_sampler,
                                    user_id_to_weight=user_id_to_weight,
                                    batch_size=None,
-                                   collate_fn=default_data_collator,
+                                   collate_fn=collate_fn,
                                    **dataloader_kwargs)
 
 

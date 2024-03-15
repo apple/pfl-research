@@ -210,7 +210,7 @@ workflows:
       matches:
         # Only on branches approved by Apple CircleCI policy:
         # https://app.circleci.com/settings/organization/github/apple/policies/baseline_apple
-        pattern: "^main|gh-readonly-queue/main/pr-\\d+-[0-9a-f]{40}.*$"
+        pattern: "^main$|^develop$|gh-readonly-queue/main/pr-\\d+-[0-9a-f]{40}.*$"
         value: << pipeline.git.branch >>
     jobs:
       - code-quality

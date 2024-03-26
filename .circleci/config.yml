@@ -207,11 +207,13 @@ jobs:
 workflows:
   build_and_test:
     when:
-      matches:
-        # Only on branches approved by Apple CircleCI policy:
-        # https://app.circleci.com/settings/organization/github/apple/policies/baseline_apple
-        pattern: "^main$|^develop$|gh-readonly-queue/main/pr-\\d+-[0-9a-f]{40}.*$"
-        value: << pipeline.git.branch >>
+      or:
+        - matches:
+            # Only on branches approved by Apple CircleCI policy:
+            # https://app.circleci.com/settings/organization/github/apple/policies/baseline_apple
+            pattern: "^main$|gh-readonly-queue/main/pr-\\d+-[0-9a-f]{40}.*$"
+            value: << pipeline.git.branch >>
+        - equal: [ develop, << pipeline.git.branch >> ]
     jobs:
       - code-quality
       - build-documentation-wheel

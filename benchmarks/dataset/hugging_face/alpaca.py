@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from typing import Callable, Dict, List, Sequence, Tuple
 
 import torch
-import tqdm
 from datasets import load_dataset
 from transformers import PreTrainedTokenizer
 
@@ -44,7 +43,7 @@ def _tokenize_alpaca(strings: Sequence[str],
             padding="longest",
             max_length=tokenizer.model_max_length,
             truncation=True,
-        ) for text in tqdm.tqdm(strings, desc="Tokenizing: ")
+        ) for text in strings
     ]
     input_ids = labels = [
         tokenized.input_ids[0] for tokenized in tokenized_list

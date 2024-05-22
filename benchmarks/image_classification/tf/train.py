@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+import random
 from uuid import uuid4
 
 import numpy as np
@@ -55,6 +56,8 @@ def main():
     argument_parser = add_model_arguments(argument_parser)
     arguments = argument_parser.parse_args()
 
+    os.environ['PYTHONHASHSEED'] = str(arguments.seed)
+    random.seed(arguments.seed)
     tf.random.set_seed(arguments.seed)
     np.random.seed(arguments.seed)
 

@@ -6,6 +6,7 @@ import pytest
 
 from pfl.hyperparam import NNTrainHyperParams
 from pfl.internal.bridge import FrameworkBridgeFactory as bridges
+from pfl.internal.bridge.pytorch.sgd import _sgd_train_step
 from pfl.internal.ops import get_pytorch_major_version
 from pfl.internal.ops.selector import _internal_reset_framework_module
 
@@ -72,13 +73,16 @@ class TestPyTorchModel:
             return mock_local_optimizer
 
         pytorch_model_setup.model.new_local_optimizer = new_local_optimizer
-        bridges.sgd_bridge().do_sgd(
-            pytorch_model_setup.model, user_dataset,
+        # This is same as bridges.sgd_bridge().do_sgd, but we want
+        # to check the returned metadata as well.
+        train_metadata = pytorch_model_setup.model.do_multiple_epochs_of(
+            user_dataset,
             NNTrainHyperParams(
                 local_learning_rate=local_learning_rate,
                 local_num_epochs=local_num_epochs,
                 local_batch_size=1,
-                grad_accumulation_steps=grad_accumulation_steps))
+                grad_accumulation_steps=grad_accumulation_steps),
+            _sgd_train_step)
 
         # Check if optimizer step is called correct number of times
         total_steps = 2 * local_num_epochs
@@ -86,6 +90,7 @@ class TestPyTorchModel:
             total_steps // grad_accumulation_steps +
             int(total_steps % grad_accumulation_steps != 0))
         assert mock_local_optimizer.step.call_count == expected_optimizer_calls
+        assert train_metadata.num_steps == total_steps
 
         # Check if each step the gradient is accumulated correctly
         assert len(step_grads) == len(expected_step_grads)

@@ -3,6 +3,8 @@
 import numpy as np
 import pytest
 
+from pfl.hyperparam.base import NNTrainHyperParams
+from pfl.internal.bridge.tensorflow.sgd import _make_train_step
 from pfl.internal.ops import get_tf_major_version
 from pfl.internal.ops.selector import _internal_reset_framework_module
 
@@ -155,3 +157,15 @@ class TestTFModel:
         Test if central optimizer could be save and restored
         """
         check_save_and_load_central_optimizer_impl(tensorflow_model_setup)
+
+    def test_local_train_metadata(self, tensorflow_model_setup, user_dataset):
+        model = tensorflow_model_setup.model
+        step_fn = _make_train_step(model)
+        train_metadata = model.do_multiple_epochs_of(
+            user_dataset,
+            NNTrainHyperParams(local_learning_rate=0.1,
+                               local_num_epochs=3,
+                               local_batch_size=1),
+            step_fn,
+            max_grad_norm=None)
+        assert train_metadata.num_steps == 6

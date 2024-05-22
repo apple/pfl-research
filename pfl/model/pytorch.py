@@ -6,6 +6,7 @@ from typing import Callable, Dict, Optional, Tuple
 
 import torch
 
+from pfl.context import LocalResultMetaData
 from pfl.data.dataset import AbstractDatasetType
 from pfl.exception import CheckpointNotFoundError
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
@@ -314,7 +315,8 @@ class PyTorchModel(StatefulModel):
 
     def do_multiple_epochs_of(self, user_dataset: AbstractDatasetType,
                               train_params: NNTrainHyperParams,
-                              train_step_fn: Callable, **kwargs) -> None:
+                              train_step_fn: Callable,
+                              **kwargs) -> LocalResultMetaData:
         """
         Perform multiple epochs of training. The customizable training
         function that will use a batch of data to update the local
@@ -350,13 +352,14 @@ class PyTorchModel(StatefulModel):
 
         local_optimizer.zero_grad()
         # Common arguments used in `train_step_fn`
+        local_num_steps = self._get_local_num_steps(train_params,
+                                                    len(user_dataset))
         train_step_args = pytorch_ops.PyTorchTrainStepArgs(
             amp_context=self._amp_context or contextlib.nullcontext(),
             grad_scaler=self._grad_scaler,
             max_grad_norm=train_params.local_max_grad_norm,
             grad_accumulation_state=pytorch_ops.GradAccumulationState(
-                self._get_local_num_steps(train_params, len(user_dataset)),
-                train_params.grad_accumulation_steps))
+                local_num_steps, train_params.grad_accumulation_steps))
         for _ in range(num_epochs):
             for batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):
@@ -366,6 +369,7 @@ class PyTorchModel(StatefulModel):
                 train_step_fn(self._model, local_optimizer, batch,
                               user_dataset.train_kwargs, train_step_args,
                               **kwargs)
+        return LocalResultMetaData(num_steps=local_num_steps)
 
     def evaluate(self,
                  dataset: AbstractDatasetType,

@@ -5,8 +5,9 @@ import os
 import uuid
 from typing import Callable, Dict, Optional, Tuple, Union
 
-import tensorflow as tf  # type: ignore
+import tensorflow as tf
 
+from pfl.context import LocalResultMetaData
 from pfl.data.dataset import AbstractDatasetType
 from pfl.exception import CheckpointNotFoundError
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
@@ -271,7 +272,8 @@ class TFModel(StatefulModel):
 
     def do_multiple_epochs_of(self, user_dataset: AbstractDatasetType,
                               train_params: NNTrainHyperParams,
-                              train_step_fn: Callable, **kwargs) -> None:
+                              train_step_fn: Callable,
+                              **kwargs) -> LocalResultMetaData:
         """
         Perform multiple epochs of training. The customizable training
         function that will use a batch of data to update the local
@@ -308,6 +310,7 @@ class TFModel(StatefulModel):
         assert train_params.grad_accumulation_steps == 1, (
             "Gradient accumulation is not yet supported in TensorFlow")
 
+        num_steps_taken = 0
         for _ in range(num_epochs):
             for batch_ix, batch in enumerate(
                     user_dataset.iter(train_params.get('local_batch_size'))):
@@ -319,6 +322,8 @@ class TFModel(StatefulModel):
                                                *batch,
                                                user_dataset.train_kwargs,
                                                **kwargs)
+                num_steps_taken += 1
+        return LocalResultMetaData(num_steps=num_steps_taken)
 
     def evaluate(self,
                  dataset: AbstractDatasetType,

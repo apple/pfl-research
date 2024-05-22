@@ -185,15 +185,6 @@ def add_dnn_training_arguments(argument_parser):
         'of training.')
 
     argument_parser.add_argument(
-        '--noise_cohort_size',
-        type=int,
-        default=1000,
-        help=('The cohort size to use in calculating noise for DP. '
-              'If you run cohort_size=100 but noise_cohort_size=1000, '
-              'then your results will only be valid if running with '
-              'cohort_size=1000 outside simulation'))
-
-    argument_parser.add_argument(
         '--val_cohort_size',
         type=int,
         default=200,
@@ -346,6 +337,15 @@ def add_mechanism_arguments(argument_parser):
         help='The minimum separation of iterations that a device can be '
         'sampled to participate again. This parameter is used in '
         '`BandedMatrixFactorizationMechanism`.')
+
+    argument_parser.add_argument(
+        '--noise_cohort_size',
+        type=int,
+        default=1000,
+        help=('The cohort size to use in calculating noise for DP. '
+              'If you run cohort_size=100 but noise_cohort_size=1000, '
+              'then your results will only be valid if running with '
+              'cohort_size=1000 outside simulation'))
 
     return argument_parser
 

@@ -342,9 +342,10 @@ def add_mechanism_arguments(argument_parser):
         '--noise_cohort_size',
         type=int,
         default=1000,
-        help=('The cohort size to use in calculating noise for DP. '
+        help=('The cohort size to use when calculating noise for DP. '
               'If you run cohort_size=100 but noise_cohort_size=1000, '
-              'then your results will only be valid if running with '
+              'then the noise will be scaled down by a factor of 0.1 '
+              'and your results will only be valid if running with '
               'cohort_size=1000 outside simulation'))
 
     return argument_parser

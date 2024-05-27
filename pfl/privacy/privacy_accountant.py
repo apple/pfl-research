@@ -105,7 +105,7 @@ class PLDPrivacyAccountant(PrivacyAccountant):
     """
     Privacy Loss Distribution (PLD) privacy accountant, from dp-accounting
     package.
-    Code: https://github.com/google/differential-privacy/blob/main/python/dp_accounting/pld/pld_privacy_accountant.py # pylint: disable=line-too-long
+
     The PLD algorithm is based on: “Tight on budget?: Tight bounds for r-fold
     approximate differential privacy.”, Meiser and Mohammadi, in CCS, pages
     247-264, 2018, https://eprint.iacr.org/2017/1034.pdf

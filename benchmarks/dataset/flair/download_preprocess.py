@@ -1,11 +1,9 @@
 # Copyright © 2024 Apple Inc.
 import argparse
-import itertools
 import json
 import logging
 import sys
 from collections import Counter, defaultdict
-from typing import Dict, Tuple
 
 import h5py
 import numpy as np
@@ -16,6 +14,7 @@ logger = logging.getLogger(name=__name__)
 
 LABEL_DELIMITER = '|'  # Labels will be joined by delimiter and saved to hdf5
 LOG_INTERVAL = 100  # Log the preprocessing progress every interval steps
+
 
 def load_image_from_huggingface(dataset, image_id):
     """
@@ -47,23 +46,20 @@ def preprocess_federated_dataset(output_file: str):
 
     # Load dataset from HuggingFace
     # This is a Dict[str, Dataset] where key is the split.
-    dataset_splits = load_dataset('apple/flair')
+    dataset_splits = load_dataset('apple/flair', keep_in_memory=False)
     logger.info(f'Preprocessing federated dataset, sample record: {next(iter(dataset_splits["train"]))}')
 
-    user_metadata = defaultdict(list)
     label_counter = Counter()
     fine_grained_label_counter = Counter()
 
-    
-    for i, entry in enumerate(tqdm.tqdm(
-        itertools.chain(*dataset_splits.values()),
-        total=sum(map(len, dataset_splits.values())),
-        desc='preparing users')):
-        user_metadata[entry['user_id']].append(entry)
-        label_counter.update(entry["labels"])
-        fine_grained_label_counter.update(entry["fine_grained_labels"])
-        if i == 100:
-            break
+    partition_to_user_to_ix = defaultdict(lambda: defaultdict(list))
+    for partition, ds in dataset_splits.items():
+        for i, entry in tqdm.tqdm(enumerate(ds), total=len(ds),
+                                  desc=f'{partition} - Mapping users to datapoints.'):
+            # Make user to datapoints mapping.
+            partition_to_user_to_ix[partition][entry['user_id']].append(i)
+            label_counter.update(entry["labels"])
+            fine_grained_label_counter.update(entry["fine_grained_labels"])
 
     label_to_index = {
         label: index
@@ -75,55 +71,57 @@ def preprocess_federated_dataset(output_file: str):
             sorted(fine_grained_label_counter.keys()))
     }
 
-    label_counter = Counter()
-    fine_grained_label_counter = Counter()
     with h5py.File(output_file, 'w') as h5file:
-        # Iterate through users of each partition.
-        for i, user_id in tqdm.tqdm(enumerate(user_metadata),
-                                    total=len(user_metadata)):
-            # Load and concatenate all images and labels of a user.
-            image_array, image_id_array = [], []
-            labels_row, labels_col = [], []
-            fine_grained_labels_row, fine_grained_labels_col = [], []
-            for j, metadata in enumerate(user_metadata[user_id]):
-                image_id = metadata["image_id"]
-                image_array.append(np.asarray(metadata["image"]))
-                image_id_array.append(image_id)
-                # Encode labels as row indices and column indices
-                labels_row.extend([j] * len(metadata["labels"]))
-                labels_col.extend(
-                    [label_to_index[l] for l in metadata["labels"]])
-                fine_grained_labels_row.extend(
-                    [j] * len(metadata["fine_grained_labels"]))
-                fine_grained_labels_col.extend([
-                    fine_grained_label_to_index[l]
-                    for l in metadata["fine_grained_labels"]
-                ])
-                # Update label counter
-                label_counter.update(metadata["labels"])
-                fine_grained_label_counter.update(
-                    metadata["fine_grained_labels"])
+        for partition, user_to_ix in partition_to_user_to_ix.items():
+            ds = dataset_splits[partition]
 
-            partition = user_metadata[user_id][0]["partition"]
-            # Multiple variable-length labels. Needs to be stored as a string.
-            h5file[f'/{partition}/{user_id}/labels_row'] = np.asarray(
-                labels_row, dtype=np.uint16)
-            h5file[f'/{partition}/{user_id}/labels_col'] = np.asarray(
-                labels_col, dtype=np.uint8)
-            h5file[
-                f'/{partition}/{user_id}/fine_grained_labels_row'] = np.asarray(
-                    fine_grained_labels_row, dtype=np.uint16)
-            h5file[
-                f'/{partition}/{user_id}/fine_grained_labels_col'] = np.asarray(
-                    fine_grained_labels_col, dtype=np.uint16)
-            h5file[f'/{partition}/{user_id}/image_ids'] = np.asarray(
-                image_id_array, dtype='S')
-            # Tensor with dimensions [num_images,width,height,channels]
-            h5file.create_dataset(f'/{partition}/{user_id}/images',
-                                  data=np.stack(image_array))
+            # Iterate through users of each partition.
+            for i, (user_id, data_indices) in tqdm.tqdm(enumerate(user_to_ix.items()),
+                                        total=len(user_to_ix),
+                                        desc=f'{partition} - constructing dataset'):
+                # Load and concatenate all images and labels of a user.
+                image_array, image_id_array = [], []
+                labels_row, labels_col = [], []
+                fine_grained_labels_row, fine_grained_labels_col = [], []
+                for j, data_index in enumerate(data_indices):
+                    metadata = ds[data_index]
+                    image_id = metadata["image_id"]
+                    image_array.append(np.asarray(metadata["image"]))
+                    image_id_array.append(image_id)
+                    # Encode labels as row indices and column indices
+                    labels_row.extend([j] * len(metadata["labels"]))
+                    labels_col.extend(
+                        [label_to_index[l] for l in metadata["labels"]])
+                    fine_grained_labels_row.extend(
+                        [j] * len(metadata["fine_grained_labels"]))
+                    fine_grained_labels_col.extend([
+                        fine_grained_label_to_index[l]
+                        for l in metadata["fine_grained_labels"]
+                    ])
+                    # Update label counter
+                    label_counter.update(metadata["labels"])
+                    fine_grained_label_counter.update(
+                        metadata["fine_grained_labels"])
 
-            if (i + 1) % LOG_INTERVAL == 0:
-                logger.info(f"Processed {i + 1}/{len(user_metadata)} users")
+                # Multiple variable-length labels. Needs to be stored as a string.
+                h5file[f'/{partition}/{user_id}/labels_row'] = np.asarray(
+                    labels_row, dtype=np.uint16)
+                h5file[f'/{partition}/{user_id}/labels_col'] = np.asarray(
+                    labels_col, dtype=np.uint8)
+                h5file[
+                    f'/{partition}/{user_id}/fine_grained_labels_row'] = np.asarray(
+                        fine_grained_labels_row, dtype=np.uint16)
+                h5file[
+                    f'/{partition}/{user_id}/fine_grained_labels_col'] = np.asarray(
+                        fine_grained_labels_col, dtype=np.uint16)
+                h5file[f'/{partition}/{user_id}/image_ids'] = np.asarray(
+                    image_id_array, dtype='S')
+                # Tensor with dimensions [num_images,width,height,channels]
+                h5file.create_dataset(f'/{partition}/{user_id}/images',
+                                    data=np.stack(image_array))
+
+                if (i + 1) % LOG_INTERVAL == 0:
+                    logger.info(f"Processed {i + 1}/{len(user_to_ix)} users")
 
         # Write metadata
         h5file['/metadata/label_mapping'] = json.dumps(label_to_index)
@@ -144,29 +142,30 @@ def preprocess_central_dataset(output_file: str):
         Output path for HDF5 file. Use the postfix `.hdf5`.
     """
     logger.info('Preprocessing central dataset.')
+    dataset_splits = load_dataset('apple/flair', keep_in_memory=False)
     
     label_counter = Counter()
     fine_grained_label_counter = Counter()
     with h5py.File(output_file, 'w') as h5file:
         # Iterate through dataset.
-        for i, entry in tqdm.tqdm(enumerate(dataset), total=len(dataset)):
-            image_id = entry["image_id"]
-            image = np.asarray(entry["image"])  # Directly use the image array from the dataset
-            partition = entry["partition"]
-            h5file.create_dataset(f'/{partition}/{image_id}/image',
-                                  data=image)
-            # Encode labels as a single string, separated by delimiter |
-            h5file[f'/{partition}/{image_id}/labels'] = LABEL_DELIMITER.join(
-                entry["labels"])
-            h5file[f'/{partition}/{image_id}/fine_grained_labels'] = (
-                LABEL_DELIMITER.join(entry["fine_grained_labels"]))
-            h5file[f'/{partition}/{image_id}/user_id'] = entry["user_id"]
-            # Update label counter
-            label_counter.update(entry["labels"])
-            fine_grained_label_counter.update(entry["fine_grained_labels"])
+        for partition, dataset in dataset_splits.items():
+            for i, entry in tqdm.tqdm(enumerate(dataset), total=len(dataset)):
+                image_id = entry["image_id"]
+                image = np.asarray(entry["image"])  # Directly use the image array from the dataset
+                h5file.create_dataset(f'/{partition}/{image_id}/image',
+                                    data=image)
+                # Encode labels as a single string, separated by delimiter |
+                h5file[f'/{partition}/{image_id}/labels'] = LABEL_DELIMITER.join(
+                    entry["labels"])
+                h5file[f'/{partition}/{image_id}/fine_grained_labels'] = (
+                    LABEL_DELIMITER.join(entry["fine_grained_labels"]))
+                h5file[f'/{partition}/{image_id}/user_id'] = entry["user_id"]
+                # Update label counter
+                label_counter.update(entry["labels"])
+                fine_grained_label_counter.update(entry["fine_grained_labels"])
 
-            if (i + 1) % LOG_INTERVAL == 0:
-                logger.info(f"Processed {i + 1}/{len(dataset)} entries")
+                if (i + 1) % LOG_INTERVAL == 0:
+                    logger.info(f"Processed {i + 1}/{len(dataset)} entries")
 
         # Write metadata
         h5file['/metadata/label_mapping'] = json.dumps(dict(label_counter))

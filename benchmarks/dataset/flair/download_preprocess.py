@@ -4,6 +4,7 @@ import json
 import logging
 import sys
 from collections import Counter, defaultdict
+from typing import Counter as TCounter
 
 import h5py
 import numpy as np
@@ -47,15 +48,20 @@ def preprocess_federated_dataset(output_file: str):
     # Load dataset from HuggingFace
     # This is a Dict[str, Dataset] where key is the split.
     dataset_splits = load_dataset('apple/flair', keep_in_memory=False)
-    logger.info(f'Preprocessing federated dataset, sample record: {next(iter(dataset_splits["train"]))}')
+    logger.info(
+        f'Preprocessing federated dataset, sample record: {next(iter(dataset_splits["train"]))}'
+    )
 
-    label_counter = Counter()
-    fine_grained_label_counter = Counter()
+    label_counter: TCounter[str] = Counter()
+    fine_grained_label_counter: TCounter[str] = Counter()
 
-    partition_to_user_to_ix = defaultdict(lambda: defaultdict(list))
+    partition_to_user_to_ix: defaultdict = defaultdict(
+        lambda: defaultdict(list))
     for partition, ds in dataset_splits.items():
-        for i, entry in tqdm.tqdm(enumerate(ds), total=len(ds),
-                                  desc=f'{partition} - Mapping users to datapoints.'):
+        for i, entry in tqdm.tqdm(
+                enumerate(ds),
+                total=len(ds),
+                desc=f'{partition} - Mapping users to datapoints.'):
             # Make user to datapoints mapping.
             partition_to_user_to_ix[partition][entry['user_id']].append(i)
             label_counter.update(entry["labels"])
@@ -76,9 +82,10 @@ def preprocess_federated_dataset(output_file: str):
             ds = dataset_splits[partition]
 
             # Iterate through users of each partition.
-            for i, (user_id, data_indices) in tqdm.tqdm(enumerate(user_to_ix.items()),
-                                        total=len(user_to_ix),
-                                        desc=f'{partition} - constructing dataset'):
+            for i, (user_id, data_indices) in tqdm.tqdm(
+                    enumerate(user_to_ix.items()),
+                    total=len(user_to_ix),
+                    desc=f'{partition} - constructing dataset'):
                 # Load and concatenate all images and labels of a user.
                 image_array, image_id_array = [], []
                 labels_row, labels_col = [], []
@@ -118,7 +125,7 @@ def preprocess_federated_dataset(output_file: str):
                     image_id_array, dtype='S')
                 # Tensor with dimensions [num_images,width,height,channels]
                 h5file.create_dataset(f'/{partition}/{user_id}/images',
-                                    data=np.stack(image_array))
+                                      data=np.stack(image_array))
 
                 if (i + 1) % LOG_INTERVAL == 0:
                     logger.info(f"Processed {i + 1}/{len(user_to_ix)} users")
@@ -143,20 +150,23 @@ def preprocess_central_dataset(output_file: str):
     """
     logger.info('Preprocessing central dataset.')
     dataset_splits = load_dataset('apple/flair', keep_in_memory=False)
-    
-    label_counter = Counter()
-    fine_grained_label_counter = Counter()
+
+    label_counter: TCounter[str] = Counter()
+    fine_grained_label_counter: TCounter[str] = Counter()
     with h5py.File(output_file, 'w') as h5file:
         # Iterate through dataset.
         for partition, dataset in dataset_splits.items():
             for i, entry in tqdm.tqdm(enumerate(dataset), total=len(dataset)):
                 image_id = entry["image_id"]
-                image = np.asarray(entry["image"])  # Directly use the image array from the dataset
+                image = np.asarray(
+                    entry["image"]
+                )  # Directly use the image array from the dataset
                 h5file.create_dataset(f'/{partition}/{image_id}/image',
-                                    data=image)
+                                      data=image)
                 # Encode labels as a single string, separated by delimiter |
-                h5file[f'/{partition}/{image_id}/labels'] = LABEL_DELIMITER.join(
-                    entry["labels"])
+                h5file[
+                    f'/{partition}/{image_id}/labels'] = LABEL_DELIMITER.join(
+                        entry["labels"])
                 h5file[f'/{partition}/{image_id}/fine_grained_labels'] = (
                     LABEL_DELIMITER.join(entry["fine_grained_labels"]))
                 h5file[f'/{partition}/{image_id}/user_id'] = entry["user_id"]
@@ -182,7 +192,8 @@ if __name__ == '__main__':
 
     argument_parser = argparse.ArgumentParser(
         description=
-        'Download and preprocess the images and labels of FLAIR dataset into HDF5 files.')
+        'Download and preprocess the images and labels of FLAIR dataset into HDF5 files.'
+    )
     argument_parser.add_argument(
         '--output_file',
         required=True,
@@ -200,4 +211,3 @@ if __name__ == '__main__':
         preprocess_central_dataset(arguments.output_file)
     else:
         preprocess_federated_dataset(arguments.output_file)
-

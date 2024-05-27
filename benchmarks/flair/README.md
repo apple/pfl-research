@@ -13,8 +13,7 @@ Same as the [default setup](../README.md).
 ## Download and preprocess FLAIR dataset
 
 ```
-python -m dataset.flair.download_dataset --dataset_dir ./data/flair
-python -m dataset.flair.prepare_dataset --dataset_dir data/flair/ --output_file data/flair/flair_federated.hdf5
+python -m dataset.flair.download_preprocess --output_file data/flair/flair_federated.hdf5
 ```
 
 ## Run benchmarks

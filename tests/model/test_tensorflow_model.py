@@ -4,7 +4,6 @@ import numpy as np
 import pytest
 
 from pfl.hyperparam.base import NNTrainHyperParams
-from pfl.internal.bridge.tensorflow.sgd import _make_train_step
 from pfl.internal.ops import get_tf_major_version
 from pfl.internal.ops.selector import _internal_reset_framework_module
 
@@ -160,6 +159,7 @@ class TestTFModel:
 
     def test_local_train_metadata(self, tensorflow_model_setup, user_dataset):
         model = tensorflow_model_setup.model
+        from pfl.internal.bridge.tensorflow.sgd import _make_train_step
         step_fn = _make_train_step(model)
         train_metadata = model.do_multiple_epochs_of(
             user_dataset,

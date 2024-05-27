@@ -6,7 +6,6 @@ import pytest
 
 from pfl.hyperparam import NNTrainHyperParams
 from pfl.internal.bridge import FrameworkBridgeFactory as bridges
-from pfl.internal.bridge.pytorch.sgd import _sgd_train_step
 from pfl.internal.ops import get_pytorch_major_version
 from pfl.internal.ops.selector import _internal_reset_framework_module
 
@@ -75,6 +74,7 @@ class TestPyTorchModel:
         pytorch_model_setup.model.new_local_optimizer = new_local_optimizer
         # This is same as bridges.sgd_bridge().do_sgd, but we want
         # to check the returned metadata as well.
+        from pfl.internal.bridge.pytorch.sgd import _sgd_train_step
         train_metadata = pytorch_model_setup.model.do_multiple_epochs_of(
             user_dataset,
             NNTrainHyperParams(

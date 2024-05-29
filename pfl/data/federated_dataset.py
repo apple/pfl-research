@@ -142,8 +142,7 @@ class _SortedCohortSampler:
 
     def __iter__(self):
         while True:
-            for sample in self._samples_q.get():
-                yield sample
+            yield from self._samples_q.get()
 
     def set_cohort_size(self, cohort_size):
         self._cohort_request_q.put(cohort_size)

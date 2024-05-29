@@ -24,7 +24,7 @@ def get_central_data_and_metadata(data_path: str,
 
 
 def make_flair_datasets(data_path: str, use_fine_grained_labels: bool,
-                        max_num_user_images: int, 
+                        max_num_user_images: int,
                         scheduling_base_weight_multiplier: int,
                         numpy_to_tensor: Callable):
     """
@@ -35,13 +35,10 @@ def make_flair_datasets(data_path: str, use_fine_grained_labels: bool,
 
     training_federated_dataset = make_federated_dataset(
         data_path, 'train', use_fine_grained_labels, max_num_user_images,
-        scheduling_base_weight_multiplier,
-        numpy_to_tensor)
-    val_federated_dataset = make_federated_dataset(data_path, 'val',
-                                                   use_fine_grained_labels,
-                                                   max_num_user_images,
-                                                   scheduling_base_weight_multiplier,
-                                                   numpy_to_tensor)
+        scheduling_base_weight_multiplier, numpy_to_tensor)
+    val_federated_dataset = make_federated_dataset(
+        data_path, 'val', use_fine_grained_labels, max_num_user_images,
+        scheduling_base_weight_multiplier, numpy_to_tensor)
 
     central_data, metadata = get_central_data_and_metadata(
         data_path, use_fine_grained_labels)

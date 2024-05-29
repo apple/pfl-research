@@ -14,6 +14,7 @@ from .common import get_label_mapping, get_multi_hot_targets, get_user_num_image
 
 logger = logging.getLogger(name=__name__)
 
+
 def make_federated_dataset(
         hdf5_path: str,
         partition: str,
@@ -40,11 +41,19 @@ def make_federated_dataset(
         Federated dataset from the HDF5 data file.
     """
     num_classes = len(get_label_mapping(hdf5_path, use_fine_grained_labels))
-    user_id_to_weight = {k:min(v,max_num_user_images) for k,v in get_user_num_images(hdf5_path, partition).items()}
+    user_id_to_weight = {
+        k: min(v, max_num_user_images)
+        for k, v in get_user_num_images(hdf5_path, partition).items()
+    }
     median_datapoints = np.median(list(user_id_to_weight.values()))
-    base_value = scheduling_base_weight_multiplier*median_datapoints
-    logger.info(f'User mean datapoints: {np.mean(list(user_id_to_weight.values()))}, median datapoints: {median_datapoints}, base_value: {base_value}')
-    user_id_to_weight = {k:v + base_value for k,v in user_id_to_weight.items()}
+    base_value = scheduling_base_weight_multiplier * median_datapoints
+    logger.info(
+        f'User mean datapoints: {np.mean(list(user_id_to_weight.values()))}, median datapoints: {median_datapoints}, base_value: {base_value}'
+    )
+    user_id_to_weight = {
+        k: v + base_value
+        for k, v in user_id_to_weight.items()
+    }
 
     user_ids = sorted(user_id_to_weight.keys())
     sampler = get_user_sampler('random', user_ids)

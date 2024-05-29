@@ -132,6 +132,20 @@ def add_dataset_arguments(
                             default=100,
                             help='Maximum number of images per user')
 
+        parser.add_argument('--scheduling_base_weight_multiplier',
+                            type=float,
+                            default=1.0,
+                            help=(
+                            'Figure 3b in pfl-research paper '
+                            'https://arxiv.org/abs/2404.06430 show adding a'
+                            'base value for each user\'s weight for scheduling '
+                            'in distributed simulations speeds up training. '
+                            'This parameter adds a '
+                            'multiplicative factor of the median user weight '
+                            'as base value. 0.0 means no base value added and '
+                            '~1.0 is the optimal value for the FLAIR benchmark '
+                            'according to Figure 3b (can be different for '
+                            'other setups).'))
     elif known_args.dataset == 'alpaca':
         parser = add_artificial_fed_dataset_arguments(parser)
 
@@ -289,6 +303,7 @@ def get_datasets(
             data_path=args.data_path,
             use_fine_grained_labels=args.use_fine_grained_labels,
             max_num_user_images=args.max_num_user_images,
+            scheduling_base_weight_multiplier=args.scheduling_base_weight_multiplier,
             numpy_to_tensor=numpy_to_tensor)
     elif args.dataset == 'flair_pytorch':
         from .flair import make_flair_pytorch_datasets

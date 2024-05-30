@@ -1,0 +1,48 @@
+dataset: oasst
+
+# Model config
+hugging_face_model_name_or_path: TinyLlama/TinyLlama-1.1B-intermediate-step-1195k-token-2.5T
+model_max_length: 512
+use_fast_tokenizer: True
+padding_side: right
+amp_dtype: bfloat16
+model_dtype_same_as_amp: False
+use_torch_compile: True
+
+# PEFT - LoRA
+peft_type: lora
+lora_r: 8
+
+central_optimizer: adam
+adaptivity_degree: 1.0e-4
+learning_rate: 0.01
+central_lr_scheduler: cosine
+central_lr_num_warmup_iterations: 50
+
+central_num_iterations: 1000
+evaluation_frequency: 10
+central_eval_batch_size: 12
+cohort_size: 100
+val_cohort_size: 0
+noise_cohort_size: 5000
+
+local_batch_size: 4
+local_num_epochs: 1
+local_learning_rate: 0.1
+local_max_grad_norm: 1.0
+
+central_privacy_mechanism: none # gaussian_moments_accountant
+central_epsilon: 2.0
+central_delta: 1e-6
+central_privacy_clipping_bound: 0.1
+central_order: 2
+population: 1e6
+
+use_tensorboard: False
+
+add_all_arguments: True
+algorithm_name: fedavg
+mu: 0.01
+scaffold_population: 12870
+adafedprox_metric_name: "Central val | loss"
+adafedprox_adapt_frequency: 20

@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class EMMGMMHyperParams(AlgorithmHyperParams):
+class EMGMMHyperParams(AlgorithmHyperParams):
     """
     Parameters for EM GMM algorithms.
 
@@ -113,7 +113,7 @@ def make_compute_new_num_components(
     return compute_new_num_components
 
 
-class ExpectationMaximizationGMM(FederatedAlgorithm[EMMGMMHyperParams,
+class ExpectationMaximizationGMM(FederatedAlgorithm[EMGMMHyperParams,
                                                     GMMHyperParams,
                                                     GaussianMixtureModel,
                                                     MappedVectorStatistics,
@@ -132,7 +132,7 @@ class ExpectationMaximizationGMM(FederatedAlgorithm[EMMGMMHyperParams,
         self,
         model: GaussianMixtureModel,
         iteration: int,
-        algorithm_params: EMMGMMHyperParams,
+        algorithm_params: EMGMMHyperParams,
         model_train_params: GMMHyperParams,
         model_eval_params: Optional[GMMHyperParams] = None,
     ) -> Tuple[Optional[Tuple[CentralContext, ...]], GaussianMixtureModel,

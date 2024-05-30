@@ -29,6 +29,7 @@ pfl = [
     { path = "../", extras = ["pytorch"], markers="extra=='pytorch'", develop = true },
 ]
 pillow = ">=10.2.0"
+datasets = "^2.19.1"
 
 [tool.poetry.extras]
 tf = ["pfl", "tensorflow_addons", "tensorflow"]

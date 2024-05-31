@@ -176,8 +176,8 @@ class GBDTAlgorithmHyperParams(AlgorithmHyperParams):
             'validation cohort size must be an integer >= 0')
         assert self.cohort_size_per_layer_modifier_fn in [
             'none', 'linear', 'power'
-        ], (f'{self.cohort_size_per_layer_modifier_function} is not a',
-            'valid value for cohort_size_per_layer_modifier_function')
+        ], (f'{self.cohort_size_per_layer_modifier_fn} is not a',
+            'valid value for cohort_size_per_layer_modifier_fn')
         assert isinstance(
             self.leaf_nodes_reduction_factor,
             int) and self.leaf_nodes_reduction_factor >= 1, (

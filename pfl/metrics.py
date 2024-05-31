@@ -575,9 +575,9 @@ class Metrics:
         return Metrics(itertools.chain(self, other))
 
     def to_simple_dict(
-        self,
-        force_serialize_all_metrics: bool = False
-    ) -> Dict[str, Union[float, int]]:
+            self,
+            force_serialize_all_metrics: bool = False,
+            to_lowercase: bool = False) -> Dict[str, Union[float, int]]:
         """
         Returns a python dictionary of name-value pairs of metrics and their
         values, e.g. {'Loss': 0.12, 'Accuracy': 0.45}. All metric names are
@@ -586,6 +586,12 @@ class Metrics:
         :param force_serialize_all_metrics:
             Default to False. Indicate whether or not to include metrics that
             are marked to be ignored on serialization.
+        :param to_lowercase:
+            Default to False. Indicate lowercasing entire metrics key name.
+            This uniformity is necessary for downstream analytics pipelines
+            such as Splunk and Delphi.
+            On the contrary, Proper-casing might be better for readability
+            in stdout in iPython notebooks and logs.
         """
 
         def convert(metric_name, weighted_value):
@@ -599,9 +605,10 @@ class Metrics:
 
             metric_name = str(metric_name)
 
-            # Uppercase the first character.
-            name_uppercase = metric_name[0].upper() + metric_name[1:]
-            return (name_uppercase, get_overall_value(weighted_value))
+            # conditionally Uppercase the first character
+            modified_name = metric_name.lower(
+            ) if to_lowercase else metric_name[0].upper() + metric_name[1:]
+            return (modified_name, get_overall_value(weighted_value))
 
         return dict(
             convert(*value) for value in self._hash_to_keyvalue.values()

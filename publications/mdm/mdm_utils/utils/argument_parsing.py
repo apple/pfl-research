@@ -24,6 +24,7 @@ def add_experiment_args(parser):
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--data_dir', type=str)
     parser.add_argument('--dirname', type=str)
+    parser.add_argument('--mle_param_dirname', type=str, default='publications/mdm/mle_params')
     parser.add_argument(
         '--precomputed_parameter_filepath',
         type=str,

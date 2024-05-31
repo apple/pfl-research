@@ -23,6 +23,4 @@ It is next assumed that you have the FEMNIST and CIFAR-10 datasets downloaded lo
 ## Running experiments in paper
 To run MDM parameter inference on CIFAR-10: ` bash publications/mdm/run_cifar10_mse_alpha_phi_experiments.sh`.
 
-To run MDM parameter inference on FEMNIST, for the experiments in the original paper version where users are not split between server-side dataset and live dataset: `bash publications/mdm/run_femnist.sh`.
-
-To run MDM parameter inference on FEMNIST as in the rebuttal, where the users are split between server-side dataset and live dataset: `bash publications/mdm/run_femnist_rebuttal.sh`.
+To run MDM parameter inference on FEMNIST, where the users are split between the server-side dataset and the live dataset: `bash publications/mdm/run_femnist.sh`.

@@ -67,4 +67,4 @@ else
 
 fi
 
-python3 mdm_paper/training/train.py --num_mixture_components "$num_components" --component_mean_user_dataset_length "$user_dataset_length" --component_alphas "$alphas" --cohort_size_init_algorithm 1000 --central_num_iterations_init_algorithm 1 --max_num_samples_mixture_component_init_algorithm 40 --cohort_size_algorithm 1000 --central_num_iterations_algorithm 60 --component_phi "$phi" --data_dir data/cifar10 --dirname "$type"
+python3 publications/mdm/mdm_paper/training/train.py --num_mixture_components "$num_components" --component_mean_user_dataset_length "$user_dataset_length" --component_alphas "$alphas" --cohort_size_init_algorithm 1000 --central_num_iterations_init_algorithm 1 --max_num_samples_mixture_component_init_algorithm 40 --cohort_size_algorithm 1000 --central_num_iterations_algorithm 60 --component_phi "$phi" --data_dir data/cifar10 --dirname "$type"

@@ -17,8 +17,8 @@ from pfl.internal.ops import get_ops
 from pfl.algorithm.base import FederatedAlgorithm, AlgorithmHyperParams
 from pfl.data.dataset import AbstractDatasetType
 
-from mdm.model import MDMModelType, MDMModelHyperParamsType
-from mdm.bridge.factory import FrameworkBridgeFactory as bridges
+from publications.mdm.mdm.model import MDMModelType, MDMModelHyperParamsType
+from publications.mdm.mdm.bridge.factory import FrameworkBridgeFactory as bridges
 
 
 @dataclass(frozen=True)
@@ -134,7 +134,7 @@ class MDMInitializationAlgorithm(
 
         # Record user mixture component
         # component sizes are needed for initialization computation
-        e = get_ops().zeros(
+        e = torch.zeros(
             (central_context.model_train_params.num_components,
              central_context.algorithm_params.num_samples_mixture_bins.shape[1]
              ))
@@ -247,7 +247,7 @@ class MDMInitializationAlgorithm(
             #alpha_1 = 0.5 * (1 - p[0,0]) / (1 - p[0,0] - p[0,1])
             #alphas = [torch.Tensor([alpha_0, alpha_1])]
 
-            phi = 1 / num_components * get_ops().ones(num_components)
+            phi = 1 / num_components * torch.ones(num_components)
 
             model, metrics = model.apply_model_update(
                 MappedVectorStatistics({

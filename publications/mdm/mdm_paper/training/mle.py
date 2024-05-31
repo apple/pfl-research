@@ -4,8 +4,8 @@ from pfl.aggregate.simulate import SimulatedBackend
 from pfl.callback import ModelCheckpointingCallback
 from pfl.privacy import (CentrallyAppliedPrivacyMechanism, PLDPrivacyAccountant, GaussianMechanism) 
 
-from mdm_utils.utils.tools import ModelCheckpointingIterationCallback
-from mdm import (MDMModel, MDMModelHyperParams,
+from publications.mdm.mdm_utils.utils.tools import ModelCheckpointingIterationCallback
+from publications.mdm.mdm import (MDMModel, MDMModelHyperParams,
                                           MDMAlgorithm, MDMAlgorithmParams,
                                           MDMInitializationAlgorithm,
                                           MDMInitializationAlgorithmParams)

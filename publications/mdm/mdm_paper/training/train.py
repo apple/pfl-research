@@ -11,14 +11,14 @@ from pfl.internal.ops.selector import get_default_framework_module as get_ops
 from pfl.internal.ops.selector import set_framework_module
 from pfl.internal.platform.selector import get_platform
 
-from mdm_utils.datasets import make_cifar10_datasets
-from mdm_utils.utils import (add_dataset_args, add_experiment_args,
+from publications.mdm.mdm_utils.datasets import make_cifar10_datasets
+from publications.mdm.mdm_utils.utils import (add_dataset_args, add_experiment_args,
                                  add_mle_args, add_init_algorithm_args,
                                  add_algorithm_args,
                                  add_histogram_algorithm_args,
                                  add_user_visualisation_args)
 
-from mdm_paper.training.mle import solve_polya_mixture_mle
+from publications.mdm.mdm_paper.training.mle import solve_polya_mixture_mle
 
 
 def get_arguments():
@@ -104,7 +104,7 @@ live_training_data, live_val_data, central_val_data = make_cifar10_datasets(
 print('simulated_dirichlet_mixture experiment')
 if arguments.precomputed_parameter_filepath is None:
     print('learn simulated_dirichlet_mixture parameters')
-    dir_path = get_platform().create_checkpoint_directories(['mle_params'])[0]
+    dir_path = get_platform().create_checkpoint_directories([arguments.mle_param_dirname])[0]
     current_time = datetime.datetime.now()
     timestamp = current_time.strftime("%Y-%m-%d_%H-%M")
     save_dir = (

@@ -15,8 +15,8 @@ from pfl.stats import MappedVectorStatistics
 from pfl.algorithm.base import FederatedAlgorithm, AlgorithmHyperParams
 from pfl.data.dataset import AbstractDatasetType
 
-from mdm.model import MDMModelType, MDMModelHyperParamsType
-from mdm.bridge.factory import FrameworkBridgeFactory as bridges
+from publications.mdm.mdm.model import MDMModelType, MDMModelHyperParamsType
+from publications.mdm.mdm.bridge.factory import FrameworkBridgeFactory as bridges
 
 
 @dataclass(frozen=True)
@@ -201,12 +201,15 @@ class MDMAlgorithm(FederatedAlgorithm[MDMAlgorithmParamsType,
                 return tensor
             num_zero = torch.sum(tensor <= min_val, dim=1, keepdim=True)
             total_mass = torch.sum(tensor, dim=1, keepdim=True)
-            extra_mass = total_mass * mass_reallocation_percentage / num_zero
-            tensor = torch.where(tensor > min_val, tensor,
-                                 extra_mass.expand_as(tensor))
-            tensor = tensor / torch.sum(tensor, dim=1,
-                                        keepdim=True) * total_mass
-            return tensor
+            if total_mass > 0:
+                extra_mass = total_mass * mass_reallocation_percentage / num_zero
+                tensor = torch.where(tensor > min_val, tensor,
+                                     extra_mass.expand_as(tensor))
+                tensor = tensor / torch.sum(tensor, dim=1,
+                                            keepdim=True) * total_mass
+                return tensor
+            # no probability mass - instead force set all zero elements to 0.02
+            return torch.ones_like(tensor) * 0.02
 
         if (posterior_probabilities == 0).any():
             num_zero = torch.sum(posterior_probabilities == 0)

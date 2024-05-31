@@ -23,8 +23,8 @@ dp-accounting = "^0.4"
 prv-accountant = "^0.2.0"
 #### Will be installed only with "pytorch" install extra
 torch = [
-  { version = "2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
-  { version = "2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
+  { version = "^2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "^2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 #### Will be installed only with "tf" install extra
 tensorflow = [

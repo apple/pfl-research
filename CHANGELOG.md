@@ -27,7 +27,7 @@
 
 ### Tasks completed
 
-* Update FLAIR preprocessing script to download new dataset from HuggingFace, available at https://huggingface.co/datasets/apple/flair (#72).
+* Update FLAIR preprocessing script to download dataset from HuggingFace, available at https://huggingface.co/datasets/apple/flair (#72).
 * Update LLM Benchmark Configs (#63).
 * New improved worker scheduling in distributed simulations. Speeds up FLAIR benchmark by 19% (#73).
 * Don't pin PyTorch version to 2.0.1 (#69).

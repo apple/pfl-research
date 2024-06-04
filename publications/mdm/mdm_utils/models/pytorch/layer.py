@@ -1,4 +1,3 @@
-
 from abc import ABC
 
 import torch
@@ -45,7 +44,8 @@ class FrozenBatchNorm1D(_FrozenBatchNorm):
 
     def _check_input_dim(self, input):
         if input.dim() != 2 and input.dim() != 3:
-            raise ValueError(f'expected 2D or 3D input (got {input.dim()}D input)')
+            raise ValueError(
+                f'expected 2D or 3D input (got {input.dim()}D input)')
 
 
 class FrozenBatchNorm2D(_FrozenBatchNorm):

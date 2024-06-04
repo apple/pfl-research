@@ -1,4 +1,3 @@
-
 from typing import Callable, Type
 
 from torch import nn

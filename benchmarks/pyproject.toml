@@ -30,6 +30,9 @@ pfl = [
 ]
 pillow = ">=10.2.0"
 datasets = "^2.19.1"
+# Fixes vulnerability https://github.com/advisories/GHSA-2g68-c3qc-8985
+werkzeug = ">=3.0.3"
+
 
 [tool.poetry.extras]
 tf = ["pfl", "tensorflow_addons", "tensorflow"]

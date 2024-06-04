@@ -49,8 +49,9 @@ def _distributed_sampler(sampler, get_seed, rank, world_size):
         yield users_all_workers[rank], seeds_all_workers[rank]
 
 
-def _sorted_cohort_subprocess(q_send, q_request, sampler, seed_sampler, rank,
-                              world_size, user_id_to_weight):
+def _sorted_cohort_subprocess(q_send, q_request, q_send_num, sampler,
+                              seed_sampler, rank, world_size,
+                              user_id_to_weight):
     cache = []
     cohort_size = None
     cache_size = _INITIAL_USER_SAMPLES_CACHE_SIZE
@@ -68,15 +69,26 @@ def _sorted_cohort_subprocess(q_send, q_request, sampler, seed_sampler, rank,
         if cohort_size is not None and len(cache) > cohort_size:
             # Perform request
             cohort_samples = cache[:cohort_size]
-            if user_id_to_weight is not None:
-                cohort_samples = sorted(
-                    cohort_samples,
-                    key=lambda tup: user_id_to_weight[tup[0]],
-                    reverse=True)
-            q_send.put(cohort_samples)
+            cohort_samples = sorted(cohort_samples,
+                                    key=lambda tup: user_id_to_weight[tup[0]],
+                                    reverse=True)
 
+            # This optimization procedure should be deterministic
+            # across all worker processes.
+            worker_samples = [[] for _ in range(world_size)]
+            worker_total_weight = np.zeros(world_size)
+            for sample in cohort_samples:
+                # Add user to worker with the minimum load.
+                min_worker_index = np.argmin(worker_total_weight)
+                worker_samples[min_worker_index].append(sample)
+                worker_total_weight[min_worker_index] += user_id_to_weight[
+                    sample[0]]
+
+            q_send_num.put(len(worker_samples[rank]))
+            q_send.put(worker_samples[rank])
             cache = cache[cohort_size:]
             cohort_size = None
+
         # Check if the queue is full
         if len(cache) < cache_size:
             # Generate multiple samples at a time
@@ -119,21 +131,22 @@ class _SortedCohortSampler:
 
         self._samples_q = mp.Queue()
         self._cohort_request_q = mp.Queue()
+        self._cohort_num_response_q = mp.Queue()
         self._sample_process = mp.Process(
             target=_sorted_cohort_subprocess,
-            args=(self._samples_q, self._cohort_request_q, sampler,
-                  seed_sampler, rank, world_size, user_id_to_weight))
+            args=(self._samples_q, self._cohort_request_q,
+                  self._cohort_num_response_q, sampler, seed_sampler, rank,
+                  world_size, user_id_to_weight))
         self._sample_process.start()
         atexit.register(self.__del__)
 
     def __iter__(self):
         while True:
-            for i, sample in enumerate(self._samples_q.get()):
-                if i % self._world_size == self._rank:
-                    yield sample
+            yield from self._samples_q.get()
 
     def set_cohort_size(self, cohort_size):
         self._cohort_request_q.put(cohort_size)
+        return self._cohort_num_response_q.get()
 
     def __del__(self):
         self._samples_q.close()
@@ -353,10 +366,12 @@ class FederatedDataset(FederatedDatasetBase):
 
     def _try_set_cohort_size(self, cohort_size: int):
         # Doesn't need a cohort to be set, can continue.
+        worker_cohort_size = None
         with contextlib.suppress(AttributeError):
             # pytype: disable=attribute-error
-            self._sample_fn.set_cohort_size(cohort_size)
+            worker_cohort_size = self._sample_fn.set_cohort_size(cohort_size)
             # pytype: enable=attribute-error
+        return worker_cohort_size
 
     def __next__(self) -> Tuple[AbstractDataset, int]:
         # Each worker will make a dataset with its own sampled user.
@@ -429,12 +444,18 @@ class FederatedDataset(FederatedDatasetBase):
 
     def get_cohort(self,
                    cohort_size: int) -> Iterable[Tuple[AbstractDataset, int]]:
-        self._try_set_cohort_size(cohort_size)
-        for i in range(cohort_size):
-            if (i % get_ops().distributed.world_size
-                ) == get_ops().distributed.global_rank:
-                user_ids, seed = next(self.sampler)
-                yield self.make_dataset_fn(user_ids), seed
+        # Set next cohort size for sampler if possible
+        worker_cohort_size = self._try_set_cohort_size(cohort_size)
+        if worker_cohort_size is None:
+            for i in range(cohort_size):
+                if (i % get_ops().distributed.world_size
+                    ) == get_ops().distributed.global_rank:
+                    user_id, seed = next(self.sampler)
+                    yield self.make_dataset_fn(user_id), seed
+        else:
+            for _ in range(worker_cohort_size):
+                user_id, seed = next(self.sampler)
+                yield self.make_dataset_fn(user_id), seed
 
 
 class FederatedDatasetMixture(FederatedDatasetBase):

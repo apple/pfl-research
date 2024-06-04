@@ -266,7 +266,7 @@ class TestFederatedDatasetMixture:
 @pytest.fixture
 def user_id_to_weight(request):
     if hasattr(request, 'param') and request.param:
-        return {i: i for i in range(100)}
+        return {i: i + 1 for i in range(100)}
     else:
         return None
 

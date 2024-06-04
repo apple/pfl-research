@@ -25,7 +25,7 @@ def get_central_data_and_metadata(data_path: str,
 
 def make_flair_datasets(data_path: str, use_fine_grained_labels: bool,
                         max_num_user_images: int,
-                        scheduling_base_weight_multiplier: int,
+                        scheduling_base_weight_multiplier: float,
                         numpy_to_tensor: Callable):
     """
     Create a train and val ``FederatedDataset`` as well as a

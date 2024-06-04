@@ -20,7 +20,7 @@ def make_federated_dataset(
         partition: str,
         use_fine_grained_labels: bool,
         max_num_user_images: int,
-        scheduling_base_weight_multiplier: int = 1,
+        scheduling_base_weight_multiplier: float = 1.,
         numpy_to_tensor: Callable = lambda x: x) -> FederatedDataset:
     """
     Create federated dataset from the flair dataset, to use in simulations.
@@ -35,6 +35,16 @@ def make_federated_dataset(
         Whether to use fine-grained label taxonomy.
     :param max_num_user_images:
         Maximum number of images each user can have.
+    :param scheduling_base_weight_multiplier:
+        The number of datapoints per user is used as a weight to greedily
+        schedule users in distributed simulations. Figure 3b in pfl-research
+        paper https://arxiv.org/abs/2404.06430 show adding a base value for
+        each user\'s weight for scheduling in distributed simulations
+        speeds up training.
+        This parameter adds a multiplicative factor of the median user weight
+        as base value. 0.0 means no base value added and ~1.0 is the optimal
+        value for the FLAIR benchmark according to Figure 3b (can be different
+        for other setups.
     :param numpy_to_tensor:
         Function that convert numpy array to ML framework tensor.
     :return:

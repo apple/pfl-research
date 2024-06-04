@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 
-from typing import Tuple
 import functools
 import types
+from typing import Tuple
 
-import torch.nn as nn
 import numpy as np
+import torch.nn as nn
 
-from .metrics import image_classification_metrics, image_classification_loss
+from .metrics import image_classification_loss, image_classification_metrics
 
 
 def dnn(input_shape: Tuple[int, ...], hidden_dims: Tuple[int, ...],

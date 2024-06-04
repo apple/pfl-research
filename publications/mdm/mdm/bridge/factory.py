@@ -8,7 +8,6 @@ from pfl.internal.bridge.base import (
 )
 from pfl.internal.ops.framework_types import MLFramework
 from pfl.internal.ops.selector import get_framework_module
-
 from publications.mdm.mdm.bridge.base import PolyaMixtureFrameworkBridge
 
 

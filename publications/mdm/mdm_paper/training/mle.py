@@ -2,14 +2,16 @@ import numpy as np
 
 from pfl.aggregate.simulate import SimulatedBackend
 from pfl.callback import ModelCheckpointingCallback
-from pfl.privacy import (CentrallyAppliedPrivacyMechanism,
-                         PLDPrivacyAccountant, GaussianMechanism)
-
+from pfl.privacy import CentrallyAppliedPrivacyMechanism, GaussianMechanism, PLDPrivacyAccountant
+from publications.mdm.mdm import (
+    MDMAlgorithm,
+    MDMAlgorithmParams,
+    MDMInitializationAlgorithm,
+    MDMInitializationAlgorithmParams,
+    MDMModel,
+    MDMModelHyperParams,
+)
 from publications.mdm.mdm_utils.utils.tools import ModelCheckpointingIterationCallback
-from publications.mdm.mdm import (MDMModel, MDMModelHyperParams, MDMAlgorithm,
-                                  MDMAlgorithmParams,
-                                  MDMInitializationAlgorithm,
-                                  MDMInitializationAlgorithmParams)
 
 
 def solve_polya_mixture_mle(

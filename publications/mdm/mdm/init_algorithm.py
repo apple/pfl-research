@@ -1,24 +1,21 @@
-# -*- coding: utf-8 -*-
 
-from dataclasses import dataclass
-from typing import Tuple, Optional, TypeVar, Callable, Union
 from collections import defaultdict
+from dataclasses import dataclass
+from typing import Callable, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import torch
 
+from pfl.algorithm.base import AlgorithmHyperParams, FederatedAlgorithm
 from pfl.common_types import Population
-from pfl.data.dataset import AbstractDataset
-from pfl.hyperparam import get_param_value
-from pfl.metrics import Metrics
 from pfl.context import CentralContext
-from pfl.stats import MappedVectorStatistics
+from pfl.data.dataset import AbstractDataset, AbstractDatasetType
+from pfl.hyperparam import get_param_value
 from pfl.internal.ops import get_ops
-from pfl.algorithm.base import FederatedAlgorithm, AlgorithmHyperParams
-from pfl.data.dataset import AbstractDatasetType
-
-from publications.mdm.mdm.model import MDMModelType, MDMModelHyperParamsType
+from pfl.metrics import Metrics
+from pfl.stats import MappedVectorStatistics
 from publications.mdm.mdm.bridge.factory import FrameworkBridgeFactory as bridges
+from publications.mdm.mdm.model import MDMModelHyperParamsType, MDMModelType
 
 
 @dataclass(frozen=True)

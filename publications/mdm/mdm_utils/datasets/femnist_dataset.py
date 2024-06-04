@@ -1,27 +1,24 @@
-# -*- coding: utf-8 -*-
 
 import os
-from typing import Callable, Dict, Tuple, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
 import h5py
 import numpy as np
 import torch
 
 from pfl.data import ArtificialFederatedDataset, FederatedDataset
-from pfl.data.sampling import get_user_sampler, get_data_sampler
 from pfl.data.dataset import Dataset
+from pfl.data.sampling import get_data_sampler, get_user_sampler
 
-from .mixture_dataset import (ArtificialFederatedDatasetMixture,
-                              partition_by_dirichlet_mixture_class_distribution
-                              )
+from .mixture_dataset import ArtificialFederatedDatasetMixture, partition_by_dirichlet_mixture_class_distribution
 from .sampler import DirichletDataSampler
 
 
 def _sample_users(user_id_to_data: Dict[str, List[np.ndarray]],
                   filter_method: Optional[str] = None,
-                  sample_fraction: float = None,
-                  start_idx: int = None,
-                  end_idx: int = None,
+                  sample_fraction: Optional[float] = None,
+                  start_idx: Optional[int] = None,
+                  end_idx: Optional[int] = None,
                   include_sampled: bool = True):
 
     user_ids = list(user_id_to_data.keys())
@@ -156,7 +153,7 @@ def make_special_federated_dataset(
     #for k,v in indices_per_class.items():
     #    print('indices_per_class', k, len(v))
 
-    new_user_id_to_data = dict()
+    new_user_id_to_data = {}
     start_id_per_class = {i: 0 for i in unique_labels}
     #print('start_id_per_class', start_id_per_class)
     for user_id, data in user_id_to_data.items():
@@ -235,9 +232,9 @@ def make_femnist_datasets(
     alphas=None,
     user_dataset_len_samplers=None,
     filter_method: Optional[str] = None,
-    sample_fraction: float = None,
-    start_idx: int = None,
-    end_idx: int = None,
+    sample_fraction: Optional[float] = None,
+    start_idx: Optional[int] = None,
+    end_idx: Optional[int] = None,
     include_sampled: bool = True
 ) -> Tuple[FederatedDataset, FederatedDataset, Dataset]:
     """

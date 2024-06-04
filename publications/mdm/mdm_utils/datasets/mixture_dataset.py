@@ -1,12 +1,12 @@
 from collections import defaultdict
 from typing import Callable, Iterable, List, Tuple
 
-import numpy as np
 import joblib
+import numpy as np
 
 from pfl.data import ArtificialFederatedDataset, FederatedDatasetBase
 from pfl.data.dataset import AbstractDataset
-from pfl.internal.ops.selector import (get_default_framework_module as get_ops)
+from pfl.internal.ops.selector import get_default_framework_module as get_ops
 
 
 class ArtificialFederatedDatasetMixture(FederatedDatasetBase):
@@ -139,7 +139,7 @@ def get_user_counts(training_federated_dataset, num_classes,
     over a number of central iterations in train.py.
     """
     print('get_user_counts')
-    all_counts = dict()
+    all_counts = {}
     for r in range(num_central_iterations):
         all_counts[r + 1] = []
         l = list(training_federated_dataset.get_cohort(cohort_size))

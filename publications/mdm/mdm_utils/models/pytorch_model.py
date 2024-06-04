@@ -1,5 +1,5 @@
 import types
-from typing import Tuple, Dict
+from typing import Dict, Tuple
 
 import torch
 from torch import nn
@@ -42,7 +42,7 @@ def simple_cnn(input_shape: Tuple[int, ...], num_outputs: int) -> nn.Module:
 
     # Apply Glorot (Xavier) uniform initialization to match TF2 model.
     for m in model.modules():
-        if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+        if isinstance(m, (nn.Conv2d, nn.Linear)):
             torch.nn.init.xavier_uniform_(m.weight)
 
     model.loss = types.MethodType(image_classification_loss, model)

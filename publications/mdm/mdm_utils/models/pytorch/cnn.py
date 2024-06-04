@@ -1,17 +1,17 @@
-# -*- coding: utf-8 -*-
 
 import types
-from typing import Tuple, List
+from typing import List, Tuple
 
 import numpy as np
 import torch  # type: ignore
 import torch.nn as nn
 import torch.nn.functional as F
+
 from pfl.metrics import Weighted
 
-from .layer import Transpose2D
-from .metrics import image_classification_metrics, image_classification_loss
 from ..numpy.metrics import AveragedPrecision, MacroWeighted
+from .layer import Transpose2D
+from .metrics import image_classification_loss, image_classification_metrics
 
 
 def multi_label_cnn(
@@ -41,9 +41,8 @@ def multi_label_cnn(
 
     import torchvision.models  # type: ignore
     import torchvision.transforms as transforms  # type: ignore
-    from .module_modification import (validate_no_batchnorm,
-                                      freeze_batchnorm_modules,
-                                      convert_batchnorm_modules)
+
+    from .module_modification import convert_batchnorm_modules, freeze_batchnorm_modules, validate_no_batchnorm
 
     torchvision_models = torchvision.models.__dict__
 
@@ -218,7 +217,7 @@ def simple_cnn(input_shape: Tuple[int, ...], num_outputs: int) -> nn.Module:
 
     # Apply Glorot (Xavier) uniform initialization to match TF2 model.
     for m in model.modules():
-        if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+        if isinstance(m, (nn.Conv2d, nn.Linear)):
             torch.nn.init.xavier_uniform_(m.weight)
 
     model.loss = types.MethodType(image_classification_loss, model)

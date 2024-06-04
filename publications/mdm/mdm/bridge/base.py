@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Protocol, TypeVar, Tuple
+from typing import Any, Dict, Protocol, Tuple, TypeVar
 
 Tensor = TypeVar('Tensor')
 
@@ -8,7 +7,7 @@ Tensor = TypeVar('Tensor')
 class PolyaMixtureFrameworkBridge(Protocol[Tensor]):
     """
     Interface for Polya-Mixture algorithm for a particular Deep Learning
-    framework. 
+    framework.
     """
 
     @staticmethod

@@ -1,20 +1,19 @@
-# -*- coding: utf-8 -*-
 
-from typing import TypeVar, Generic, Tuple, List, Union, Optional
-from dataclasses import dataclass
 import os
-import joblib
+from dataclasses import dataclass
+from typing import Generic, List, Optional, Tuple, TypeVar, Union
 
+import joblib
 import numpy as np
 
-from pfl.hyperparam.base import ModelHyperParams
-from pfl.model.base import Model
-from pfl.metrics import Metrics
-from pfl.stats import MappedVectorStatistics
 from pfl.exception import CheckpointNotFoundError
-from pfl.internal.ops.selector import set_framework_module
+from pfl.hyperparam.base import ModelHyperParams
 from pfl.internal.ops import pytorch_ops
 from pfl.internal.ops.selector import get_default_framework_module as get_ops
+from pfl.internal.ops.selector import set_framework_module
+from pfl.metrics import Metrics
+from pfl.model.base import Model
+from pfl.stats import MappedVectorStatistics
 
 Tensor = TypeVar('Tensor')
 FrameworkModelType = TypeVar('FrameworkModelType')

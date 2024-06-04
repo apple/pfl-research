@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 
 from typing import Tuple
+
 import torch
 
 from ..base import PolyaMixtureFrameworkBridge

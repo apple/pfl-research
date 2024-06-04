@@ -44,7 +44,8 @@ MDMAlgorithmParamsType = TypeVar('MDMAlgorithmParamsType',
 
 class MDMAlgorithm(FederatedAlgorithm[MDMAlgorithmParamsType,
                                       MDMModelHyperParamsType, MDMModelType,
-                                      MappedVectorStatistics, AbstractDatasetType]):
+                                      MappedVectorStatistics,
+                                      AbstractDatasetType]):
     """
     Federated algorithm class for learning mixture of Polya
     (Dirichlet-Multinomial) distribution using MLE algorithm.
@@ -161,7 +162,8 @@ class MDMAlgorithm(FederatedAlgorithm[MDMAlgorithmParamsType,
         e[:, selected_bin] = posterior_probabilities.view(-1)
 
         statistics = MappedVectorStatistics()
-        statistics['posterior_probabilities'] = posterior_probabilities.to('cpu')
+        statistics['posterior_probabilities'] = posterior_probabilities.to(
+            'cpu')
         statistics['numerator'] = numerator.to('cpu')
         statistics['denominator'] = denominator.to('cpu')
         statistics['num_samples_distribution'] = e.to('cpu')

@@ -40,11 +40,13 @@ class PyTorchPolyaMixtureBridge(PolyaMixtureFrameworkBridge[torch.Tensor]):
     def expectation_step(phi, alphas, num_samples_distribution,
                          category_counts) -> torch.Tensor:
         if (num_samples_distribution == 0).any():
-            raise AssertionError('num_samples_distribution contains zero values, which cannot work with expectation step on clients')
+            raise AssertionError(
+                'num_samples_distribution contains zero values, which cannot work with expectation step on clients'
+            )
 
         # E Step - compute posterior probability of each component
         # Compute log prior + log likelihood
-        # TODO log_v might be missing + torch.lgamma(torch.sum(counts)+1) - torch.sum(torch.lgamma(category_counts+1), dim=1, keepdim=False) 
+        # TODO log_v might be missing + torch.lgamma(torch.sum(counts)+1) - torch.sum(torch.lgamma(category_counts+1), dim=1, keepdim=False)
         phi = torch.Tensor(phi).to('cpu')
         alphas = torch.Tensor(alphas).to('cpu')
         category_counts = category_counts.to('cpu')
@@ -56,7 +58,7 @@ class PyTorchPolyaMixtureBridge(PolyaMixtureFrameworkBridge[torch.Tensor]):
             torch.sum(
                 torch.lgamma(category_counts + alphas) - torch.lgamma(alphas),
                 dim=1,
-                keepdim=False)) + torch.log(num_samples_distribution) 
+                keepdim=False)) + torch.log(num_samples_distribution)
 
         # TODO Ignore this as log(0) => NaN
         # TODO fix this equation so that it works with num_samples_distribution = 0
@@ -75,12 +77,13 @@ class PyTorchPolyaMixtureBridge(PolyaMixtureFrameworkBridge[torch.Tensor]):
 
     @staticmethod
     def maximization_step(posterior_probabilities, category_counts,
-                             alphas) -> torch.Tensor:
+                          alphas) -> torch.Tensor:
         # M Step - compute client update to alphas for fixed point update
         # which will be applied by the model in process_aggregated_statistics.
         # Note the numerator and denominator are both weighted by w (the
         # probability vector giving the client belonging to each component).
-        posterior_probabilities = torch.Tensor(posterior_probabilities).to('cpu')
+        posterior_probabilities = torch.Tensor(posterior_probabilities).to(
+            'cpu')
         category_counts = torch.Tensor(category_counts).to('cpu')
         alphas = torch.Tensor(alphas).to('cpu')
         numerator = posterior_probabilities.reshape(

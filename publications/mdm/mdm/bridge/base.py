@@ -2,7 +2,6 @@
 
 from typing import Any, Dict, Protocol, TypeVar, Tuple
 
-
 Tensor = TypeVar('Tensor')
 
 

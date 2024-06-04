@@ -218,10 +218,10 @@ def make_central_dataset(
     """
     Create central dataset from a FEMNIST data file.
     """
-    images = np.concatenate([data[0].cpu() for data in user_id_to_data.values()],
-                            axis=0)
-    labels = np.concatenate([data[1].cpu() for data in user_id_to_data.values()],
-                            axis=0)
+    images = np.concatenate(
+        [data[0].cpu() for data in user_id_to_data.values()], axis=0)
+    labels = np.concatenate(
+        [data[1].cpu() for data in user_id_to_data.values()], axis=0)
 
     return Dataset(raw_data=[images, labels])
 

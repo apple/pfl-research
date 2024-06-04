@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Callable, Type
 
 from torch import nn

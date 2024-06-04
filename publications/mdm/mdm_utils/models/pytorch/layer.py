@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-
 from abc import ABC
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.modules.batchnorm import _NormBase
+
 from ..numpy.layer import positional_encoding
 
 
@@ -22,10 +21,7 @@ class _FrozenBatchNorm(_NormBase, ABC):
         # and use pretrained statistics in training as well
         self.training = False
 
-        if self.momentum is None:
-            exponential_average_factor = 0.0
-        else:
-            exponential_average_factor = self.momentum
+        exponential_average_factor = 0.0 if self.momentum is None else self.momentum
 
         bn_training = (self.running_mean is None) and (self.running_var
                                                        is None)
@@ -48,24 +44,22 @@ class FrozenBatchNorm1D(_FrozenBatchNorm):
 
     def _check_input_dim(self, input):
         if input.dim() != 2 and input.dim() != 3:
-            raise ValueError('expected 2D or 3D input (got {}D input)'.format(
-                input.dim()))
+            raise ValueError(
+                f'expected 2D or 3D input (got {input.dim()}D input)')
 
 
 class FrozenBatchNorm2D(_FrozenBatchNorm):
 
     def _check_input_dim(self, input):
         if input.dim() != 4:
-            raise ValueError('expected 4D input (got {}D input)'.format(
-                input.dim()))
+            raise ValueError(f'expected 4D input (got {input.dim()}D input)')
 
 
 class FrozenBatchNorm3D(_FrozenBatchNorm):
 
     def _check_input_dim(self, input):
         if input.dim() != 5:
-            raise ValueError('expected 5D input (got {}D input)'.format(
-                input.dim()))
+            raise ValueError(f'expected 5D input (got {input.dim()}D input)')
 
 
 class Transpose2D(nn.Module):

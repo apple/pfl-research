@@ -2,13 +2,16 @@ import numpy as np
 
 from pfl.aggregate.simulate import SimulatedBackend
 from pfl.callback import ModelCheckpointingCallback
-from pfl.privacy import (CentrallyAppliedPrivacyMechanism, PLDPrivacyAccountant, GaussianMechanism) 
-
+from pfl.privacy import CentrallyAppliedPrivacyMechanism, GaussianMechanism, PLDPrivacyAccountant
+from publications.mdm.mdm import (
+    MDMAlgorithm,
+    MDMAlgorithmParams,
+    MDMInitializationAlgorithm,
+    MDMInitializationAlgorithmParams,
+    MDMModel,
+    MDMModelHyperParams,
+)
 from publications.mdm.mdm_utils.utils.tools import ModelCheckpointingIterationCallback
-from publications.mdm.mdm import (MDMModel, MDMModelHyperParams,
-                                          MDMAlgorithm, MDMAlgorithmParams,
-                                          MDMInitializationAlgorithm,
-                                          MDMInitializationAlgorithmParams)
 
 
 def solve_polya_mixture_mle(
@@ -33,13 +36,12 @@ def solve_polya_mixture_mle(
     if add_DP:
         num_iterations = arguments.central_num_iterations_init_algorithm + arguments.central_num_iterations_algorithm
 
-        accountant = PLDPrivacyAccountant(
-            num_compositions=num_iterations,
-            sampling_probability=0.001,
-            mechanism='gaussian',
-            epsilon=2,
-            delta=1e-7,
-            noise_scale=1.0)
+        accountant = PLDPrivacyAccountant(num_compositions=num_iterations,
+                                          sampling_probability=0.001,
+                                          mechanism='gaussian',
+                                          epsilon=2,
+                                          delta=1e-7,
+                                          noise_scale=1.0)
         mechanism = GaussianMechanism.from_privacy_accountant(
             accountant=accountant, clipping_bound=0.5)
 

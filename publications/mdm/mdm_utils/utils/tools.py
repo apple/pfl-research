@@ -3,7 +3,6 @@ from typing import Tuple
 
 from pfl.callback import TrainingProcessCallback
 from pfl.internal.ops.selector import get_default_framework_module as get_ops
-
 from pfl.metrics import Metrics
 from pfl.model.base import StatefulModel
 

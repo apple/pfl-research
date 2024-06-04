@@ -7,12 +7,12 @@ class store_bool(argparse.Action):
         argparse.Action.__init__(self, option_strings, dest, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
-        false_values = set(['false', 'no'])
-        true_values = set(['true', 'yes'])
+        false_values = {'false', 'no'}
+        true_values = {'true', 'yes'}
 
         values = values.lower()
 
-        if not values in (false_values | true_values):
+        if values not in (false_values | true_values):
             raise argparse.ArgumentError(
                 self, 'Value must be either "true" or "false"')
         value = (values in true_values)
@@ -24,7 +24,9 @@ def add_experiment_args(parser):
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--data_dir', type=str)
     parser.add_argument('--dirname', type=str)
-    parser.add_argument('--mle_param_dirname', type=str, default='publications/mdm/mle_params')
+    parser.add_argument('--mle_param_dirname',
+                        type=str,
+                        default='publications/mdm/mle_params')
     parser.add_argument(
         '--precomputed_parameter_filepath',
         type=str,
@@ -61,17 +63,19 @@ def add_dataset_preprocessing_args(parser):
 def float_list(arg):
     try:
         float_values = [float(val) for val in arg.split()]
-        return float_values
     except ValueError:
         raise argparse.ArgumentTypeError("Invalid float values in the list")
+    else:
+        return float_values
 
 
 def int_list(arg):
     try:
         int_values = [int(val) for val in arg.split()]
-        return int_values
     except ValueError:
         raise argparse.ArgumentTypeError("Invalid int values in the list")
+    else:
+        return int_values
 
 
 def add_dataset_args(parser):

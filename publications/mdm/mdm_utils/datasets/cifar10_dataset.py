@@ -1,19 +1,14 @@
-# -*- coding: utf-8 -*-
-
 import os
 import pickle
 from typing import Callable, List, Optional, Tuple
 
 import numpy as np
 
-from pfl.data import (ArtificialFederatedDataset, FederatedDataset,
-                      FederatedDatasetBase)
-from pfl.data.sampling import get_user_sampler, get_data_sampler
+from pfl.data import ArtificialFederatedDataset, FederatedDataset, FederatedDatasetBase
 from pfl.data.dataset import Dataset
+from pfl.data.sampling import get_data_sampler, get_user_sampler
 
-from .mixture_dataset import (ArtificialFederatedDatasetMixture,
-                              partition_by_dirichlet_mixture_class_distribution
-                              )
+from .mixture_dataset import ArtificialFederatedDatasetMixture, partition_by_dirichlet_mixture_class_distribution
 from .sampler import DirichletDataSampler
 
 
@@ -94,7 +89,7 @@ def make_federated_dataset(
     images = numpy_to_tensor(images)
     labels = numpy_to_tensor(labels)
 
-    data = dict()
+    data = {}
     for user_id in range(len(user_idxs)):
         data[user_id] = [
             images[user_idxs[user_id]], labels[user_idxs[user_id]]

@@ -13,7 +13,7 @@ def plot_cifar10_results():
     df = pd.read_csv(filename)
     experiments = np.unique(df['experiment'].values).tolist()
 
-    dfs = dict()
+    dfs = {}
     for experiment in experiments:
         dfs[experiment] = (df.loc[df['experiment'] == experiment])
 
@@ -21,13 +21,13 @@ def plot_cifar10_results():
         'cohort_size', 'local_batch_size', 'local_learning_rate',
         'local_num_epochs'
     ]
-    unique_vals = dict()
+    unique_vals = {}
     for column_name in column_names:
         unique_vals[column_name] = np.unique(dfs['live'][column_name]).tolist()
 
-    accs = dict()
+    accs = {}
     for name, df in dfs.items():
-        accs[name] = dict()
+        accs[name] = {}
         for tup in product(*unique_vals.values()):
             filter_dic = dict(zip(column_names, tup))
             a = df.loc[(df[list(filter_dic)] == pd.Series(filter_dic)).all(
@@ -38,7 +38,7 @@ def plot_cifar10_results():
     permutation = np.argsort(-x)
     mask = np.array(list(accs['live'].values()))[permutation] >= 0.6
 
-    dic = dict()
+    dic = {}
     c = dict(zip(accs.keys(), ['blue', 'red', 'green']))
 
     plt.rcParams.update({'font.size': 13})

@@ -1,22 +1,18 @@
-# -*- coding: utf-8 -*-
-
 from dataclasses import dataclass
-from typing import Tuple, Optional, TypeVar, Callable, Union
+from typing import Callable, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import torch
 
+from pfl.algorithm.base import AlgorithmHyperParams, FederatedAlgorithm
 from pfl.common_types import Population
-from pfl.data.dataset import AbstractDataset
+from pfl.context import CentralContext
+from pfl.data.dataset import AbstractDataset, AbstractDatasetType
 from pfl.hyperparam import get_param_value
 from pfl.metrics import Metrics
-from pfl.context import CentralContext
 from pfl.stats import MappedVectorStatistics
-from pfl.algorithm.base import FederatedAlgorithm, AlgorithmHyperParams
-from pfl.data.dataset import AbstractDatasetType
-
-from publications.mdm.mdm.model import MDMModelType, MDMModelHyperParamsType
 from publications.mdm.mdm.bridge.factory import FrameworkBridgeFactory as bridges
+from publications.mdm.mdm.model import MDMModelHyperParamsType, MDMModelType
 
 
 @dataclass(frozen=True)
@@ -44,7 +40,8 @@ MDMAlgorithmParamsType = TypeVar('MDMAlgorithmParamsType',
 
 class MDMAlgorithm(FederatedAlgorithm[MDMAlgorithmParamsType,
                                       MDMModelHyperParamsType, MDMModelType,
-                                      MappedVectorStatistics, AbstractDatasetType]):
+                                      MappedVectorStatistics,
+                                      AbstractDatasetType]):
     """
     Federated algorithm class for learning mixture of Polya
     (Dirichlet-Multinomial) distribution using MLE algorithm.
@@ -161,7 +158,8 @@ class MDMAlgorithm(FederatedAlgorithm[MDMAlgorithmParamsType,
         e[:, selected_bin] = posterior_probabilities.view(-1)
 
         statistics = MappedVectorStatistics()
-        statistics['posterior_probabilities'] = posterior_probabilities.to('cpu')
+        statistics['posterior_probabilities'] = posterior_probabilities.to(
+            'cpu')
         statistics['numerator'] = numerator.to('cpu')
         statistics['denominator'] = denominator.to('cpu')
         statistics['num_samples_distribution'] = e.to('cpu')

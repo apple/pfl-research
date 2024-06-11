@@ -31,6 +31,7 @@ from pfl.callback import (
     WandbCallback,
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
+from pfl.internal.ops.pytorch_ops import get_default_device
 from pfl.model.pytorch import PyTorchModel
 from pfl.privacy import CentrallyAppliedPrivacyMechanism
 
@@ -88,6 +89,8 @@ def main():
     arguments.max_sequence_length = metadata['max_sequence_length']
 
     pytorch_model = get_model_pytorch(arguments)
+    # Put on GPU if available.
+    pytorch_model = pytorch_model.to(get_default_device())
 
     params = [p for p in pytorch_model.parameters() if p.requires_grad]
     if arguments.central_optimizer == 'adam':

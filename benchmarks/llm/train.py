@@ -2,6 +2,8 @@
 
 import argparse
 import logging
+import os
+from uuid import uuid4
 
 import numpy as np
 import torch
@@ -21,8 +23,9 @@ from utils.logging import init_logging
 
 from llm.argument_parsing import add_llm_arguments, parse_central_lr_scheduler, parse_peft_config
 from pfl.aggregate.simulate import SimulatedBackend
-from pfl.callback import AggregateMetricsToDisk, CentralEvaluationCallback, StopwatchCallback
+from pfl.callback import AggregateMetricsToDisk, CentralEvaluationCallback, StopwatchCallback, WandbCallback
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
+from pfl.internal.ops import pytorch_ops
 from pfl.model.pytorch import PyTorchModel
 
 
@@ -86,6 +89,8 @@ def main():
     peft_config = parse_peft_config(arguments)
     hf_model = wrap_hugging_face_model(hf_model, peft_config,
                                        causal_lm_metrics_fn)
+    # Put on GPU if available.
+    hf_model = hf_model.to(pytorch_ops.get_default_device())
 
     params = [p for p in hf_model.parameters() if p.requires_grad]
     if arguments.central_optimizer == 'adam':
@@ -137,6 +142,17 @@ def main():
     ]
     algorithm, algorithm_params, algorithm_callbacks = get_algorithm(arguments)
     callbacks.extend(algorithm_callbacks)
+
+    if arguments.wandb_project_id:
+        callbacks.append(
+            WandbCallback(
+                wandb_project_id=arguments.wandb_project_id,
+                wandb_experiment_name=os.environ.get('WANDB_TASK_ID',
+                                                     str(uuid4())),
+                # List of dicts to one dict.
+                wandb_config=dict(vars(arguments)),
+                tags=os.environ.get('WANDB_TAGS', 'empty-tag').split(','),
+                group=os.environ.get('WANDB_GROUP', None)))
 
     logger.info("Starts federated learning.")
     model = algorithm.run(algorithm_params=algorithm_params,

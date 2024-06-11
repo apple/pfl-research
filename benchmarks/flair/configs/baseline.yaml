@@ -25,6 +25,7 @@ evaluation_frequency: 20
 central_eval_batch_size: 512
 pretrained: true
 #save_model_path: './checkpoints'
+scheduling_base_weight_multiplier: 1.0
 
 # Simulate I.I.D. data by ignoring user ID
 # - dataset: flair_iid

@@ -33,7 +33,7 @@ from pfl.callback import (
     WandbCallback,
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
-from pfl.internal.ops.pytorch_ops import to_tensor
+from pfl.internal.ops.pytorch_ops import get_default_device, to_tensor
 from pfl.model.pytorch import PyTorchModel
 
 from .argument_parsing import add_flair_training_arguments
@@ -96,6 +96,8 @@ def main():
     arguments.num_classes = num_classes
 
     pytorch_model = get_model_pytorch(arguments)
+    # Put on GPU if available.
+    pytorch_model = pytorch_model.to(get_default_device())
 
     variables = [p for p in pytorch_model.parameters() if p.requires_grad]
     if arguments.central_optimizer == 'adam':

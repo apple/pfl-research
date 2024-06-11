@@ -23,8 +23,8 @@ dp-accounting = "^0.4"
 prv-accountant = "^0.2.0"
 #### Will be installed only with "pytorch" install extra
 torch = [
-  { version = "2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
-  { version = "2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
+  { version = "^2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "^2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 #### Will be installed only with "tf" install extra
 tensorflow = [
@@ -168,6 +168,7 @@ ignore = [
 "tests/integration/*" = ["S607"]
 "pfl/*" = ["S101", "S607"]
 "benchmarks/*" = ["S101", "SIM115", "A002", "B007", "E741", "S310"]
+"publications/*" = ["S101", "SIM115", "A002", "B007", "E741", "S310"]
 
 [tool.coverage.report]
 skip_empty = true
@@ -205,7 +206,7 @@ markers = [
 # Run with command:
 # poetry run bump-my-version bump <major/minor/patch>
 [tool.bumpversion]
-current_version = "0.1.0"
+current_version = "0.2.0"
 commit = "True"
 tag = "False"
 

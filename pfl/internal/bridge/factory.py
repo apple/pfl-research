@@ -51,6 +51,9 @@ class FrameworkBridgeFactory:
         elif framework == MLFramework.TENSORFLOW:
             from .tensorflow import sgd as sgd_tf
             return sgd_tf.TFSGDBridge
+        elif framework == MLFramework.MLX:
+            from .mlx import sgd as sgd_mlx
+            return sgd_mlx.MLXSGDBridge
         else:
             raise NotImplementedError("SGD bridge not available "
                                       f"for framework {framework}")

@@ -15,20 +15,17 @@ if check_mlx_installed():
     _internal_reset_framework_module()
 
 
-@pytest.mark.skipif(not check_mlx_installed(),
-                    reason='MLX not installed')
+@pytest.mark.skipif(not check_mlx_installed(), reason='MLX not installed')
 class TestMLXModel:
     """
     Contains all tests that are unique to MLXModel.
     """
 
     def test_save_and_load_central_optimizer_impl(
-            self, mlx_model_setup,
-            check_save_and_load_central_optimizer_impl):
+            self, mlx_model_setup, check_save_and_load_central_optimizer_impl):
         """
         Test if central optimizer could be save and restored
         """
         mlx_model_setup.model._central_optimizer = mlx.optimizers.Adam(  # pylint: disable=protected-access
             learning_rate=1.0)
         check_save_and_load_central_optimizer_impl(mlx_model_setup)
-

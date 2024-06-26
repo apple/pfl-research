@@ -1,8 +1,8 @@
 # Copyright © 2023-2024 Apple Inc.
 import argparse
 import logging
-from functools import partial
 import os
+from functools import partial
 from uuid import uuid4
 
 import mlx
@@ -10,7 +10,6 @@ import mlx.core as mx
 import mlx.nn as nn
 import numpy as np
 import torch  # type: ignore
-from pfl.model.mlx import MLXModel
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_mlx
 from utils.argument_parsing import (
@@ -37,6 +36,7 @@ from pfl.callback import (
 )
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.internal.ops.mlx_ops import to_tensor
+from pfl.model.mlx import MLXModel
 from pfl.privacy import CentrallyAppliedPrivacyMechanism
 
 

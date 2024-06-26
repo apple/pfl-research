@@ -124,9 +124,11 @@ def is_pytest_running():
     """
     return 'PYTEST_CURRENT_TEST' in os.environ
 
+
 def is_mpi_running():
     """
     :returns:
         `True` if script was called with `mpirun`.
     """
-    return ('OMPI_WORLD_SIZE' in os.environ and 'OMPI_VERSION' in os.environ and os.environ.get('OMPI_TOOL_NAME', None) == 'mpirun')
+    return ('OMPI_WORLD_SIZE' in os.environ and 'OMPI_VERSION' in os.environ
+            and os.environ.get('OMPI_TOOL_NAME', None) == 'mpirun')

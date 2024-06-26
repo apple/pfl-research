@@ -5,8 +5,8 @@ from typing import List, Tuple
 
 import mlx.core as mx
 import mlx.nn as nn
-from mlx.utils import tree_flatten
 import numpy as np
+from mlx.utils import tree_flatten
 
 from pfl.metrics import Weighted
 

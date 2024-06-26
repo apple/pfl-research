@@ -392,6 +392,7 @@ def _make_pytorch_model():
 def _make_mlx_model():
     import mlx
     import mlx.core as mx
+
     from pfl.model.mlx import MLXModel
 
     rngs = mx.random.split(mx.random.key(1), 4)

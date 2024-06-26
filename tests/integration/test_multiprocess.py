@@ -6,9 +6,7 @@ import sys
 
 import pytest
 
-from pfl.internal.ops.common_ops import (check_mlx_installed,
-                                         get_pytorch_major_version,
-                                         get_tf_major_version)
+from pfl.internal.ops.common_ops import check_mlx_installed, get_pytorch_major_version, get_tf_major_version
 
 
 class TestMultiProcess:

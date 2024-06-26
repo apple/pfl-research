@@ -7,6 +7,7 @@ from pfl.internal.ops.common_ops import check_mlx_installed
 
 if check_mlx_installed():
     import mlx.core as mx
+
     from pfl.internal.ops import mlx_ops
 
 

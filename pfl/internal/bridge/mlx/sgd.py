@@ -1,6 +1,6 @@
 # Copyright © 2023-2024 Apple Inc.
-from functools import partial
 import logging
+from functools import partial
 
 import mlx
 import mlx.core as mx
@@ -15,6 +15,7 @@ from ..base import SGDFrameworkBridge
 
 logger = logging.getLogger(__name__)
 _mlx_cache = {}
+
 
 def get_or_make_loss_grad_fn(model_uuid: str, mlx_model: nn.Module, optimizer,
                              fn):

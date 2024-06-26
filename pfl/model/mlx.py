@@ -5,9 +5,9 @@ import uuid
 from typing import Callable, Dict, Optional, Tuple
 
 import mlx
-import mlx.optimizers
 import mlx.core as mx
 import mlx.nn as nn
+import mlx.optimizers
 
 from pfl.data.dataset import AbstractDatasetType
 from pfl.exception import CheckpointNotFoundError
@@ -126,7 +126,8 @@ class MLXModel(StatefulModel):
     @property
     def central_optimizer_variable_map(
             self) -> Optional[Dict[Tuple[str, str], mx.array]]:
-        flat_state = dict(mlx.utils.tree_flatten(self._central_optimizer.state))
+        flat_state = dict(mlx.utils.tree_flatten(
+            self._central_optimizer.state))
         del flat_state['step']
         del flat_state['learning_rate']
         return flat_state
@@ -146,7 +147,8 @@ class MLXModel(StatefulModel):
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
         self._model.save_weights(os.path.join(dir_path, self._MODEL_CKPT_NAME))
-        mx.savez(os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME), **self.central_optimizer_variable_map)
+        mx.savez(os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME),
+                 **self.central_optimizer_variable_map)
 
     def load(self, dir_path: str) -> None:
         """
@@ -165,13 +167,17 @@ class MLXModel(StatefulModel):
         self._model.load_weights(weights_path)
         logger.info(f'Restored model weights from {weights_path}')
 
-        optimizer_path = os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME)
+        optimizer_path = os.path.join(dir_path,
+                                      self._CENTRAL_OPTIMIZER_CKPT_NAME)
         if os.path.exists(optimizer_path):
             optimizer_state = mx.load(optimizer_path)
             self._central_optimizer.state.update(optimizer_state)
-            logger.info(f'Restored central optimizer checkpoint from {optimizer_path}.')
+            logger.info(
+                f'Restored central optimizer checkpoint from {optimizer_path}.'
+            )
         else:
-            logger.info(f'No central optimizer checkpoint found at {optimizer_path}.')
+            logger.info(
+                f'No central optimizer checkpoint found at {optimizer_path}.')
 
     def get_parameters(
         self,
@@ -225,7 +231,8 @@ class MLXModel(StatefulModel):
         """
         num_epochs = (1 if train_params.local_num_epochs is None else
                       train_params.get('local_num_epochs'))
-        self._reset_local_optimizer(learning_rate=train_params.local_learning_rate)
+        self._reset_local_optimizer(
+            learning_rate=train_params.local_learning_rate)
 
         for _ in range(num_epochs):
             for batch_ix, batch in enumerate(

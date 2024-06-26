@@ -6,8 +6,8 @@ from typing import List, Optional, Tuple, Type
 
 import mlx.core as mx
 import numpy as np
-from pfl.internal.ops.common_ops import is_mpi_running
 
+from pfl.internal.ops.common_ops import is_mpi_running
 from pfl.internal.ops.framework_types import MLFramework
 
 from .distributed import DistributedContext, NotDistributedContext
@@ -219,10 +219,7 @@ def to_tensor(tensor: mx.array, dtype: Optional[str] = 'float32') -> mx.array:
     """
     Convert a numpy array to a mlx array,
     """
-    if dtype is not None and isinstance(dtype, str):
-        mlx_dtype = getattr(mx, dtype)
-    else:
-        mlx_dtype = dtype
+    mlx_dtype = getattr(mx, dtype) if dtype is not None and isinstance(dtype, str) else dtype
 
     if isinstance(tensor, mx.array):
         return tensor

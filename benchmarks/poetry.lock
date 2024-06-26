@@ -3170,4 +3170,4 @@ tf = ["pfl", "pfl", "pfl", "tensorflow", "tensorflow_addons"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "1cdcdd91574f6a11ca52bf088d60aa8bd3ad813ffd835fd4a1b15685a38398b0"
+content-hash = "bfb97502efc8d841da1db59a247b06b7450e104776510c84f3b9b1ce1fc2d7b6"

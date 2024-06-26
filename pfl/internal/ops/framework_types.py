@@ -6,3 +6,4 @@ class MLFramework(Enum):
     NUMPY = 'numpy'
     TENSORFLOW = 'tensorflow'
     PYTORCH = 'pytorch'
+    MLX = 'mlx'

@@ -17,6 +17,7 @@ def load_and_preprocess(pickle_file_path: str,
                         exclude_classes=None):
     images, labels = pickle.load(open(pickle_file_path, 'rb'))
     images = images.astype(np.float32)
+    labels = labels.astype(np.int64)
 
     # Normalize per-channel.
     if channel_means is None:

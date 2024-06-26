@@ -389,6 +389,48 @@ def _make_pytorch_model():
     return model
 
 
+def _make_mlx_model():
+    import mlx
+    import mlx.core as mx
+    from pfl.model.mlx import MLXModel
+
+    rngs = mx.random.split(mx.random.key(1), 4)
+
+    class TestModel(mlx.nn.Module):
+
+        def __init__(self):
+            super().__init__()
+            self.w1 = mx.random.normal(scale=0.1, shape=(2, 10), key=rngs[0])
+            self.b1 = mx.random.normal(scale=0.1, shape=(10, ), key=rngs[1])
+            self.w2 = mx.random.normal(scale=0.1, shape=(10, 1), key=rngs[2])
+            self.b2 = mx.random.normal(scale=0.1, shape=(1, ), key=rngs[3])
+
+        def __call__(self, x):
+            a1 = mlx.nn.sigmoid(mx.matmul(x, self.w1) + self.b1)
+            a2 = mlx.nn.sigmoid(mx.matmul(a1, self.w2) + self.b2)
+            return a2
+
+        def loss(self, x, y, is_eval=False):
+            if is_eval:
+                self.eval()
+            else:
+                self.train()
+            return mlx.nn.losses.binary_cross_entropy(self(x),
+                                                      y,
+                                                      reduction='sum')
+
+        def metrics(self, x, y):
+            loss_value = self.loss(x, y, is_eval=True)
+            num_samples = len(y)
+            return {'loss': Weighted(loss_value.item(), num_samples)}
+
+    mlx_model = TestModel()
+    model = MLXModel(model=mlx_model,
+                     local_optimizer=mlx.optimizers.SGD(learning_rate=0.0),
+                     central_optimizer=mlx.optimizers.SGD(learning_rate=1.0))
+    return model
+
+
 def _generate_feddata_generic(slices):
     sampler = get_user_sampler('random', list(slices.keys()))
     return FederatedDataset.from_slices(slices, sampler)
@@ -452,8 +494,7 @@ def _generate_federated_dataset(backend_framework, use_framework_dataset):
     elif backend_framework == 'tensorflow':
         return _generate_feddata_tensorflow(slices)
     else:
-        raise AssertionError(
-            f'{backend_framework} with data API not testable yet')
+        return _generate_feddata_generic(slices)
 
 
 def _generate_simulated_federated_dataset(backend_framework,
@@ -497,7 +538,7 @@ if __name__ == '__main__':
                                  help='Path to a pickle file to dump to disk')
 
     argument_parser.add_argument('--backend_framework',
-                                 choices=['tensorflow', 'pytorch'],
+                                 choices=['tensorflow', 'pytorch', 'mlx'],
                                  default='tensorflow',
                                  help='Which model should be used')
 
@@ -581,6 +622,8 @@ if __name__ == '__main__':
     # because of pickle. Define new models.
     if arguments.backend_framework == 'tensorflow':
         model = _make_tensorflow_model()
+    elif arguments.backend_framework == 'mlx':
+        model = _make_mlx_model()
     else:
         assert arguments.backend_framework == 'pytorch'
         model = _make_pytorch_model()

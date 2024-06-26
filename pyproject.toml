@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pfl"
-version = "0.2.0"
+version = "0.1.0"
 description = "Simulation framework for Private Federated Learning"
 authors = ["Apple"]
 repository = "https://github.com/apple/pfl-research"
@@ -39,6 +39,9 @@ tensorflow-probability = { version = "^0.22", optional = true }
 scikit-learn = { version = "^1.0.2", optional = true }
 xgboost = { version = "^1.4.2", optional = true }
 
+#### Will be installed only with "mlx" install extra
+mlx = { version = "^0.15.0", optional = true }
+
 #### Needed in case you want to install Horovod
 cmake = "^3.27.5"
 wheel = "^0.41.2"
@@ -66,6 +69,7 @@ sphinx-last-updated-by-git = "^0.3.6"
 [tool.poetry.extras]
 pytorch = [ 'torch', 'cmake']
 tf = ['tensorflow', 'tensorflow-macos', 'tensorflow-probability', 'cmake']
+mlx = ['mlx']
 trees = ['scikit-learn', 'xgboost']
 
 [[tool.poetry.source]]

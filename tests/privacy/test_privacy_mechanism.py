@@ -15,7 +15,8 @@ from pfl.common_types import Population
 from pfl.context import CentralContext, UserContext
 from pfl.hyperparam import ModelHyperParams
 from pfl.hyperparam.base import AlgorithmHyperParams
-from pfl.internal.ops import get_pytorch_major_version, get_tf_major_version
+from pfl.internal.ops import (check_mlx_installed, get_pytorch_major_version,
+                              get_tf_major_version)
 from pfl.metrics import Metrics, get_overall_value
 from pfl.privacy import compute_parameters
 from pfl.privacy.approximate_mechanism import SquaredErrorLocalPrivacyMechanism
@@ -42,6 +43,12 @@ framework_fixtures = [
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ]),
+    pytest.param(lazy_fixture('mlx_ops'),
+                 marks=[
+                     pytest.mark.skipif(not check_mlx_installed(),
+                                        reason='MLX not installed')
+                 ],
+                 id='mlx')
 ]
 
 _num_iterations = 700

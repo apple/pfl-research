@@ -33,10 +33,17 @@ OpsSetup = namedtuple(
 @pytest.fixture
 def check_equal_tensors():
 
-    def _check_equal_tensors(numpy_vars, tensors, ops_setup):
+    def _check_equal_tensors(numpy_vars,
+                             tensors,
+                             ops_setup,
+                             almost_equal=False):
         for ndarray, tensor in zip(numpy_vars, tensors):
-            np.testing.assert_array_equal(ndarray,
-                                          ops_setup.ops.to_numpy(tensor))
+            if almost_equal:
+                np.testing.assert_array_almost_equal(
+                    ndarray, ops_setup.ops.to_numpy(tensor))
+            else:
+                np.testing.assert_array_equal(ndarray,
+                                              ops_setup.ops.to_numpy(tensor))
 
     return _check_equal_tensors
 
@@ -122,3 +129,36 @@ def numpy_ops_setup(numpy_ops, numpy_vars):
                     deterministic_noise=deterministic_noise,
                     variable_to_numpy_func=lambda v: v,
                     numpy_to_tensor_func=lambda n: np.asarray(n))
+
+
+@pytest.fixture(scope='function')
+def mlx_ops_setup(mlx_ops, numpy_vars):
+    import mlx.core as mx
+
+    @contextlib.contextmanager
+    def deterministic_noise():
+        with patch(
+                'pfl.internal.ops.mlx_ops.mx.random.normal',
+                autospec=True) as mock_normal, \
+             patch(
+                'pfl.internal.ops.mlx_ops.mx.random.uniform',
+                autospec=True) as mock_uniform, \
+             patch(
+                'pfl.internal.ops.mlx_ops.mx.abs',
+                autospec=True) as mock_abs:
+
+            mock_normal.side_effect = lambda loc, scale, shape, dtype, key: mx.ones(
+                shape)
+            mock_uniform.side_effect = lambda low, high, shape, dtype, key: mx.ones(
+                shape)
+            # There is no value that satisfies log1p(-abs(u))==1, so we mock mx.abs instead
+            mock_abs.side_effect = lambda val: mx.ones_like(val) - mx.e
+            yield
+
+    return OpsSetup(ops=mlx_ops,
+                    ops_variables=[mx.array(v) for v in numpy_vars],
+                    variable=mx.zeros((3, 2), dtype=mx.float32),
+                    reference=mx.ones((3, 2), dtype=mx.float32),
+                    deterministic_noise=deterministic_noise,
+                    variable_to_numpy_func=lambda v: v,
+                    numpy_to_tensor_func=lambda n: mx.array(n))

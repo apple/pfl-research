@@ -12,7 +12,9 @@ from pytest_lazyfixture import lazy_fixture
 from pfl.common_types import Population
 from pfl.hyperparam import NNTrainHyperParams
 from pfl.internal.bridge import FrameworkBridgeFactory as bridges
-from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
+from pfl.internal.ops.common_ops import (check_mlx_installed,
+                                         get_pytorch_major_version,
+                                         get_tf_major_version)
 from pfl.internal.ops.selector import get_framework_module as get_ops
 from pfl.metrics import MetricName, MetricValue, Weighted
 from pfl.stats import MappedVectorStatistics
@@ -31,10 +33,19 @@ tf_pytest_param = pytest.param(
     marks=[pytest.mark.skipif(get_tf_major_version() < 2, reason='not tf>=2')],
     id='tensorflow')
 
+mlx_pytest_param = pytest.param(lazy_fixture('mlx_model_setup'),
+                                marks=[
+                                    pytest.mark.skipif(
+                                        not check_mlx_installed(),
+                                        reason='MLX not installed')
+                                ],
+                                id='mlx')
+
 
 @pytest.mark.parametrize('setup', [
     pytorch_pytest_param,
     tf_pytest_param,
+    mlx_pytest_param,
 ])
 class TestModel:
     """
@@ -245,6 +256,7 @@ print('final weight', w)
 @pytest.mark.parametrize('setup', [
     pytorch_pytest_param,
     tf_pytest_param,
+    mlx_pytest_param 
 ])
 @pytest.mark.parametrize('local_max_grad_norm', [0.001, 0.01, 0.1, 1.0, 10.0])
 def test_local_gradient_clipping(setup: ModelSetup,

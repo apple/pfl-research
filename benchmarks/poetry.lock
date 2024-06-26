@@ -1603,7 +1603,7 @@ xml = ["lxml (>=4.9.2)"]
 
 [[package]]
 name = "pfl"
-version = "0.1.0"
+version = "0.2.0"
 description = "Simulation framework for Private Federated Learning"
 optional = true
 python-versions = ">=3.10,<3.12"

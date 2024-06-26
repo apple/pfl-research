@@ -60,6 +60,7 @@ class MLXDistributedContext(DistributedContext):
         return reduced_tensors
 
 
+distributed: DistributedContext
 if is_mpi_running():
     logger.info("Multi-process, initializing MLX distributed context.")
     distributed = MLXDistributedContext()

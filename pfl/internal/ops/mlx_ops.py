@@ -219,7 +219,8 @@ def to_tensor(tensor: mx.array, dtype: Optional[str] = 'float32') -> mx.array:
     """
     Convert a numpy array to a mlx array,
     """
-    mlx_dtype = getattr(mx, dtype) if dtype is not None and isinstance(dtype, str) else dtype
+    mlx_dtype = getattr(
+        mx, dtype) if dtype is not None and isinstance(dtype, str) else dtype
 
     if isinstance(tensor, mx.array):
         return tensor

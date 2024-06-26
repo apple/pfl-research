@@ -27,7 +27,7 @@ torchvision = [
 pfl = [
     { path = "../", extras = ["tf"], markers="extra=='tf'", optional = true, develop = true },
     { path = "../", extras = ["pytorch"], markers="extra=='pytorch'", optional = true, develop = true },
-    { path = "../", extras = ["mlx"], markers="extra=='mlx'", optional = true, develop = true },
+    { path = "../", extras = ["mlx"], markers="extra=='mlx' and sys_platform=='darwin'", optional = true, develop = true },
 ]
 pillow = ">=10.2.0"
 datasets = "^2.19.1"

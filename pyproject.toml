@@ -40,7 +40,7 @@ scikit-learn = { version = "^1.0.2", optional = true }
 xgboost = { version = "^1.4.2", optional = true }
 
 #### Will be installed only with "mlx" install extra
-mlx = { version = "^0.15.0", optional = true }
+mlx = { version = "^0.15.2", optional = true }
 
 #### Needed in case you want to install Horovod
 cmake = "^3.27.5"

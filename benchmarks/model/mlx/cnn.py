@@ -1,11 +1,9 @@
 # Copyright © 2023-2024 Apple Inc.
 
-import types
-from typing import List, Tuple
+from typing import Tuple
 
 import mlx.core as mx
 import mlx.nn as nn
-import numpy as np
 from mlx.utils import tree_flatten
 
 from pfl.metrics import Weighted
@@ -45,7 +43,7 @@ class CNN(nn.Module):
         self.dropout2 = nn.Dropout(0.5)
 
     def num_params(self):
-        nparams = sum(x.size for k, x in tree_flatten(self.parameters()))
+        nparams = sum(x.size for _, x in tree_flatten(self.parameters()))
         return nparams
 
     def __call__(self, x):

@@ -25,8 +25,9 @@ torchvision = [
 ]
 # Installs pfl from source.
 pfl = [
-    { path = "../", extras = ["tf"], markers="extra=='tf'", develop = true },
-    { path = "../", extras = ["pytorch"], markers="extra=='pytorch'", develop = true },
+    { path = "../", extras = ["tf"], markers="extra=='tf'", optional = true, develop = true },
+    { path = "../", extras = ["pytorch"], markers="extra=='pytorch'", optional = true, develop = true },
+    { path = "../", extras = ["mlx"], markers="extra=='mlx' and sys_platform=='darwin'", optional = true, develop = true },
 ]
 pillow = ">=10.2.0"
 datasets = "^2.19.1"
@@ -37,6 +38,7 @@ werkzeug = ">=3.0.3"
 [tool.poetry.extras]
 tf = ["pfl", "tensorflow_addons", "tensorflow"]
 pytorch = ["pfl", "torchvision", "torch"]
+mlx = ["pfl", "mlx"]
 
 [tool.poetry.group.dev.dependencies]
 mock = "^5.1.0"

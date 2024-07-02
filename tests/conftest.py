@@ -470,6 +470,15 @@ def pytorch_ops():
 
 
 @pytest.fixture(scope='function')
+def mlx_ops():
+    from pfl.internal.ops import mlx_ops
+    _internal_reset_framework_module()
+    set_framework_module(mlx_ops)
+    yield get_framework_module()
+    _internal_reset_framework_module()
+
+
+@pytest.fixture(scope='function')
 def fix_global_random_seeds():
     """
     Set the random seed for NumPy as well as any framework that is loaded.
@@ -922,6 +931,93 @@ def pytorch_model_setup(request, pytorch_ops, user_dataset,
     yield ModelSetup(model=model,
                      variables=variables,
                      variable_to_numpy_fn=lambda v: v.detach().numpy().copy(),
+                     variable_names=variable_names,
+                     load_model_path=model_checkpoint_dir,
+                     save_model_path=model_checkpoint_dir,
+                     user_dataset=user_dataset,
+                     reports_average_loss=True)
+
+
+@pytest.fixture(scope="function")
+def mlx_model_setup(request, mlx_ops, user_dataset, model_checkpoint_dir):
+    """
+    MLX model fixture. Also returns parameters needed for test cases.
+    Since a fixture can only return one value, the objects returned
+    are wrapped into a namedtuple.
+    """
+    import mlx.core as mx
+    import mlx.nn as nn
+    import mlx.optimizers as optim
+    from mlx.utils import tree_flatten
+
+    from pfl.model.mlx import MLXModel
+
+    class TestModel(nn.Module):
+
+        def __init__(self):
+
+            super().__init__()
+            self.weight = mx.array([[2., 4.], [3., 5.]], dtype=mx.float32)
+
+        def __call__(self, x):  # pylint: disable=arguments-differ
+            return mx.matmul(x, self.weight)
+
+        def loss(self, x, y, is_eval=False):
+            if is_eval:
+                self.eval()
+            else:
+                self.train()
+            # Sum loss across output dim, average across batches,
+            # similar to what is built-in in Keras model training.
+            unreduced_loss = nn.losses.l1_loss(self(x), y, reduction='none')
+            return mx.mean(mx.sum(unreduced_loss, axis=1))
+
+        def loss2(self, x, y):
+            self.eval()
+            # Sum loss across output dim, average across batches,
+            # similar to what is built-in in Keras model training.
+            unreduced_loss = nn.losses.l1_loss(self(x), y, reduction='none')
+            loss_value = mx.mean(mx.sum(unreduced_loss, axis=1))
+
+            num_samples = x.shape[0]
+            return loss_value, num_samples
+
+        def metrics(self, x, y):
+            self.eval()
+            pred = self(x)
+            # Sum across batch dimension as well because the denominator
+            # is saved in Weighted.
+            loss = nn.losses.l1_loss(pred, y, reduction='sum')
+            num_samples = len(y)
+            return {
+                'loss': Weighted(loss.item(), num_samples),
+                'loss2': Weighted(loss.item(), num_samples),
+                'user_avg_loss': (Weighted(loss.item(),
+                                           num_samples), user_average)
+            }
+
+    mlx_model = TestModel()
+    central_learning_rate = 1.0
+
+    model_params = {
+        'model': mlx_model,
+        'local_optimizer': optim.SGD(learning_rate=0.0),
+        'central_optimizer': optim.SGD(learning_rate=central_learning_rate),
+    }
+
+    # Overrides any parameter with values in kwargs.
+    if hasattr(request, 'param') and 'model_kwargs' in request.param:
+        model_params.update(**request.param['model_kwargs'])
+    model = MLXModel(**model_params)
+
+    variables = [v for _, v in tree_flatten(mlx_model.trainable_parameters())]
+    variable_names = [
+        name for name, v in tree_flatten(mlx_model.trainable_parameters())
+    ]
+
+    yield ModelSetup(model=model,
+                     variables=variables,
+                     variable_to_numpy_fn=lambda v: np.array(v),
                      variable_names=variable_names,
                      load_model_path=model_checkpoint_dir,
                      save_model_path=model_checkpoint_dir,

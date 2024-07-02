@@ -91,6 +91,19 @@ def get_pytorch_major_version() -> int:
         return 0
 
 
+def check_mlx_installed() -> int:
+    """
+    :returns:
+        True if mlx is installed.
+    """
+    try:
+        import mlx
+    except ModuleNotFoundError:
+        return False
+    else:
+        return True
+
+
 def check_pfl_tree_installed() -> bool:
     """
     :returns:
@@ -110,3 +123,12 @@ def is_pytest_running():
         `True` if pytest is currently running.
     """
     return 'PYTEST_CURRENT_TEST' in os.environ
+
+
+def is_mpi_running():
+    """
+    :returns:
+        `True` if script was called with `mpirun`.
+    """
+    return ('OMPI_WORLD_SIZE' in os.environ and 'OMPI_VERSION' in os.environ
+            and os.environ.get('OMPI_TOOL_NAME', None) == 'mpirun')

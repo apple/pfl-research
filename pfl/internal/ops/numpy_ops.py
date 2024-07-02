@@ -47,7 +47,7 @@ distributed: DistributedContext
 if os.environ.get(NUMPY_DISTRIBUTE_VAR_NAME, '').lower() == 'tensorflow':
     distributed = NumpyHorovodDistributedContext('tensorflow')
 elif os.environ.get(NUMPY_DISTRIBUTE_VAR_NAME, '').lower() == 'pytorch':
-    distributed = NumpyHorovodDistributedContext('pytorch')
+    distributed = NumpyHorovodDistributedContext('torch')
 elif os.environ.get(NUMPY_DISTRIBUTE_VAR_NAME, '').lower() == 'none':
     distributed = NotDistributedContext()
 else:

@@ -9,6 +9,7 @@ from pytest_lazyfixture import lazy_fixture
 from pfl.internal.ops import (
     all_reduce_metrics,
     all_reduce_metrics_and_stats,
+    check_mlx_installed,
     get_pytorch_major_version,
     get_tf_major_version,
 )
@@ -30,6 +31,12 @@ from pfl.stats import MappedVectorStatistics
                      pytest.mark.skipif(get_tf_major_version() != 2,
                                         reason='tf!=2')
                  ]),
+    pytest.param(lazy_fixture('mlx_ops_setup'),
+                 marks=[
+                     pytest.mark.skipif(not check_mlx_installed(),
+                                        reason='MLX not installed')
+                 ],
+                 id='mlx')
 ])
 class TestOps:
 
@@ -72,8 +79,11 @@ class TestOps:
                                      noise_fn_name)(ops_setup.ops_variables,
                                                     1.0, None)
 
-        check_equal_tensors([v + 1 for v in numpy_vars], noised_tensors,
-                            ops_setup)
+        check_equal_tensors(
+            [v + 1 for v in numpy_vars],
+            noised_tensors,
+            ops_setup,
+            almost_equal=noise_fn_name == 'add_laplacian_noise')
 
     @pytest.mark.parametrize('noise_fn_name',
                              ['add_gaussian_noise', 'add_laplacian_noise'])
@@ -163,6 +173,12 @@ class TestOps:
                      pytest.mark.skipif(get_tf_major_version() != 2,
                                         reason='tf!=2')
                  ]),
+    pytest.param(lazy_fixture('mlx_ops_setup'),
+                 marks=[
+                     pytest.mark.skipif(not check_mlx_installed(),
+                                        reason='MLX not installed')
+                 ],
+                 id='mlx')
 ])
 class TestEMAOps:
 

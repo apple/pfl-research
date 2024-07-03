@@ -217,7 +217,11 @@ def get_model_mlx(args: argparse.Namespace):
     elif model_name == 'lm_lstm':
         raise TypeError(f'Model {model_name} not implemented for MLX.')
     elif model_name == 'lm_transformer':
-        raise TypeError(f'Model {model_name} not implemented for MLX.')
+        model = mlx_models.lm_transformer(
+            args.embedding_size, args.hidden_size, args.num_heads,
+            args.feedforward_size, args.num_transformer_layers,
+            args.vocab_size, args.max_sequence_length, args.pad_symbol,
+            args.unk_symbol, args.dropout_rate)
     elif model_name == 'multi_label_cnn':
         raise TypeError(f'Model {model_name} not implemented for MLX.')
     else:

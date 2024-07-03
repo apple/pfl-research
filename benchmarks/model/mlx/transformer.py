@@ -1,25 +1,29 @@
 # Copyright © 2024 Apple Inc.
 import math
+
 import mlx.core as mx
 import mlx.nn as nn
 from mlx.utils import tree_flatten
-from pfl.metrics import Weighted
 
 from model.numpy.layer import positional_encoding
 from model.numpy.metrics import Perplexity
+from pfl.metrics import Weighted
 
 
 class PositionalEncoding(nn.Module):
+
     def __init__(self, embedding_size: int, max_sequence_length: int):
         super().__init__()
         # Start with underscore so it is not included in the parameters
-        self._pe = mx.array(positional_encoding(max_sequence_length, embedding_size))
+        self._pe = mx.array(
+            positional_encoding(max_sequence_length, embedding_size))
 
     def __call__(self, x):
         return x + mx.expand_dims(self._pe[:x.shape[1], :], 0)
 
 
 class LMTransformer(nn.Module):
+
     def __init__(self, embedding_size: int, hidden_size: int, num_heads: int,
                  feedforward_size: int, num_transformer_layers: int,
                  dropout_rate: float, vocab_size: int,
@@ -32,24 +36,36 @@ class LMTransformer(nn.Module):
         self.pe = PositionalEncoding(embedding_size, max_sequence_length)
         self.layers = []
         for _ in range(num_transformer_layers):
-            l = nn.TransformerEncoderLayer(
-                hidden_size, num_heads, feedforward_size, dropout_rate, norm_first=False
-            )
+            l = nn.TransformerEncoderLayer(hidden_size,
+                                           num_heads,
+                                           feedforward_size,
+                                           dropout_rate,
+                                           norm_first=False)
             # Need to re-init multi-head attention with bias to match network of PyTorch and TF.
-            l.attention = nn.MultiHeadAttention(hidden_size, num_heads, bias=True)
+            l.attention = nn.MultiHeadAttention(hidden_size,
+                                                num_heads,
+                                                bias=True)
             self.layers.append(l)
 
-        self._proj_in = nn.Linear(embedding_size, hidden_size) if embedding_size != hidden_size else nn.Identity()
-        self._proj_out = nn.Linear(hidden_size, embedding_size) if embedding_size != hidden_size else nn.Identity()
+        self._proj_in = nn.Linear(
+            embedding_size,
+            hidden_size) if embedding_size != hidden_size else nn.Identity()
+        self._proj_out = nn.Linear(
+            hidden_size, embedding_size
+        ) if embedding_size != hidden_size else nn.Identity()
 
         self._init_weights()
 
     def _init_weights(self):
-        embedding_w = mx.random.uniform(-0.05, 0.05, shape=self.embedding.trainable_parameters()['weight'].shape)
-        self.embedding.update({'weight':embedding_w})
+        embedding_w = mx.random.uniform(
+            -0.05,
+            0.05,
+            shape=self.embedding.trainable_parameters()['weight'].shape)
+        self.embedding.update({'weight': embedding_w})
 
     def num_params(self):
-        nparams = sum(x.size for k, x in tree_flatten(self.trainable_parameters()))
+        nparams = sum(x.size
+                      for k, x in tree_flatten(self.trainable_parameters()))
         return nparams
 
     def __call__(self, inputs):
@@ -71,15 +87,13 @@ class LMTransformer(nn.Module):
         losses = nn.losses.cross_entropy(logits, targets, reduction='none')
         loss = mx.sum(losses * mask)
         num_tokens = mx.sum(mask)
-        # Above is equivalent to this but ignoring padding labels for loss.
-        #loss = nn.losses.cross_entropy(logits, targets, reduction='sum')
-        #num_tokens = mx.sum(targets != self._pad_symbol)
         return loss / num_tokens
 
     def metrics(self, inputs, targets, eval=True):
         self.eval() if eval else self.train()
         logits = self(inputs)
-        loss = nn.losses.cross_entropy(logits, targets, reduction='none').reshape(-1)
+        loss = nn.losses.cross_entropy(logits, targets,
+                                       reduction='none').reshape(-1)
         targets = targets.reshape(-1)
         correct = mx.argmax(logits, axis=-1).reshape(-1) == targets
 

@@ -4,10 +4,10 @@ import logging
 import os
 from uuid import uuid4
 
-import numpy as np
 import mlx
 import mlx.core as mx
 import mlx.nn as nn
+import numpy as np
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_mlx
 from utils.argument_parsing import (
@@ -93,25 +93,26 @@ def main():
 
     if arguments.central_lr_num_warmup_iterations > 0:
         central_learning_rate = get_polynomial_decay_schedule_with_warmup(
-                lr_init=arguments.learning_rate,
-                num_warmup_steps=arguments.central_lr_num_warmup_iterations,
-                num_training_steps=arguments.central_num_iterations,
-                                                    lr_end=arguments.learning_rate)
+            lr_init=arguments.learning_rate,
+            num_warmup_steps=arguments.central_lr_num_warmup_iterations,
+            num_training_steps=arguments.central_num_iterations,
+            lr_end=arguments.learning_rate)
     else:
         central_learning_rate = arguments.learning_rate
 
     if arguments.central_optimizer == 'adam':
         # Hyperparameters for stability, see S. Reddi et al. 2020 Appendix C.1.
-        central_optimizer = mlx.optimizers.Adam(central_learning_rate,
-                                             eps=arguments.adaptivity_degree,
-                                             betas=(0.9, 0.99))
+        central_optimizer = mlx.optimizers.Adam(
+            central_learning_rate,
+            eps=arguments.adaptivity_degree,
+            betas=(0.9, 0.99))
     else:
         assert arguments.central_optimizer == 'sgd'
         central_optimizer = mlx.optimizers.SGD(central_learning_rate)
 
     model = MLXModel(model=mlx_model,
-                         local_optimizer=mlx.optimizers.SGD(0.0),
-                         central_optimizer=central_optimizer)
+                     local_optimizer=mlx.optimizers.SGD(0.0),
+                     central_optimizer=central_optimizer)
 
     weighting_strategy = parse_weighting_strategy(arguments.weighting,
                                                   arguments.weight_clip)

@@ -1,24 +1,12 @@
 # Copyright © 2023-2024 Apple Inc.
 
-import types
-from typing import List, Tuple
+from typing import Tuple
 
 import mlx.core as mx
 import mlx.nn as nn
-import numpy as np
 from mlx.utils import tree_flatten
 
 from pfl.metrics import Weighted
-
-
-def maxpool2d(x, pool_size=2, stride=2):
-    batch, height, width, channels = x.shape
-    out_height = (height - pool_size) // stride + 1
-    out_width = (width - pool_size) // stride + 1
-    x = x.reshape(batch, out_height, stride, out_width, stride, channels)
-    # TODO: this is avg pooling, max doesn't work right now:
-    # https://github.com/ml-explore/mlx/issues/1234
-    return mx.mean(x, axis=(2, 4))
 
 
 class CNN(nn.Module):
@@ -36,8 +24,6 @@ class CNN(nn.Module):
                                stride=1,
                                padding=0)
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=0)
-        # Results in nans when using MaxPool2d:
-        # https://github.com/ml-explore/mlx/issues/1234
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
         self.linear1 = nn.Linear(flatten_size, 128)
         self.linear2 = nn.Linear(128, num_outputs)
@@ -45,13 +31,13 @@ class CNN(nn.Module):
         self.dropout2 = nn.Dropout(0.5)
 
     def num_params(self):
-        nparams = sum(x.size for k, x in tree_flatten(self.parameters()))
+        nparams = sum(x.size for _, x in tree_flatten(self.parameters()))
         return nparams
 
     def __call__(self, x):
         x = nn.relu(self.conv1(x))
         x = nn.relu(self.conv2(x))
-        x = maxpool2d(x)
+        x = self.pool(x)
         x = self.dropout1(x)
         x = x.reshape(x.shape[0], -1)  # Flatten
         x = nn.relu(self.linear1(x))

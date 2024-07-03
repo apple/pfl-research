@@ -39,7 +39,7 @@ class MLXModel(StatefulModel):
 
         .. code-block:: python
 
-            Callable[[*torch.Tensor],
+            Callable[[*mx.array],
                      Dict[str, Union[
                         MetricValue,
                         Tuple[MetricValue,
@@ -55,7 +55,6 @@ class MLXModel(StatefulModel):
                 # user data looks like this:
                 # UserDataset(raw_data=[x,y], eval_kwargs={'eval':True})
                 from pfl.metrics import user_average
-                l1loss = torch.nn.L1Loss(reduction='sum')
 
                 def loss(self, x, y, is_eval=False):
                     self.eval() if eval else self.train()
@@ -198,7 +197,6 @@ class MLXModel(StatefulModel):
         for variable_name, variable in self.variable_map.items():
             model_diff[
                 variable_name] = variable - other_parameters[variable_name]
-        #mx.eval(model_diff._data)
         return model_diff
 
     def do_multiple_epochs_of(self, user_dataset: AbstractDatasetType,

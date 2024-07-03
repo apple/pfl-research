@@ -9,7 +9,6 @@ import mlx
 import mlx.core as mx
 import mlx.nn as nn
 import numpy as np
-import torch  # type: ignore
 from dataset.argument_parsing import add_dataset_arguments, get_datasets
 from model.argument_parsing import add_model_arguments, get_model_mlx
 from utils.argument_parsing import (

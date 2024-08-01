@@ -295,11 +295,6 @@ class PyTorchFederatedDataset(FederatedDataset):
             tuple([process_tensor(tensor) for tensor in tensors]),
             **self._dataset_kwargs)
 
-    def _try_set_cohort_size(self, cohort_size: int):
-        # Set cohort size with prefetching
-        for _ in range(self._prefetch_factor + 1):
-            super()._try_set_cohort_size(cohort_size)
-
     def _get_pt_sampler(self, sampler):
         # PyTorch asserts that sampler must inherit
         # from `torch.utils.data.Sampler`.
@@ -322,7 +317,8 @@ class PyTorchFederatedDataset(FederatedDataset):
 
         if self._prefetch_factor > 0:
             # Prefetching so that the following call won't be blocked
-            self._try_set_cohort_size(pytorch_ops.distributed.world_size)
+            for _ in range(self._prefetch_factor):
+                self._try_set_cohort_size(get_ops().distributed.world_size)
 
         dl_iter = iter(
             torch.utils.data.DataLoader(

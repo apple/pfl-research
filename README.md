@@ -61,11 +61,10 @@ Researchers are invited to contribute to the framework. Please, see [here](http:
 ## Citing pfl-research
 
 ```
-@software{pfl2024,
-  author = {Filip Granqvist and Congzheng Song and Áine Cahill and Rogier van Dalen and Martin Pelikan and Yi Sheng Chan and Xiaojun Feng and Natarajan Krishnaswami and Mona Chitnis and Vojta Jina},
-  title = {{pfl}: simulation framework for accelerating research in Private Federated Learning},
-  url = {https://github.com/apple/pfl-research},
-  version = {0.0},
-  year = {2024},
+@article{granqvist2024pfl,
+  title={pfl-research: simulation framework for accelerating research in Private Federated Learning},
+  author={Granqvist, Filip and Song, Congzheng and Cahill, {\'A}ine and van Dalen, Rogier and Pelikan, Martin and Chan, Yi Sheng and Feng, Xiaojun and Krishnaswami, Natarajan and Jina, Vojta and Chitnis, Mona},
+  journal={arXiv preprint arXiv:2404.06430},
+  year={2024},
 }
 ```

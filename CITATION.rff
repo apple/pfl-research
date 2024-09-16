@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: mlx
+title: pfl
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
@@ -29,13 +29,51 @@ authors:
   - given-names: Natarajan
     family-names: Krishnaswami
     affiliation: Apple
-  - given-names: Mona
-    family-names: Chitnis
-    affiliation: Apple
   - given-names: Vojta
     family-names: Jina
+    affiliation: Apple
+  - given-names: Mona
+    family-names: Chitnis
     affiliation: Apple
 repository-code: 'https://github.com/apple/pfl-research'
 abstract: >-
   pfl: simulation framework for accelerating research in Private Federated Learning
 license: MIT
+preferred-citation:
+  type: article
+  authors:
+  - given-names: Filip
+    family-names: Granqvist
+    affiliation: Apple
+  - given-names: Congzheng
+    family-names: Song
+    affiliation: Apple
+  - given-names: Áine
+    family-names: Cahill
+    affiliation: Apple
+  - given-names: Rogier
+    family-names: van Dalen
+    affiliation: Apple
+  - given-names: Martin
+    family-names: Pelikan
+    affiliation: Apple
+  - given-names: Yi Sheng
+    family-names: Chan
+    affiliation: Apple
+  - given-names: Xiaojun
+    family-names: Feng
+    affiliation: Apple
+  - given-names: Natarajan
+    family-names: Krishnaswami
+    affiliation: Apple
+  - given-names: Vojta
+    family-names: Jina
+    affiliation: Apple
+  - given-names: Mona
+    family-names: Chitnis
+    affiliation: Apple
+  doi: "10.48550/arXiv.2404.06430
+  journal: "arXiv preprint arXiv:2404.06430"
+  month: 4
+  title: "pfl-research: simulation framework for accelerating research in Private Federated Learning"
+  year: 2024

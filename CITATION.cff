@@ -16,7 +16,7 @@ authors:
     affiliation: Apple
   - given-names: Rogier
     family-names: van Dalen
-    affiliation: Apple
+    orcid: "https://orcid.org/0000-0002-9603-5771"
   - given-names: Martin
     family-names: Pelikan
     affiliation: Apple
@@ -53,7 +53,7 @@ preferred-citation:
     affiliation: Apple
   - given-names: Rogier
     family-names: van Dalen
-    affiliation: Apple
+    orcid: "https://orcid.org/0000-0002-9603-5771"
   - given-names: Martin
     family-names: Pelikan
     affiliation: Apple

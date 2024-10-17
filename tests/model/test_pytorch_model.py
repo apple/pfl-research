@@ -14,21 +14,8 @@ if get_pytorch_major_version():
     # pylint: disable=ungrouped-imports
     import torch  # type: ignore
 
-    from pfl.internal.ops.pytorch_ops import is_tensor, to_tensor
+    from pfl.internal.ops.pytorch_ops import to_tensor
     _internal_reset_framework_module()
-
-
-def flatten_state_dict(d, parent_key='', sep='.'):
-    items = []
-    for k, v in d.items():
-        new_key = f"{parent_key}{sep}{k}" if parent_key else k
-        if isinstance(v, Dict):
-            items.extend(flatten_state_dict(v, new_key, sep=sep).items())
-        else:
-            if is_tensor(v):
-                v = v.detach().clone()
-            items.append((new_key, v))
-    return dict(items)
 
 
 @pytest.mark.skipif(not get_pytorch_major_version(),

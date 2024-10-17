@@ -38,36 +38,23 @@ class TestPyTorchModel:
     Contains all tests that are unique to PyTorchModel.
     """
 
-    def test_save_and_load_central_optimizer_impl(self, pytorch_model_setup):
+    @pytest.mark.parametrize('optimizer_name', ["adam", "sgd"])
+    def test_save_and_load_central_optimizer_impl(
+            self, optimizer_name, pytorch_model_setup,
+            check_save_and_load_central_optimizer_impl):
         """
         Test if central optimizer could be save and restored
         """
-        pytorch_model = pytorch_model_setup.model.pytorch_model
-        optimizer = torch.optim.Adam(pytorch_model.parameters(), lr=1.0)
-        pytorch_model_setup.model._central_optimizer = optimizer  # pylint: disable=protected-access
-        statistics = (pytorch_model_setup.model.get_parameters().
-                      apply_elementwise(lambda x: x * 0.0 + 0.01))
-        pytorch_model_setup.model.apply_model_update(statistics)
+        parameters = pytorch_model_setup.model._model.parameters()  # pylint: disable=protected-access
+        if optimizer_name == "adam":
+            pytorch_model_setup.model._central_optimizer = torch.optim.Adam(  # pylint: disable=protected-access
+                parameters, lr=1.0)
+        else:
+            assert optimizer_name == "sgd"
+            pytorch_model_setup.model._central_optimizer = torch.optim.SGD(  # pylint: disable=protected-access
+                parameters, lr=1.0)
 
-        expected_state_dict = flatten_state_dict(optimizer.state_dict())
-        pytorch_model_setup.model.save(str(
-            pytorch_model_setup.save_model_path))
-
-        # Make sure central optimizer variables were changed before testing loading.
-        pytorch_model_setup.model.apply_model_update(statistics)
-        for key, value in flatten_state_dict(optimizer.state_dict()).items():
-            if is_tensor(value):
-                assert np.any(
-                    np.not_equal(value.numpy(),
-                                 expected_state_dict[key].numpy()))
-
-        pytorch_model_setup.model.load(str(
-            pytorch_model_setup.load_model_path))
-        # Make sure central optimizer variables were the same after loading.
-        for key, value in flatten_state_dict(optimizer.state_dict()).items():
-            if is_tensor(value):
-                np.testing.assert_array_equal(value.numpy(),
-                                              expected_state_dict[key].numpy())
+        check_save_and_load_central_optimizer_impl(pytorch_model_setup)
 
     @pytest.mark.parametrize('grad_accumulation_steps', [1, 2, 3, 4])
     def test_grad_accumulation(self, grad_accumulation_steps,

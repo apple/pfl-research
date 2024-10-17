@@ -160,6 +160,20 @@ class PyTorchModel(StatefulModel):
     def variable_map(self) -> Dict[str, torch.Tensor]:
         return self._variable_map
 
+    @property
+    def central_optimizer_variable_map(
+            self) -> Dict[Tuple[str, str], torch.Tensor]:
+        central_optimizer_variable_map = {}
+        for k, v in self._central_optimizer.state_dict()['state'].items():
+            if not isinstance(v, Dict):
+                logger.warning(f"Unexpected central_optimizer_state for "
+                               f"key: {k}, value: {v}")
+                continue
+            for state_name, state in v.items():
+                if pytorch_ops.is_tensor(state):
+                    central_optimizer_variable_map[str(k), state_name] = state
+        return central_optimizer_variable_map
+
     def new_local_optimizer(self, learning_rate,
                             **kwargs) -> torch.optim.Optimizer:
         return self._local_optimizer_create(self._model.parameters(),

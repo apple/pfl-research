@@ -160,22 +160,6 @@ class PyTorchModel(StatefulModel):
     def variable_map(self) -> Dict[str, torch.Tensor]:
         return self._variable_map
 
-    @property
-    def central_optimizer_variable_map(
-            self) -> Optional[Dict[Tuple[str, str], torch.Tensor]]:
-        if len(self._central_optimizer.state) == 0:
-            return None
-
-        central_optimizer_variable_map = {}
-        for variable_name, variable in self.variable_map.items():
-            variable_state = self._central_optimizer.state[variable]
-            for state_name, state_variable in variable_state.items():
-                if state_name == "step":
-                    state_variable = torch.tensor(state_variable)
-                central_optimizer_variable_map[variable_name,
-                                               state_name] = state_variable
-        return central_optimizer_variable_map
-
     def new_local_optimizer(self, learning_rate,
                             **kwargs) -> torch.optim.Optimizer:
         return self._local_optimizer_create(self._model.parameters(),
@@ -187,7 +171,12 @@ class PyTorchModel(StatefulModel):
             os.makedirs(dir_path)
         torch.save(self._model.state_dict(),
                    os.path.join(dir_path, self._MODEL_CKPT_NAME))
-        self._save_central_optimizer(dir_path)
+        torch.save(self._central_optimizer.state_dict(),
+                   os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME))
+        if self._central_learning_rate_scheduler is not None:
+            torch.save(
+                self._central_learning_rate_scheduler.state_dict(),
+                os.path.join(dir_path, self._CENTRAL_LR_SCHEDULER_CKPT_NAME))
 
     def load(self, dir_path: str) -> None:
         save_path = os.path.join(dir_path, self._MODEL_CKPT_NAME)
@@ -200,7 +189,8 @@ class PyTorchModel(StatefulModel):
         central_optimizer_path = os.path.join(
             dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME)
         if os.path.exists(central_optimizer_path):
-            self._load_central_optimizer(central_optimizer_path)
+            self._central_optimizer.load_state_dict(
+                torch.load(central_optimizer_path))
         # load central learning rate scheduler if it exits
         if self._central_learning_rate_scheduler is not None:
             central_learning_rate_scheduler_path = os.path.join(
@@ -208,43 +198,6 @@ class PyTorchModel(StatefulModel):
             if os.path.exists(central_learning_rate_scheduler_path):
                 self._central_learning_rate_scheduler.load_state_dict(
                     torch.load(central_learning_rate_scheduler_path))
-
-    def _save_central_optimizer(self, dir_path: str) -> None:
-        if self.central_optimizer_variable_map is not None:
-            if not os.path.isdir(dir_path):
-                os.makedirs(dir_path)
-            torch.save(
-                self.central_optimizer_variable_map,
-                os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME))
-        if self._central_learning_rate_scheduler is not None:
-            torch.save(
-                self._central_learning_rate_scheduler.state_dict(),
-                os.path.join(dir_path, self._CENTRAL_LR_SCHEDULER_CKPT_NAME))
-
-    def _load_central_optimizer(self, path: str) -> None:
-        # call to initialize central optimizer variables
-        self.apply_model_update(
-            MappedVectorStatistics({
-                name: torch.zeros(*variable.shape)
-                for name, variable in self.variable_map.items()
-            }))
-        assert self.central_optimizer_variable_map is not None, (
-            f"Central optimizer checkpoint is provided at {path} "
-            f"but central optimizer has no state")
-        central_optimizer_state = torch.load(path,
-                                             map_location=torch.device('cpu'))
-        device = next(self._model.parameters()).device
-        for (variable_name,
-             state_name), state_variable in central_optimizer_state.items():
-            variable = self.variable_map[variable_name]
-
-            # After PyTorch 1.12.0, step needs to be a PyTorch tensor
-            if state_name == "step" and torch.__version__ < '1.12.0':
-                state_variable = state_variable.item()
-            else:
-                state_variable = state_variable.to(device)
-            self._central_optimizer.state[variable][
-                state_name] = state_variable
 
     def _set_parameters(self, source_tensors, destination_variables):
         for variable_name, variable in destination_variables.items():

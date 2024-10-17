@@ -1,4 +1,5 @@
 # Copyright © 2023-2024 Apple Inc.
+from typing import Dict
 from unittest.mock import Mock
 
 import numpy as np
@@ -13,8 +14,21 @@ if get_pytorch_major_version():
     # pylint: disable=ungrouped-imports
     import torch  # type: ignore
 
-    from pfl.internal.ops.pytorch_ops import to_tensor
+    from pfl.internal.ops.pytorch_ops import is_tensor, to_tensor
     _internal_reset_framework_module()
+
+
+def flatten_state_dict(d, parent_key='', sep='.'):
+    items = []
+    for k, v in d.items():
+        new_key = f"{parent_key}{sep}{k}" if parent_key else k
+        if isinstance(v, Dict):
+            items.extend(flatten_state_dict(v, new_key, sep=sep).items())
+        else:
+            if is_tensor(v):
+                v = v.detach().clone()
+            items.append((new_key, v))
+    return dict(items)
 
 
 @pytest.mark.skipif(not get_pytorch_major_version(),
@@ -24,16 +38,36 @@ class TestPyTorchModel:
     Contains all tests that are unique to PyTorchModel.
     """
 
-    def test_save_and_load_central_optimizer_impl(
-            self, pytorch_model_setup,
-            check_save_and_load_central_optimizer_impl):
+    def test_save_and_load_central_optimizer_impl(self, pytorch_model_setup):
         """
         Test if central optimizer could be save and restored
         """
-        pytorch_model_setup.model._central_optimizer = torch.optim.Adam(  # pylint: disable=protected-access
-            pytorch_model_setup.model._model.parameters(),  # pylint: disable=protected-access
-            lr=1.0)
-        check_save_and_load_central_optimizer_impl(pytorch_model_setup)
+        pytorch_model = pytorch_model_setup.model.pytorch_model
+        optimizer = torch.optim.Adam(pytorch_model.parameters(), lr=1.0)
+        pytorch_model_setup.model._central_optimizer = optimizer  # pylint: disable=protected-access
+        statistics = (pytorch_model_setup.model.get_parameters().
+                      apply_elementwise(lambda x: x * 0.0 + 0.01))
+        pytorch_model_setup.model.apply_model_update(statistics)
+
+        expected_state_dict = flatten_state_dict(optimizer.state_dict())
+        pytorch_model_setup.model.save(str(
+            pytorch_model_setup.save_model_path))
+
+        # Make sure central optimizer variables were changed before testing loading.
+        pytorch_model_setup.model.apply_model_update(statistics)
+        for key, value in flatten_state_dict(optimizer.state_dict()).items():
+            if is_tensor(value):
+                assert np.any(
+                    np.not_equal(value.numpy(),
+                                 expected_state_dict[key].numpy()))
+
+        pytorch_model_setup.model.load(str(
+            pytorch_model_setup.load_model_path))
+        # Make sure central optimizer variables were the same after loading.
+        for key, value in flatten_state_dict(optimizer.state_dict()).items():
+            if is_tensor(value):
+                np.testing.assert_array_equal(value.numpy(),
+                                              expected_state_dict[key].numpy())
 
     @pytest.mark.parametrize('grad_accumulation_steps', [1, 2, 3, 4])
     def test_grad_accumulation(self, grad_accumulation_steps,

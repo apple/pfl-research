@@ -167,7 +167,12 @@ class PyTorchHorovodDistributedContext(HorovodDistributedContext):
                     hvd.local_rank(), hvd.local_size(), hvd.rank(), hvd.size())
         self._post_init_check(hvd)
 
-        if torch.cuda.is_available():
+        if torch.cuda.is_available(
+        ) and "CUDA_VISIBLE_DEVICES" not in os.environ:
+            # As per https://pytorch.org/docs/stable/generated/torch.cuda.set_device.html#torch.cuda.set_device
+            # setting "CUDA_VISIBLE_DEVICES" in env is preferred than
+            # `torch.cuda.set_device`, invoking this only when
+            # "CUDA_VISIBLE_DEVICES" is not set.
             gpu_id = hvd.local_rank() % torch.cuda.device_count()
             torch.cuda.set_device(gpu_id)
             logger.info('local rank %i uses GPU: %i', hvd.local_rank(), gpu_id)
@@ -296,12 +301,41 @@ class PyTorchSeedScope:
 
     def __enter__(self):
         if self._seed is not None:
-            self._saved_state = torch.random.get_rng_state()
+            # Always save the random state for CPU
+            # Save random state for CUDA/MPS if they are available
+            self._saved_state = {"cpu": torch.random.get_rng_state()}
+            if torch.cuda.is_available():
+                self._saved_state["cuda"] = torch.cuda.get_rng_state_all()
+            if (hasattr(torch.backends, 'mps')
+                    and torch.backends.mps.is_available()):
+                self._saved_state["mps"] = torch.mps.get_rng_state()
             torch.random.manual_seed(self._seed)
 
     def __exit__(self, *args):
         if self._seed is not None:
-            torch.random.set_rng_state(self._saved_state)
+            torch.random.set_rng_state(self._saved_state["cpu"])
+            if "cuda" in self._saved_state:
+                torch.cuda.set_rng_state_all(self._saved_state["cuda"])
+            if "mps" in self._saved_state:
+                torch.mps.set_rng_state(self._saved_state["mps"])
+
+
+class Barrier:
+    """
+    Context manager for barrier in distributed communication. Replicates the
+    functionality of:
+    https://pytorch.org/docs/stable/distributed.html#torch.distributed.barrier
+    """
+
+    def __enter__(self):
+        if distributed.local_rank != 0:
+            distributed.all_reduce(
+                [torch.zeros(1, device=get_default_device())])
+
+    def __exit__(self, *args):
+        if distributed.local_rank == 0:
+            distributed.all_reduce(
+                [torch.zeros(1, device=get_default_device())])
 
 
 _placeholder_cache = {}

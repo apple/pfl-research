@@ -301,15 +301,14 @@ class PyTorchSeedScope:
 
     def __enter__(self):
         if self._seed is not None:
+            # Always save the random state for CPU
+            # Save random state for CUDA/MPS if they are available
             self._saved_state = {"cpu": torch.random.get_rng_state()}
-            try:
+            if torch.cuda.is_available():
                 self._saved_state["cuda"] = torch.cuda.get_rng_state_all()
-            except Exception as e:
-                logger.info(f"Failed to get cuda rng state: {e}")
-            try:
+            if (hasattr(torch.backends, 'mps')
+                    and torch.backends.mps.is_available()):
                 self._saved_state["mps"] = torch.mps.get_rng_state()
-            except Exception as e:
-                logger.info(f"Failed to get mps rng state: {e}")
             torch.random.manual_seed(self._seed)
 
     def __exit__(self, *args):

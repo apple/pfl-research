@@ -132,12 +132,14 @@ class RestoreTrainingCallback(TrainingProcessCallback):
                     'RestoreTrainingRunCallback - Restored checkpoint for %s',
                     saveable)
                 num_components_restored += 1
-        return Metrics([(StringMetricName('restored components'), num_components_restored)])
+        return Metrics([(StringMetricName('restored components'),
+                         num_components_restored)])
 
     def after_central_iteration(
             self, aggregate_metrics: Metrics, model: ModelType, *,
             central_iteration: int) -> Tuple[bool, Metrics]:
-        if (central_iteration % self._checkpoint_frequency == 0 and get_ops().distributed.local_rank == 0):
+        if (central_iteration % self._checkpoint_frequency == 0
+                and get_ops().distributed.local_rank == 0):
             for saveable, checkpoint_dir in zip(self._saveables,
                                                 self._checkpoint_dirs):
                 saveable.save(checkpoint_dir)

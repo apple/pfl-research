@@ -245,6 +245,7 @@ class FederatedAlgorithm(Saveable,
 
         """
         self._current_central_iteration = 0
+        has_reported_on_train_metrics = False
         should_stop = False
         callbacks = list(callbacks or [])
         default_callbacks = get_platform().get_default_callbacks()
@@ -276,8 +277,9 @@ class FederatedAlgorithm(Saveable,
             else:
                 central_contexts = new_central_contexts
 
-            if self._current_central_iteration == 0:
+            if not has_reported_on_train_metrics:
                 all_metrics |= on_train_metrics
+                has_reported_on_train_metrics = True
 
             # Step 2
             # Get aggregated model updates and

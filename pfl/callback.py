@@ -119,6 +119,7 @@ class RestoreTrainingCallback(TrainingProcessCallback):
         Restore from previous run's checkpoints if exists.
         """
         # Restore saveables.
+        num_components_restored = 0
         for saveable, checkpoint_dir in zip(self._saveables,
                                             self._checkpoint_dirs):
             try:
@@ -130,12 +131,13 @@ class RestoreTrainingCallback(TrainingProcessCallback):
                 logger.info(
                     'RestoreTrainingRunCallback - Restored checkpoint for %s',
                     saveable)
-        return Metrics()
+                num_components_restored += 1
+        return Metrics([(StringMetricName('restored components'), num_components_restored)])
 
     def after_central_iteration(
             self, aggregate_metrics: Metrics, model: ModelType, *,
             central_iteration: int) -> Tuple[bool, Metrics]:
-        if central_iteration % self._checkpoint_frequency == 0:
+        if (central_iteration % self._checkpoint_frequency == 0 and get_ops().distributed.local_rank == 0):
             for saveable, checkpoint_dir in zip(self._saveables,
                                                 self._checkpoint_dirs):
                 saveable.save(checkpoint_dir)
@@ -979,11 +981,7 @@ class TrackBestOverallMetrics(TrainingProcessCallback):
     def _init(self):
         self._best_lower_metrics: Dict = {}
         self._best_higher_metrics: Dict = {}
-        self._found_metric_at_iteration = {
-            k: 0
-            for k in self._lower_is_better_metric_names +
-            self._higher_is_better_metric_names
-        }
+        self._found_metric_at_iteration = None
 
     def on_train_begin(self, *, model: ModelType) -> Metrics:
         self._init()
@@ -999,6 +997,13 @@ class TrackBestOverallMetrics(TrainingProcessCallback):
     def after_central_iteration(
             self, aggregate_metrics: Metrics, model: ModelType, *,
             central_iteration: int) -> Tuple[bool, Metrics]:
+
+        if self._found_metric_at_iteration is None:
+            self._found_metric_at_iteration = {
+                k: central_iteration
+                for k in self._lower_is_better_metric_names +
+                self._higher_is_better_metric_names
+            }
 
         best_overall_metrics = Metrics()
         for (metric_names,

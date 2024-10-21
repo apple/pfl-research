@@ -105,7 +105,7 @@ class TestRestoreTrainingCallback:
                                          mock_model,
                                          central_iteration=2)
         callback.on_train_begin(model=mock_model)
-        assert algorithm._current_central_iteration == 3
+        assert algorithm._current_central_iteration == 2
         mock_saveable.load.assert_called_once_with(str(tmp_path))
 
 

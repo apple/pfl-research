@@ -61,6 +61,9 @@ class FederatedAlgorithm(Saveable,
     In simulation, this may be a :class:`~pfl.aggregate.SimulatedBackend`
     which calls ``simulate_one_user`` to perform simulation,
     In live training, the backend will call out to real devices.
+    Calling ``run`` twice causes the second run to start with the final
+    internal state of the algorithm from the previous run. In most cases you
+    want to initialize a new algorithm object and call ``run`` instead.
 
     When subclassing, new parameters can either go into constructor or by
     subclassing :class:`~pfl.hyperparam.base.AlgorithmHyperParams`.
@@ -93,7 +96,7 @@ class FederatedAlgorithm(Saveable,
             state = json.load(f)
             # Resume the next iteration.
             self._current_central_iteration = state[
-                'current_central_iteration'] + 1
+                'current_central_iteration']
 
     @abstractmethod
     def get_next_central_contexts(
@@ -244,7 +247,6 @@ class FederatedAlgorithm(Saveable,
             different.
 
         """
-        self._current_central_iteration = 0
         has_reported_on_train_metrics = False
         should_stop = False
         callbacks = list(callbacks or [])
@@ -319,9 +321,9 @@ class FederatedAlgorithm(Saveable,
                 get_platform().consume_metrics(
                     all_metrics, iteration=self._current_central_iteration)
 
+            self._current_central_iteration += 1
             if should_stop:
                 break
-            self._current_central_iteration += 1
 
         for callback in callbacks:
             # Calls with central iteration configs used for final round.

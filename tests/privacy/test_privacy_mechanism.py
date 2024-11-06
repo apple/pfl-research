@@ -28,7 +28,7 @@ from pfl.privacy.privacy_mechanism import (
     NormClippingOnly,
     PrivacyMetricName,
 )
-from pfl.stats import MappedVectorStatistics, WeightedStatistics
+from pfl.stats import MappedVectorStatistics
 
 # These fixtures set the internal framework module.
 framework_fixtures = [

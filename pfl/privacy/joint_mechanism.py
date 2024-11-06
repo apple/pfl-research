@@ -5,16 +5,10 @@ Joint mechanism for combining multiple mechanisms into one.
 
 from typing import Dict, List, Optional, Set, Tuple
 
-from pfl.hyperparam import HyperParamClsOrFloat, get_param_value
-from pfl.internal.ops.selector import get_default_framework_module as get_ops
-from pfl.metrics import Metrics, StringMetricName, Weighted
+from pfl.metrics import Metrics, StringMetricName
 from pfl.stats import MappedVectorStatistics, TrainingStatistics
 
-from . import compute_parameters
-from .approximate_mechanism import SquaredErrorLocalPrivacyMechanism
-from .privacy_accountant import PrivacyAccountant
-from .privacy_mechanism import CentrallyApplicablePrivacyMechanism, PrivacyMechanism
-from .privacy_snr import SNRMetric
+from .privacy_mechanism import CentrallyApplicablePrivacyMechanism
 
 
 def check_if_partition(full_set: Set[str], partition: List[Set[str]]):
@@ -63,6 +57,10 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
             name_formatting_fn=lambda n: StringMetricName(n),
             seed: Optional[int] = None) -> Tuple[TrainingStatistics, Metrics]:
 
+        if not isinstance(statistics, MappedVectorStatistics):
+            raise ValueError(
+                'Statistics must be of type MappedVectorStatistics.')
+
         if not check_if_partition(
                 set(statistics.keys()),
             [set(keys) for _, keys in self.mechanisms_and_keys.values()]):
@@ -70,10 +68,7 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
                 'Mechanism keys do not form a partition of the client statistics keys.'
             )
 
-        if not isinstance(statistics, MappedVectorStatistics):
-            raise ValueError(
-                'Statistics must be of type MappedVectorStatistics.')
-
+        clipped_statistics: MappedVectorStatistics = MappedVectorStatistics()
         metrics = Metrics()
         for mechanism_name, (
                 mechanism,
@@ -88,10 +83,10 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
             clipped_sub_statistics, sub_metrics = mechanism.constrain_sensitivity(
                 sub_statistics, mechanism_name_formatting_fn, seed)
             for key in statistics_keys:
-                statistics[key] = clipped_sub_statistics[key]
+                clipped_statistics[key] = clipped_sub_statistics[key]
             metrics = metrics | sub_metrics
 
-        return statistics, metrics
+        return clipped_statistics, metrics
 
     def add_noise(
             self,
@@ -100,6 +95,10 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
             name_formatting_fn=lambda n: StringMetricName(n),
             seed: Optional[int] = None) -> Tuple[TrainingStatistics, Metrics]:
 
+        if not isinstance(statistics, MappedVectorStatistics):
+            raise ValueError(
+                'Statistics must be of type MappedVectorStatistics.')
+
         if not check_if_partition(
                 set(statistics.keys()),
             [set(keys) for _, keys in self.mechanisms_and_keys.values()]):
@@ -107,10 +106,7 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
                 'Mechanism keys do not form a partition of the client statistics keys.'
             )
 
-        if not isinstance(statistics, MappedVectorStatistics):
-            raise ValueError(
-                'Statistics must be of type MappedVectorStatistics.')
-
+        noised_statistics: MappedVectorStatistics = MappedVectorStatistics()
         metrics = Metrics()
         for mechanism_name, (
                 mechanism,
@@ -126,7 +122,7 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
                 sub_statistics, cohort_size, mechanism_name_formatting_fn,
                 seed)
             for key in statistics_keys:
-                statistics[key] = noised_sub_statistics[key]
+                noised_statistics[key] = noised_sub_statistics[key]
             metrics = metrics | sub_metrics
 
-        return statistics, metrics
+        return noised_statistics, metrics

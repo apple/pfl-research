@@ -583,14 +583,14 @@ class TestMechanisms:
                               (clip_factors[n] * input_stats[n])),
                     axis=(1, 2)) for n in var_names
         ])
-        laplace_idxs = np.array([0, 1])
-        gaussian_idxs = np.array([3, 4])
-        idxs = np.hstack([laplace_idxs, gaussian_idxs])
+        laplace_idxs = [np.array([0]), np.array([1, 2])]
+        gaussian_idxs = [np.array([3]), np.array([4, 5])]
+        idxs = laplace_idxs + gaussian_idxs
 
         fourth_pow_deviation_arrays = np.hstack([
             np.mean(np.power(
                 noised_arrays[n] - (clip_factors[n] * input_stats[n]), 4),
-                    axis=(1, 2)) / np.square(square_deviation_arrays[idxs][i])
+                    axis=(1, 2)) / np.square(square_deviation_arrays[idxs[i]])
             for i, n in enumerate(var_names)
         ])
 

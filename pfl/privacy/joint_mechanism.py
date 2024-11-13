@@ -58,7 +58,7 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
             seed: Optional[int] = None) -> Tuple[TrainingStatistics, Metrics]:
 
         if not isinstance(statistics, MappedVectorStatistics):
-            raise ValueError(
+            raise TypeError(
                 'Statistics must be of type MappedVectorStatistics.')
 
         if not check_if_partition(
@@ -96,7 +96,7 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
             seed: Optional[int] = None) -> Tuple[TrainingStatistics, Metrics]:
 
         if not isinstance(statistics, MappedVectorStatistics):
-            raise ValueError(
+            raise TypeError(
                 'Statistics must be of type MappedVectorStatistics.')
 
         if not check_if_partition(

@@ -11,20 +11,6 @@ from pfl.stats import MappedVectorStatistics, TrainingStatistics
 from .privacy_mechanism import CentrallyApplicablePrivacyMechanism
 
 
-def check_if_partition(full_set: Set[str], partition: List[Set[str]]):
-    """
-    Checks if each element of full_list appears in exactly one of
-    the sets in partition
-    """
-    partition_union: Set = set()
-    partition_size = 0
-    for s in partition:
-        partition_union = partition_union.union(s)
-        partition_size += len(s)
-
-    return (partition_union == full_set) and (partition_size == len(full_set))
-
-
 class JointMechanism(CentrallyApplicablePrivacyMechanism):
     """
     Constructs a new CentrallyApplicablePrivacyMechanism from existing ones.
@@ -33,11 +19,17 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
     statistics of type MappedVectorStatistics.
 
     :param mechanisms_and_keys:
-        Dictionary in which each key is a name of a mechanism and each value
-        is a tuple consisting of the corresponding CentrallyApplicablePrivacyMechanism
-        and a list of keys specifying which portion of the user training statistics that
-        mechanism should be applied to. Note the names of each of the mechanisms must be
-        distinct for the purpose of naming the corresponding Metrics.
+        Dictionary which maps a name of a mechanism to a tuple consisting of
+        the corresponding CentrallyApplicablePrivacyMechanism and a list specifying
+        which keys of the user training statistics that mechanism should be applied
+        to. This list can contain strings of the following forms:
+
+        * key_name - an exact key name as appearing in the user statistics,
+        * f'{key_prefix}/' - matches to all user statistics keys of the form
+        f'{key_prefix}/{any_string}'.
+
+        Finally, note that the names of each of the mechanisms must be distinct
+        for the purpose of naming the corresponding Metrics.
 
     """
 
@@ -61,30 +53,45 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
             raise TypeError(
                 'Statistics must be of type MappedVectorStatistics.')
 
-        if not check_if_partition(
-                set(statistics.keys()),
-            [set(keys) for _, keys in self.mechanisms_and_keys.values()]):
-            raise ValueError(
-                'Mechanism keys do not form a partition of the client statistics keys.'
-            )
-
-        clipped_statistics: MappedVectorStatistics = MappedVectorStatistics()
+        clipped_statistics: MappedVectorStatistics = MappedVectorStatistics(
+            weight=statistics.weight)
         metrics = Metrics()
+        client_statistics_keys = set(statistics.keys())
         for mechanism_name, (
-                mechanism,
-                statistics_keys) in self.mechanisms_and_keys.items():
+                mechanism, to_apply_keys) in self.mechanisms_and_keys.items():
 
             def mechanism_name_formatting_fn(n, prefix=mechanism_name):
-                return name_formatting_fn(f'{prefix}: {n}')
+                return name_formatting_fn(f'{prefix} | {n}')
 
+            # Extract client statistics keys that match the keys for current mechanism
             sub_statistics: MappedVectorStatistics = MappedVectorStatistics()
-            for key in statistics_keys:
-                sub_statistics[key] = statistics[key]
+            for key in to_apply_keys:
+                if key in client_statistics_keys:  # exact key name
+                    sub_statistics[key] = statistics[key]
+                    client_statistics_keys.remove(key)
+                else:
+                    assert key[
+                        -1] == '/', f"{key} does not appear as a key in the client statistics."
+                    for client_key in client_statistics_keys:
+                        if client_key.startswith(
+                                key):  # matches f'{key_prefix}/'
+                            sub_statistics[client_key] = statistics[client_key]
+                            client_statistics_keys.remove(client_key)
+
+            # Clip statistics using mechanism
             clipped_sub_statistics, sub_metrics = mechanism.constrain_sensitivity(
                 sub_statistics, mechanism_name_formatting_fn, seed)
-            for key in statistics_keys:
+
+            # Recombine clipped statistics and metrics
+            for key in sub_statistics.keys():
                 clipped_statistics[key] = clipped_sub_statistics[key]
             metrics = metrics | sub_metrics
+
+        if len(client_statistics_keys) > 0:
+            raise ValueError(
+                f'Not all client statistics have been clipped. '
+                f'These keys are missing from mechanisms_and_keys: {client_statistics_keys}.'
+            )
 
         return clipped_statistics, metrics
 
@@ -99,30 +106,45 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
             raise TypeError(
                 'Statistics must be of type MappedVectorStatistics.')
 
-        if not check_if_partition(
-                set(statistics.keys()),
-            [set(keys) for _, keys in self.mechanisms_and_keys.values()]):
-            raise ValueError(
-                'Mechanism keys do not form a partition of the client statistics keys.'
-            )
-
-        noised_statistics: MappedVectorStatistics = MappedVectorStatistics()
+        noised_statistics: MappedVectorStatistics = MappedVectorStatistics(
+            weight=statistics.weight)
         metrics = Metrics()
+        client_statistics_keys = set(statistics.keys())
         for mechanism_name, (
-                mechanism,
-                statistics_keys) in self.mechanisms_and_keys.items():
+                mechanism, to_apply_keys) in self.mechanisms_and_keys.items():
 
             def mechanism_name_formatting_fn(n, prefix=mechanism_name):
-                return name_formatting_fn(f'{prefix}: {n}')
+                return name_formatting_fn(f'{prefix} | {n}')
 
+            # Extract client statistics keys that match the keys for current mechanism
             sub_statistics: MappedVectorStatistics = MappedVectorStatistics()
-            for key in statistics_keys:
-                sub_statistics[key] = statistics[key]
+            for key in to_apply_keys:
+                if key in client_statistics_keys:  # exact key name
+                    sub_statistics[key] = statistics[key]
+                    client_statistics_keys.remove(key)
+                else:
+                    assert key[
+                        -1] == '/', f"{key} does not appear as a key in the client statistics."
+                    for client_key in client_statistics_keys:
+                        if client_key.startswith(
+                                key):  # matches f'{key_prefix}/'
+                            sub_statistics[client_key] = statistics[client_key]
+                            client_statistics_keys.remove(client_key)
+
+            # Apply noise using mechanism
             noised_sub_statistics, sub_metrics = mechanism.add_noise(
                 sub_statistics, cohort_size, mechanism_name_formatting_fn,
                 seed)
-            for key in statistics_keys:
+
+            # Recombine noised statistics and metrics
+            for key in sub_statistics:
                 noised_statistics[key] = noised_sub_statistics[key]
             metrics = metrics | sub_metrics
+
+        if len(client_statistics_keys) > 0:
+            raise ValueError(
+                f'Not all client statistics have been noised. '
+                f'These keys are missing from mechanisms_and_keys: {client_statistics_keys}.'
+            )
 
         return noised_statistics, metrics

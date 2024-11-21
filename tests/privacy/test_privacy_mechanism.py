@@ -16,7 +16,7 @@ from pfl.context import CentralContext, UserContext
 from pfl.hyperparam import ModelHyperParams
 from pfl.hyperparam.base import AlgorithmHyperParams
 from pfl.internal.ops import check_mlx_installed, get_pytorch_major_version, get_tf_major_version
-from pfl.metrics import Metrics, get_overall_value
+from pfl.metrics import Metrics, Weighted, get_overall_value
 from pfl.privacy import compute_parameters
 from pfl.privacy.approximate_mechanism import SquaredErrorLocalPrivacyMechanism
 from pfl.privacy.gaussian_mechanism import GaussianMechanism
@@ -487,226 +487,111 @@ class TestMechanisms:
             metrics[name]) == pytest.approx(expected_clip_fraction)
 
     @pytest.mark.parametrize('ops_module', framework_fixtures)
-    @pytest.mark.parametrize('set_seed', [False, True])
-    @pytest.mark.parametrize('laplace_norm_bound', [0.02, 6e6])
-    @pytest.mark.parametrize('gaussian_norm_bound,gaussian_noise_scale',
-                             [(0.02, 1.0), (6e6, 1.0), (0.5, 0.1)])
-    def test_joint_mechanism(self, laplace_norm_bound, gaussian_norm_bound,
-                             gaussian_noise_scale, set_seed, ops_module):
-        shapes = [(1, 20000, 40), (2, 14000, 56), (1, 20000, 10),
-                  (2, 14000, 14)]
+    def test_joint_mechanism(self, ops_module, fix_global_random_seeds):
 
-        first_mechanism_name = 'Laplace Mechanism'
-        laplace_mechanism = LaplaceMechanism(laplace_norm_bound, _epsilon)
+        def get_mock_mechanism_call(mechanism_fn_name):
 
-        # standard deviation of a Laplace distribution
-        b = laplace_norm_bound / _epsilon
-        sigma_laplace = np.sqrt(2 * b**2)
+            def mock_mechanism_call(*args):
+                statistics = args[0]
+                name_formatting_fn = args[-2]
+                metrics = Metrics([
+                    (name_formatting_fn(f'{mechanism_fn_name}'),
+                     Weighted.from_unweighted(
+                         sum([x.shape[0] for x in statistics.values()]))),
+                ])
+                return statistics, metrics
 
-        # kurtosis of a Laplace distribution
-        kurtosis_laplace = 3
+            return mock_mechanism_call
 
-        second_mechanism_name = 'Gaussian Mechanism'
-        gaussian_mechanism, sigma_gaussian = self._single_iteration_sigma(
-            gaussian_norm_bound, gaussian_noise_scale)
+        first_mechanism_name = 'laplace_mechanism'
+        laplace_mechanism = MagicMock()
+        laplace_mechanism.constrain_sensitivity = MagicMock(
+            side_effect=get_mock_mechanism_call('constrain_sensitivity'))
+        laplace_mechanism.add_noise = MagicMock(
+            side_effect=get_mock_mechanism_call('add_noise'))
+        laplace_keys = ['laplace/', 'laplace_exact']
 
-        # kurtosis of a Gaussian distribution
-        kurtosis_gaussian = 0
-
-        # values to compare tracked metrics with
-        expected_metrics = Metrics([
-            (PrivacyMetricName(
-                f'{first_mechanism_name}: Laplace DP noise scale',
-                is_local_privacy=True), b),
-            (PrivacyMetricName(f'{second_mechanism_name}: DP noise std. dev.',
-                               is_local_privacy=True), sigma_gaussian)
-        ])
+        second_mechanism_name = 'gaussian_mechanism'
+        gaussian_mechanism = MagicMock()
+        gaussian_mechanism.constrain_sensitivity = MagicMock(
+            side_effect=get_mock_mechanism_call('constrain_sensitivity'))
+        gaussian_mechanism.add_noise = MagicMock(
+            side_effect=get_mock_mechanism_call('add_noise'))
+        gaussian_keys = ['gaussian_exact1', 'gaussian_exact2']
 
         mechanisms_and_keys = {
-            first_mechanism_name: (laplace_mechanism, ['0', '1']),
-            second_mechanism_name: (gaussian_mechanism, ['2', '3'])
+            first_mechanism_name: (laplace_mechanism, laplace_keys),
+            second_mechanism_name: (gaussian_mechanism, gaussian_keys)
         }
-
         joint_mechanism = JointMechanism(mechanisms_and_keys)
 
-        input_stats = self._get_values(shapes)
+        input_stats_keys = [
+            'laplace/subpath1', 'laplace/subpath2', 'gaussian_exact1',
+            'gaussian_exact2', 'laplace_exact'
+        ]
+        input_stats = MappedVectorStatistics(
+            dict(
+                zip(input_stats_keys, [
+                    np.ones(i + 1, dtype=np.float32)
+                    for i in range(len(input_stats_keys))
+                ])))
         input_tensor_stats = self._to_tensor_stats(input_stats, ops_module)
 
-        var_names = ['0', '1', '2', '3']
-
-        input_stats_laplace = MappedVectorStatistics({
-            '0': input_stats['0'],
-            '1': input_stats['1']
-        })
-        input_stats_gaussian = MappedVectorStatistics({
-            '2': input_stats['2'],
-            '3': input_stats['3']
-        })
-
-        laplace_clip_factor, laplace_clipped_input_stats = self._get_norm_clipped_values(
-            self._compute_l1_norm(input_stats_laplace), input_stats_laplace,
-            laplace_norm_bound)
-
-        gaussian_clip_factor, gaussian_clipped_input_stats = self._get_norm_clipped_values(
-            self._compute_l2_norm(input_stats_gaussian), input_stats_gaussian,
-            gaussian_norm_bound)
-
-        clip_factors = dict(
-            zip(var_names, [
-                laplace_clip_factor, laplace_clip_factor, gaussian_clip_factor,
-                gaussian_clip_factor
-            ]))
-        clipped_input_stats = {
-            **laplace_clipped_input_stats,
-            **gaussian_clipped_input_stats
-        }
-        """
-        Compute statistics from one privatization.
-        The statistics are the means over all dimensions but the first,
-        for better statistical power.
-        """
-        seed = 0 if set_seed else None
+        seed = 0
         noised_arrays, metrics = joint_mechanism.postprocess_one_user(
             stats=input_tensor_stats, user_context=MagicMock(seed=seed))
-        noised_arrays = self._from_tensor_stats(noised_arrays, ops_module)
 
-        # arrays after adding noise should have same shape as before
-        for name in var_names:
-            assert input_stats[name].shape == noised_arrays[name].shape
+        # Weight of statistics after is same is before
+        assert noised_arrays.weight == input_tensor_stats.weight
 
-        # Calculate statistics for each row in first dimension.
-        noised_sum_arrays = np.hstack(
-            [np.mean(noised_arrays[name], axis=(1, 2)) for name in var_names])
+        # check that each mechanism was applied to the correct portions of the user statistics
+        assert set(laplace_mechanism.constrain_sensitivity.call_args[0]
+                   [0].keys()) == {
+                       'laplace/subpath1', 'laplace/subpath2', 'laplace_exact'
+                   }
+        assert set(gaussian_mechanism.constrain_sensitivity.call_args[0]
+                   [0].keys()) == {'gaussian_exact1', 'gaussian_exact2'}
+        assert set(laplace_mechanism.add_noise.call_args[0][0].keys()) == {
+            'laplace/subpath1', 'laplace/subpath2', 'laplace_exact'
+        }
+        assert set(gaussian_mechanism.add_noise.call_args[0][0].keys()) == {
+            'gaussian_exact1', 'gaussian_exact2'
+        }
 
-        square_deviation_arrays = np.hstack([
-            np.mean(np.square(noised_arrays[n] -
-                              (clip_factors[n] * input_stats[n])),
-                    axis=(1, 2)) for n in var_names
-        ])
-        laplace_idxs = [np.array([0]), np.array([1, 2])]
-        gaussian_idxs = [np.array([3]), np.array([4, 5])]
-        idxs = laplace_idxs + gaussian_idxs
+        # Laplace should have been applied to shapes 1 + 2 + 5 = 8, and gaussian to 3 + 4 = 7
+        expected_metrics = Metrics()
+        for name, expected_val in zip(
+            [first_mechanism_name, second_mechanism_name], [8, 7]):
+            for fn_name in ['constrain_sensitivity', 'add_noise']:
+                expected_metrics[PrivacyMetricName(
+                    f'{name} | {fn_name}',
+                    is_local_privacy=True)] = expected_val
 
-        fourth_pow_deviation_arrays = np.hstack([
-            np.mean(np.power(
-                noised_arrays[n] - (clip_factors[n] * input_stats[n]), 4),
-                    axis=(1, 2)) / np.square(square_deviation_arrays[idxs[i]])
-            for i, n in enumerate(var_names)
-        ])
-
-        # Test the metrics that are output.
-        # How often the norm was clipped is either nothing or all in this test.
-        expected_metrics[PrivacyMetricName(
-            f'{first_mechanism_name}: fraction of clipped norms',
-            is_local_privacy=True)] = int(laplace_clip_factor < 1)
-        expected_metrics[PrivacyMetricName(
-            f'{first_mechanism_name}: norm before clipping',
-            is_local_privacy=True)] = self._compute_l1_norm(
-                input_stats_laplace)
-
-        expected_metrics[PrivacyMetricName(
-            f'{second_mechanism_name}: fraction of clipped norms',
-            is_local_privacy=True)] = int(gaussian_clip_factor < 1)
-        expected_metrics[PrivacyMetricName(
-            f'{second_mechanism_name}: norm before clipping',
-            is_local_privacy=True)] = self._compute_l2_norm(
-                input_stats_gaussian)
-
-        l1_name = PrivacyMetricName(f'{first_mechanism_name}: l1 norm bound',
-                                    is_local_privacy=True)
-        l2_name = PrivacyMetricName(f'{second_mechanism_name}: l2 norm bound',
-                                    is_local_privacy=True)
-
-        assert np.isclose(get_overall_value(metrics[l1_name]),
-                          laplace_norm_bound)
-        assert np.isclose(get_overall_value(metrics[l2_name]),
-                          gaussian_norm_bound)
-
+        # Check that returned metric names and vals are as expected
         for name, expected_metric in expected_metrics:
-            assert np.isclose(get_overall_value(metrics[name]),
-                              expected_metric,
-                              rtol=0.0001)
+            assert get_overall_value(metrics[name]) == expected_metric
 
-        # convert from kurtosis to ex-kurtosis
-        kurtosis_values = fourth_pow_deviation_arrays - 3
-
-        flat_expected_values = np.hstack(
-            [clipped_input_stats[n][:, 0, 0].reshape(-1) for n in var_names])
-
-        # test moments
-        assert np.allclose(noised_sum_arrays[:3],
-                           flat_expected_values[:3],
-                           atol=sigma_laplace * 0.01)
-
-        assert np.allclose(square_deviation_arrays[:3],
-                           sigma_laplace**2,
-                           rtol=0.02)
-
-        assert np.allclose(noised_sum_arrays[3:],
-                           flat_expected_values[3:],
-                           atol=sigma_gaussian * 0.01)
-
-        assert np.allclose(square_deviation_arrays[3:],
-                           sigma_gaussian**2,
-                           rtol=0.02)
-
-        assert np.allclose(kurtosis_values[:3], kurtosis_laplace, atol=0.15)
-        assert np.allclose(kurtosis_values[3:], kurtosis_gaussian, atol=0.15)
-
-        if set_seed:
-            # Check that the same seed always yields the same results.
-            seed = 123
-            context = MagicMock(seed=None)
-            noise_1, _ = joint_mechanism.postprocess_one_user(
-                stats=input_tensor_stats, user_context=context)
-            noise_2, _ = joint_mechanism.postprocess_one_user(
-                stats=input_tensor_stats, user_context=context)
-
-            # With seed: the same results.
-            context = MagicMock(seed=seed)
-            seeded_noise_1, _ = joint_mechanism.postprocess_one_user(
-                stats=input_tensor_stats, user_context=context)
-            seeded_noise_2, _ = joint_mechanism.postprocess_one_user(
-                stats=input_tensor_stats, user_context=context)
-
-            noise_1 = self._from_tensor_stats(noise_1, ops_module)
-            noise_2 = self._from_tensor_stats(noise_2, ops_module)
-            seeded_noise_1 = self._from_tensor_stats(seeded_noise_1,
-                                                     ops_module)
-            seeded_noise_2 = self._from_tensor_stats(seeded_noise_2,
-                                                     ops_module)
-
-            for v1, v2 in zip(seeded_noise_1.get_weights()[1],
-                              seeded_noise_2.get_weights()[1]):
-                assert np.array_equal(v1, v2)
-
-            # Without seed: different results.
-            for v1, v2 in zip(noise_1.get_weights()[1],
-                              noise_2.get_weights()[1]):
-                assert (np.any(np.not_equal(v1, v2)))
-
-        # Apply joint mechanism when user statistics keys are missing
+        # Should raise Value error when a statistics key is not present in mechanisms_and_keys
         mechanisms_and_keys_missing_key = {
-            first_mechanism_name: (laplace_mechanism, ['0']),
-            second_mechanism_name: (gaussian_mechanism, ['2', '3'])
+            first_mechanism_name: (laplace_mechanism, laplace_keys[:-1]),
+            second_mechanism_name: (gaussian_mechanism, gaussian_keys)
         }
 
         joint_mechanism = JointMechanism(mechanisms_and_keys_missing_key)
 
-        seed = 0 if set_seed else None
         with pytest.raises(ValueError):
             noised_arrays, metrics = joint_mechanism.postprocess_one_user(
                 stats=input_tensor_stats, user_context=MagicMock(seed=seed))
 
-        # Apply joint mechanism when too many keys are given to joint mechanism
+        # Should raise assertion error when an exact key name is provided that is not present in statistics.keys()
         mechanisms_and_keys_extra_key = {
-            first_mechanism_name: (laplace_mechanism, ['0', '1']),
-            second_mechanism_name: (gaussian_mechanism, ['2', '3', '4'])
+            first_mechanism_name: (laplace_mechanism, laplace_keys),
+            second_mechanism_name:
+            (gaussian_mechanism, [*gaussian_keys, 'extra_key'])
         }
 
         joint_mechanism = JointMechanism(mechanisms_and_keys_extra_key)
 
-        seed = 0 if set_seed else None
-        with pytest.raises(ValueError):
+        with pytest.raises(AssertionError):
             noised_arrays, metrics = joint_mechanism.postprocess_one_user(
                 stats=input_tensor_stats, user_context=MagicMock(seed=seed))

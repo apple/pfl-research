@@ -72,18 +72,18 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
                 else:
                     assert key[
                         -1] == '/', f"{key} does not appear as a key in the client statistics."
-                    for client_key in client_statistics_keys:
+                    for client_key in statistics:
                         if client_key.startswith(
                                 key):  # matches f'{key_prefix}/'
                             sub_statistics[client_key] = statistics[client_key]
-                            client_statistics_keys.remove(client_key)
+                            client_statistics_keys.discard(client_key)
 
             # Clip statistics using mechanism
             clipped_sub_statistics, sub_metrics = mechanism.constrain_sensitivity(
                 sub_statistics, mechanism_name_formatting_fn, seed)
 
             # Recombine clipped statistics and metrics
-            for key in sub_statistics.keys():
+            for key in clipped_sub_statistics:
                 clipped_statistics[key] = clipped_sub_statistics[key]
             metrics = metrics | sub_metrics
 
@@ -125,11 +125,11 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
                 else:
                     assert key[
                         -1] == '/', f"{key} does not appear as a key in the client statistics."
-                    for client_key in client_statistics_keys:
+                    for client_key in statistics:
                         if client_key.startswith(
                                 key):  # matches f'{key_prefix}/'
                             sub_statistics[client_key] = statistics[client_key]
-                            client_statistics_keys.remove(client_key)
+                            client_statistics_keys.discard(client_key)
 
             # Apply noise using mechanism
             noised_sub_statistics, sub_metrics = mechanism.add_noise(
@@ -137,7 +137,7 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
                 seed)
 
             # Recombine noised statistics and metrics
-            for key in sub_statistics:
+            for key in noised_sub_statistics:
                 noised_statistics[key] = noised_sub_statistics[key]
             metrics = metrics | sub_metrics
 

@@ -58,14 +58,14 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
         metrics = Metrics()
         client_statistics_keys = set(statistics.keys())
         for mechanism_name, (
-                mechanism, to_apply_keys) in self.mechanisms_and_keys.items():
+                mechanism, mechanism_keys) in self.mechanisms_and_keys.items():
 
             def mechanism_name_formatting_fn(n, prefix=mechanism_name):
                 return name_formatting_fn(f'{prefix} | {n}')
 
             # Extract client statistics keys that match the keys for current mechanism
             sub_statistics: MappedVectorStatistics = MappedVectorStatistics()
-            for key in to_apply_keys:
+            for key in mechanism_keys:
                 if key in client_statistics_keys:  # exact key name
                     sub_statistics[key] = statistics[key]
                     client_statistics_keys.remove(key)
@@ -111,14 +111,14 @@ class JointMechanism(CentrallyApplicablePrivacyMechanism):
         metrics = Metrics()
         client_statistics_keys = set(statistics.keys())
         for mechanism_name, (
-                mechanism, to_apply_keys) in self.mechanisms_and_keys.items():
+                mechanism, mechanism_keys) in self.mechanisms_and_keys.items():
 
             def mechanism_name_formatting_fn(n, prefix=mechanism_name):
                 return name_formatting_fn(f'{prefix} | {n}')
 
             # Extract client statistics keys that match the keys for current mechanism
             sub_statistics: MappedVectorStatistics = MappedVectorStatistics()
-            for key in to_apply_keys:
+            for key in mechanism_keys:
                 if key in client_statistics_keys:  # exact key name
                     sub_statistics[key] = statistics[key]
                     client_statistics_keys.remove(key)

@@ -529,12 +529,12 @@ class TestMechanisms:
             'laplace/subpath1', 'laplace/subpath2', 'gaussian_exact1',
             'gaussian_exact2', 'laplace_exact'
         ]
-        input_stats = MappedVectorStatistics(
-            dict(
-                zip(input_stats_keys, [
-                    np.ones(i + 1, dtype=np.float32)
-                    for i in range(len(input_stats_keys))
-                ])))
+        input_stats = MappedVectorStatistics(dict(
+            zip(input_stats_keys, [
+                np.ones(i + 1, dtype=np.float32)
+                for i in range(len(input_stats_keys))
+            ])),
+                                             weight=10)
         input_tensor_stats = self._to_tensor_stats(input_stats, ops_module)
 
         seed = 0

@@ -16,10 +16,11 @@ from pfl.context import CentralContext, UserContext
 from pfl.hyperparam import ModelHyperParams
 from pfl.hyperparam.base import AlgorithmHyperParams
 from pfl.internal.ops import check_mlx_installed, get_pytorch_major_version, get_tf_major_version
-from pfl.metrics import Metrics, get_overall_value
+from pfl.metrics import Metrics, Weighted, get_overall_value
 from pfl.privacy import compute_parameters
 from pfl.privacy.approximate_mechanism import SquaredErrorLocalPrivacyMechanism
 from pfl.privacy.gaussian_mechanism import GaussianMechanism
+from pfl.privacy.joint_mechanism import JointMechanism
 from pfl.privacy.laplace_mechanism import LaplaceMechanism
 from pfl.privacy.privacy_mechanism import (
     CentrallyAppliedPrivacyMechanism,
@@ -484,3 +485,113 @@ class TestMechanisms:
                                  is_local_privacy=True)
         assert get_overall_value(
             metrics[name]) == pytest.approx(expected_clip_fraction)
+
+    @pytest.mark.parametrize('ops_module', framework_fixtures)
+    def test_joint_mechanism(self, ops_module, fix_global_random_seeds):
+
+        def get_mock_mechanism_call(mechanism_fn_name):
+
+            def mock_mechanism_call(*args):
+                statistics = args[0]
+                name_formatting_fn = args[-2]
+                metrics = Metrics([
+                    (name_formatting_fn(f'{mechanism_fn_name}'),
+                     Weighted.from_unweighted(
+                         sum([x.shape[0] for x in statistics.values()]))),
+                ])
+                return statistics, metrics
+
+            return mock_mechanism_call
+
+        first_mechanism_name = 'laplace_mechanism'
+        laplace_mechanism = MagicMock()
+        laplace_mechanism.constrain_sensitivity = MagicMock(
+            side_effect=get_mock_mechanism_call('constrain_sensitivity'))
+        laplace_mechanism.add_noise = MagicMock(
+            side_effect=get_mock_mechanism_call('add_noise'))
+        laplace_keys = ['laplace/', 'laplace_exact']
+
+        second_mechanism_name = 'gaussian_mechanism'
+        gaussian_mechanism = MagicMock()
+        gaussian_mechanism.constrain_sensitivity = MagicMock(
+            side_effect=get_mock_mechanism_call('constrain_sensitivity'))
+        gaussian_mechanism.add_noise = MagicMock(
+            side_effect=get_mock_mechanism_call('add_noise'))
+        gaussian_keys = ['gaussian_exact1', 'gaussian_exact2']
+
+        mechanisms_and_keys = {
+            first_mechanism_name: (laplace_mechanism, laplace_keys),
+            second_mechanism_name: (gaussian_mechanism, gaussian_keys)
+        }
+        joint_mechanism = JointMechanism(mechanisms_and_keys)
+
+        input_stats_keys = [
+            'laplace/subpath1', 'laplace/subpath2', 'gaussian_exact1',
+            'gaussian_exact2', 'laplace_exact'
+        ]
+        input_stats = MappedVectorStatistics(dict(
+            zip(input_stats_keys, [
+                np.ones(i + 1, dtype=np.float32)
+                for i in range(len(input_stats_keys))
+            ])),
+                                             weight=10)
+        input_tensor_stats = self._to_tensor_stats(input_stats, ops_module)
+
+        seed = 0
+        noised_arrays, metrics = joint_mechanism.postprocess_one_user(
+            stats=input_tensor_stats, user_context=MagicMock(seed=seed))
+
+        # Weight of statistics after is same is before
+        assert noised_arrays.weight == input_tensor_stats.weight
+
+        # check that each mechanism was applied to the correct portions of the user statistics
+        assert set(laplace_mechanism.constrain_sensitivity.call_args[0]
+                   [0].keys()) == {
+                       'laplace/subpath1', 'laplace/subpath2', 'laplace_exact'
+                   }
+        assert set(gaussian_mechanism.constrain_sensitivity.call_args[0]
+                   [0].keys()) == {'gaussian_exact1', 'gaussian_exact2'}
+        assert set(laplace_mechanism.add_noise.call_args[0][0].keys()) == {
+            'laplace/subpath1', 'laplace/subpath2', 'laplace_exact'
+        }
+        assert set(gaussian_mechanism.add_noise.call_args[0][0].keys()) == {
+            'gaussian_exact1', 'gaussian_exact2'
+        }
+
+        # Laplace should have been applied to shapes 1 + 2 + 5 = 8, and gaussian to 3 + 4 = 7
+        expected_metrics = Metrics()
+        for name, expected_val in zip(
+            [first_mechanism_name, second_mechanism_name], [8, 7]):
+            for fn_name in ['constrain_sensitivity', 'add_noise']:
+                expected_metrics[PrivacyMetricName(
+                    f'{name} | {fn_name}',
+                    is_local_privacy=True)] = expected_val
+
+        # Check that returned metric names and vals are as expected
+        for name, expected_metric in expected_metrics:
+            assert get_overall_value(metrics[name]) == expected_metric
+
+        # Should raise Value error when a statistics key is not present in mechanisms_and_keys
+        mechanisms_and_keys_missing_key = {
+            first_mechanism_name: (laplace_mechanism, laplace_keys[:-1]),
+            second_mechanism_name: (gaussian_mechanism, gaussian_keys)
+        }
+
+        joint_mechanism = JointMechanism(mechanisms_and_keys_missing_key)
+
+        with pytest.raises(ValueError):
+            noised_arrays, metrics = joint_mechanism.postprocess_one_user(
+                stats=input_tensor_stats, user_context=MagicMock(seed=seed))
+
+        # Should raise assertion error when an exact key name is provided that is not present in statistics.keys()
+        mechanisms_and_keys_extra_key = {
+            first_mechanism_name: (laplace_mechanism, laplace_keys),
+            second_mechanism_name:
+            (gaussian_mechanism, [*gaussian_keys, 'extra_key'])
+        }
+
+        joint_mechanism = JointMechanism(mechanisms_and_keys_extra_key)
+
+        with pytest.raises(AssertionError):
+            noised_arrays, metrics = joint_mechanism.postprocess_one_user(
+                stats=input_tensor_stats, user_context=MagicMock(seed=seed))

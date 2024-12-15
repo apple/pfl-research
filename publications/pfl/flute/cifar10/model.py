@@ -1,16 +1,16 @@
 # Copyright © 2024 Apple Inc.
 import torch
-from torch import nn
-from core.model import BaseModel
-
 from compare_utils.pytorch import simple_cnn
+from core.model import BaseModel
+from torch import nn
+
 
 class SimpleCNN(BaseModel):
     '''This is a PyTorch model with some extra methods'''
 
     def __init__(self, model_config):
         super().__init__()
-        self.net = simple_cnn((32,32,3), num_outputs=10, transpose=False)
+        self.net = simple_cnn((32, 32, 3), num_outputs=10, transpose=False)
 
     def loss(self, input: torch.Tensor) -> torch.Tensor:
         '''Performs forward step and computes the loss'''

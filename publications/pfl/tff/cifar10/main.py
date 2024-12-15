@@ -2,18 +2,14 @@
 import functools
 import time
 
-from absl import logging
-from absl import app
-from absl import flags
-
 import numpy as np
 import tensorflow as tf
 import tensorflow_federated as tff
-
+from absl import app, flags, logging
+from compare_utils.tensorflow import simple_cnn
+from utils import utils_impl
 from utils.datasets import cifar10_dataset
 from utils.optimizers import optimizer_utils
-from utils import utils_impl
-from compare_utils.tensorflow import simple_cnn
 
 CIFAR_SHAPE = (32, 32, 3)
 NUM_CLASSES = 10
@@ -53,7 +49,7 @@ def main(argv):
     start_time_total = time.perf_counter()
     if len(argv) > 1:
         raise app.UsageError("Expected no command-line arguments, "
-                             "got: {}".format(argv))
+                             f"got: {argv}")
 
     tf.random.set_seed(FLAGS.seed)
     np.random.seed(FLAGS.seed)
@@ -63,7 +59,7 @@ def main(argv):
     for gpu_device in tf.config.list_physical_devices('GPU'):
         tf.config.experimental.set_memory_growth(gpu_device, True)
         tf.config.set_logical_device_configuration(
-        gpu_device, 
+        gpu_device,
         [tf.config.LogicalDeviceConfiguration(memory_limit=10240) for _ in range(4)])
     """
 

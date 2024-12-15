@@ -1,6 +1,5 @@
 """Util functions for CIFAR10/100."""
 
-
 from collections import OrderedDict
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
@@ -9,9 +8,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 import torch
+from compare_utils.pytorch import simple_cnn
 from flwr.common.parameter import ndarrays_to_parameters
 from flwr.common.typing import NDArrays, Parameters, Scalar
 from flwr.server.history import History
+from flwr_baselines.dataset.utils.common import (
+    XY,
+    create_lda_partitions,
+)
 from PIL import Image
 from torch import Tensor, load
 from torch.nn import GroupNorm, Module
@@ -27,13 +31,6 @@ from torchvision.transforms import (
     ToTensor,
 )
 
-from flwr_baselines.dataset.utils.common import (
-    XY,
-    create_lda_partitions,
-)
-
-from compare_utils.pytorch import simple_cnn
-
 
 # transforms
 def get_transforms(num_classes: int = 10) -> Dict[str, Compose]:
@@ -46,7 +43,8 @@ def get_transforms(num_classes: int = 10) -> Dict[str, Compose]:
         Dict[str, Compose]: Dictionary with 'train' and 'test' keywords and Transforms
         for each
     """
-    normalize_cifar = Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+    normalize_cifar = Normalize((0.4914, 0.4822, 0.4465),
+                                (0.2023, 0.1994, 0.2010))
     """
     train_transform = Compose(
         [RandomCrop(24), RandomHorizontalFlip(), ToTensor(), normalize_cifar]
@@ -111,9 +109,9 @@ class ClientDataset(Dataset):
         return this_input, this_label
 
 
-def save_partitions(
-    list_partitions: List[XY], fed_dir: Path, partition_type: str = "train"
-):
+def save_partitions(list_partitions: List[XY],
+                    fed_dir: Path,
+                    partition_type: str = "train"):
     """Saves partitions to individual files.
 
     Args:
@@ -177,12 +175,8 @@ def gen_cifar10_partitions(
     Returns:
         Path: [description]
     """
-    fed_dir = (
-        path_original_dataset
-        / f"{dataset_name}"
-        / "partitions"
-        / f"{num_total_clients}"
-    )
+    fed_dir = (path_original_dataset / f"{dataset_name}" / "partitions" /
+               f"{num_total_clients}")
 
     trainset = CIFAR10(root=path_original_dataset, train=True, download=True)
     flwr_trainset = (trainset.data, np.array(trainset.targets, dtype=np.int64))
@@ -216,7 +210,8 @@ def train(
             optimizer.step()
 
 
-def test(net: Module, testloader: DataLoader, device: str) -> Tuple[float, float]:
+def test(net: Module, testloader: DataLoader,
+         device: str) -> Tuple[float, float]:
     """Validate the network on the entire test set."""
     criterion = torch.nn.CrossEntropyLoss()
     correct, total, loss = 0, 0, 0.0
@@ -234,8 +229,8 @@ def test(net: Module, testloader: DataLoader, device: str) -> Tuple[float, float
 
 
 def gen_on_fit_config_fn(
-    epochs_per_round: int, batch_size: int, client_learning_rate: float
-) -> Callable[[int], Dict[str, Scalar]]:
+        epochs_per_round: int, batch_size: int,
+        client_learning_rate: float) -> Callable[[int], Dict[str, Scalar]]:
     """Generates ` On_fit_config`
 
     Args:
@@ -261,10 +256,11 @@ def gen_on_fit_config_fn(
 
 
 def get_cifar_eval_fn(
-    path_original_dataset: Path, evaluation_frequency: int, num_classes: int = 10
-) -> Callable[
-    [int, NDArrays, Dict[str, Scalar]], Optional[Tuple[float, Dict[str, Scalar]]]
-]:
+    path_original_dataset: Path,
+    evaluation_frequency: int,
+    num_classes: int = 10
+) -> Callable[[int, NDArrays, Dict[str, Scalar]], Optional[Tuple[float, Dict[
+        str, Scalar]]]]:
     """Returns an evaluation function for centralized evaluation."""
     CIFAR = CIFAR10 if num_classes == 10 else CIFAR100
     transforms = get_transforms(num_classes=num_classes)
@@ -277,8 +273,9 @@ def get_cifar_eval_fn(
     )
 
     def evaluate(
-        server_round: int, parameters_ndarrays: NDArrays, config: Dict[str, Scalar]
-    ) -> Optional[Tuple[float, Dict[str, Scalar]]]:
+        server_round: int, parameters_ndarrays: NDArrays,
+        config: Dict[str,
+                     Scalar]) -> Optional[Tuple[float, Dict[str, Scalar]]]:
         if server_round % evaluation_frequency != 0:
             return None
         # pylint: disable=unused-argument
@@ -286,12 +283,10 @@ def get_cifar_eval_fn(
         # determine device
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         net = get_cifar_model(num_classes=num_classes)
-        state_dict = OrderedDict(
-            {
-                k: torch.tensor(np.atleast_1d(v))
-                for k, v in zip(net.state_dict().keys(), parameters_ndarrays)
-            }
-        )
+        state_dict = OrderedDict({
+            k: torch.tensor(np.atleast_1d(v))
+            for k, v in zip(net.state_dict().keys(), parameters_ndarrays)
+        })
         net.load_state_dict(state_dict, strict=True)
         net.to(device)
 
@@ -337,7 +332,8 @@ def plot_metric_from_history(
     """
     rounds, values = zip(*hist.metrics_centralized["accuracy"])
     plt.figure()
-    plt.plot(rounds, np.asarray(values) * 100, label=strategy_name)  # Accuracy 0-100%
+    plt.plot(rounds, np.asarray(values) * 100,
+             label=strategy_name)  # Accuracy 0-100%
     # Set expected graph
     plt.axhline(y=expected_maximum, color="r", linestyle="--")
     plt.title(f"Centralized Validation - {dataset_name}")

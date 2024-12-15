@@ -1,14 +1,14 @@
 # Copyright © 2024 Apple Inc.
 import logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 import time
 
 import fedml
+from compare_utils.pytorch import simple_cnn
 from fedml import FedMLRunner
 from fedml.data.cifar10.data_loader import load_partition_data_cifar10
-
-from compare_utils.pytorch import simple_cnn
-
 
 if __name__ == "__main__":
     start_time_total = time.perf_counter()

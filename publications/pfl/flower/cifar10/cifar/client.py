@@ -1,6 +1,5 @@
 """Flower Client for CIFAR10/100."""
 
-
 from collections import OrderedDict
 from pathlib import Path
 from typing import Callable, Dict, Tuple
@@ -29,7 +28,8 @@ class RayClient(fl.client.NumPyClient):
         self.fed_dir = fed_dir
         self.num_classes = num_classes
         self.properties: Dict[str, Scalar] = {"tensor_type": "numpy.ndarray"}
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device(
+            "cuda:0" if torch.cuda.is_available() else "cpu")
 
     def get_properties(self, config: Dict[str, Scalar]) -> Dict[str, Scalar]:
         """Returns properties for this client.
@@ -56,9 +56,9 @@ class RayClient(fl.client.NumPyClient):
         weights = [val.cpu().numpy() for _, val in net.state_dict().items()]
         return weights
 
-    def fit(
-        self, parameters: NDArrays, config: Dict[str, Scalar]
-    ) -> Tuple[NDArrays, int, Dict[str, Scalar]]:
+    def fit(self, parameters: NDArrays,
+            config: Dict[str,
+                         Scalar]) -> Tuple[NDArrays, int, Dict[str, Scalar]]:
         """Usual fit function that performs training locally.
 
         Args:
@@ -79,8 +79,8 @@ class RayClient(fl.client.NumPyClient):
             path_to_data=Path(self.fed_dir) / f"{self.cid}" / "train.pt",
             transform=get_transforms(self.num_classes)["train"],
         )
-        trainloader = DataLoader(trainset, batch_size=int(config["batch_size"]))
-
+        trainloader = DataLoader(trainset,
+                                 batch_size=int(config["batch_size"]))
 
         if config['epoch_global'] % 10 == 0:
             valloader = DataLoader(trainset, batch_size=10000)
@@ -90,7 +90,10 @@ class RayClient(fl.client.NumPyClient):
                 'before training | accuracy': accuracy,
             })
 
-        train(net, trainloader, epochs=int(config["epochs"]), device=self.device)
+        train(net,
+              trainloader,
+              epochs=int(config["epochs"]),
+              device=self.device)
 
         if config['epoch_global'] % 10 == 0:
             loss, accuracy = test(net, valloader, device=self.device)
@@ -105,8 +108,8 @@ class RayClient(fl.client.NumPyClient):
         return weights, len(trainset), metrics
 
     def evaluate(
-        self, parameters: NDArrays, config: Dict[str, Scalar]
-    ) -> Tuple[float, int, Dict[str, Scalar]]:
+            self, parameters: NDArrays,
+            config: Dict[str, Scalar]) -> Tuple[float, int, Dict[str, Scalar]]:
         """Implements distributed evaluation for a given client.
 
         Args:
@@ -133,7 +136,9 @@ class RayClient(fl.client.NumPyClient):
         loss, accuracy = test(net, valloader, device=self.device)
 
         # return statistics
-        return float(loss), len(valloader.dataset), {"accuracy": float(accuracy)}
+        return float(loss), len(valloader.dataset), {
+            "accuracy": float(accuracy)
+        }
 
     def set_parameters(self, parameters: NDArrays):
         """Loads weights inside the network.
@@ -147,16 +152,16 @@ class RayClient(fl.client.NumPyClient):
         net = get_cifar_model(self.num_classes)
         weights = parameters
         params_dict = zip(net.state_dict().keys(), weights)
-        state_dict = OrderedDict(
-            {k: torch.from_numpy(np.copy(v)) for k, v in params_dict}
-        )
+        state_dict = OrderedDict({
+            k: torch.from_numpy(np.copy(v))
+            for k, v in params_dict
+        })
         net.load_state_dict(state_dict, strict=True)
         return net
 
 
-def get_ray_client_fn(
-    fed_dir: Path, num_classes: int = 10
-) -> Callable[[str], RayClient]:
+def get_ray_client_fn(fed_dir: Path,
+                      num_classes: int = 10) -> Callable[[str], RayClient]:
     """Function that loads a Ray (Virtual) Client.
 
     Args:

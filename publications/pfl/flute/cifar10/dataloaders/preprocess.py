@@ -1,6 +1,6 @@
 # Copyright © 2024 Apple Inc.
-from typing import Optional
 import pickle
+from typing import Optional
 
 import numpy as np
 
@@ -41,14 +41,14 @@ class FEDCIFAR10:
         test_dict = {
             'users': [],
             'num_samples': [],
-            'user_data': dict(),
-            'user_data_label': dict()
+            'user_data': {},
+            'user_data_label': {}
         }
         train_dict = {
             'users': [],
             'num_samples': [],
-            'user_data': dict(),
-            'user_data_label': dict()
+            'user_data': {},
+            'user_data_label': {}
         }
 
         for user_id, indices in enumerate(
@@ -57,7 +57,8 @@ class FEDCIFAR10:
             train_dict['users'].append(str(user_id))
             train_dict['num_samples'].append(len(indices))
             train_dict['user_data'][str(user_id)] = train_images[indices]
-            train_dict['user_data_label'][str(user_id)] = train_labels[indices].squeeze()
+            train_dict['user_data_label'][str(
+                user_id)] = train_labels[indices].squeeze()
 
         test_dict['users'].append('0')
         test_dict['num_samples'].append(len(test_labels))

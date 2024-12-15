@@ -1,8 +1,8 @@
 # Copyright © 2024 Apple Inc.
 from typing import Tuple
 
-import tensorflow as tf  # type: ignore
-from tensorflow.keras.layers import (  # type: ignore
+import tensorflow as tf
+from tensorflow.keras.layers import (
     Conv2D,
     Dense,
     Dropout,

@@ -258,14 +258,13 @@ class MLXModel(StatefulModel):
 
         postprocess_fns = []
         allows_distributed_evaluation = True
-        # TODO: Use Dataset.iter interface.
+
         for batch_idx, batch in enumerate(dataset.iter(batch_size)):
             metrics_one_batch = Metrics()
             batch = [
-                get_framework_module().to_tensor(data[batch_idx:batch_idx +
-                                                      batch_size],
+                get_framework_module().to_tensor(data, 
                                                  dtype=None)
-                for data in dataset.raw_data
+                for data in batch
             ]
             for name, metric_value in self._model.metrics(
                     *batch, **dataset.eval_kwargs).items():

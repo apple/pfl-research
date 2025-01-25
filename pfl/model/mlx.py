@@ -262,8 +262,7 @@ class MLXModel(StatefulModel):
         for batch_idx, batch in enumerate(dataset.iter(batch_size)):
             metrics_one_batch = Metrics()
             batch = [
-                get_framework_module().to_tensor(data, 
-                                                 dtype=None)
+                get_framework_module().to_tensor(data, dtype=None)
                 for data in batch
             ]
             for name, metric_value in self._model.metrics(

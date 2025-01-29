@@ -110,6 +110,8 @@ class JointPrivacyAccountant:
                 'Delta should be a positive real value in range (0, 1)')
 
         self.mechanisms = [mechanism.lower() for mechanism in self.mechanisms]
+        self.min_bounds = [MIN_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
+        self.max_bounds = [MAX_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
 
     @property
     def cohort_noise_parameters(self):
@@ -153,8 +155,6 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
 
     def __post_init__(self):
         super().__post_init__()
-        self.min_bounds = [MIN_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
-        self.max_bounds = [MAX_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
 
         for mechanism in self.mechanisms:
             assert mechanism in [
@@ -297,6 +297,166 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                 raise ValueError(
                     'Error occurred during binary search for '
                     'noise_parameter using PLD privacy accountant: '
+                    f'{e}') from e
+
+            noise_parameters.append(noise_parameter)
+
+        self.noise_parameters = noise_parameters
+        return noise_parameters
+
+
+@dataclass
+class JointPRVPrivacyAccountant(JointPrivacyAccountant):
+    """
+    Privacy Random Variable (PRV) accountant, for heterogeneous composition,
+    using prv-accountant package.
+    prv-accountant package: https://pypi.org/project/prv-accountant/
+    Based on: “Numerical Composition of Differential Privacy”, Gopi et al.,
+    2021, https://arxiv.org/pdf/2106.02848.pdf
+    The PRV accountant methods compute_delta() and compute_epsilon() return
+    a lower bound, an estimated value, and an upper bound for the delta and
+    epsilon respectively. The estimated value is used for all further
+    computations.
+
+    :param eps_error:
+        Maximum permitted error in epsilon. Typically around 0.1.
+    :param delta_error:
+        Maximum error allowed in delta. Typically around delta * 1e-3
+    """
+    eps_error: Optional[float] = 0.07
+    delta_error: Optional[float] = 1e-10
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        # epsilon, delta, noise_parameter all defined
+        if [self.epsilon, self.delta, self.noise_parameters].count(None) == 0:
+            assert math.isclose(
+                self.get_composed_accountant(
+                    self.mechanisms, self.noise_parameters,
+                    self.sampling_probability, self.num_compositions,
+                    self.eps_error,
+                    self.delta_error).compute_delta(self.epsilon,
+                                                    [self.num_compositions] * len(self.mechanisms))[1],
+                self.delta,
+                rel_tol=1e-3), (
+                    'Invalid settings of epsilon, delta, noise_parameter'
+                    'for PRVPrivacyAccountant')
+
+        else:
+            if self.noise_parameters:
+                prv_acc = self.get_composed_accountant(
+                    self.mechanisms, self.noise_parameters,
+                    self.sampling_probability, self.num_compositions,
+                    self.eps_error, self.delta_error)
+
+                if self.epsilon:
+                    # prv_acc.compute_delta() returns lower bound on delta,
+                    # estimate of delta, and upper bound on delta.
+                    # Estimate of delta is used.
+                    (_, delta_estim,
+                     _) = prv_acc.compute_delta(self.epsilon,
+                                                [self.num_compositions] * len(self.mechanisms))
+                    self.delta = delta_estim
+                else:
+                    # prv_acc.compute_epsilon() returns lower bound on epsilon,
+                    # estimate of epsilon, and upper bound on epsion.
+                    # Estimate of epsilon is used.
+                    (_, epsilon_estim,
+                     _) = prv_acc.compute_epsilon(self.delta,
+                                                  [self.num_compositions] * len(self.mechanisms))
+                    self.epsilon = epsilon_estim
+
+            else:
+                # Do binary search over large_epsilon. Within each iteration of the binary search
+                # we run an inner binary search to compute the noise parameter for each mechanism
+                # that enforce condition 1 from above.
+                def compute_delta(large_epsilon):
+                    delta = self.get_composed_accountant(
+                        self.mechanisms, self.compute_noise_paramters(large_epsilon),
+                        self.sampling_probability, self.num_compositions,
+                        self.eps_error, self.delta_error,
+                    ).compute_delta(self.epsilon, [self.num_compositions] * len(self.mechanisms))[1]
+
+                    if delta < self.delta:
+                        # large_epsilon was too small, i.e. noise was too large.
+                        # We can decrease our starting max bound for the next noise parameter search
+                        self.max_bounds = self.noise_parameters
+                    else:
+                        # large_epsilon was too large, i.e. noise was too small.
+                        # We can increase our starting min bound for the next noise parameter search
+                        self.min_bounds = self.noise_parameters
+
+                    return delta
+
+                try:
+                    self.large_epsilon = binary_search_function(
+                        func=compute_delta,
+                        func_monotonically_increasing=True,
+                        target_value=self.delta,
+                        min_bound=max(MIN_BOUND_EPSILON, self.epsilon),
+                        max_bound=min(MAX_BOUND_EPSILON, self.epsilon / min(*self.budget_proportions)),
+                        rtol=RTOL_EPSILON,
+                        confidence_threshold=
+                        CONFIDENCE_THRESHOLD_EPSILON)
+                except Exception as e:
+                    raise ValueError(
+                        'Error occurred during binary search for '
+                        'large_epsilon using PRV privacy accountant: '
+                        f'{e}') from e
+
+    @staticmethod
+    def get_composed_accountant(mechanisms, noise_parameters,
+                                sampling_probability, num_compositions,
+                                eps_error, delta_error):
+
+        prvs = []
+        for mechanism, noise_parameter in zip(mechanisms, noise_parameters):
+            if mechanism == 'gaussian':
+                prv = PoissonSubsampledGaussianMechanism(
+                    sampling_probability=sampling_probability,
+                    noise_multiplier=noise_parameter)
+
+            elif mechanism == 'laplace':
+                prv = LaplaceMechanism(mu=noise_parameter)
+
+            else:
+                raise ValueError(
+                    f'Mechanism {mechanism} is not supported for PRV accountant')
+
+            prvs.append(prv)
+
+        acc_prv = PRVAccountant(prvs=prvs,
+                                max_self_compositions=[int(num_compositions)] * len(prvs),
+                                eps_error=eps_error,
+                                delta_error=delta_error)
+
+        return acc_prv
+
+    def compute_noise_paramters(self, large_epsilon):
+        noise_parameters = []
+
+        for mechanism, p, min_bound, max_bound in zip(self.mechanisms, self.budget_proportions, self.min_bounds, self.max_bounds):
+            mechanism_epsilon = large_epsilon * p
+            func = lambda noise_param: self.get_composed_accountant(
+                [mechanism], [noise_param],
+                    self.sampling_probability, self.num_compositions,
+                    self.eps_error, self.delta_error,
+            ).compute_delta(mechanism_epsilon, [self.num_compositions])[1]
+            try:
+                noise_parameter = binary_search_function(
+                    func=func,
+                    func_monotonically_increasing=False,
+                    target_value=self.delta,
+                    min_bound=min_bound,
+                    max_bound=max_bound,
+                    rtol=RTOL_NOISE_PARAMETER,
+                    confidence_threshold=
+                    CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
+            except Exception as e:
+                raise ValueError(
+                    'Error occurred during binary search for '
+                    'noise_parameter using PRV privacy accountant: '
                     f'{e}') from e
 
             noise_parameters.append(noise_parameter)

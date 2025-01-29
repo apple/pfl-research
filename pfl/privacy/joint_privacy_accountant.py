@@ -4,7 +4,6 @@ Privacy accountants for differential privacy.
 '''
 
 import math
-import time
 from dataclasses import dataclass
 from typing import Callable, List, Optional, Tuple, TypeVar
 
@@ -224,7 +223,6 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                     return delta
 
                 try:
-                    start = time.time()
                     self.large_epsilon = binary_search_function(
                         func=compute_delta,
                         func_monotonically_increasing=True,
@@ -234,7 +232,6 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                         rtol=RTOL_EPSILON,
                         confidence_threshold=
                         CONFIDENCE_THRESHOLD_EPSILON)
-                    print(f'Ran in {time.time() - start}')
                 except Exception as e:
                     raise ValueError(
                         'Error occurred during binary search for '
@@ -277,7 +274,6 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
         return composed_pld
 
     def compute_noise_paramters(self, large_epsilon):
-        start = time.time()
         noise_parameters = []
 
         for mechanism, p, min_bound, max_bound in zip(self.mechanisms, self.budget_proportions, self.min_bounds, self.max_bounds):
@@ -306,7 +302,6 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
             noise_parameters.append(noise_parameter)
 
         self.noise_parameters = noise_parameters
-        print(f"Computing noise parameters took {time.time() - start:.2f}s")
         return noise_parameters
 
 

@@ -77,7 +77,7 @@ class TestPrivacyAccountants:
 
     @pytest.mark.parametrize(
         'accountant_class, fn_expected_delta, max_bound',
-        [(JointPLDPrivacyAccountant, get_expected_delta_pld, 15)])
+        [(JointPLDPrivacyAccountant, get_expected_delta_pld, 20)])
     @pytest.mark.parametrize(
         'num_compositions, sampling_probability, epsilon, delta, noise_parameters, noise_scale, mechanisms, budget_proportions',  # pylint: disable=line-too-long
         [(1000, 0.01, 2, None, [0.76, 1], 1.0, ['gaussian', 'gaussian'], None),
@@ -125,26 +125,26 @@ class TestPrivacyAccountants:
                     for pld, p in zip(plds, budget_proportions):
                         np.testing.assert_almost_equal(pld.get_epsilon_for_delta(delta), accountant.large_epsilon * p, decimal=2)
 
-    # @pytest.mark.xfail(raises=(ValueError, AssertionError), strict=True)
-    # @pytest.mark.parametrize('accountant_class', [(PLDPrivacyAccountant),
-    #                                               (PRVPrivacyAccountant),
-    #                                               (RDPPrivacyAccountant)])
-    # @pytest.mark.parametrize(
-    #     'num_compositions, sampling_probability, epsilon, delta, noise_parameter, noise_scale, mechanism',  # pylint: disable=line-too-long
-    #     [(100, 0.1, 2, None, None, 1.0, 'gaussian'),
-    #      (100, 0.1, None, None, None, 1.0, 'laplace'),
-    #      (100, 0.1, 2, 1e-8, None, 1.2, 'gaussian'),
-    #      (100, 0.1, 2, 1e-8, None, 1.0, 'bernoulli'),
-    #      (100, 0.1, 2, 1e-8, 10, 1.0, 'gaussian')])
-    # def test_fail(self, num_compositions, sampling_probability, epsilon, delta,
-    #               noise_parameter, noise_scale, mechanism, accountant_class):
-    #     accountant_class(
-    #         num_compositions=num_compositions,
-    #         sampling_probability=sampling_probability,
-    #         mechanism=mechanism,
-    #         epsilon=epsilon,
-    #         delta=delta,
-    #         noise_parameter=noise_parameter,
-    #         noise_scale=noise_scale,
-    #     )
+    @pytest.mark.xfail(raises=(ValueError, AssertionError), strict=True)
+    @pytest.mark.parametrize('accountant_class', [JointPLDPrivacyAccountant])
+    @pytest.mark.parametrize(
+        'num_compositions, sampling_probability, epsilon, delta, noise_parameters, noise_scale, mechanisms, budget_proportions',  # pylint: disable=line-too-long
+        [(100, 0.1, 2, None, None, 1.0, ['gaussian', 'gaussian'], [0.5, 0.5]),
+         (100, 0.1, None, None, None, 1.0, ['gaussian', 'gaussian'], [0.5, 0.5]),
+         (100, 0.1, 2, 1e-8, None, 1.2, ['gaussian', 'gaussian'], [0.5, 0.5]),
+         (100, 0.1, 2, 1e-8, None, 1.0, ['bernoulli', 'gaussian'], [0.5, 0.5]),
+         (100, 0.1, 2, 1e-8, [10, 10], 1.0, ['gaussian', 'gaussian'], [0.5, 0.5]),
+         (100, 0.1, 2, 1e-8, None, 0.8, ['gaussian', 'gaussian'], [0.1, 0.75])])
+    def test_fail(self, num_compositions, sampling_probability, epsilon, delta,
+                  noise_parameters, noise_scale, mechanisms, budget_proportions, accountant_class):
+        accountant_class(
+            num_compositions=num_compositions,
+            sampling_probability=sampling_probability,
+            mechanisms=mechanisms,
+            epsilon=epsilon,
+            delta=delta,
+            budget_proportions=budget_proportions,
+            noise_parameters=noise_parameters,
+            noise_scale=noise_scale,
+        )
 

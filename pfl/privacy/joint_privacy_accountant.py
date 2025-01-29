@@ -110,6 +110,21 @@ class JointPrivacyAccountant:
                 'Delta should be a positive real value in range (0, 1)')
 
         self.mechanisms = [mechanism.lower() for mechanism in self.mechanisms]
+
+        for mechanism in self.mechanisms:
+            assert mechanism in [
+                'gaussian', 'laplace'
+            ], ('Only gaussian and laplace mechanisms are supported.')
+
+        if self.budget_proportions:
+            assert len(self.mechanisms) == len(self.budget_proportions), (
+                'Mechansim names and budget proportions must have the same length'
+            )
+
+            assert math.isclose(sum(self.budget_proportions), 1, rel_tol=1e-3), (
+                'Privacy budget proportions must sum to 1.'
+            )
+
         self.min_bounds = [MIN_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
         self.max_bounds = [MAX_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
 
@@ -155,20 +170,6 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
 
     def __post_init__(self):
         super().__post_init__()
-
-        for mechanism in self.mechanisms:
-            assert mechanism in [
-                'gaussian', 'laplace'
-            ], ('Only gaussian and laplace mechanisms are supported.')
-
-        if self.budget_proportions:
-            assert len(self.mechanisms) == len(self.budget_proportions), (
-                'Mechansim names and budget proportions must have the same length'
-            )
-
-            assert math.isclose(sum(self.budget_proportions), 1, rel_tol=1e-3), (
-                'Privacy budget proportions must sum to 1.'
-            )
 
         # Epsilon, delta, noise parameter all defined. Nothing to do.
         if [self.epsilon, self.delta, self.noise_parameters].count(None) == 0:
@@ -457,6 +458,137 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
                 raise ValueError(
                     'Error occurred during binary search for '
                     'noise_parameter using PRV privacy accountant: '
+                    f'{e}') from e
+
+            noise_parameters.append(noise_parameter)
+
+        self.noise_parameters = noise_parameters
+        return noise_parameters
+
+@dataclass
+class JointRDPPrivacyAccountant(JointPrivacyAccountant):
+    """
+    Privacy accountant using Renyi differential privacy (RDP) from
+    dp-accounting package.
+    Implementation in dp-accounting: https://github.com/google/differential-privacy/blob/main/python/dp_accounting/rdp/rdp_privacy_accountant.py # pylint: disable=line-too-long
+    The default neighbouring relation for the RDP account is "add or remove
+    one". The default RDP orders used are:
+    ([1 + x / 10. for x in range(1, 100)] + list(range(11, 64)) +
+    [128, 256, 512, 1024]).
+    """
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        # epsilon, delta, noise_parameters all defined
+        if [self.epsilon, self.delta, self.noise_parameters].count(None) == 0:
+            assert math.isclose(
+                self.get_composed_accountant(
+                    self.mechanisms, self.noise_parameters,
+                    self.sampling_probability,
+                    self.num_compositions).get_delta(self.epsilon),
+                self.delta,
+                rel_tol=1e-3), (
+                    'Invalid settings of epsilon, delta, noise_parameter '
+                    'for RDPPrivacyAccountant')
+
+        else:
+            if self.noise_parameters:
+
+                rdp_accountant = self.get_composed_accountant(
+                    self.mechanisms, self.noise_parameters,
+                    self.sampling_probability, self.num_compositions)
+
+                if self.epsilon:
+                    self.delta = rdp_accountant.get_delta(self.epsilon)
+
+                else:
+                    self.epsilon = rdp_accountant.get_epsilon(self.delta)
+
+            else:
+                # Do binary search over large_epsilon. Within each iteration of the binary search
+                # we run an inner binary search to compute the noise parameter for each mechanism
+                # that enforce condition 1 from above.
+                def compute_delta(large_epsilon):
+                    delta = self.get_composed_accountant(
+                        self.mechanisms, self.compute_noise_paramters(large_epsilon),
+                        self.sampling_probability, self.num_compositions
+                    ).get_delta(self.epsilon)
+
+                    if delta < self.delta:
+                        # large_epsilon was too small, i.e. noise was too large.
+                        # We can decrease our starting max bound for the next noise parameter search
+                        self.max_bounds = self.noise_parameters
+                    else:
+                        # large_epsilon was too large, i.e. noise was too small.
+                        # We can increase our starting min bound for the next noise parameter search
+                        self.min_bounds = self.noise_parameters
+
+                    return delta
+
+                try:
+                    self.large_epsilon = binary_search_function(
+                        func=compute_delta,
+                        func_monotonically_increasing=True,
+                        target_value=self.delta,
+                        min_bound=max(MIN_BOUND_EPSILON, self.epsilon),
+                        max_bound=min(MAX_BOUND_EPSILON, self.epsilon / min(*self.budget_proportions)),
+                        rtol=RTOL_EPSILON,
+                        confidence_threshold=
+                        CONFIDENCE_THRESHOLD_EPSILON)
+                except Exception as e:
+                    raise ValueError(
+                        'Error occurred during binary search for '
+                        'large_epsilon using RDP privacy accountant: '
+                        f'{e}') from e
+
+    @staticmethod
+    def get_composed_accountant(mechanisms, noise_parameters,
+                                sampling_probability, num_compositions):
+
+        rdp_accountant = rdp_privacy_accountant.RdpAccountant()
+        for mechanism, noise_parameter in zip(mechanisms, noise_parameters):
+            if mechanism == 'gaussian':
+                event = dp_event.PoissonSampledDpEvent(
+                    sampling_probability,
+                    dp_event.GaussianDpEvent(noise_parameter))
+
+            elif mechanism == 'laplace':
+                event = dp_event.LaplaceDpEvent(noise_parameter)
+                pass
+
+            else:
+                raise ValueError(
+                    f'Mechanism {mechanism} is not supported for Renyi accountant')
+
+            rdp_accountant = rdp_accountant.compose(
+                event, int(num_compositions))
+
+        return rdp_accountant
+
+    def compute_noise_paramters(self, large_epsilon):
+        noise_parameters = []
+
+        for mechanism, p, min_bound, max_bound in zip(self.mechanisms, self.budget_proportions, self.min_bounds, self.max_bounds):
+            mechanism_epsilon = large_epsilon * p
+            func = lambda noise_param: self.get_composed_accountant(
+                [mechanism], [noise_param],
+                self.sampling_probability, self.num_compositions
+            ).get_delta(mechanism_epsilon)
+            try:
+                noise_parameter = binary_search_function(
+                    func=func,
+                    func_monotonically_increasing=False,
+                    target_value=self.delta,
+                    min_bound=min_bound,
+                    max_bound=max_bound,
+                    rtol=RTOL_NOISE_PARAMETER,
+                    confidence_threshold=
+                    CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
+            except Exception as e:
+                raise ValueError(
+                    'Error occurred during binary search for '
+                    'noise_parameter using RDP privacy accountant: '
                     f'{e}') from e
 
             noise_parameters.append(noise_parameter)

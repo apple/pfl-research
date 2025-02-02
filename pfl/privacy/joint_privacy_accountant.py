@@ -5,7 +5,7 @@ Privacy accountants for differential privacy.
 
 import math
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Tuple, TypeVar
+from typing import List, Optional
 
 from dp_accounting import dp_event
 from dp_accounting.pld import privacy_loss_distribution
@@ -55,10 +55,11 @@ class JointPrivacyAccountant:
     :param mechanisms:
         The list of noise mechanisms to be used, each can be either Gaussian or Laplace.
     :param epsilon:
-        The privacy loss random variable. It controls how much the output of
-        the mechanism can vary between two neighboring databases.
+        The privacy loss random variable. The total epsilon allowed for
+        the composition of all the mechanisms.
     :param delta:
-        The probability that all privacy will be lost.
+        The probability that all privacy will be lost. The total delta allowed for
+        the composition of all the mechanisms.
     :param budget_proportions:
         List specifying the proportion of the total (epsilon, delta) privacy budget
         each mechanism is allocated.
@@ -464,6 +465,7 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
 
         self.noise_parameters = noise_parameters
         return noise_parameters
+
 
 @dataclass
 class JointRDPPrivacyAccountant(JointPrivacyAccountant):

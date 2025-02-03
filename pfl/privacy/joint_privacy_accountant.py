@@ -1,6 +1,6 @@
 # Copyright © 2023-2024 Apple Inc.
 '''
-Privacy accountants for differential privacy.
+Joint privacy accountants for differential privacy with multiple mechanisms.
 '''
 
 import math
@@ -31,10 +31,8 @@ class JointPrivacyAccountant:
     Tracks the privacy loss over multiple composition steps with multiple
     mechanisms simultaneously. Either two or three of the variables epsilon,
     delta and noise_parameters must be defined.
-
     If all three are defined a check will be performed to make sure a valid set of
     variable values has been provided.
-
     If two are defined, the remaining variable can be computed. In the case that
     epsilon and delta are defined then the budget_proportions parameter
     must be provided, specifying what fraction of the total budget each
@@ -43,8 +41,8 @@ class JointPrivacyAccountant:
     and noise parameters [sigma_1, sigma_2, ...] such that the following two
     constraints hold:
     1. For each i, mechanism_i with noise parameter sigma_i is (large_epsilon * p_i, delta)
-    DP after all composition steps
-    2. The composition of all mechanisms over all steps is (epsilon, delta) DP
+    DP after all composition steps,
+    2. The composition of all mechanisms over all steps is (epsilon, delta) DP.
 
     :param num_compositions:
         Maximum number of compositions to be performed with each mechanism.
@@ -102,7 +100,7 @@ class JointPrivacyAccountant:
         if self.noise_parameters is not None:
             for noise_parameter in self.noise_parameters:
                 assert noise_parameter > 0, (
-                    'All noise parameters must be positive real values.')
+                    'All noise parameters must be positive real values')
         if self.epsilon is not None:
             assert self.epsilon >= 0, (
                 'Epsilon must be a non-negative real value')
@@ -115,16 +113,20 @@ class JointPrivacyAccountant:
         for mechanism in self.mechanisms:
             assert mechanism in [
                 'gaussian', 'laplace'
-            ], ('Only gaussian and laplace mechanisms are supported.')
+            ], ('Only gaussian and laplace mechanisms are supported')
 
         if self.budget_proportions:
             assert len(self.mechanisms) == len(self.budget_proportions), (
                 'Mechansim names and budget proportions must have the same length'
             )
 
-            assert math.isclose(sum(self.budget_proportions), 1, rel_tol=1e-3), (
-                'Privacy budget proportions must sum to 1.'
-            )
+            assert math.isclose(
+                sum(self.budget_proportions), 1,
+                rel_tol=1e-3), ('Privacy budget proportions must sum to 1')
+
+            for p in self.budget_proportions:
+                assert (p > 0) and (p < 1), (
+                    'Privacy budget proportions must be in range (0, 1)')
 
         self.min_bounds = [MIN_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
         self.max_bounds = [MAX_BOUND_NOISE_PARAMETER] * len(self.mechanisms)
@@ -135,7 +137,10 @@ class JointPrivacyAccountant:
         Noise parameters to be used on a cohort of users.
         Noise scale is considered.
         """
-        return [noise_parameter * self.noise_scale for noise_parameter in self.noise_parameters]
+        return [
+            noise_parameter * self.noise_scale
+            for noise_parameter in self.noise_parameters
+        ]
 
 
 @dataclass
@@ -190,10 +195,10 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
             # Compute remaining variable
             if self.noise_parameters:
                 composed_pld = self.get_composed_accountant(
-                        self.mechanisms, self.noise_parameters,
-                        self.pessimistic_estimate, self.sampling_probability,
-                        self.use_connect_dots, self.value_discretization_interval,
-                        self.num_compositions)
+                    self.mechanisms, self.noise_parameters,
+                    self.pessimistic_estimate, self.sampling_probability,
+                    self.use_connect_dots, self.value_discretization_interval,
+                    self.num_compositions)
 
                 if self.epsilon:
                     self.delta = composed_pld.get_delta_for_epsilon(
@@ -205,12 +210,16 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
             else:
                 # Do binary search over large_epsilon. Within each iteration of the binary search
                 # we run an inner binary search to compute the noise parameter for each mechanism
-                # that enforce condition 1 from above.
+                # that enforce condition 1 above.
                 def compute_delta(large_epsilon):
                     delta = self.get_composed_accountant(
-                        self.mechanisms, self.compute_noise_paramters(large_epsilon), self.pessimistic_estimate,
-                        self.sampling_probability, self.use_connect_dots, self.
-                        value_discretization_interval, self.num_compositions,
+                        self.mechanisms,
+                        self.compute_noise_paramters(large_epsilon),
+                        self.pessimistic_estimate,
+                        self.sampling_probability,
+                        self.use_connect_dots,
+                        self.value_discretization_interval,
+                        self.num_compositions,
                     ).get_delta_for_epsilon(self.epsilon)
 
                     if delta < self.delta:
@@ -230,10 +239,11 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                         func_monotonically_increasing=True,
                         target_value=self.delta,
                         min_bound=max(MIN_BOUND_EPSILON, self.epsilon),
-                        max_bound=min(MAX_BOUND_EPSILON, self.epsilon / min(*self.budget_proportions)),
+                        max_bound=min(
+                            MAX_BOUND_EPSILON,
+                            self.epsilon / min(*self.budget_proportions)),
                         rtol=RTOL_EPSILON,
-                        confidence_threshold=
-                        CONFIDENCE_THRESHOLD_EPSILON)
+                        confidence_threshold=CONFIDENCE_THRESHOLD_EPSILON)
                 except Exception as e:
                     raise ValueError(
                         'Error occurred during binary search for '
@@ -255,7 +265,8 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                     pessimistic_estimate=pessimistic_estimate,
                     sampling_prob=sampling_probability,
                     use_connect_dots=use_connect_dots,
-                    value_discretization_interval=value_discretization_interval)
+                    value_discretization_interval=value_discretization_interval
+                )
             elif mechanism == 'laplace':
                 pld = privacy_loss_distribution.from_laplace_mechanism(
                     parameter=noise_parameter,
@@ -263,7 +274,8 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                     pessimistic_estimate=pessimistic_estimate,
                     sampling_prob=sampling_probability,
                     use_connect_dots=use_connect_dots,
-                    value_discretization_interval=value_discretization_interval)
+                    value_discretization_interval=value_discretization_interval
+                )
 
             else:
                 raise ValueError(f'mechanism {mechanism} is not supported.')
@@ -271,19 +283,32 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
             if composed_pld is None:
                 composed_pld = pld.self_compose(num_compositions)
             else:
-                composed_pld = composed_pld.compose(pld.self_compose(num_compositions))
+                composed_pld = composed_pld.compose(
+                    pld.self_compose(num_compositions))
 
         return composed_pld
 
     def compute_noise_paramters(self, large_epsilon):
+        """
+        Compute noise parameter for each mechanism such that when self composed
+        it is (large_epsilon * p, delta) DP, where p is the budget proportion
+        of the mechanism
+        """
         noise_parameters = []
 
-        for mechanism, p, min_bound, max_bound in zip(self.mechanisms, self.budget_proportions, self.min_bounds, self.max_bounds):
+        for mechanism, p, min_bound, max_bound in zip(self.mechanisms,
+                                                      self.budget_proportions,
+                                                      self.min_bounds,
+                                                      self.max_bounds):
             mechanism_epsilon = large_epsilon * p
             func = lambda noise_param: self.get_composed_accountant(
-                [mechanism], [noise_param], self.pessimistic_estimate,
-                self.sampling_probability, self.use_connect_dots, self.
-                value_discretization_interval, self.num_compositions,
+                [mechanism],
+                [noise_param],
+                self.pessimistic_estimate,
+                self.sampling_probability,
+                self.use_connect_dots,
+                self.value_discretization_interval,
+                self.num_compositions,
             ).get_delta_for_epsilon(mechanism_epsilon)
             try:
                 noise_parameter = binary_search_function(
@@ -293,8 +318,7 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                     min_bound=min_bound,
                     max_bound=max_bound,
                     rtol=RTOL_NOISE_PARAMETER,
-                    confidence_threshold=
-                    CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
+                    confidence_threshold=CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
             except Exception as e:
                 raise ValueError(
                     'Error occurred during binary search for '
@@ -310,8 +334,8 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
 @dataclass
 class JointPRVPrivacyAccountant(JointPrivacyAccountant):
     """
-    Privacy Random Variable (PRV) accountant, for heterogeneous composition,
-    using prv-accountant package.
+    For each mechanism uses the Privacy Random Variable (PRV) accountant,
+    for heterogeneous composition, using prv-accountant package.
     prv-accountant package: https://pypi.org/project/prv-accountant/
     Based on: “Numerical Composition of Differential Privacy”, Gopi et al.,
     2021, https://arxiv.org/pdf/2106.02848.pdf
@@ -337,9 +361,9 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
                 self.get_composed_accountant(
                     self.mechanisms, self.noise_parameters,
                     self.sampling_probability, self.num_compositions,
-                    self.eps_error,
-                    self.delta_error).compute_delta(self.epsilon,
-                                                    [self.num_compositions] * len(self.mechanisms))[1],
+                    self.eps_error, self.delta_error).compute_delta(
+                        self.epsilon,
+                        [self.num_compositions] * len(self.mechanisms))[1],
                 self.delta,
                 rel_tol=1e-3), (
                     'Invalid settings of epsilon, delta, noise_parameter'
@@ -356,17 +380,17 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
                     # prv_acc.compute_delta() returns lower bound on delta,
                     # estimate of delta, and upper bound on delta.
                     # Estimate of delta is used.
-                    (_, delta_estim,
-                     _) = prv_acc.compute_delta(self.epsilon,
-                                                [self.num_compositions] * len(self.mechanisms))
+                    (_, delta_estim, _) = prv_acc.compute_delta(
+                        self.epsilon,
+                        [self.num_compositions] * len(self.mechanisms))
                     self.delta = delta_estim
                 else:
                     # prv_acc.compute_epsilon() returns lower bound on epsilon,
                     # estimate of epsilon, and upper bound on epsion.
                     # Estimate of epsilon is used.
-                    (_, epsilon_estim,
-                     _) = prv_acc.compute_epsilon(self.delta,
-                                                  [self.num_compositions] * len(self.mechanisms))
+                    (_, epsilon_estim, _) = prv_acc.compute_epsilon(
+                        self.delta,
+                        [self.num_compositions] * len(self.mechanisms))
                     self.epsilon = epsilon_estim
 
             else:
@@ -375,10 +399,14 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
                 # that enforce condition 1 from above.
                 def compute_delta(large_epsilon):
                     delta = self.get_composed_accountant(
-                        self.mechanisms, self.compute_noise_paramters(large_epsilon),
-                        self.sampling_probability, self.num_compositions,
-                        self.eps_error, self.delta_error,
-                    ).compute_delta(self.epsilon, [self.num_compositions] * len(self.mechanisms))[1]
+                        self.mechanisms,
+                        self.compute_noise_paramters(large_epsilon),
+                        self.sampling_probability,
+                        self.num_compositions,
+                        self.eps_error,
+                        self.delta_error,
+                    ).compute_delta(self.epsilon, [self.num_compositions] *
+                                    len(self.mechanisms))[1]
 
                     if delta < self.delta:
                         # large_epsilon was too small, i.e. noise was too large.
@@ -397,10 +425,11 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
                         func_monotonically_increasing=True,
                         target_value=self.delta,
                         min_bound=max(MIN_BOUND_EPSILON, self.epsilon),
-                        max_bound=min(MAX_BOUND_EPSILON, self.epsilon / min(*self.budget_proportions)),
+                        max_bound=min(
+                            MAX_BOUND_EPSILON,
+                            self.epsilon / min(*self.budget_proportions)),
                         rtol=RTOL_EPSILON,
-                        confidence_threshold=
-                        CONFIDENCE_THRESHOLD_EPSILON)
+                        confidence_threshold=CONFIDENCE_THRESHOLD_EPSILON)
                 except Exception as e:
                     raise ValueError(
                         'Error occurred during binary search for '
@@ -424,12 +453,14 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
 
             else:
                 raise ValueError(
-                    f'Mechanism {mechanism} is not supported for PRV accountant')
+                    f'Mechanism {mechanism} is not supported for PRV accountant'
+                )
 
             prvs.append(prv)
 
         acc_prv = PRVAccountant(prvs=prvs,
-                                max_self_compositions=[int(num_compositions)] * len(prvs),
+                                max_self_compositions=[int(num_compositions)] *
+                                len(prvs),
                                 eps_error=eps_error,
                                 delta_error=delta_error)
 
@@ -438,12 +469,18 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
     def compute_noise_paramters(self, large_epsilon):
         noise_parameters = []
 
-        for mechanism, p, min_bound, max_bound in zip(self.mechanisms, self.budget_proportions, self.min_bounds, self.max_bounds):
+        for mechanism, p, min_bound, max_bound in zip(self.mechanisms,
+                                                      self.budget_proportions,
+                                                      self.min_bounds,
+                                                      self.max_bounds):
             mechanism_epsilon = large_epsilon * p
             func = lambda noise_param: self.get_composed_accountant(
-                [mechanism], [noise_param],
-                    self.sampling_probability, self.num_compositions,
-                    self.eps_error, self.delta_error,
+                [mechanism],
+                [noise_param],
+                self.sampling_probability,
+                self.num_compositions,
+                self.eps_error,
+                self.delta_error,
             ).compute_delta(mechanism_epsilon, [self.num_compositions])[1]
             try:
                 noise_parameter = binary_search_function(
@@ -453,8 +490,7 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
                     min_bound=min_bound,
                     max_bound=max_bound,
                     rtol=RTOL_NOISE_PARAMETER,
-                    confidence_threshold=
-                    CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
+                    confidence_threshold=CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
             except Exception as e:
                 raise ValueError(
                     'Error occurred during binary search for '
@@ -470,8 +506,8 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
 @dataclass
 class JointRDPPrivacyAccountant(JointPrivacyAccountant):
     """
-    Privacy accountant using Renyi differential privacy (RDP) from
-    dp-accounting package.
+    For each mechanism uses the Privacy accountant using Renyi differential
+    privacy (RDP) from dp-accounting package.
     Implementation in dp-accounting: https://github.com/google/differential-privacy/blob/main/python/dp_accounting/rdp/rdp_privacy_accountant.py # pylint: disable=line-too-long
     The default neighbouring relation for the RDP account is "add or remove
     one". The default RDP orders used are:
@@ -513,9 +549,10 @@ class JointRDPPrivacyAccountant(JointPrivacyAccountant):
                 # that enforce condition 1 from above.
                 def compute_delta(large_epsilon):
                     delta = self.get_composed_accountant(
-                        self.mechanisms, self.compute_noise_paramters(large_epsilon),
-                        self.sampling_probability, self.num_compositions
-                    ).get_delta(self.epsilon)
+                        self.mechanisms,
+                        self.compute_noise_paramters(large_epsilon),
+                        self.sampling_probability,
+                        self.num_compositions).get_delta(self.epsilon)
 
                     if delta < self.delta:
                         # large_epsilon was too small, i.e. noise was too large.
@@ -534,10 +571,11 @@ class JointRDPPrivacyAccountant(JointPrivacyAccountant):
                         func_monotonically_increasing=True,
                         target_value=self.delta,
                         min_bound=max(MIN_BOUND_EPSILON, self.epsilon),
-                        max_bound=min(MAX_BOUND_EPSILON, self.epsilon / min(*self.budget_proportions)),
+                        max_bound=min(
+                            MAX_BOUND_EPSILON,
+                            self.epsilon / min(*self.budget_proportions)),
                         rtol=RTOL_EPSILON,
-                        confidence_threshold=
-                        CONFIDENCE_THRESHOLD_EPSILON)
+                        confidence_threshold=CONFIDENCE_THRESHOLD_EPSILON)
                 except Exception as e:
                     raise ValueError(
                         'Error occurred during binary search for '
@@ -561,22 +599,25 @@ class JointRDPPrivacyAccountant(JointPrivacyAccountant):
 
             else:
                 raise ValueError(
-                    f'Mechanism {mechanism} is not supported for Renyi accountant')
+                    f'Mechanism {mechanism} is not supported for Renyi accountant'
+                )
 
-            rdp_accountant = rdp_accountant.compose(
-                event, int(num_compositions))
+            rdp_accountant = rdp_accountant.compose(event,
+                                                    int(num_compositions))
 
         return rdp_accountant
 
     def compute_noise_paramters(self, large_epsilon):
         noise_parameters = []
 
-        for mechanism, p, min_bound, max_bound in zip(self.mechanisms, self.budget_proportions, self.min_bounds, self.max_bounds):
+        for mechanism, p, min_bound, max_bound in zip(self.mechanisms,
+                                                      self.budget_proportions,
+                                                      self.min_bounds,
+                                                      self.max_bounds):
             mechanism_epsilon = large_epsilon * p
             func = lambda noise_param: self.get_composed_accountant(
-                [mechanism], [noise_param],
-                self.sampling_probability, self.num_compositions
-            ).get_delta(mechanism_epsilon)
+                [mechanism], [noise_param], self.sampling_probability, self.
+                num_compositions).get_delta(mechanism_epsilon)
             try:
                 noise_parameter = binary_search_function(
                     func=func,
@@ -585,8 +626,7 @@ class JointRDPPrivacyAccountant(JointPrivacyAccountant):
                     min_bound=min_bound,
                     max_bound=max_bound,
                     rtol=RTOL_NOISE_PARAMETER,
-                    confidence_threshold=
-                    CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
+                    confidence_threshold=CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
             except Exception as e:
                 raise ValueError(
                     'Error occurred during binary search for '
@@ -597,22 +637,3 @@ class JointRDPPrivacyAccountant(JointPrivacyAccountant):
 
         self.noise_parameters = noise_parameters
         return noise_parameters
-
-
-def main():
-    epsilon = 2
-    delta = 1e-8
-    num_compositions = 100
-    sample_prob = 0.1
-    mechanisms = ['gaussian', 'gaussian']
-    budget_proportions = [0.25, 0.75]
-
-    accountant = JointPLDPrivacyAccountant(num_compositions, sample_prob, mechanisms,
-                                           epsilon=epsilon, delta=delta, budget_proportions=budget_proportions)
-
-    print(accountant.noise_parameters)
-    print(accountant.large_epsilon)
-
-
-if __name__ == '__main__':
-    main()

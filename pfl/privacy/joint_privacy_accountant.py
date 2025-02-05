@@ -301,15 +301,15 @@ class JointPLDPrivacyAccountant(JointPrivacyAccountant):
                                                       self.min_bounds,
                                                       self.max_bounds):
             mechanism_epsilon = large_epsilon * p
-            func = lambda noise_param: self.get_composed_accountant(
-                [mechanism],
+            func = lambda noise_param, mech=mechanism, mech_epsilon=mechanism_epsilon: self.get_composed_accountant(
+                [mech],
                 [noise_param],
                 self.pessimistic_estimate,
                 self.sampling_probability,
                 self.use_connect_dots,
                 self.value_discretization_interval,
                 self.num_compositions,
-            ).get_delta_for_epsilon(mechanism_epsilon)
+            ).get_delta_for_epsilon(mech_epsilon)
             try:
                 noise_parameter = binary_search_function(
                     func=func,
@@ -474,14 +474,14 @@ class JointPRVPrivacyAccountant(JointPrivacyAccountant):
                                                       self.min_bounds,
                                                       self.max_bounds):
             mechanism_epsilon = large_epsilon * p
-            func = lambda noise_param: self.get_composed_accountant(
-                [mechanism],
+            func = lambda noise_param, mech=mechanism, mech_epsilon=mechanism_epsilon: self.get_composed_accountant(
+                [mech],
                 [noise_param],
                 self.sampling_probability,
                 self.num_compositions,
                 self.eps_error,
                 self.delta_error,
-            ).compute_delta(mechanism_epsilon, [self.num_compositions])[1]
+            ).compute_delta(mech_epsilon, [self.num_compositions])[1]
             try:
                 noise_parameter = binary_search_function(
                     func=func,
@@ -615,9 +615,9 @@ class JointRDPPrivacyAccountant(JointPrivacyAccountant):
                                                       self.min_bounds,
                                                       self.max_bounds):
             mechanism_epsilon = large_epsilon * p
-            func = lambda noise_param: self.get_composed_accountant(
-                [mechanism], [noise_param], self.sampling_probability, self.
-                num_compositions).get_delta(mechanism_epsilon)
+            func = lambda noise_param, mech=mechanism, mech_epsilon=mechanism_epsilon: self.get_composed_accountant(
+                [mech], [noise_param], self.sampling_probability, self.
+                num_compositions).get_delta(mech_epsilon)
             try:
                 noise_parameter = binary_search_function(
                     func=func,

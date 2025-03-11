@@ -49,6 +49,12 @@ class PrivacyAccountant:
         to be added for privatization. Typically used to experiment with lower
         sampling probabilities when it is not possible or desirable to increase
         the population size of the units being privatized, e.g. user devices.
+    :param min_bound_noise_parameter:
+        Used to manually set the lower bound of the binary search
+        used to find the correct noise parameter
+    :param max_bound_noise_parameter:
+        Used to manually set the upper bound of the binary search
+        used to find the correct noise parameter
     """
     num_compositions: int
     sampling_probability: float
@@ -57,6 +63,8 @@ class PrivacyAccountant:
     delta: Optional[float] = None
     noise_parameter: Optional[float] = None
     noise_scale: float = 1.0
+    min_bound_noise_parameter: float = None
+    max_bound_noise_parameter: float = None
 
     def __post_init__(self):
         assert [
@@ -86,6 +94,13 @@ class PrivacyAccountant:
                 'Delta should be a positive real value in range (0, 1)')
 
         self.mechanism = self.mechanism.lower()
+
+        if self.min_bound_noise_parameter is None:
+            self.min_bound_noise_parameter = MIN_BOUND_NOISE_PARAMETER
+
+        if self.max_bound_noise_parameter is None:
+            self.max_bound_noise_parameter = MAX_BOUND_NOISE_PARAMETER
+
 
     @property
     def cohort_noise_parameter(self):
@@ -191,8 +206,8 @@ class PLDPrivacyAccountant(PrivacyAccountant):
                         func_monotonically_increasing=
                         func_monotonically_increasing,
                         target_value=self.delta,
-                        min_bound=MIN_BOUND_NOISE_PARAMETER,
-                        max_bound=MAX_BOUND_NOISE_PARAMETER,
+                        min_bound=self.min_bound_noise_parameter,
+                        max_bound=self.max_bound_noise_parameter,
                         rtol=RTOL_NOISE_PARAMETER,
                         confidence_threshold=
                         CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
@@ -309,8 +324,8 @@ class PRVPrivacyAccountant(PrivacyAccountant):
                         func_monotonically_increasing=
                         func_monotonically_increasing,
                         target_value=self.delta,
-                        min_bound=MIN_BOUND_NOISE_PARAMETER,
-                        max_bound=MAX_BOUND_NOISE_PARAMETER,
+                        min_bound=self.min_bound_noise_parameter,
+                        max_bound=self.max_bound_noise_parameter,
                         rtol=RTOL_NOISE_PARAMETER,
                         confidence_threshold=
                         CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
@@ -396,8 +411,8 @@ class RDPPrivacyAccountant(PrivacyAccountant):
                         func_monotonically_increasing=
                         func_monotonically_increasing,
                         target_value=self.delta,
-                        min_bound=MIN_BOUND_NOISE_PARAMETER,
-                        max_bound=MAX_BOUND_NOISE_PARAMETER,
+                        min_bound=self.min_bound_noise_parameter,
+                        max_bound=self.max_bound_noise_parameter,
                         rtol=RTOL_NOISE_PARAMETER,
                         confidence_threshold=
                         CONFIDENCE_THRESHOLD_NOISE_PARAMETER)
@@ -496,3 +511,4 @@ def binary_search_function(func: Callable,
         'Binary search did not converge')
 
     return guess
+

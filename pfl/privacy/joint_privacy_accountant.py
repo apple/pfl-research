@@ -213,11 +213,11 @@ class JointPrivacyAccountant:
                                              **accountant_kwargs)
 
                         if delta < self.total_delta:
-                            # large_epsilon was too small, i.e. noise was too large.
+                            # naive_epsilon was too small, i.e. noise was too large.
                             # We can decrease our starting max bound for the next noise parameter search
                             self.max_bounds = self.noise_parameters
                         else:
-                            # large_epsilon was too large, i.e. noise was too small.
+                            # naive_epsilon was too large, i.e. noise was too small.
                             # We can increase our starting min bound for the next noise parameter search
                             self.min_bounds = self.noise_parameters
 
@@ -238,7 +238,7 @@ class JointPrivacyAccountant:
                     except Exception as e:
                         raise ValueError(
                             'Error occurred during binary search for '
-                            'large_epsilon: '
+                            'naive_epsilon: '
                             f'{e}') from e
 
         else:

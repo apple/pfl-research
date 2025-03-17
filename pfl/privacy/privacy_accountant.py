@@ -63,8 +63,8 @@ class PrivacyAccountant:
     delta: Optional[float] = None
     noise_parameter: Optional[float] = None
     noise_scale: float = 1.0
-    min_bound_noise_parameter: float = None
-    max_bound_noise_parameter: float = None
+    min_bound_noise_parameter: Optional[float] = None
+    max_bound_noise_parameter: Optional[float] = None
 
     def __post_init__(self):
         assert [
@@ -100,7 +100,6 @@ class PrivacyAccountant:
 
         if self.max_bound_noise_parameter is None:
             self.max_bound_noise_parameter = MAX_BOUND_NOISE_PARAMETER
-
 
     @property
     def cohort_noise_parameter(self):
@@ -511,4 +510,3 @@ def binary_search_function(func: Callable,
         'Binary search did not converge')
 
     return guess
-

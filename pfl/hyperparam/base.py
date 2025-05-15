@@ -69,6 +69,8 @@ def get_param_value(parameter):
     """
     if isinstance(parameter, HyperParam):
         return parameter.value()
+    elif isinstance(parameter, HyperParams):
+        return parameter.static_clone()
     else:
         return parameter
 

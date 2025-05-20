@@ -46,6 +46,12 @@ Privacy accountants
 .. autoclass:: pfl.privacy.RDPPrivacyAccountant
    :members:
 
+Joint Privacy accountants
+-------------------
+
+.. autoclass:: pfl.privacy.JointPrivacyAccountant
+   :members:
+
 DP with adaptive clipping
 -------------------------
 

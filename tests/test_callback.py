@@ -14,9 +14,12 @@ from pfl.callback import (
     AggregateMetricsToDisk,
     CentralEvaluationCallback,
     CentralEvaluationWithEMACallback,
+    CheckpointPolicy,
     ConvergenceCallback,
     EarlyStoppingCallback,
+    MetricImprovementCheckpointPolicy,
     ModelCheckpointingCallback,
+    PolicyBasedModelCheckpointingCallback,
     ProfilerCallback,
     RestoreTrainingCallback,
     StopwatchCallback,
@@ -32,6 +35,8 @@ from pfl.internal.platform.generic_platform import GenericPlatform
 from pfl.metrics import MetricName, Metrics, StringMetricName, Weighted, get_overall_value
 from pfl.model.base import StatefulModel
 from pfl.model.ema import CentralExponentialMovingAverage
+
+# pylint: disable=too-many-lines
 
 
 @pytest.fixture(scope='module')
@@ -530,24 +535,145 @@ class TestTensorBoardCallback:
             assert mock_writer.close.call_count == 3
 
 
-@pytest.mark.parametrize('checkpoint_frequency,expected_call_count', [
-    (0, 1),
-    (1, 2),
-    (2, 1),
+@pytest.mark.parametrize('checkpoint_frequency,expected_call_count,numbered', [
+    (0, 1, True),
+    (1, 2, True),
+    (2, 1, True),
+    (0, 1, False),
+    (1, 2, False),
+    (2, 1, False),
 ])
 def test_model_checkpointing_callback(checkpoint_frequency,
-                                      expected_call_count, tmp_path):
+                                      expected_call_count, numbered, tmp_path):
     platform = MagicMock(spec=GenericPlatform)
-    platform.create_checkpoint_directories.return_value = [str(tmp_path)]
+    platform.create_checkpoint_directories.side_effect = lambda dirs: dirs
     model = MagicMock(spec=StatefulModel)
     with patch('pfl.internal.platform.selector.get_platform',
                return_value=platform):
         callback = ModelCheckpointingCallback(
-            str(tmp_path), checkpoint_frequency=checkpoint_frequency)
+            str(tmp_path),
+            checkpoint_frequency=checkpoint_frequency,
+            numbered=numbered)
         callback.after_central_iteration(Metrics(), model, central_iteration=0)
         callback.after_central_iteration(Metrics(), model, central_iteration=1)
         callback.on_train_end(model=model)
     assert model.save.call_count == expected_call_count
+
+    call_args_list = model.save.call_args_list
+    if numbered:
+        if checkpoint_frequency != 0:
+            for idx in range(model.save.call_count):
+                central_iteration = (idx + 1) * checkpoint_frequency - 1
+                assert call_args_list[idx].args == (
+                    f'{tmp_path}/{central_iteration:05}', )
+        else:
+            assert call_args_list[0].args == (f'{tmp_path}/final', )
+    else:
+        for call_args in model.save.call_args_list:
+            assert call_args.args == (f'{tmp_path}', )
+
+
+@pytest.mark.parametrize('policy_results,should_checkpoint_at_end,numbered', [
+    ([False, False], False, False),
+    ([True, False], False, False),
+    ([False, True], False, False),
+    ([True, True], False, False),
+    ([False, False], False, True),
+    ([True, False], False, True),
+    ([False, True], False, True),
+    ([True, True], False, True),
+    ([False, False], True, False),
+    ([True, False], True, False),
+    ([False, True], True, False),
+    ([True, True], True, False),
+    ([False, False], True, True),
+    ([True, False], True, True),
+    ([False, True], True, True),
+    ([True, True], True, True),
+])
+def test_policy_based_model_checkpointing_callback(policy_results,
+                                                   should_checkpoint_at_end,
+                                                   numbered, tmp_path):
+    platform = MagicMock(spec=GenericPlatform)
+    platform.create_checkpoint_directories.side_effect = lambda dirs: dirs
+    model = MagicMock(spec=StatefulModel)
+    policy = MagicMock(spec=CheckpointPolicy)
+    policy.should_checkpoint_now.side_effect = policy_results
+    policy.should_checkpoint_at_end.return_value = should_checkpoint_at_end
+    with patch('pfl.internal.platform.selector.get_platform',
+               return_value=platform):
+        callback = PolicyBasedModelCheckpointingCallback(
+            str(tmp_path), checkpoint_policy=policy, numbered=numbered)
+        callback.after_central_iteration(Metrics(), model, central_iteration=0)
+        callback.after_central_iteration(Metrics(), model, central_iteration=1)
+        callback.on_train_end(model=model)
+
+    call_args_list = model.save.call_args_list
+
+    expected_call_count = should_checkpoint_at_end + sum(policy_results)
+    assert model.save.call_count == expected_call_count
+
+    if numbered:
+        call_args_iter = iter(call_args_list)
+        for central_iteration, checkpointed in enumerate(policy_results):
+            if checkpointed:
+                assert next(call_args_iter).args == (
+                    f'{tmp_path}/{central_iteration:05}', )
+        if should_checkpoint_at_end:
+            assert next(call_args_iter).args == (f'{tmp_path}/final', )
+    else:
+        for call_args in model.save.call_args_list:
+            assert call_args.args == (f'{tmp_path}', )
+
+
+@pytest.mark.parametrize(
+    'metric_values,threshold,expected_call_count,numbered', [
+        ([3, 2, 1], 2, 1, False),
+        ([1, 0, 0], 2, 2, False),
+        ([0, 0, 0], 2, 1, False),
+        ([3, 2, 1], 2, 1, True),
+        ([1, 0, 0], 2, 2, True),
+        ([0, 0, 0], 1, 1, True),
+        ([3, 2, 1], None, 3, False),
+        ([1, 0, 0], None, 2, False),
+        ([0, 0, 0], None, 1, False),
+        ([3, 2, 1], None, 3, True),
+        ([1, 0, 0], None, 2, True),
+        ([0, 0, 0], None, 1, True),
+    ])
+def test_metric_improvement_model_checkpointing_callback(
+        metric_values, threshold, expected_call_count, numbered, tmp_path):
+    platform = MagicMock(spec=GenericPlatform)
+    platform.create_checkpoint_directories.side_effect = lambda dirs: dirs
+    model = MagicMock(spec=StatefulModel)
+    policy = MetricImprovementCheckpointPolicy(metric_name='metric_name',
+                                               threshold_value=threshold)
+    with patch('pfl.internal.platform.selector.get_platform',
+               return_value=platform):
+        callback = PolicyBasedModelCheckpointingCallback(
+            str(tmp_path), checkpoint_policy=policy, numbered=False)
+        for central_iteration in range(3):
+            callback.after_central_iteration(
+                Metrics({'metric_name':
+                         metric_values[central_iteration]}.items()),
+                model,
+                central_iteration=central_iteration)
+        callback.on_train_end(model=model)
+
+    call_args_list = model.save.call_args_list
+
+    assert model.save.call_count == expected_call_count
+
+    if numbered:
+        call_args_iter = iter(call_args_list)
+        for central_iteration, (lhs, rhs) in enumerate(
+                zip(metric_values[:-1], metric_values[1:])):
+            if policy.performance_is_better(lhs, rhs):
+                assert next(call_args_iter).args == (
+                    f'{tmp_path}/{central_iteration:05}', )
+    else:
+        for call_args in model.save.call_args_list:
+            assert call_args.args == (f'{tmp_path}', )
 
 
 class TestProfilerCallback:

@@ -17,10 +17,6 @@
 
 ## v0.3.0
 
-### Breaking change!
-
-*
-
 ### New features
 
 * Implemented `MLXModel` to support training with MLX (#80).

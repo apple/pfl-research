@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pfl"
-version = "0.2.0"
+version = "0.3.0"
 description = "Simulation framework for Private Federated Learning"
 authors = ["Apple"]
 repository = "https://github.com/apple/pfl-research"
@@ -210,7 +210,7 @@ markers = [
 # Run with command:
 # poetry run bump-my-version bump <major/minor/patch>
 [tool.bumpversion]
-current_version = "0.2.0"
+current_version = "0.3.0"
 commit = "True"
 tag = "False"
 

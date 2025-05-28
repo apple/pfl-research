@@ -402,6 +402,9 @@ class ElementWeightedMappedVectorStatistics(MappedVectorStatistics[Tensor]):
                 f'Shape mismatch for key {key}! Shape: {this[key].shape} v.s. Shape: {other[key].shape}'
             )
 
+    def __repr__(self):
+        return f"ElementWeightedMappedVectorStatistics(weights={self.weights} data={self._data})"
+
     @property
     def weight(self) -> float:
         raise NotImplementedError

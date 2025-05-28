@@ -362,3 +362,44 @@ class TestFederatedAveraging:
             callbacks=[mock_callback])
 
         mock_callback.on_train_end.assert_called_once_with(model=mock_model)
+
+    @patch('pfl.algorithm.base.get_platform')
+    def test_run_from_restored(self, mock_get_platform, fedavg_setup,
+                               mock_backend, mock_callback, mock_model,
+                               nn_eval_params, nn_train_params, tmp_path):
+
+        mock_platform = MagicMock()
+        mock_get_platform.return_value = mock_platform
+        algo = FederatedAveraging()
+        algo.run(algorithm_params=fedavg_setup['algorithm_params'],
+                 backend=mock_backend,
+                 model=mock_model,
+                 model_train_params=nn_train_params,
+                 model_eval_params=nn_eval_params,
+                 callbacks=[])
+        assert mock_platform.consume_metrics.call_count == 3
+
+        algo.save(tmp_path)
+        restored_algo = FederatedAveraging()
+        restored_algo.load(tmp_path)
+
+        def on_train_begin(model):
+            return Metrics([('on_train_begin', 1)])
+
+        mock_callback.on_train_begin.side_effect = on_train_begin
+        new_algorithhm_params = fedavg_setup['algorithm_params'].static_clone(
+            central_num_iterations=5)
+        restored_algo.run(algorithm_params=new_algorithhm_params,
+                          backend=mock_backend,
+                          model=mock_model,
+                          model_train_params=nn_train_params,
+                          model_eval_params=nn_eval_params,
+                          callbacks=[mock_callback])
+
+        assert 'on_train_begin' not in mock_platform.consume_metrics.call_args_list[
+            2][0][0]
+        assert mock_platform.consume_metrics.call_args_list[3][0][0][
+            'on_train_begin'] == 1
+        assert 'on_train_begin' not in mock_platform.consume_metrics.call_args_list[
+            4][0][0]
+        assert mock_platform.consume_metrics.call_count == 5

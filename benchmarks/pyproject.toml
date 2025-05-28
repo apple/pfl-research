@@ -16,17 +16,18 @@ tensorflow = { version = "^2.14.0", optional = true }
 tensorflow_probability = { version = "^0.22", optional = true }
 tensorflow_addons = { version = ">=0.20.0,<1", optional = true }
 torch = [
-  { version = "^2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "^2.0.1", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
   { version = "^2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 torchvision = [
-  { version = "^0.15.2+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "^0.15.2", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
   { version = "^0.15.2", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 # Installs pfl from source.
 pfl = [
-    { path = "../", extras = ["tf"], markers="extra=='tf'", develop = true },
-    { path = "../", extras = ["pytorch"], markers="extra=='pytorch'", develop = true },
+    { path = "../", extras = ["tf"], markers="extra=='tf'", optional = true, develop = true },
+    { path = "../", extras = ["pytorch"], markers="extra=='pytorch'", optional = true, develop = true },
+    { path = "../", extras = ["mlx"], markers="extra=='mlx' and sys_platform=='darwin'", optional = true, develop = true },
 ]
 pillow = ">=10.2.0"
 datasets = "^2.19.1"
@@ -37,6 +38,7 @@ werkzeug = ">=3.0.3"
 [tool.poetry.extras]
 tf = ["pfl", "tensorflow_addons", "tensorflow"]
 pytorch = ["pfl", "torchvision", "torch"]
+mlx = ["pfl", "mlx"]
 
 [tool.poetry.group.dev.dependencies]
 mock = "^5.1.0"

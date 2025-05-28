@@ -1,4 +1,5 @@
 # Copyright © 2023-2024 Apple Inc.
+from typing import Dict
 from unittest.mock import Mock
 
 import numpy as np
@@ -24,15 +25,22 @@ class TestPyTorchModel:
     Contains all tests that are unique to PyTorchModel.
     """
 
+    @pytest.mark.parametrize('optimizer_name', ["adam", "sgd"])
     def test_save_and_load_central_optimizer_impl(
-            self, pytorch_model_setup,
+            self, optimizer_name, pytorch_model_setup,
             check_save_and_load_central_optimizer_impl):
         """
         Test if central optimizer could be save and restored
         """
-        pytorch_model_setup.model._central_optimizer = torch.optim.Adam(  # pylint: disable=protected-access
-            pytorch_model_setup.model._model.parameters(),  # pylint: disable=protected-access
-            lr=1.0)
+        parameters = pytorch_model_setup.model._model.parameters()  # pylint: disable=protected-access
+        if optimizer_name == "adam":
+            pytorch_model_setup.model._central_optimizer = torch.optim.Adam(  # pylint: disable=protected-access
+                parameters, lr=1.0)
+        else:
+            assert optimizer_name == "sgd"
+            pytorch_model_setup.model._central_optimizer = torch.optim.SGD(  # pylint: disable=protected-access
+                parameters, lr=1.0)
+
         check_save_and_load_central_optimizer_impl(pytorch_model_setup)
 
     @pytest.mark.parametrize('grad_accumulation_steps', [1, 2, 3, 4])

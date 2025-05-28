@@ -192,3 +192,38 @@ def get_model_pytorch(args: argparse.Namespace):
     else:
         raise TypeError(f'Model {model_name} not implemented for PyTorch.')
     return model
+
+
+def get_model_mlx(args: argparse.Namespace):
+    """
+    Initialize the MLX model specified by ``args.model_name`` with
+    other required arguments also available in ``args``.
+    Use ``add_model_arguments`` to dynamically add arguments required by
+    the selected model.
+    """
+    assert 'model_name' in vars(args)
+    from . import mlx as mlx_models
+
+    input_shape, num_outputs = _get_model_dims_for_dataset(args.dataset)
+
+    model_name = args.model_name.lower()
+
+    if model_name == 'dnn':
+        raise TypeError(f'Model {model_name} not implemented for MLX.')
+    elif model_name == 'simple_dnn':
+        raise TypeError(f'Model {model_name} not implemented for MLX.')
+    elif model_name == 'simple_cnn':
+        model = mlx_models.simple_cnn(input_shape, num_outputs)
+    elif model_name == 'lm_lstm':
+        raise TypeError(f'Model {model_name} not implemented for MLX.')
+    elif model_name == 'lm_transformer':
+        model = mlx_models.lm_transformer(
+            args.embedding_size, args.hidden_size, args.num_heads,
+            args.feedforward_size, args.num_transformer_layers,
+            args.vocab_size, args.max_sequence_length, args.pad_symbol,
+            args.unk_symbol, args.dropout_rate)
+    elif model_name == 'multi_label_cnn':
+        raise TypeError(f'Model {model_name} not implemented for MLX.')
+    else:
+        raise TypeError(f'Model {model_name} not implemented for MLX.')
+    return model

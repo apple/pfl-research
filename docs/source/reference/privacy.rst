@@ -28,6 +28,9 @@ Privacy mechanisms
 .. automodule:: pfl.privacy.ftrl_mechanism
    :members:
 
+.. automodule:: pfl.privacy.joint_mechanism
+   :members:
+
 Privacy accountants
 -------------------
 
@@ -41,6 +44,12 @@ Privacy accountants
    :members:
 
 .. autoclass:: pfl.privacy.RDPPrivacyAccountant
+   :members:
+
+Joint Privacy accountants
+-------------------
+
+.. autoclass:: pfl.privacy.JointPrivacyAccountant
    :members:
 
 DP with adaptive clipping

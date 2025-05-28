@@ -169,3 +169,11 @@ docs/build
 benchmarks/data
 benchmarks/checkpoints/
 benchmarks/metrics.csv
+
+publications/pfl/tff/cifar10/google-research-federated
+publications/pfl/flute/cifar10/msrflute
+publications/pfl/flute/cifar10/data
+publications/pfl/flower/cifar10/data
+publications/pfl/flower/cifar10/flower
+publications/pfl/fedscale/cifar10/FedScale
+

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pfl"
-version = "0.2.0"
+version = "0.3.0"
 description = "Simulation framework for Private Federated Learning"
 authors = ["Apple"]
 repository = "https://github.com/apple/pfl-research"
@@ -23,7 +23,7 @@ dp-accounting = "^0.4"
 prv-accountant = "^0.2.0"
 #### Will be installed only with "pytorch" install extra
 torch = [
-  { version = "^2.0.1+cu118", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "^2.0.1", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
   { version = "^2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 #### Will be installed only with "tf" install extra
@@ -38,6 +38,9 @@ tensorflow-probability = { version = "^0.22", optional = true }
 #### Will be installed only with "trees" install extra
 scikit-learn = { version = "^1.0.2", optional = true }
 xgboost = { version = "^1.4.2", optional = true }
+
+#### Will be installed only with "mlx" install extra
+mlx = { version = "^0.15.2", optional = true }
 
 #### Needed in case you want to install Horovod
 cmake = "^3.27.5"
@@ -66,6 +69,7 @@ sphinx-last-updated-by-git = "^0.3.6"
 [tool.poetry.extras]
 pytorch = [ 'torch', 'cmake']
 tf = ['tensorflow', 'tensorflow-macos', 'tensorflow-probability', 'cmake']
+mlx = ['mlx']
 trees = ['scikit-learn', 'xgboost']
 
 [[tool.poetry.source]]
@@ -206,7 +210,7 @@ markers = [
 # Run with command:
 # poetry run bump-my-version bump <major/minor/patch>
 [tool.bumpversion]
-current_version = "0.2.0"
+current_version = "0.3.0"
 commit = "True"
 tag = "False"
 

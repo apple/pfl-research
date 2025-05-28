@@ -36,9 +36,16 @@ pip install 'pfl[tf,pytorch,trees]'
 ## Getting started - tutorial notebooks
 
 To try out `pfl` immediately without installation, we provide several colab notebooks for learning the different components in `pfl` hands-on.
-`<TODO push notebooks to colab>`
 
-Also available as Jupyter notebooks [here](https://github.com/apple/pfl-research/tree/develop/tutorials).
+* [![](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/apple/pfl-research/blob/develop/tutorials/Introduction%20to%20Federated%20Learning%20with%20CIFAR10%20and%20TensorFlow.ipynb) Introduction to Federated Learning with CIFAR10 and TensorFlow.
+* [![](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/apple/pfl-research/blob/develop/tutorials/Introduction%20to%20PFL%20research%20with%20FLAIR.ipynb) Introduction to PFL research with FLAIR and PyTorch.
+* [![](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/apple/pfl-research/blob/develop/tutorials/Introduction%20to%20Differential%20Privacy%20with%20Federated%20Learning.ipynb) Introduction to Differential Privacy (DP) with Federated Learning.
+* [![](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/apple/pfl-research/blob/develop/tutorials/Creating%20Federated%20Dataset%20for%20PFL%20Experiment.ipynb) Creating Federated Dataset for PFL Experiment.
+
+We also support MLX!
+* ([Jupyter notebook](https://github.com/apple/pfl-research/blob/develop/tutorials/Introduction%20to%20Federated%20Learning%20with%20CIFAR10%20and%20MLX.ipynb)) Introduction to Federated Learning with CIFAR10 and MLX.
+
+But you have to run this notebook locally on your Apple silicon, see all Jupyter notebooks available [here](https://github.com/apple/pfl-research/tree/develop/tutorials).
 
 ## Getting started - benchmarks
 
@@ -54,11 +61,10 @@ Researchers are invited to contribute to the framework. Please, see [here](http:
 ## Citing pfl-research
 
 ```
-@software{pfl2024,
-  author = {Filip Granqvist and Congzheng Song and Áine Cahill and Rogier van Dalen and Martin Pelikan and Yi Sheng Chan and Xiaojun Feng and Natarajan Krishnaswami and Mona Chitnis and Vojta Jina},
-  title = {{pfl}: simulation framework for accelerating research in Private Federated Learning},
-  url = {https://github.com/apple/pfl-research},
-  version = {0.0},
-  year = {2024},
+@article{granqvist2024pfl,
+  title={pfl-research: simulation framework for accelerating research in Private Federated Learning},
+  author={Granqvist, Filip and Song, Congzheng and Cahill, {\'A}ine and van Dalen, Rogier and Pelikan, Martin and Chan, Yi Sheng and Feng, Xiaojun and Krishnaswami, Natarajan and Jina, Vojta and Chitnis, Mona},
+  journal={arXiv preprint arXiv:2404.06430},
+  year={2024},
 }
 ```

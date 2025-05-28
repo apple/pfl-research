@@ -1,0 +1,69 @@
+# Basic configuration file for running classif_cnn example using torchvision CIFAR10 dataset.
+# Parameters needed to initialize the model
+model_config:
+    model_type: SimpleCNN                                   # class w/ `loss` and `inference` methods
+    model_folder: ./experiments/cifar10/model.py     # file containing class
+
+# Configuration for differential privacy
+dp_config:
+    enable_local_dp: false                             # whether to enable user-level DP
+
+# Additional privacy metrics
+privacy_metrics_config:
+    apply_metrics: false                               # cache data to compute additional metrics
+
+# Select the Federated optimizer to use (e.g. DGA, FedAvg or FedProx)
+strategy: FedAvg
+
+# Determines all the server-side settings for training and evaluation rounds
+server_config:   
+    wantRL: false                                      # whether to use RL-based meta-optimizers
+    resume_from_checkpoint: false                      # restart from checkpoint if file exists
+    do_profiling: false                                # run profiler and compute runtime metrics
+    optimizer_config:                                  # this is the optimizer used to update the model
+        type: sgd
+        lr: 1.0
+    annealing_config:                                  # annealer for the learning rate
+        type: step_lr
+        step_interval: epoch
+        gamma: 1.0
+        step_size: 100
+    val_freq: 50000                                  # not executing validation on this experiment, only testing
+    rec_freq: 10                                     # how many iterations between metric eval on test set
+    initial_val: false
+    initial_rec: false
+    max_iteration: 1500                               # how many iterations in total
+    num_clients_per_iteration: 50                      # how many clients per iteration
+    data_config:                                       # where to get val and test data from
+        val:
+            batch_size: 10000
+            val_data: null                             # Assigned to null because dataset is being instantiated
+        test:
+            batch_size: 10000
+            test_data: null                            # Assigned to null because dataset is being instantiated
+    type: model_optimization
+    aggregate_median: softmax                          # how aggregations weights are computed
+    initial_lr_client: 0.1                           # learning rate used on client optimizer
+    lr_decay_factor: 1.0
+    weight_train_loss: train_loss
+    best_model_criterion: loss
+    fall_back_to_best_model: false
+    softmax_beta: 1.0
+
+# Dictates the learning parameters for client-side model updates. Train data is defined inside this config.
+client_config:
+    do_profiling: false                                # run profiling and compute runtime metrics
+    ignore_subtask: false
+    data_config:                                       # where to get training data from
+        train:
+            batch_size: 10
+            list_of_train_data: null                   # Assigned to null because dataset is being instantiated
+            desired_max_samples: 50
+    optimizer_config:                                  # this is the optimizer used by the client
+        type: sgd
+        lr: 0.1                                      # this is overridden by `initial_lr_client`
+    type: optimization
+
+# Missing settings
+#mean_datapoints_per_user: 50
+#datapoints_per_user_distribution: constant

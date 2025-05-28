@@ -1,0 +1,55 @@
+---
+dataset_name: "cifar10"
+num_classes: 10
+batch_size: 10
+epochs_per_round: 1
+num_clients_per_round: 50
+num_total_clients: 1000
+num_rounds: 1500
+root_dir: "./data"
+
+cpus_per_client: 1
+gpus_per_client: 0.1
+
+hydra.job.chdir: False
+is_simulation: True
+
+evaluation_frequency: 10
+
+gen_federated_partitions:
+  _target_: cifar.utils.gen_cifar10_partitions
+  dataset_name: ${dataset_name}
+  num_total_clients: ${num_total_clients}
+
+get_initial_parameters:
+  _target_: cifar.utils.get_initial_parameters
+  num_classes: ${num_classes}
+
+get_eval_fn:
+  _target_: cifar.utils.get_cifar_eval_fn
+  evaluation_frequency: ${evaluation_frequency}
+  num_classes: ${num_classes}
+
+gen_on_fit_config_fn:
+  _target_: cifar.utils.gen_on_fit_config_fn
+  epochs_per_round: ${epochs_per_round}
+  batch_size: ${batch_size}
+
+plot_results:
+  _target_: cifar.utils.plot_metric_from_history
+  dataset_name: ${dataset_name}
+  strategy_name: ${strategy.name}
+  expected_maximum: ${strategy.expected_accuracy}
+  save_plot_path: ./${dataset_name}_${strategy.name}.png
+
+get_ray_client_fn:
+  _target_: cifar.client.get_ray_client_fn
+  fed_dir: None
+  num_classes: ${num_classes}
+
+ray_config:
+  include_dashboard: False
+
+defaults:
+  - _self_
+  - strategy: "fedavg"

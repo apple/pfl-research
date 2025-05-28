@@ -27,6 +27,8 @@ def ports(request):
         Therefore, always try to get the id of a parameter from
         pytest.mark.parametrize as a first option.
         """
+        if type(obj) == tuple:
+            return maybe_get_id(obj[0])
         try:
             return obj.id
         except:

@@ -1,0 +1,53 @@
+# Configuration file of FAR training experiment
+
+# ========== Cluster configuration ========== 
+# ip address of the parameter server (need 1 GPU process)
+ps_ip: localhost
+
+# ip address of each worker:# of available gpus process on each gpu in this node
+# Note that if we collocate ps and worker on same GPU, then we need to decrease this number of available processes on that GPU by 1
+# E.g., master node has 4 available processes, then 1 for the ps, and worker should be set to: worker:3
+worker_ips: 
+    - localhost:[10] # worker_ip: [(# processes on gpu) for gpu in available_gpus] eg. 10.0.0.2:[4,4,4,4] This node has 4 gpus, each gpu has 4 processes.
+
+exp_path: $FEDSCALE_HOME/fedscale/cloud
+
+# Entry function of executor and aggregator under $exp_path
+executor_entry: execution/executor.py 
+
+aggregator_entry: aggregation/aggregator.py
+
+auth:
+    ssh_user: ""
+    ssh_private_key: ""
+#    ssh_private_key: ~/.ssh/id_rsa
+
+# cmd to run before we can indeed run FAR (in order)
+setup_commands:
+    - source $HOME/anaconda3/bin/activate fedscale
+
+# ========== Additional job configuration ========== 
+# Default parameters are specified in config_parser.py, wherein more description of the parameter can be found
+
+job_conf: 
+    - job_name: cifar                   # Generate logs under this folder: log_path/job_name/time_stamp
+    - log_path: /mnt/task_wrapper/user_output/logs/user/ #$LOG_DIR # Path of log files
+    # 50000/1000 = 50 images per user
+    - num_participants: 1000 
+    # For some reason, fedscale samples whole population hard coded?
+    # cohort_size is my custom feature
+    - cohort_size: 50
+    - overcommitment: 1.0
+    - data_set: cifar10                     # Dataset: openImg, google_speech, stackoverflow
+    - data_dir: $FEDSCALE_HOME/benchmark/dataset/data/    # Path of the dataset
+    - model: pfl-research
+    - eval_interval: 10                     # How many rounds to run a testing on the testing set
+    - rounds: 1500                          # Number of rounds to run this training.
+    - filter_less: 0                        # Dont filter clients
+    - num_loaders: 2
+    - local_steps: 5 # 5steps*10batch_size = 1 epoch
+    - learning_rate: 0.1
+    - batch_size: 10
+    - test_bsz: 10000
+    - use_cuda: True
+    - save_checkpoint: False

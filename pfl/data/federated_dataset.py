@@ -364,7 +364,7 @@ class FederatedDataset(FederatedDatasetBase):
                 get_ops().distributed.world_size, user_id_to_weight)
         self.sampler = iter(self._sample_fn)
 
-    def _try_set_cohort_size(self, cohort_size: int):
+    def _try_set_cohort_size(self, cohort_size: int) -> Optional[int]:
         # Doesn't need a cohort to be set, can continue.
         worker_cohort_size = None
         with contextlib.suppress(AttributeError):

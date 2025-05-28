@@ -311,7 +311,7 @@ def make_fed_data_pytorch(user_id_to_weight):
     data = torch.Tensor(np.arange(20) * 10).cpu()
     dataset = TensorDataset(data)
     sampler = MinimizeReuseUserSampler(range(len(dataset)))
-    return lambda: PyTorchFederatedDataset(
+    return lambda *args: PyTorchFederatedDataset(
         dataset,
         sampler,
         # Multiple processes for loading data will break consistent results
@@ -328,7 +328,9 @@ def make_fed_data_pytorch(user_id_to_weight):
             "eval_kwargs": {
                 "eval": True
             }
-        })
+        },
+        num_workers=args[0] if len(args) == 2 else 0,
+        prefetch_factor=args[1] if len(args) == 2 else None)
 
 
 @pytest.fixture
@@ -472,6 +474,49 @@ class TestFrameworkFederatedDatasetSorted:
                                                     fed_data.get_cohort(10)):
             assert seed == expected_seed
             np.testing.assert_array_equal(dataset.raw_data[0], [expected_data])
+
+
+@pytest.mark.skipif(not get_pytorch_major_version(),
+                    reason='PyTorch not installed')
+@pytest.mark.parametrize('prefetch_factor', [1, 2])
+@pytest.mark.parametrize('cohort_size', [5, 10])
+@pytest.mark.parametrize('user_id_to_weight', (True, ), indirect=True)
+@patch('pfl.data.federated_dataset.get_ops',
+       side_effect=lambda: MagicMock(distributed=MagicMock(world_size=3,
+                                                           global_rank=1)))
+@patch('pfl.data.pytorch.get_ops',
+       side_effect=lambda: MagicMock(distributed=MagicMock(world_size=3,
+                                                           global_rank=1)))
+def test_pytorch_federated_dataset_prefetch(mock_get_ops_1, mock_get_ops_2,
+                                            make_fed_data_pytorch,
+                                            prefetch_factor, cohort_size,
+                                            user_id_to_weight):
+    fed_data = make_fed_data_pytorch(1, prefetch_factor)
+
+    world_size = 3
+    seed, data = 4, 10
+    expected_seed, expected_data = [], []
+    # Expected data from prefetch
+    for _i in range(prefetch_factor):
+        expected_seed.append(seed)
+        expected_data.append(data)
+        seed += world_size
+        data += 10 * world_size
+
+    # Expected data from sampling after prefetching
+    start = prefetch_factor * world_size
+    start_seed = start + 3
+    expected_data.extend(
+        list(range(start * 10, (start + cohort_size) * 10,
+                   10))[::-1][1::world_size])
+    expected_seed.extend(
+        list(range(start_seed, start_seed + cohort_size))[::-1][1::world_size])
+    expected_data = iter(expected_data)
+    expected_seed = iter(expected_seed)
+    for dataset, seed in fed_data.get_cohort(cohort_size):
+        assert seed == next(expected_seed)
+        np.testing.assert_array_equal(dataset.raw_data[0],
+                                      [next(expected_data)])
 
 
 class TestCrossSiloFederatedDataset:

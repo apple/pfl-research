@@ -13,10 +13,10 @@ import time
 import typing
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, Type, Union
 
 from pfl.aggregate.base import get_num_datapoints_weight_name
-from pfl.common_types import Population, Saveable
+from pfl.common_types import Checkpointer, LocalDiskCheckpointer, Population, Saveable
 from pfl.data.dataset import AbstractDatasetType
 from pfl.exception import CheckpointNotFoundError
 from pfl.hyperparam.base import ModelHyperParams
@@ -96,12 +96,18 @@ class RestoreTrainingCallback(TrainingProcessCallback):
         Location will be relative to root dir on current platform.
     :param checkpoint_frequency:
         Save checkpoints of ``saveables`` every this many iterations.
+    :param init_checkpointer_fn:
+        When the ``Saveable`` wants to invoke checkpointing itself,
+        it is called through instance of this class.
     """
 
-    def __init__(self,
-                 saveables: List[Saveable],
-                 checkpoint_dir: Union[str, List[str]],
-                 checkpoint_frequency: int = 1):
+    def __init__(
+        self,
+        saveables: List[Saveable],
+        checkpoint_dir: Union[str, List[str]],
+        checkpoint_frequency: int = 1,
+        init_checkpointer_fn: Callable[[str],
+                                       Checkpointer] = LocalDiskCheckpointer):
         self._saveables = saveables
 
         from pfl.internal.platform.selector import get_platform
@@ -113,6 +119,9 @@ class RestoreTrainingCallback(TrainingProcessCallback):
         else:
             self._checkpoint_dirs = get_platform(
             ).create_checkpoint_directories([checkpoint_dir]) * len(saveables)
+        for s, d in zip(saveables, self._checkpoint_dirs):
+            checkpointer = init_checkpointer_fn(d)
+            s.set_checkpointer(checkpointer)
         self._checkpoint_frequency = checkpoint_frequency
 
     def on_train_begin(self, *, model: ModelType) -> Metrics:

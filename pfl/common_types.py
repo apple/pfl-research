@@ -63,8 +63,8 @@ class Saveable(ABC):
             Should be same path as used with ``save``.
         """
 
-    @abstractmethod
-    def set_checkpointer(self, checkpointer: Checkpointer) -> None:
+    def set_checkpointer(  # noqa: B027
+            self, checkpointer: Checkpointer) -> None:
         """
         Can optionally be implemented to let the component invoke a call
         of ``save`` to save intermediate checkpoints on-demand instead of
@@ -74,3 +74,4 @@ class Saveable(ABC):
         :param checkpointer:
             Can be called to invoke a ``save`` call on-demand.
         """
+        pass

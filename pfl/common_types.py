@@ -12,6 +12,27 @@ class Population(Enum):
     TEST = 'test'
 
 
+class Checkpointer(ABC):
+    """
+    Mediator object for saving checkpoints.
+    Creator decides the path to save to,
+    caller decides when to save.
+    """
+
+    @abstractmethod
+    def invoke_save(self, saveable: 'Saveable'):
+        pass
+
+
+class LocalDiskCheckpointer(Checkpointer):
+
+    def __init__(self, dir_path: str):
+        self._dir_path = dir_path
+
+    def invoke_save(self, saveable: 'Saveable'):
+        saveable.save(self._dir_path)
+
+
 class Saveable(ABC):
     """
     Interface to allow save and load the state of an object to/from disk.
@@ -41,3 +62,16 @@ class Saveable(ABC):
             Path to root directory where checkpoint can be loaded from.
             Should be same path as used with ``save``.
         """
+
+    def set_checkpointer(  # noqa: B027
+            self, checkpointer: Checkpointer) -> None:
+        """
+        Can optionally be implemented to let the component invoke a call
+        of ``save`` to save intermediate checkpoints on-demand instead of
+        only during scheduled calls by other components, usually
+        "after central iteration" by callbacks.
+
+        :param checkpointer:
+            Can be called to invoke a ``save`` call on-demand.
+        """
+        pass

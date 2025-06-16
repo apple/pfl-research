@@ -15,6 +15,13 @@
 * 
 
 
+## v0.3.1
+
+### Tasks completed
+
+* Allow `Saveable` to checkpoint itself on-demand (#115).
+
+
 ## v0.3.0
 
 ### New features

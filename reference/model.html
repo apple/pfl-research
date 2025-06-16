@@ -1,0 +1,1346 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="article:modified_time" content="2025-06-16T14:43:29+00:00" /><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Postprocessor" href="postprocessor.html" /><link rel="prev" title="Metrics" href="metrics.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>Models - pfl 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/fl_introduction.html">Federated learning with pfl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/simulation_distributed.html">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="internal/index.html">Internal API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="internal/bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/distribution.html">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/ops.html">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="models">
+<span id="id1"></span><h1>Models<a class="headerlink" href="#models" title="Link to this heading">#</a></h1>
+<section id="module-pfl.model.base">
+<span id="abstract-base-classes"></span><h2>Abstract base classes<a class="headerlink" href="#module-pfl.model.base" title="Link to this heading">#</a></h2>
+<p>A model contains all the functionality needed for simulating federated learning experiments with
+the specific deep learning framework you have implemented your model with.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.model.base.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.base.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><a class="headerlink" href="#pfl.model.base.Model" title="Link to this definition">#</a></dt>
+<dd><p>Model that can be trained with federated learning.</p>
+<p>Subclass this (or one of its base classes) to implement your own model.
+This class describes the minimal interface required for training the
+simplest algorithm possible.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.base.Model.apply_model_update">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_model_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.base.Model.apply_model_update" title="Link to this definition">#</a></dt>
+<dd><p>Compute updated parameters based on <code class="docutils literal notranslate"><span class="pre">statistics</span></code>.</p>
+<p>This can either construct a new model and return it; or mutate <code class="docutils literal notranslate"><span class="pre">self</span></code>
+and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>statistics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)) – Statistics for updating the parameters of the model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model), <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new model and any metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.model.base.EvaluatableModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.base.</span></span><span class="sig-name descname"><span class="pre">EvaluatableModel</span></span><a class="headerlink" href="#pfl.model.base.EvaluatableModel" title="Link to this definition">#</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.base.EvaluatableModel.allows_distributed_evaluation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">allows_distributed_evaluation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pfl.model.base.EvaluatableModel.allows_distributed_evaluation" title="Link to this definition">#</a></dt>
+<dd><p>Distributed evaluation can only be enabled when,
+whether or not splitting the dataset, doing evaluation on the
+separate datasets and summing the metrics ends up with the same results
+as doing one call to evaluate with all data.</p>
+<p>As a conservative setting, distributed evaluation is not allowed by
+default. Every model subclass has to explicitly make sure distributing
+evaluation will work correctly.
+If set to <cite>None</cite>, it is interpreted as not yet determined, and any
+evaluation that support distributed evaluation will not be
+distributed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.base.EvaluatableModel.evaluate">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_formatting_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.base.EvaluatableModel.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate performance of model on the given input data.</p>
+<p>This can be used in different circumstances.
+One is for simulated distributed evaluation, where the data is supposed
+to be from one device.
+Another is for centrally held data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – Dataset to evaluate on.
+If this is centrally held data, it is still a flat list of data
+points.</p></li>
+<li><p><strong>name_formatting_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <a class="reference internal" href="metrics.html#pfl.metrics.StringMetricName" title="pfl.metrics.StringMetricName"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMetricName</span></code></a>]) – A function to be used to generate a metric name object from a
+simple string, which will adorn the string with additional
+information.</p></li>
+<li><p><strong>eval_params</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelHyperParamsType</span></code>, bound= ModelHyperParams)]) – Optional model parameters to use for evaluating the models. Some
+models can evaluate without a parameter object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <cite>Metrics</cite> object with performance metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.model.base.StatefulModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.base.</span></span><span class="sig-name descname"><span class="pre">StatefulModel</span></span><a class="headerlink" href="#pfl.model.base.StatefulModel" title="Link to this definition">#</a></dt>
+<dd><p>Convenience class for a model that has a fixed number of parameters
+and is stateful.</p>
+<p>(This is true for frameworks for neural networks in a federated setting,
+hence the eclectic set of requirements.)</p>
+<p>Simulation of local training in this setup is done by mutating the
+parameters in four steps:</p>
+<ol class="arabic simple">
+<li><p>backing up the current (central) parameters (<code class="docutils literal notranslate"><span class="pre">get_parameters</span></code>)</p></li>
+<li><p>training the inner model on a user’s local data.</p></li>
+<li><p>computing the difference between the current parameters and the
+backed-up ones (<code class="docutils literal notranslate"><span class="pre">get_model_difference</span></code>)</p></li>
+<li><p>restoring to the backed-up state (<code class="docutils literal notranslate"><span class="pre">set_parameters</span></code>).</p></li>
+</ol>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.base.StatefulModel.get_model_difference">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_model_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.base.StatefulModel.get_model_difference" title="Link to this definition">#</a></dt>
+<dd><p>Get the model difference between the current state of the model and
+the other state given as input (i.e. current-other).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)) – Get the model difference with respect to this other state of
+model parameters. Can be received from <code class="docutils literal notranslate"><span class="pre">get_parameters</span></code>.</p></li>
+<li><p><strong>clone</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, there is a chance that the implementation can use a
+cache to make this method run faster. This is fine as long as you
+don’t require to hold multiple difference statistics in memory at
+the same time. If you do need to e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">diff1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_model_difference</span><span class="p">(</span><span class="n">initial_params</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">diff2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_model_difference</span><span class="p">(</span><span class="n">initial_params</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>then <code class="docutils literal notranslate"><span class="pre">clone</span></code> should be <code class="docutils literal notranslate"><span class="pre">True</span></code> because otherwise there is a
+chance that diff1 points to diff2 after the second call.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model difference statistics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.base.StatefulModel.get_parameters">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">placeholders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.base.StatefulModel.get_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve model parameters at the current state.
+Useful if you want to restore the model to this
+state after it has been modified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>placeholders</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)]) – Statistics with tensors to be updated in-place
+with model parameters. If the model supports this,
+it will greatly increase performance when training
+many users.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.base.StatefulModel.set_parameters">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.base.StatefulModel.set_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Apply new model parameters to the model. This is
+used to restore the model to a previous state,
+which can be received from <code class="docutils literal notranslate"><span class="pre">get_parameters</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pfl.model.tensorflow">
+<span id="tensorflow"></span><h2>TensorFlow<a class="headerlink" href="#module-pfl.model.tensorflow" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.tensorflow.</span></span><span class="sig-name descname"><span class="pre">TFModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_format_hdf5</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – A Tensorflow Keras model to train. Can either be defined from the
+functional API or the sequential API.
+If the model is a <cite>Sequential</cite>, it needs to be build with
+<cite>model.build(input_dims)</cite>.</p></li>
+<li><p><strong>metrics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Metric</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Metric</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="metrics.html#pfl.metrics.MetricValue" title="pfl.metrics.MetricValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricValue</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="metrics.html#pfl.metrics.MetricValue" title="pfl.metrics.MetricValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricValue</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]]]) – <p>Specify metrics to use for evaluation. The key is the name of the
+metric and the value is either a <code class="docutils literal notranslate"><span class="pre">tf.keras.metrics.Metric</span></code> or a tuple
+of a <code class="docutils literal notranslate"><span class="pre">tf.keras.metrics.Metric</span></code> and a function that postprocesses the
+metric value for each user.</p>
+<dl class="field-list">
+<dt class="field-odd">example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pfl.metrics</span> <span class="kn">import</span> <span class="n">user_average</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;overall accuracy&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">Accuracy</span><span class="p">(),</span>
+    <span class="s1">&#39;per-user accuracy&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">Accuracy</span><span class="p">(),</span>
+                          <span class="n">user_average</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>central_optimizer</strong> – An optimizer instance from <cite>tf.keras.optimizers</cite>, which is used to apply
+the aggregated model updates to the variables.
+Learning rate decay can be applied using
+<code class="docutils literal notranslate"><span class="pre">tf.keras.optimizers.schedules</span></code>.</p></li>
+<li><p><strong>checkpoint_format_hdf5</strong> – If <cite>True</cite>, save model checkpoints as hdf5 files. Otherwise,
+save model checkpoints in tensorflow format.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.allows_distributed_evaluation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">allows_distributed_evaluation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pfl.model.tensorflow.TFModel.allows_distributed_evaluation" title="Link to this definition">#</a></dt>
+<dd><p>Distributed evaluation can only be enabled when,
+whether or not splitting the dataset, doing evaluation on the
+separate datasets and summing the metrics ends up with the same results
+as doing one call to evaluate with all data.</p>
+<p>As a conservative setting, distributed evaluation is not allowed by
+default. Every model subclass has to explicitly make sure distributing
+evaluation will work correctly.
+If set to <cite>None</cite>, it is interpreted as not yet determined, and any
+evaluation that support distributed evaluation will not be
+distributed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.save" title="Link to this definition">#</a></dt>
+<dd><p>Save state of object to disk. Should be able
+to interpret saved state as a checkpoint that
+can be restored with <code class="docutils literal notranslate"><span class="pre">load</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory on disk to store state.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.load" title="Link to this definition">#</a></dt>
+<dd><p>Load checkpoint from disk, which is the state previously
+saved with <code class="docutils literal notranslate"><span class="pre">save</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to root directory where checkpoint can be loaded from.
+Should be same path as used with <code class="docutils literal notranslate"><span class="pre">save</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">placeholders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.get_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve model parameters at the current state.
+Useful if you want to restore the model to this
+state after it has been modified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>placeholders</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>]) – Statistics with tensors to be updated in-place
+with model parameters. If the model supports this,
+it will greatly increase performance when training
+many users.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.set_parameters">
+<span class="sig-name descname"><span class="pre">set_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.set_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Apply new model parameters to the model. This is
+used to restore the model to a previous state,
+which can be received from <code class="docutils literal notranslate"><span class="pre">get_parameters</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.get_model_difference">
+<span class="sig-name descname"><span class="pre">get_model_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.get_model_difference" title="Link to this definition">#</a></dt>
+<dd><p>Get the model difference between the current state of the model and
+the other state given as input (i.e. current-other).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other_parameters</strong> (<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>) – Get the model difference with respect to this other state of
+model parameters. Can be received from <code class="docutils literal notranslate"><span class="pre">get_parameters</span></code>.</p></li>
+<li><p><strong>clone</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, there is a chance that the implementation can use a
+cache to make this method run faster. This is fine as long as you
+don’t require to hold multiple difference statistics in memory at
+the same time. If you do need to e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">diff1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_model_difference</span><span class="p">(</span><span class="n">initial_params</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">diff2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_model_difference</span><span class="p">(</span><span class="n">initial_params</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>then <code class="docutils literal notranslate"><span class="pre">clone</span></code> should be <code class="docutils literal notranslate"><span class="pre">True</span></code> because otherwise there is a
+chance that diff1 points to diff2 after the second call.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model difference statistics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.do_multiple_epochs_of">
+<span class="sig-name descname"><span class="pre">do_multiple_epochs_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_step_fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.do_multiple_epochs_of" title="Link to this definition">#</a></dt>
+<dd><p>Perform multiple epochs of training. The customizable training
+function that will use a batch of data to update the local
+model state is defined by <code class="docutils literal notranslate"><span class="pre">train_step_fn</span></code>.
+If you have specified an optimizer using the parameter
+<cite>local_optimizer_create</cite> in the constructor, the optimizer state will
+be reset before training is performed in this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – Dataset of type <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> to train on.</p></li>
+<li><p><strong>train_params</strong> (<a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.NNTrainHyperParams" title="pfl.hyperparam.base.NNTrainHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">NNTrainHyperParams</span></code></a>) – An instance of <a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.NNTrainHyperParams" title="pfl.hyperparam.base.NNTrainHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">NNTrainHyperParams</span></code></a>
+containing configuration for training.</p></li>
+<li><p><strong>train_step_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – A function with the following arguments:
+* inputs - the tensor(s) used as input to the Keras model’s
+__call__ method.
+* labels - the label tensor(s) used as the first argument to the
+Keras model’s loss function.
+* train_kwargs - the <code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> property from the user
+dataset. With this, you can pass user-specific metadata to local
+training.
+* kwargs - other keyword arguments that a custom <code class="docutils literal notranslate"><span class="pre">train_step_fn</span></code>
+might have.
+Notice that the TF model itself is not passed in the arguments,
+it needs to instead be in the closure of the function when it is
+defined. This is much more performant.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="context.html#pfl.context.LocalResultMetaData" title="pfl.context.LocalResultMetaData"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalResultMetaData</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_formatting_fn=&lt;function</span> <span class="pre">TFModel.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_params=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate performance of model on the given input data.</p>
+<p>This can be used in different circumstances.
+One is for simulated distributed evaluation, where the data is supposed
+to be from one device.
+Another is for centrally held data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – Dataset to evaluate on.
+If this is centrally held data, it is still a flat list of data
+points.</p></li>
+<li><p><strong>name_formatting_fn</strong> – A function to be used to generate a metric name object from a
+simple string, which will adorn the string with additional
+information.</p></li>
+<li><p><strong>eval_params</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.NNEvalHyperParams" title="pfl.hyperparam.base.NNEvalHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">NNEvalHyperParams</span></code></a>]) – Optional model parameters to use for evaluating the models. Some
+models can evaluate without a parameter object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <cite>Metrics</cite> object with performance metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.tensorflow.TFModel.apply_model_update">
+<span class="sig-name descname"><span class="pre">apply_model_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.tensorflow.TFModel.apply_model_update" title="Link to this definition">#</a></dt>
+<dd><p>Compute updated parameters based on <code class="docutils literal notranslate"><span class="pre">statistics</span></code>.</p>
+<p>This can either construct a new model and return it; or mutate <code class="docutils literal notranslate"><span class="pre">self</span></code>
+and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>statistics</strong> (<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>) – Statistics for updating the parameters of the model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#pfl.model.tensorflow.TFModel" title="pfl.model.tensorflow.TFModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFModel</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new model and any metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pfl.model.pytorch">
+<span id="pytorch"></span><h2>PyTorch<a class="headerlink" href="#module-pfl.model.pytorch" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.pytorch.</span></span><span class="sig-name descname"><span class="pre">PyTorchModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_optimizer_create</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_learning_rate_scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp_dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_dtype_same_as_amp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_torch_compile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – <p>A torch.nn.Module representing the pytorch model to train.
+The module must have two methods defined:
+* loss - <cite>(*user_data) –&gt; loss_value</cite>, where <cite>user_data</cite> is a user’s
+dataset unpacked into the call of <cite>loss</cite>, and <cite>loss_value</cite> is the
+numeric value to minimize.
+* metrics - A function <cite>(*user_data) –&gt; &lt;name:metric_value&gt;</cite> where
+<cite>user_data</cite> is the same as in <cite>loss</cite>, and the return value is a
+dictionary where <cite>name</cite> is the name of the metric and <cite>metric_value</cite>
+is an instance of :class:<code class="docutils literal notranslate"><span class="pre">~pfl.metric.MetricValue</span></code> or a tuple of a
+:class:<code class="docutils literal notranslate"><span class="pre">~pfl.metric.MetricValue</span></code> and a function that postprocesses
+the metric value for each user.
+The <cite>metrics</cite> method has the signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Callable</span><span class="p">[[</span><span class="o">*</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+         <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">MetricValue</span><span class="p">,</span>
+            <span class="n">Tuple</span><span class="p">[</span><span class="n">MetricValue</span><span class="p">,</span>
+                  <span class="n">Callable</span><span class="p">[[</span><span class="n">MetricValue</span><span class="p">],</span> <span class="n">MetricValue</span><span class="p">]</span>
+            <span class="p">]</span>
+         <span class="p">]]</span>
+        <span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list">
+<dt class="field-odd">example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># user data looks like this:</span>
+<span class="c1"># UserDataset(raw_data=[x,y], eval_kwargs={&#39;eval&#39;:True})</span>
+<span class="kn">from</span> <span class="nn">pfl.metrics</span> <span class="kn">import</span> <span class="n">user_average</span>
+<span class="n">l1loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">L1Loss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">eval</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span> <span class="k">if</span> <span class="nb">eval</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">l1loss</span><span class="p">(</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;per sample loss&#39;</span><span class="p">:</span> <span class="n">Weighted</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">),</span>
+        <span class="s1">&#39;per user loss&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Weighted</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">),</span>
+                          <span class="n">user_average</span><span class="p">),</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>local_optimizer_create</strong> – A function to create a torch.optim.optimizer.Optimizer instance.
+The learning rate of this optimizer will be replaced by other training
+algorithms that uses this trainer.</p></li>
+<li><p><strong>central_optimizer</strong> – A torch.optim.optimizer.Optimizer instance, which is used to apply the
+central model updates to the variables.</p></li>
+<li><p><strong>central_learning_rate_scheduler</strong> – A torch.optim.lr_scheduler.LRScheduler instance, which is used to apply
+the learning rate scheduling of central_optimizer.</p></li>
+<li><p><strong>amp_dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>]) – A torch.dtype for mixed precision training with torch.amp.autocast. If
+set to None or torch.float32, no mixed precision training is enabled.</p></li>
+<li><p><strong>grad_scaling</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – A boolean indicating whether to apply gradient scaling when using
+mixed precision training.</p></li>
+<li><p><strong>model_dtype_same_as_amp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – A boolean indicating whether to cast the model parameter dtype to the
+same as amp_dtype when using mixed precision training. Note that lower
+precision model parameters might cause divergence during training.</p></li>
+<li><p><strong>use_torch_compile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – A boolean indicating whether to use <cite>torch.compile</cite> which can speed up
+the training and inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.allows_distributed_evaluation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">allows_distributed_evaluation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.allows_distributed_evaluation" title="Link to this definition">#</a></dt>
+<dd><p>Distributed evaluation can only be enabled when,
+whether or not splitting the dataset, doing evaluation on the
+separate datasets and summing the metrics ends up with the same results
+as doing one call to evaluate with all data.</p>
+<p>As a conservative setting, distributed evaluation is not allowed by
+default. Every model subclass has to explicitly make sure distributing
+evaluation will work correctly.
+If set to <cite>None</cite>, it is interpreted as not yet determined, and any
+evaluation that support distributed evaluation will not be
+distributed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.save" title="Link to this definition">#</a></dt>
+<dd><p>Save state of object to disk. Should be able
+to interpret saved state as a checkpoint that
+can be restored with <code class="docutils literal notranslate"><span class="pre">load</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory on disk to store state.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.load" title="Link to this definition">#</a></dt>
+<dd><p>Load checkpoint from disk, which is the state previously
+saved with <code class="docutils literal notranslate"><span class="pre">save</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to root directory where checkpoint can be loaded from.
+Should be same path as used with <code class="docutils literal notranslate"><span class="pre">save</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">placeholders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.get_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve model parameters at the current state.
+Useful if you want to restore the model to this
+state after it has been modified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>placeholders</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>]) – Statistics with tensors to be updated in-place
+with model parameters. If the model supports this,
+it will greatly increase performance when training
+many users.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.set_parameters">
+<span class="sig-name descname"><span class="pre">set_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.set_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Apply new model parameters to the model. This is
+used to restore the model to a previous state,
+which can be received from <code class="docutils literal notranslate"><span class="pre">get_parameters</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.get_model_difference">
+<span class="sig-name descname"><span class="pre">get_model_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.get_model_difference" title="Link to this definition">#</a></dt>
+<dd><p>Get the model difference between the current state of the model and
+the other state given as input (i.e. current-other).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other_parameters</strong> (<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>) – Get the model difference with respect to this other state of
+model parameters. Can be received from <code class="docutils literal notranslate"><span class="pre">get_parameters</span></code>.</p></li>
+<li><p><strong>clone</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, there is a chance that the implementation can use a
+cache to make this method run faster. This is fine as long as you
+don’t require to hold multiple difference statistics in memory at
+the same time. If you do need to e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">diff1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_model_difference</span><span class="p">(</span><span class="n">initial_params</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">diff2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_model_difference</span><span class="p">(</span><span class="n">initial_params</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>then <code class="docutils literal notranslate"><span class="pre">clone</span></code> should be <code class="docutils literal notranslate"><span class="pre">True</span></code> because otherwise there is a
+chance that diff1 points to diff2 after the second call.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model difference statistics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.do_multiple_epochs_of">
+<span class="sig-name descname"><span class="pre">do_multiple_epochs_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_step_fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.do_multiple_epochs_of" title="Link to this definition">#</a></dt>
+<dd><p>Perform multiple epochs of training. The customizable training
+function that will use a batch of data to update the local
+model state is defined by <code class="docutils literal notranslate"><span class="pre">train_step_fn</span></code>.
+If you have specified an optimizer using the parameter
+<cite>local_optimizer_create</cite> in the constructor, a new optimizer will
+be initialized before training is performed in this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – Dataset of type <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> to train on.</p></li>
+<li><p><strong>train_params</strong> (<a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.NNTrainHyperParams" title="pfl.hyperparam.base.NNTrainHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">NNTrainHyperParams</span></code></a>) – An instance of <a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.NNTrainHyperParams" title="pfl.hyperparam.base.NNTrainHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">NNTrainHyperParams</span></code></a>
+containing configuration for training.</p></li>
+<li><p><strong>train_step_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – A function with the following arguments:
+* pytorch_model - the pytorch model object to train on.
+* local_optimizer - the optimizer to use for training.
+* raw_data - an iterable of tensors unpacked into the loss function
+<code class="docutils literal notranslate"><span class="pre">pytorch_model.loss(*raw_data)</span></code>
+* train_kwargs - the <code class="docutils literal notranslate"><span class="pre">train_kwargs</span></code> property from the user
+dataset. With this, you can pass user-specific metadata to local
+training.
+* train_step_args - an instance of
+<a class="reference internal" href="internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs" title="pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchTrainStepArgs</span></code></a>
+that contains common arguments for PyTorch local training.
+* kwargs - other keyword arguments that a custom <code class="docutils literal notranslate"><span class="pre">train_step_fn</span></code>
+might have.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="context.html#pfl.context.LocalResultMetaData" title="pfl.context.LocalResultMetaData"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalResultMetaData</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_formatting_fn=&lt;function</span> <span class="pre">PyTorchModel.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_params=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate performance of model on the given input data.</p>
+<p>This can be used in different circumstances.
+One is for simulated distributed evaluation, where the data is supposed
+to be from one device.
+Another is for centrally held data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – Dataset to evaluate on.
+If this is centrally held data, it is still a flat list of data
+points.</p></li>
+<li><p><strong>name_formatting_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <a class="reference internal" href="metrics.html#pfl.metrics.StringMetricName" title="pfl.metrics.StringMetricName"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMetricName</span></code></a>]) – A function to be used to generate a metric name object from a
+simple string, which will adorn the string with additional
+information.</p></li>
+<li><p><strong>eval_params</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.NNEvalHyperParams" title="pfl.hyperparam.base.NNEvalHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">NNEvalHyperParams</span></code></a>]) – Optional model parameters to use for evaluating the models. Some
+models can evaluate without a parameter object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <cite>Metrics</cite> object with performance metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.pytorch.PyTorchModel.apply_model_update">
+<span class="sig-name descname"><span class="pre">apply_model_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.pytorch.PyTorchModel.apply_model_update" title="Link to this definition">#</a></dt>
+<dd><p>Compute updated parameters based on <code class="docutils literal notranslate"><span class="pre">statistics</span></code>.</p>
+<p>This can either construct a new model and return it; or mutate <code class="docutils literal notranslate"><span class="pre">self</span></code>
+and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>statistics</strong> (<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>) – Statistics for updating the parameters of the model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#pfl.model.pytorch.PyTorchModel" title="pfl.model.pytorch.PyTorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchModel</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new model and any metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="gaussian-mixture-model">
+<h2>Gaussian mixture model<a class="headerlink" href="#gaussian-mixture-model" title="Link to this heading">#</a></h2>
+<blockquote>
+<div><dl class="py class" id="module-pfl.model.gaussian_mixture_model">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GMMHyperParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.gaussian_mixture_model.</span></span><span class="sig-name descname"><span class="pre">GMMHyperParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">responsibility_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variance_floor_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_component_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GMMHyperParams" title="Link to this definition">#</a></dt>
+<dd><p>Configuration for training Gaussian mixture models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variance_scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Scaling factor for the part of the statistics vector where the variance
+statistics go.
+This is relative to the mean, which is not scaled.
+Scaling parts of the statistics can effectively reduce noise for
+differential privacy.</p></li>
+<li><p><strong>responsibility_scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Scaling factor for the part of the statistics vector where the
+responsibilities go.
+This is relative to the mean, which is not scaled.
+Scaling parts of the statistics can effectively reduce noise for
+differential privacy.</p></li>
+<li><p><strong>variance_floor_fraction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Floor to the variance of each component when training, as a fraction of
+the global variance.</p></li>
+<li><p><strong>minimum_component_weight</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Weight below which components are pruned when training.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.gaussian_mixture_model.</span></span><span class="sig-name descname"><span class="pre">GaussianMixtureModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached_model_train_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel" title="Link to this definition">#</a></dt>
+<dd><p>A density model represented by a mixture of diagonal-covariance Gaussians.
+This model is immutable: <code class="docutils literal notranslate"><span class="pre">apply_model_update</span></code> only returns a new model,
+and it does not change the object.</p>
+<p>Training uses standard expectation-maximization, which approximates
+maximum-likelihood training.
+The statistics are the standard statistics, but transformed so that they
+are efficient when noise is added for differential privacy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_dimension</strong> – The length of the vectors that this model is over.</p></li>
+<li><p><strong>model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="internal/distribution.html#pfl.internal.distribution.mixture.Mixture" title="pfl.internal.distribution.mixture.Mixture"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mixture</span></code></a>]) – The underlying <code class="docutils literal notranslate"><span class="pre">Mixture[DiagonalGaussian]</span></code>.</p></li>
+<li><p><strong>cached_model_train_params</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#pfl.model.gaussian_mixture_model.GMMHyperParams" title="pfl.model.gaussian_mixture_model.GMMHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">GMMHyperParams</span></code></a>]) – Used internally.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.allows_distributed_evaluation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">allows_distributed_evaluation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.allows_distributed_evaluation" title="Link to this definition">#</a></dt>
+<dd><p>Distributed evaluation can only be enabled when,
+whether or not splitting the dataset, doing evaluation on the
+separate datasets and summing the metrics ends up with the same results
+as doing one call to evaluate with all data.</p>
+<p>As a conservative setting, distributed evaluation is not allowed by
+default. Every model subclass has to explicitly make sure distributing
+evaluation will work correctly.
+If set to <cite>None</cite>, it is interpreted as not yet determined, and any
+evaluation that support distributed evaluation will not be
+distributed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.global_gaussian">
+<span class="sig-name descname"><span class="pre">global_gaussian</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.global_gaussian" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="internal/distribution.html#pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian" title="pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiagonalGaussian</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The global Gaussian, as computed from the mixture.
+Note that this is exact, in the sense that if the data that was
+used to train the mixture was used to train a single Gaussian,
+the global Gaussian would be that single Gaussian.
+(Here, “train” means “find the parameters that maximize the
+likelihood”.)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="internal/distribution.html#pfl.internal.distribution.mixture.Mixture" title="pfl.internal.distribution.mixture.Mixture"><span class="pre">Mixture</span></a></em><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.model" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The underlying <code class="docutils literal notranslate"><span class="pre">Mixture</span></code> of <code class="docutils literal notranslate"><span class="pre">DiagonalGaussian</span></code> s.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.components">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">components</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="internal/distribution.html#pfl.internal.distribution.distribution.Distribution" title="pfl.internal.distribution.distribution.Distribution"><span class="pre">Distribution</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.components" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The underlying components, as a list of tuples with weights and
+components.
+The weights add up to 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.get_mixture_statistics">
+<span class="sig-name descname"><span class="pre">get_mixture_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variance_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">responsibility_scale</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.get_mixture_statistics" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The statistics to train the mixture of Gaussians for multiple
+points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.apply_model_update">
+<span class="sig-name descname"><span class="pre">apply_model_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.apply_model_update" title="Link to this definition">#</a></dt>
+<dd><p>Compute updated parameters based on <code class="docutils literal notranslate"><span class="pre">statistics</span></code>.</p>
+<p>This can either construct a new model and return it; or mutate <code class="docutils literal notranslate"><span class="pre">self</span></code>
+and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>statistics</strong> (<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>) – Statistics for updating the parameters of the model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel" title="pfl.model.gaussian_mixture_model.GaussianMixtureModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianMixtureModel</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new model and any metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_formatting_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate performance of model on the given input data.</p>
+<p>This can be used in different circumstances.
+One is for simulated distributed evaluation, where the data is supposed
+to be from one device.
+Another is for centrally held data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – Dataset to evaluate on.
+If this is centrally held data, it is still a flat list of data
+points.</p></li>
+<li><p><strong>name_formatting_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <a class="reference internal" href="metrics.html#pfl.metrics.StringMetricName" title="pfl.metrics.StringMetricName"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMetricName</span></code></a>]) – A function to be used to generate a metric name object from a
+simple string, which will adorn the string with additional
+information.</p></li>
+<li><p><strong>eval_params</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.ModelHyperParams" title="pfl.hyperparam.base.ModelHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelHyperParams</span></code></a>]) – Optional model parameters to use for evaluating the models. Some
+models can evaluate without a parameter object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <cite>Metrics</cite> object with performance metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.gaussian_mixture_model.GaussianMixtureModel.mix_up">
+<span class="sig-name descname"><span class="pre">mix_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_extra_components</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.mix_up" title="Link to this definition">#</a></dt>
+<dd><p>Introduce extra components in a heuristic manner.</p>
+<p>The new components are generated by splitting up the heaviest
+components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_extra_components</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of components to add, i.e. the number of components to
+split.
+If this is greater than the current number of components, then all
+components are split once, and the number of components is merely
+doubled.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel" title="pfl.model.gaussian_mixture_model.GaussianMixtureModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianMixtureModel</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new model with extra components.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</section>
+<section id="module-pfl.model.ema">
+<span id="exponential-moving-average"></span><h2>Exponential moving average<a class="headerlink" href="#module-pfl.model.ema" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.model.ema.CentralExponentialMovingAverage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.model.ema.</span></span><span class="sig-name descname"><span class="pre">CentralExponentialMovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_decay_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.ema.CentralExponentialMovingAverage" title="Link to this definition">#</a></dt>
+<dd><p>Maintains moving averages of variables by employing an exponential decay.
+When training a model, it is often beneficial to maintain moving averages of
+the trained parameters. Evaluations that use averaged parameters sometimes
+produce better results.</p>
+<p>EMA update is described as in the following formula:
+<cite>shadow_variable -= (1 - decay) * (shadow_variable - variable)</cite>,
+where <cite>shadow_variable</cite> is the moving average of <cite>variable</cite>.</p>
+<p>Reasonable values for <cite>decay</cite> are close to 1.0, typically in the
+multiple-nines range: 0.99, 0.999, etc.</p>
+<dl class="field-list">
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ema</span> <span class="o">=</span> <span class="n">CentralExponentialMovingAverage</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">)</span>
+<span class="c1"># ... training the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">apply_model_update</span><span class="p">(</span><span class="n">statistics</span><span class="p">)</span>
+<span class="n">ema</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="c1"># backup model parameters in ``state&#39;&#39;</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+<span class="c1"># set model parameters to their EMA values</span>
+<span class="n">ema</span><span class="o">.</span><span class="n">assign</span><span class="p">()</span>
+<span class="c1"># ... evaluating the model</span>
+<span class="c1"># restore the original model state</span>
+<span class="n">model</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>decay</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – EMA decaying rate, a floating point number between 0 and 1</p></li>
+<li><p><strong>dynamic_decay_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to tweak the decay rate dynamically using the
+count of training steps. If <cite>True</cite>, the actual decay rate used is:
+<cite>min(decay, (1 + num_updates) / (10 + num_updates))</cite>
+in which case the decay rate is lower at the start of training.
+This makes moving averages move faster in the early iterations.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.ema.CentralExponentialMovingAverage.shadow_variable_map">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shadow_variable_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pfl.model.ema.CentralExponentialMovingAverage.shadow_variable_map" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary that maps variable name to the shadow EMA
+variables of <code class="docutils literal notranslate"><span class="pre">self._model</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.model.ema.CentralExponentialMovingAverage.decay">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">decay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pfl.model.ema.CentralExponentialMovingAverage.decay" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">float</span></code> for the EMA decaying rate. Dynamically set if
+<code class="docutils literal notranslate"><span class="pre">self._dynamic_decay_rate</span> <span class="pre">=</span> <span class="pre">True</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.ema.CentralExponentialMovingAverage.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.ema.CentralExponentialMovingAverage.update" title="Link to this definition">#</a></dt>
+<dd><p>Perform one step of EMA update on shadow variables using framework’s
+specific operation after each central optimization step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.ema.CentralExponentialMovingAverage.assign">
+<span class="sig-name descname"><span class="pre">assign</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.ema.CentralExponentialMovingAverage.assign" title="Link to this definition">#</a></dt>
+<dd><p>Assign the EMA shadow variables to model variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.model.ema.CentralExponentialMovingAverage.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.model.ema.CentralExponentialMovingAverage.save" title="Link to this definition">#</a></dt>
+<dd><p>Save the EMA shadow variables. First model need to backup the current
+variables and then assign the EMA variables for saving. Then model need
+to restore the variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="postprocessor.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Postprocessor</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="metrics.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Metrics</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on Jun 16, 2025</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Models</a><ul>
+<li><a class="reference internal" href="#module-pfl.model.base">Abstract base classes</a><ul>
+<li><a class="reference internal" href="#pfl.model.base.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.model.base.Model.apply_model_update"><code class="docutils literal notranslate"><span class="pre">Model.apply_model_update()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.model.base.EvaluatableModel"><code class="docutils literal notranslate"><span class="pre">EvaluatableModel</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.model.base.EvaluatableModel.allows_distributed_evaluation"><code class="docutils literal notranslate"><span class="pre">EvaluatableModel.allows_distributed_evaluation</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.base.EvaluatableModel.evaluate"><code class="docutils literal notranslate"><span class="pre">EvaluatableModel.evaluate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.model.base.StatefulModel"><code class="docutils literal notranslate"><span class="pre">StatefulModel</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.model.base.StatefulModel.get_model_difference"><code class="docutils literal notranslate"><span class="pre">StatefulModel.get_model_difference()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.base.StatefulModel.get_parameters"><code class="docutils literal notranslate"><span class="pre">StatefulModel.get_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.base.StatefulModel.set_parameters"><code class="docutils literal notranslate"><span class="pre">StatefulModel.set_parameters()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.model.tensorflow">TensorFlow</a><ul>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel"><code class="docutils literal notranslate"><span class="pre">TFModel</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.allows_distributed_evaluation"><code class="docutils literal notranslate"><span class="pre">TFModel.allows_distributed_evaluation</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.save"><code class="docutils literal notranslate"><span class="pre">TFModel.save()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.load"><code class="docutils literal notranslate"><span class="pre">TFModel.load()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.get_parameters"><code class="docutils literal notranslate"><span class="pre">TFModel.get_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.set_parameters"><code class="docutils literal notranslate"><span class="pre">TFModel.set_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.get_model_difference"><code class="docutils literal notranslate"><span class="pre">TFModel.get_model_difference()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.do_multiple_epochs_of"><code class="docutils literal notranslate"><span class="pre">TFModel.do_multiple_epochs_of()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.evaluate"><code class="docutils literal notranslate"><span class="pre">TFModel.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.tensorflow.TFModel.apply_model_update"><code class="docutils literal notranslate"><span class="pre">TFModel.apply_model_update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.model.pytorch">PyTorch</a><ul>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel"><code class="docutils literal notranslate"><span class="pre">PyTorchModel</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.allows_distributed_evaluation"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.allows_distributed_evaluation</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.save"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.save()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.load"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.load()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.get_parameters"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.get_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.set_parameters"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.set_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.get_model_difference"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.get_model_difference()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.do_multiple_epochs_of"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.do_multiple_epochs_of()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.evaluate"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.pytorch.PyTorchModel.apply_model_update"><code class="docutils literal notranslate"><span class="pre">PyTorchModel.apply_model_update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gaussian-mixture-model">Gaussian mixture model</a><ul>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GMMHyperParams"><code class="docutils literal notranslate"><span class="pre">GMMHyperParams</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.allows_distributed_evaluation"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.allows_distributed_evaluation</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.global_gaussian"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.global_gaussian()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.model"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.model</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.components"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.components</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.get_mixture_statistics"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.get_mixture_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.apply_model_update"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.apply_model_update()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.evaluate"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.gaussian_mixture_model.GaussianMixtureModel.mix_up"><code class="docutils literal notranslate"><span class="pre">GaussianMixtureModel.mix_up()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.model.ema">Exponential moving average</a><ul>
+<li><a class="reference internal" href="#pfl.model.ema.CentralExponentialMovingAverage"><code class="docutils literal notranslate"><span class="pre">CentralExponentialMovingAverage</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.model.ema.CentralExponentialMovingAverage.shadow_variable_map"><code class="docutils literal notranslate"><span class="pre">CentralExponentialMovingAverage.shadow_variable_map</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.ema.CentralExponentialMovingAverage.decay"><code class="docutils literal notranslate"><span class="pre">CentralExponentialMovingAverage.decay</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.ema.CentralExponentialMovingAverage.update"><code class="docutils literal notranslate"><span class="pre">CentralExponentialMovingAverage.update()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.ema.CentralExponentialMovingAverage.assign"><code class="docutils literal notranslate"><span class="pre">CentralExponentialMovingAverage.assign()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.model.ema.CentralExponentialMovingAverage.save"><code class="docutils literal notranslate"><span class="pre">CentralExponentialMovingAverage.save()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

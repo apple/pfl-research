@@ -1,0 +1,942 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="article:modified_time" content="2025-06-16T14:43:29+00:00" /><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Backend" href="aggregate.html" /><link rel="prev" title="Contributing" href="../support/contributing.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>Algorithms - pfl 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/fl_introduction.html">Federated learning with pfl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/simulation_distributed.html">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="internal/index.html">Internal API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="internal/bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/distribution.html">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/ops.html">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="algorithms">
+<span id="id1"></span><h1>Algorithms<a class="headerlink" href="#algorithms" title="Link to this heading">#</a></h1>
+<section id="module-pfl.algorithm.base">
+<span id="abstract-base-classes"></span><h2>Abstract base classes<a class="headerlink" href="#module-pfl.algorithm.base" title="Link to this heading">#</a></h2>
+<p>Algorithms of base class <a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm" title="pfl.algorithm.base.FederatedAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedAlgorithm</span></code></a> implement local training of models and processing of central model updates. It is these two parts of the end-to-end training loop that define the behaviour of a specific federated algorithm. The remaining parts define the private federated learning framework itself and do not change with different training algorithms.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedAlgorithm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.base.</span></span><span class="sig-name descname"><span class="pre">FederatedAlgorithm</span></span><a class="headerlink" href="#pfl.algorithm.base.FederatedAlgorithm" title="Link to this definition">#</a></dt>
+<dd><p>Base class for federated algorithms.</p>
+<p>Federated algorithms consist of a computation on multiple clients and
+a computation on the server that processes the results from the clients.
+This class is where all pieces of computation can be implemented.
+It enforces a specific structure so that it is possible to switch between
+simulation and live training with minimal changes.</p>
+<p>A subclass of <code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm</span></code> should provide
+<code class="docutils literal notranslate"><span class="pre">process_aggregated_statistics</span></code>, which is the server-side part of the
+computation.
+In addition, it is useful to run simulations with client-side computation
+locally.
+To do this, <code class="docutils literal notranslate"><span class="pre">simulate_one_user</span></code> can implement the client-side computation
+in this same class.
+Finally, the <code class="docutils literal notranslate"><span class="pre">run</span></code> method performs the orchestration.</p>
+<p>The object connecting the server-side and the client-side computation is
+the backend, passed into <code class="docutils literal notranslate"><span class="pre">run</span></code>.
+In simulation, this may be a <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulatedBackend</span></code>
+which calls <code class="docutils literal notranslate"><span class="pre">simulate_one_user</span></code> to perform simulation,
+In live training, the backend will call out to real devices.
+Calling <code class="docutils literal notranslate"><span class="pre">run</span></code> twice causes the second run to start with the final
+internal state of the algorithm from the previous run. In most cases you
+want to initialize a new algorithm object and call <code class="docutils literal notranslate"><span class="pre">run</span></code> instead.</p>
+<p>When subclassing, new parameters can either go into constructor or by
+subclassing <a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.AlgorithmHyperParams" title="pfl.hyperparam.base.AlgorithmHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgorithmHyperParams</span></code></a>.
+As a rule of thumb, subclass algorithm parameters if this new algorithm
+should be suitable for subclassing as well.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedAlgorithm.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.FederatedAlgorithm.save" title="Link to this definition">#</a></dt>
+<dd><p>Save state of object to disk. Should be able
+to interpret saved state as a checkpoint that
+can be restored with <code class="docutils literal notranslate"><span class="pre">load</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Directory on disk to store state.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedAlgorithm.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.FederatedAlgorithm.load" title="Link to this definition">#</a></dt>
+<dd><p>Load checkpoint from disk, which is the state previously
+saved with <code class="docutils literal notranslate"><span class="pre">save</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dir_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to root directory where checkpoint can be loaded from.
+Should be same path as used with <code class="docutils literal notranslate"><span class="pre">save</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_aggregated_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics" title="Link to this definition">#</a></dt>
+<dd><p>The server-side part of the computation.</p>
+<p>This should process aggregated model statistics and use them to update
+a model.
+If the algorithm performs multiple training central iterations at once,
+which can happen if the particular algorithm returns multiple contexts
+for training by <cite>get_next_central_contexts</cite>, then this method is
+called once for each central-context-statistics combination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>central_context</strong> (<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AlgorithmHyperParamsType</span></code>, bound= AlgorithmHyperParams), <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelHyperParamsType</span></code>, bound= ModelHyperParams)]) – Settings used to gather the metrics and statistics also given as
+input.</p></li>
+<li><p><strong>aggregate_metrics</strong> (<a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>) – A <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a> object with
+aggregated metrics accumulated from local training on users.</p></li>
+<li><p><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model)) – The model in its state before the aggregate statistics were
+processed.</p></li>
+<li><p><strong>statistics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)) – Aggregated model statistics from a cohort of devices (simulated or
+real).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model), <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A metrics object with new metrics generated from this model update.
+Do not include any of the aggregate_metrics!</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics_from_all_contexts">
+<span class="sig-name descname"><span class="pre">process_aggregated_statistics_from_all_contexts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stats_context_pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics_from_all_contexts" title="Link to this definition">#</a></dt>
+<dd><p>Override this method if the algorithm you are developing
+produces aggregated statistics from multiple cohorts using multiple
+central contexts each central iteration. Usually, algorithms only
+require one aggregated statistics from one cohort each central
+iteration, hence by default this method simply forwards that single
+result to <code class="docutils literal notranslate"><span class="pre">process_aggregated_statistics</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stats_context_pairs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AlgorithmHyperParamsType</span></code>, bound= AlgorithmHyperParams), <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelHyperParamsType</span></code>, bound= ModelHyperParams)], <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)], <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – Tuple of pairs of central context and its model statistics.
+Each model statistics were accumulated from a cohort which used
+the corresponding central context.</p></li>
+<li><p><strong>aggregate_metrics</strong> (<a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>) – A <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a> object with
+aggregated metrics accumulated from local training on users.</p></li>
+<li><p><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model)) – The model in its state before the aggregate statistics were
+processed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model), <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A metrics object with new metrics generated from this model update.
+Do not include any of the aggregate_metrics!</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedAlgorithm.simulate_one_user">
+<span class="sig-name descname"><span class="pre">simulate_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.FederatedAlgorithm.simulate_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Simulate the client-side part of the computation.</p>
+<p>This should train a single user on its dataset (simulated as
+<code class="docutils literal notranslate"><span class="pre">user_dataset</span></code>) and return the model statistics.
+The statistics should be in such a form that they can be aggregated
+over users.
+For a cohort of multiple users, this method will be called multiple
+times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model)) – The current state of the model.</p></li>
+<li><p><strong>user_dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – The data simulated for a single user.</p></li>
+<li><p><strong>central_context</strong> (<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AlgorithmHyperParamsType</span></code>, bound= AlgorithmHyperParams), <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelHyperParamsType</span></code>, bound= ModelHyperParams)]) – Settings to use for this round. Contains the model params
+used for training/evaluating a user’s model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)], <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple <code class="docutils literal notranslate"><span class="pre">(statistics,</span> <span class="pre">metrics)</span></code>, with model statistics and metrics
+generated from the training of a single user.
+Both statistics and metrics will be aggregated and the aggregate
+will be passed to <code class="docutils literal notranslate"><span class="pre">process_aggregated_statistics</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedAlgorithm.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_train_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_eval_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">send_metrics_to_platform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.FederatedAlgorithm.run" title="Link to this definition">#</a></dt>
+<dd><p>Orchestrate the federated computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>backend</strong> (<a class="reference internal" href="aggregate.html#pfl.aggregate.base.Backend" title="pfl.aggregate.base.Backend"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code></a>) – The <a class="reference internal" href="aggregate.html#pfl.aggregate.base.Backend" title="pfl.aggregate.base.Backend"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code></a> that aggregates the
+contributions from individual users.
+This may be simulated (in which case the backend will call
+<code class="docutils literal notranslate"><span class="pre">simulate_one_user</span></code>), or it may perform for live training (in
+which case your client code will be called).</p></li>
+<li><p><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model)) – The model to train.</p></li>
+<li><p><strong>callbacks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="callback.html#pfl.callback.TrainingProcessCallback" title="pfl.callback.TrainingProcessCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingProcessCallback</span></code></a>]]) – A list of callbacks for hooking into the training loop, potentially
+performing complementary actions to the model training, e.g. central
+evaluation or training parameter schemes.</p></li>
+<li><p><strong>send_metrics_to_platform</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Allow the platform to process the aggregated metrics after
+each central iteration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ModelType</span></code>, bound= Model)</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The trained model.
+It may be the same object as given in the input, or it may be
+different.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.base.NNAlgorithmParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.base.</span></span><span class="sig-name descname"><span class="pre">NNAlgorithmParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">central_num_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_cohort_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_cohort_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.NNAlgorithmParams" title="Link to this definition">#</a></dt>
+<dd><p>Parameters for algorithms that involve training
+neural networks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>central_num_iterations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Total number of central iterations.</p></li>
+<li><p><strong>evaluation_frequency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Frequency with which the model will be evaluated (in terms
+of central iterations).</p></li>
+<li><p><strong>train_cohort_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.HyperParam" title="pfl.hyperparam.base.HyperParam"><code class="xref py py-class docutils literal notranslate"><span class="pre">HyperParam</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Cohort size for training.</p></li>
+<li><p><strong>val_cohort_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Cohort size for evaluation on validation users.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedNNAlgorithm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.base.</span></span><span class="sig-name descname"><span class="pre">FederatedNNAlgorithm</span></span><a class="headerlink" href="#pfl.algorithm.base.FederatedNNAlgorithm" title="Link to this definition">#</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.FederatedNNAlgorithm.simulate_one_user">
+<span class="sig-name descname"><span class="pre">simulate_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.FederatedNNAlgorithm.simulate_one_user" title="Link to this definition">#</a></dt>
+<dd><p>If population is <code class="docutils literal notranslate"><span class="pre">Population.TRAIN</span></code>, trains one user and returns the
+model difference before and after training.
+Also evaluates the performance before and after training the user.
+Metrics with the postfix “after local training” measure the performance
+after training the user.
+If population is not <code class="docutils literal notranslate"><span class="pre">Population.TRAIN</span></code>, does only evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)], <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.base.PersonalizedNNAlgorithmParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.base.</span></span><span class="sig-name descname"><span class="pre">PersonalizedNNAlgorithmParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">central_num_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_cohort_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_cohort_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_split_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_train_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_val_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.PersonalizedNNAlgorithmParams" title="Link to this definition">#</a></dt>
+<dd><p>Base parameter config for federated personalization
+algorithms.</p>
+<p>Has same parameters as
+<a class="reference internal" href="#pfl.algorithm.base.NNAlgorithmParams" title="pfl.algorithm.base.NNAlgorithmParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">NNAlgorithmParams</span></code></a> in addition to:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val_split_fraction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Parameter to <code class="docutils literal notranslate"><span class="pre">Dataset.split</span></code>. Defines the fraction of
+data to use for training. A good starting value can be
+<code class="docutils literal notranslate"><span class="pre">0.8</span></code> in many cases, i.e. split into 80% training data
+and 20% validation data.</p></li>
+<li><p><strong>min_train_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Parameter to <code class="docutils literal notranslate"><span class="pre">Dataset.split</span></code>. Defines the minimum
+number of data samples for training.
+A good starting value can be <code class="docutils literal notranslate"><span class="pre">1</span></code> in many cases.</p></li>
+<li><p><strong>min_val_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Parameter to <code class="docutils literal notranslate"><span class="pre">Dataset.split</span></code>. Defines the minimum
+number of data samples for validation.
+A good starting value can be <code class="docutils literal notranslate"><span class="pre">1</span></code> in many cases.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.base.PersonalizedNNAlgorithm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.base.</span></span><span class="sig-name descname"><span class="pre">PersonalizedNNAlgorithm</span></span><a class="headerlink" href="#pfl.algorithm.base.PersonalizedNNAlgorithm" title="Link to this definition">#</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.base.PersonalizedNNAlgorithm.simulate_one_user">
+<span class="sig-name descname"><span class="pre">simulate_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.base.PersonalizedNNAlgorithm.simulate_one_user" title="Link to this definition">#</a></dt>
+<dd><p>If trains one user and returns the model difference before and after
+training. Also evaluates the performance before and after training the
+user. Metrics with the postfix “after local training” measure the
+performance after training the user. Unlike in FederatedNNAlgorithm,
+the training happens whether the user is in the train population or
+not.</p>
+<p>The performance after training on the val population is a measurement
+of how well the model can personalize to one user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)], <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="federated-learning">
+<h2>Federated learning<a class="headerlink" href="#federated-learning" title="Link to this heading">#</a></h2>
+<section id="module-pfl.algorithm.federated_averaging">
+<span id="federated-averaging"></span><h3>Federated averaging<a class="headerlink" href="#module-pfl.algorithm.federated_averaging" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.federated_averaging.FederatedAveraging">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.federated_averaging.</span></span><span class="sig-name descname"><span class="pre">FederatedAveraging</span></span><a class="headerlink" href="#pfl.algorithm.federated_averaging.FederatedAveraging" title="Link to this definition">#</a></dt>
+<dd><p>Defines the <a class="reference external" href="https://arxiv.org/abs/1602.05629">Federated Averaging</a>
+algorithm by providing the implementation as hooks into the training
+process.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.federated_averaging.FederatedAveraging.process_aggregated_statistics">
+<span class="sig-name descname"><span class="pre">process_aggregated_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.federated_averaging.FederatedAveraging.process_aggregated_statistics" title="Link to this definition">#</a></dt>
+<dd><p>Average the statistics and update the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatefulModelType</span></code>, bound= StatefulModel), <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="fedprox">
+<h3>FedProx<a class="headerlink" href="#fedprox" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.fedprox.FedProx">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.fedprox.</span></span><span class="sig-name descname"><span class="pre">FedProx</span></span><a class="headerlink" href="#pfl.algorithm.fedprox.FedProx" title="Link to this definition">#</a></dt>
+<dd><p>FedProx algorithm, introduced by
+T. Li. et al. - Federated Optimization in Heterogeneous Networks
+(<a class="reference external" href="https://arxiv.org/pdf/1812.06127.pdf">https://arxiv.org/pdf/1812.06127.pdf</a>).</p>
+<p>Adds a proximal term to loss during local training which is a soft
+constraint on the local model not diverging too far from current global
+model.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.fedprox.FedProxParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.fedprox.</span></span><span class="sig-name descname"><span class="pre">FedProxParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">central_num_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_cohort_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_cohort_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.fedprox.FedProxParams" title="Link to this definition">#</a></dt>
+<dd><p>Parameters for FedProx algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mu</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="hyperparam.html#pfl.hyperparam.base.HyperParam" title="pfl.hyperparam.base.HyperParam"><code class="xref py py-class docutils literal notranslate"><span class="pre">HyperParam</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Scales the additional loss term added by FedProx.
+Only values <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code> make sense. A value of <code class="docutils literal notranslate"><span class="pre">0</span></code>
+means the additional loss term has no effect and this
+algorithm regresses back to Federated Averaging.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.fedprox.AdaptMuOnMetricCallback">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.fedprox.</span></span><span class="sig-name descname"><span class="pre">AdaptMuOnMetricCallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adapt_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decrease_mu_after_consecutive_improvements</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.fedprox.AdaptMuOnMetricCallback" title="Link to this definition">#</a></dt>
+<dd><p>Adaptive scalar for proximal term (<code class="docutils literal notranslate"><span class="pre">mu</span></code>) in FedProx algorithm,
+described in Appendix C.3.3 in
+T. Li. et al. - Federated Optimization in Heterogeneous Networks
+(<a class="reference external" href="https://arxiv.org/pdf/1812.06127.pdf">https://arxiv.org/pdf/1812.06127.pdf</a>).</p>
+<p>Set an instance of this as <code class="docutils literal notranslate"><span class="pre">mu</span></code> in
+<a class="reference internal" href="#pfl.algorithm.fedprox.FedProxParams" title="pfl.algorithm.fedprox.FedProxParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">FedProxParams</span></code></a> and add it to
+the algorithm’s list of callbacks to make <code class="docutils literal notranslate"><span class="pre">mu</span></code> adaptive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric_name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="metrics.html#pfl.metrics.StringMetricName" title="pfl.metrics.StringMetricName"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMetricName</span></code></a>]) – The metric name to use for adapting <code class="docutils literal notranslate"><span class="pre">mu</span></code>. Lower should be better.</p></li>
+<li><p><strong>adapt_frequency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <p>Adapt <code class="docutils literal notranslate"><span class="pre">mu</span></code> according to the rules every this number of iterations.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you adapt on a metric that is not reported every round,
+e.g. central iteration, make sure that adapting <code class="docutils literal notranslate"><span class="pre">mu</span></code> is done
+at the same frequency such that the metric is available in the
+aggregated metrics.</p>
+</div>
+</p></li>
+<li><p><strong>initial_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Initial value for <code class="docutils literal notranslate"><span class="pre">mu</span></code>. Appendix C.3.3 suggest <code class="docutils literal notranslate"><span class="pre">0.0</span></code> for
+homogeneous federated datasets and <code class="docutils literal notranslate"><span class="pre">1.0</span></code> for heterogeneous
+federated datasets.</p></li>
+<li><p><strong>step_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – How much to increase or decrease <code class="docutils literal notranslate"><span class="pre">mu</span></code> each step it is calibrated.
+T. Li. et al. suggests <code class="docutils literal notranslate"><span class="pre">0.1</span></code>.</p></li>
+<li><p><strong>decrease_mu_after_consecutive_improvements</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Decreaase <code class="docutils literal notranslate"><span class="pre">mu</span></code> if <code class="docutils literal notranslate"><span class="pre">metric_value</span></code> is lower this many times in a row.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.fedprox.AdaptMuOnMetricCallback.value">
+<span class="sig-name descname"><span class="pre">value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.fedprox.AdaptMuOnMetricCallback.value" title="Link to this definition">#</a></dt>
+<dd><p>The current state (inner value) of the hyperparameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.fedprox.AdaptMuOnMetricCallback.after_central_iteration">
+<span class="sig-name descname"><span class="pre">after_central_iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aggregate_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_iteration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.fedprox.AdaptMuOnMetricCallback.after_central_iteration" title="Link to this definition">#</a></dt>
+<dd><p>Extend adaptive mu as a callback such that it can be calibrated
+after each central iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="module-pfl.algorithm.reptile">
+<span id="meta-learning-personalisation"></span><h2>Meta-learning / personalisation<a class="headerlink" href="#module-pfl.algorithm.reptile" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.reptile.Reptile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.reptile.</span></span><span class="sig-name descname"><span class="pre">Reptile</span></span><a class="headerlink" href="#pfl.algorithm.reptile.Reptile" title="Link to this definition">#</a></dt>
+<dd><p>Defines the <a class="reference external" href="https://arxiv.org/abs/1803.02999">Reptile</a> algorithm by
+providing the implementation as hooks into the training process.</p>
+</dd></dl>
+
+</section>
+<section id="module-pfl.algorithm.expectation_maximization_gmm">
+<span id="expectation-maximization-gmm"></span><h2>Expectation maximization GMM<a class="headerlink" href="#module-pfl.algorithm.expectation_maximization_gmm" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.expectation_maximization_gmm.EMGMMHyperParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.expectation_maximization_gmm.</span></span><span class="sig-name descname"><span class="pre">EMGMMHyperParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">central_num_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluation_frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_cohort_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_cohort_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_new_num_components</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.expectation_maximization_gmm.EMGMMHyperParams" title="Link to this definition">#</a></dt>
+<dd><p>Parameters for EM GMM algorithms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>central_num_iterations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Total number of central iterations.</p></li>
+<li><p><strong>evaluation_frequency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Frequency with which the model will be evaluated (in terms
+of central iterations).</p></li>
+<li><p><strong>val_cohort_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Cohort size for evaluation on validation users.</p></li>
+<li><p><strong>compute_cohort_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Function <code class="docutils literal notranslate"><span class="pre">(int,</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code> that receives
+<code class="docutils literal notranslate"><span class="pre">(iteration,</span> <span class="pre">num_components)</span></code> and returns the desired cohort size for
+that iteration.</p></li>
+<li><p><strong>compute_new_num_components</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Function <code class="docutils literal notranslate"><span class="pre">(int,</span> <span class="pre">int,</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code> that computes the desired number
+of components.
+This is passed
+<code class="docutils literal notranslate"><span class="pre">(iteration,</span> <span class="pre">num_iterations_since_last_mix_up,</span> <span class="pre">num_components)</span></code>.
+It is called after the iteration.
+The number of components that it returns must be at least
+<code class="docutils literal notranslate"><span class="pre">num_components</span></code>.
+If the return value is greater, components with the greatest weight
+will be split, so that they can differentiate themselves in the next
+round of training.
+If this parameter is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the number of components will
+stay constant.
+It is often easy to generate this function using
+<a class="reference internal" href="#pfl.algorithm.expectation_maximization_gmm.make_compute_new_num_components" title="pfl.algorithm.expectation_maximization_gmm.make_compute_new_num_components"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_compute_new_num_components()</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.algorithm.expectation_maximization_gmm.make_compute_new_num_components">
+<span class="sig-prename descclassname"><span class="pre">pfl.algorithm.expectation_maximization_gmm.</span></span><span class="sig-name descname"><span class="pre">make_compute_new_num_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_initial_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mix_up_interval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction_new_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.expectation_maximization_gmm.make_compute_new_num_components" title="Link to this definition">#</a></dt>
+<dd><p>Make a function to compute the desired number of components to generate.
+This can be passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">GMMHyperParams</span></code> as
+<code class="docutils literal notranslate"><span class="pre">compute_new_num_components</span></code>.</p>
+<p>It is often useful in training GMMs to increase the number of components
+incrementally during training (“mixing up”).
+This is done by splitting up components every few iterations.
+During the iterations in between, the components can settle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_initial_iterations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of iterations to wait until mixing up starts.</p></li>
+<li><p><strong>mix_up_interval</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of iterations to wait between increasing the number of
+components.</p></li>
+<li><p><strong>max_num_components</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The number of components after which no more components should be added.
+If <cite>None</cite>, then there is no limit.</p></li>
+<li><p><strong>step_components</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of components to add when mixing up.
+If both <code class="docutils literal notranslate"><span class="pre">fraction_new_components</span></code> and this are given, the max of the
+two results is used.</p></li>
+<li><p><strong>fraction_new_components</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The fraction of current components to add when mixing up.
+To compute the actual number, this value is rounded down.
+It is usually useful to supply non-zero <code class="docutils literal notranslate"><span class="pre">step_components</span></code> to, so that
+even when the current number is small, mixing up happens.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.algorithm.expectation_maximization_gmm.</span></span><span class="sig-name descname"><span class="pre">ExpectationMaximizationGMM</span></span><a class="headerlink" href="#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM" title="Link to this definition">#</a></dt>
+<dd><p>Train a <a class="reference internal" href="model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel" title="pfl.model.gaussian_mixture_model.GaussianMixtureModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianMixtureModel</span></code></a>
+with expectation–maximization.
+for private federated learning, this uses sufficient statistic perturbation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.process_aggregated_statistics">
+<span class="sig-name descname"><span class="pre">process_aggregated_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregate_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.process_aggregated_statistics" title="Link to this definition">#</a></dt>
+<dd><p>The server-side part of the computation.</p>
+<p>This should process aggregated model statistics and use them to update
+a model.
+If the algorithm performs multiple training central iterations at once,
+which can happen if the particular algorithm returns multiple contexts
+for training by <cite>get_next_central_contexts</cite>, then this method is
+called once for each central-context-statistics combination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>central_context</strong> (<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>) – Settings used to gather the metrics and statistics also given as
+input.</p></li>
+<li><p><strong>aggregate_metrics</strong> (<a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>) – A <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a> object with
+aggregated metrics accumulated from local training on users.</p></li>
+<li><p><strong>model</strong> (<a class="reference internal" href="model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel" title="pfl.model.gaussian_mixture_model.GaussianMixtureModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianMixtureModel</span></code></a>) – The model in its state before the aggregate statistics were
+processed.</p></li>
+<li><p><strong>statistics</strong> (<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>) – Aggregated model statistics from a cohort of devices (simulated or
+real).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel" title="pfl.model.gaussian_mixture_model.GaussianMixtureModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianMixtureModel</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A metrics object with new metrics generated from this model update.
+Do not include any of the aggregate_metrics!</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.simulate_one_user">
+<span class="sig-name descname"><span class="pre">simulate_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.simulate_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Simulate the client-side part of the computation.</p>
+<p>This should train a single user on its dataset (simulated as
+<code class="docutils literal notranslate"><span class="pre">user_dataset</span></code>) and return the model statistics.
+The statistics should be in such a form that they can be aggregated
+over users.
+For a cohort of multiple users, this method will be called multiple
+times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel" title="pfl.model.gaussian_mixture_model.GaussianMixtureModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianMixtureModel</span></code></a>) – The current state of the model.</p></li>
+<li><p><strong>user_dataset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">AbstractDatasetType</span></code>, bound= AbstractDataset)) – The data simulated for a single user.</p></li>
+<li><p><strong>central_context</strong> (<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>) – Settings to use for this round. Contains the model params
+used for training/evaluating a user’s model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="stats.html#pfl.stats.MappedVectorStatistics" title="pfl.stats.MappedVectorStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappedVectorStatistics</span></code></a>], <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple <code class="docutils literal notranslate"><span class="pre">(statistics,</span> <span class="pre">metrics)</span></code>, with model statistics and metrics
+generated from the training of a single user.
+Both statistics and metrics will be aggregated and the aggregate
+will be passed to <code class="docutils literal notranslate"><span class="pre">process_aggregated_statistics</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pfl.algorithm.algorithm_utils">
+<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-pfl.algorithm.algorithm_utils" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.algorithm.algorithm_utils.run_train_eval">
+<span class="sig-prename descclassname"><span class="pre">pfl.algorithm.algorithm_utils.</span></span><span class="sig-name descname"><span class="pre">run_train_eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_contexts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.algorithm.algorithm_utils.run_train_eval" title="Link to this definition">#</a></dt>
+<dd><p>Run training/evaluation and gather aggregated model updates and metrics
+for multiple rounds given multiple contexts.
+Used in <code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.run</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>algorithm</strong> – The <a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm" title="pfl.algorithm.base.FederatedAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedAlgorithm</span></code></a> to use.
+Implements local training behaviour and central model update behaviour.
+Note that some algorithms are incompatible with some models.</p></li>
+<li><p><strong>backend</strong> (<a class="reference internal" href="aggregate.html#pfl.aggregate.base.Backend" title="pfl.aggregate.base.Backend"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code></a>) – The <a class="reference internal" href="aggregate.html#pfl.aggregate.base.Backend" title="pfl.aggregate.base.Backend"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code></a> to use to
+distribute training of individual users and aggregate the results.
+Can be used for simulation or live training with the infrastructure.</p></li>
+<li><p><strong>model</strong> (<a class="reference internal" href="model.html#pfl.model.base.Model" title="pfl.model.base.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – The model to train.</p></li>
+<li><p><strong>central_contexts</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]) – A tuple of multiple contexts. Gather aggregated results once for each
+of the contexts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics), <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Aggregated model updates and metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="aggregate.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Backend</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../support/contributing.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Contributing</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on Jun 16, 2025</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Algorithms</a><ul>
+<li><a class="reference internal" href="#module-pfl.algorithm.base">Abstract base classes</a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm"><code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm.save"><code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.save()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm.load"><code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.load()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics"><code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.process_aggregated_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics_from_all_contexts"><code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.process_aggregated_statistics_from_all_contexts()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm.simulate_one_user"><code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.simulate_one_user()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedAlgorithm.run"><code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.run()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.algorithm.base.NNAlgorithmParams"><code class="docutils literal notranslate"><span class="pre">NNAlgorithmParams</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedNNAlgorithm"><code class="docutils literal notranslate"><span class="pre">FederatedNNAlgorithm</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.base.FederatedNNAlgorithm.simulate_one_user"><code class="docutils literal notranslate"><span class="pre">FederatedNNAlgorithm.simulate_one_user()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.algorithm.base.PersonalizedNNAlgorithmParams"><code class="docutils literal notranslate"><span class="pre">PersonalizedNNAlgorithmParams</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.base.PersonalizedNNAlgorithm"><code class="docutils literal notranslate"><span class="pre">PersonalizedNNAlgorithm</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.base.PersonalizedNNAlgorithm.simulate_one_user"><code class="docutils literal notranslate"><span class="pre">PersonalizedNNAlgorithm.simulate_one_user()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#federated-learning">Federated learning</a><ul>
+<li><a class="reference internal" href="#module-pfl.algorithm.federated_averaging">Federated averaging</a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.federated_averaging.FederatedAveraging"><code class="docutils literal notranslate"><span class="pre">FederatedAveraging</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.federated_averaging.FederatedAveraging.process_aggregated_statistics"><code class="docutils literal notranslate"><span class="pre">FederatedAveraging.process_aggregated_statistics()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fedprox">FedProx</a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.fedprox.FedProx"><code class="docutils literal notranslate"><span class="pre">FedProx</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.fedprox.FedProxParams"><code class="docutils literal notranslate"><span class="pre">FedProxParams</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.fedprox.AdaptMuOnMetricCallback"><code class="docutils literal notranslate"><span class="pre">AdaptMuOnMetricCallback</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.fedprox.AdaptMuOnMetricCallback.value"><code class="docutils literal notranslate"><span class="pre">AdaptMuOnMetricCallback.value()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.fedprox.AdaptMuOnMetricCallback.after_central_iteration"><code class="docutils literal notranslate"><span class="pre">AdaptMuOnMetricCallback.after_central_iteration()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.algorithm.reptile">Meta-learning / personalisation</a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.reptile.Reptile"><code class="docutils literal notranslate"><span class="pre">Reptile</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.algorithm.expectation_maximization_gmm">Expectation maximization GMM</a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.expectation_maximization_gmm.EMGMMHyperParams"><code class="docutils literal notranslate"><span class="pre">EMGMMHyperParams</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.expectation_maximization_gmm.make_compute_new_num_components"><code class="docutils literal notranslate"><span class="pre">make_compute_new_num_components()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM"><code class="docutils literal notranslate"><span class="pre">ExpectationMaximizationGMM</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.process_aggregated_statistics"><code class="docutils literal notranslate"><span class="pre">ExpectationMaximizationGMM.process_aggregated_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.simulate_one_user"><code class="docutils literal notranslate"><span class="pre">ExpectationMaximizationGMM.simulate_one_user()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.algorithm.algorithm_utils">Utils</a><ul>
+<li><a class="reference internal" href="#pfl.algorithm.algorithm_utils.run_train_eval"><code class="docutils literal notranslate"><span class="pre">run_train_eval()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

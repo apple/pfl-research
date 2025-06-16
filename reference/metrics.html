@@ -1,0 +1,783 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="article:modified_time" content="2025-06-16T14:43:29+00:00" /><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Models" href="model.html" /><link rel="prev" title="Hyperparameters" href="hyperparam.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>Metrics - pfl 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/fl_introduction.html">Federated learning with pfl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/simulation_distributed.html">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aggregate.html#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="internal/index.html">Internal API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="internal/bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/distribution.html">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/ops.html">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-pfl.metrics">
+<span id="metrics"></span><h1>Metrics<a class="headerlink" href="#module-pfl.metrics" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.StringMetricName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">StringMetricName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.StringMetricName" title="Link to this definition">#</a></dt>
+<dd><p>A structured name for metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>description</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The metric name represented as a string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.MetricName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">MetricName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">population</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.MetricName" title="Link to this definition">#</a></dt>
+<dd><p>A structured name for metrics which includes the population the metric was
+generated from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>description</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The metric name represented as a string.</p></li>
+<li><p><strong>population</strong> (<a class="reference internal" href="common_types.html#pfl.common_types.Population" title="pfl.common_types.Population"><code class="xref py py-class docutils literal notranslate"><span class="pre">Population</span></code></a>) – The population the metric was generated from.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.TrainMetricName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">TrainMetricName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">population</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after_training</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_partition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.TrainMetricName" title="Link to this definition">#</a></dt>
+<dd><p>A structured name for metrics which includes the population the metric was
+generated from and training descriptions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>description</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The metric name represented as a string.</p></li>
+<li><p><strong>population</strong> (<a class="reference internal" href="common_types.html#pfl.common_types.Population" title="pfl.common_types.Population"><code class="xref py py-class docutils literal notranslate"><span class="pre">Population</span></code></a>) – The population the metric was generated from.</p></li>
+<li><p><strong>after_training</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – <cite>True</cite> if the metric was generated after local training, <cite>False</cite>
+otherwise.</p></li>
+<li><p><strong>local_partition</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – (Optional) The name of the local dataset partition this metric is
+related to.
+This is mainly only relevant when you have a train and val set locally
+on devices.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.ComposableMetricName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">ComposableMetricName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.ComposableMetricName" title="Link to this definition">#</a></dt>
+<dd><p>Base class of any decorate-able <cite>MetricName</cite>.</p>
+<p>An instance of <code class="docutils literal notranslate"><span class="pre">ComposableMetricName</span></code> can be composed with another
+instances of <cite>ComposableMetricName</cite> without losing the original attribute.</p>
+<p>The main purpose of this class and subclasses is to provide a way
+one can identify whether an attribute exist in a composed
+<cite>ComposableMetricName</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metric_name</strong> (<a class="reference internal" href="#pfl.metrics.StringMetricName" title="pfl.metrics.StringMetricName"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMetricName</span></code></a>) – an instance of <cite>MetricName</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.MetricNamePostfix">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">MetricNamePostfix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postfix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.MetricNamePostfix" title="Link to this definition">#</a></dt>
+<dd><p>Add a postfix to an existing metric name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric_name</strong> (<a class="reference internal" href="#pfl.metrics.StringMetricName" title="pfl.metrics.StringMetricName"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMetricName</span></code></a>) – An instance of <cite>MetricName</cite>.</p></li>
+<li><p><strong>postfix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The postfix to append to the metric name string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.SkipSerialization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">SkipSerialization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.SkipSerialization" title="Link to this definition">#</a></dt>
+<dd><p>Metrics that shouldn’t be serialized when consuming metrics.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.MetricValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">MetricValue</span></span><a class="headerlink" href="#pfl.metrics.MetricValue" title="Link to this definition">#</a></dt>
+<dd><p>The value of a metric, values of which that come from different places can
+be combined (using <code class="docutils literal notranslate"><span class="pre">+</span></code>).
+Additionally, to allow for distributed computation, the value needs to be
+convertible to a fixed-dimensional vector of values.
+Addition in this space must perform the same operation as calling <code class="docutils literal notranslate"><span class="pre">+</span></code> on
+this object.</p>
+<p>Technically, any subclass <code class="docutils literal notranslate"><span class="pre">MetricValue</span></code> with <code class="docutils literal notranslate"><span class="pre">+</span></code> must form a commutative
+monoid: <code class="docutils literal notranslate"><span class="pre">+</span></code> must be associative and commutative.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.metrics.MetricValue.overall_value">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">overall_value</span></span><a class="headerlink" href="#pfl.metrics.MetricValue.overall_value" title="Link to this definition">#</a></dt>
+<dd><p>Return the overall value, e.g. an average or a total.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.MetricValue.to_vector">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.MetricValue.to_vector" title="Link to this definition">#</a></dt>
+<dd><p>Get a vector representation of this metric value, with
+<code class="docutils literal notranslate"><span class="pre">dtype=float32</span></code>.
+Summing two vectors in this space must be equivalent to summing the two
+original objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.MetricValue.from_vector">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.MetricValue.from_vector" title="Link to this definition">#</a></dt>
+<dd><p>Create a new metric value of this class from a vector representation.</p>
+<p>Note that this is a method on an object of this class, since it is
+possible that runtime attributes that do not change with addition are
+not serialized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pfl.metrics.MetricValue" title="pfl.metrics.MetricValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricValue</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.metrics.user_average">
+<span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">user_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.user_average" title="Link to this definition">#</a></dt>
+<dd><p>Take the overall value of the provided metric and re-weight by 1.
+Can be used as a postprocess function when specifying metrics to be
+able to create average of per-user metrics instead of the metric over
+all data of the cohort.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metric_value</strong> (<a class="reference internal" href="#pfl.metrics.MetricValue" title="pfl.metrics.MetricValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricValue</span></code></a>) – Metric value to evaluate and re-weight by 1.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pfl.metrics.MetricValue" title="pfl.metrics.MetricValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricValue</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new metric value with weight 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.metrics.get_overall_value">
+<span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">get_overall_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.get_overall_value" title="Link to this definition">#</a></dt>
+<dd><p>Get the value of Union[MetricValue, float, int] in a type-safe way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.Weighted">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">Weighted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weighted_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Weighted" title="Link to this definition">#</a></dt>
+<dd><p>Represent a value with a weight.
+This allows a normalised value to be computed.
+These can be added; this adds the weighted values and the weights.</p>
+<p>E.g. the value could be the sum of single values, and the weight could be
+the number of values; then <cite>value</cite> is the weighted value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weighted_value</strong> – Value multiplied by the weight. E.g. if weighted value is 8.0 and
+weight is 2.0, the overall value is 4.0.</p></li>
+<li><p><strong>weight</strong> – Weight for the value.
+If this is <cite>0</cite>, then the weighted value must be <cite>0</cite> too.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.metrics.Weighted.overall_value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">overall_value</span></span><a class="headerlink" href="#pfl.metrics.Weighted.overall_value" title="Link to this definition">#</a></dt>
+<dd><p>Return the overall value, e.g. an average or a total.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Weighted.from_vector">
+<span class="sig-name descname"><span class="pre">from_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Weighted.from_vector" title="Link to this definition">#</a></dt>
+<dd><p>Create a new metric value of this class from a vector representation.</p>
+<p>Note that this is a method on an object of this class, since it is
+possible that runtime attributes that do not change with addition are
+not serialized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pfl.metrics.Weighted" title="pfl.metrics.Weighted"><code class="xref py py-class docutils literal notranslate"><span class="pre">Weighted</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Weighted.to_vector">
+<span class="sig-name descname"><span class="pre">to_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Weighted.to_vector" title="Link to this definition">#</a></dt>
+<dd><p>Get a vector representation of this metric value, with
+<code class="docutils literal notranslate"><span class="pre">dtype=float32</span></code>.
+Summing two vectors in this space must be equivalent to summing the two
+original objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.Summed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">Summed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Summed" title="Link to this definition">#</a></dt>
+<dd><p>A metric value which simply wraps 1 number. Addition is equal to summing.
+Unlike <code class="docutils literal notranslate"><span class="pre">Weighted</span></code> which accumulates a weighted average across devices,
+<code class="docutils literal notranslate"><span class="pre">Summed</span></code> is useful when the metric to be accumulated across devices
+should simply be the sum.</p>
+<dl class="field-list">
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">Summed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Summed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">Summed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.metrics.Summed.overall_value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">overall_value</span></span><a class="headerlink" href="#pfl.metrics.Summed.overall_value" title="Link to this definition">#</a></dt>
+<dd><p>Return the overall value, e.g. an average or a total.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Summed.from_vector">
+<span class="sig-name descname"><span class="pre">from_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Summed.from_vector" title="Link to this definition">#</a></dt>
+<dd><p>Create a new metric value of this class from a vector representation.</p>
+<p>Note that this is a method on an object of this class, since it is
+possible that runtime attributes that do not change with addition are
+not serialized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pfl.metrics.Summed" title="pfl.metrics.Summed"><code class="xref py py-class docutils literal notranslate"><span class="pre">Summed</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Summed.to_vector">
+<span class="sig-name descname"><span class="pre">to_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Summed.to_vector" title="Link to this definition">#</a></dt>
+<dd><p>Get a vector representation of this metric value, with
+<code class="docutils literal notranslate"><span class="pre">dtype=float32</span></code>.
+Summing two vectors in this space must be equivalent to summing the two
+original objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.Histogram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">Histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Histogram" title="Link to this definition">#</a></dt>
+<dd><p>Collect values as a histogram. Use the <code class="docutils literal notranslate"><span class="pre">from_values_range</span></code> or
+<code class="docutils literal notranslate"><span class="pre">from_values_bins</span></code> to calculate the histogram from a list of
+values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bin_counts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – A list of counts for each bin in the histogram.</p></li>
+<li><p><strong>bins</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – A list of <cite>N+1</cite> boundaries representing the <cite>N</cite> bins.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Histogram.from_values_range">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_values_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_bound</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Histogram.from_values_range" title="Link to this definition">#</a></dt>
+<dd><p>Create histogram from a list of values and equally-spaced
+bins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – A list of values to create the histogram with.</p></li>
+<li><p><strong>num_bins</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of bins, equally-spaced between <code class="docutils literal notranslate"><span class="pre">min_bound</span></code> and
+<code class="docutils literal notranslate"><span class="pre">max_bound</span></code>.</p></li>
+<li><p><strong>min_bound</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The leftmost bin edge. Values lower than this are ignored.</p></li>
+<li><p><strong>max_bound</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The rightmost bin edge. Values higher than this are ignored.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Histogram.from_values_bins">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_values_bins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Histogram.from_values_bins" title="Link to this definition">#</a></dt>
+<dd><p>Create histogram from a list of values and custom bin edges,
+which don’t need to be equally-spaced.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – A list of values to create the histogram with.</p></li>
+<li><p><strong>bins</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – A list of <cite>N+1</cite> boundaries representing the <cite>N</cite> bins.
+If a value is outside the bin range, the value is ignored.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.metrics.Histogram.overall_value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">overall_value</span></span><a class="headerlink" href="#pfl.metrics.Histogram.overall_value" title="Link to this definition">#</a></dt>
+<dd><p>Return the overall value, e.g. an average or a total.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Histogram.from_vector">
+<span class="sig-name descname"><span class="pre">from_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Histogram.from_vector" title="Link to this definition">#</a></dt>
+<dd><p>Create a new metric value of this class from a vector representation.</p>
+<p>Note that this is a method on an object of this class, since it is
+possible that runtime attributes that do not change with addition are
+not serialized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pfl.metrics.Histogram" title="pfl.metrics.Histogram"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histogram</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Histogram.to_vector">
+<span class="sig-name descname"><span class="pre">to_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Histogram.to_vector" title="Link to this definition">#</a></dt>
+<dd><p>Get a vector representation of this metric value, with
+<code class="docutils literal notranslate"><span class="pre">dtype=float32</span></code>.
+Summing two vectors in this space must be equivalent to summing the two
+original objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.MetricsZero">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">MetricsZero</span></span><a class="headerlink" href="#pfl.metrics.MetricsZero" title="Link to this definition">#</a></dt>
+<dd><p>Represent a set of metrics which has zero for all metric names.
+However, what the metric names are is not specified.
+This class only supports +.
+You probably want to use the singleton object <cite>Zero</cite>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.metrics.Metrics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.metrics.</span></span><span class="sig-name descname"><span class="pre">Metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Metrics" title="Link to this definition">#</a></dt>
+<dd><p>Represent a set of metrics.</p>
+<p>It is possible to get a metric with <cite>[]</cite>.
+It is also possible to set it, but only if it does not exist yet.</p>
+<p>It is possible to iterate over the object, which yields tuples
+<cite>(metric_name, value)</cite>.</p>
+<p>It is possible to add two Metrics objects if they have the exact same set of
+metric names.
+It is possible to take the union (with <cite>|</cite>) of two Metrics objects if they
+have a completely disjunct set of metric names.</p>
+<p>It is possible to convert the metrics into a list of variable-length Numpy
+arrays with dtype <code class="docutils literal notranslate"><span class="pre">float32</span></code> and back.
+Adding these arrays is equivalent to adding the metrics.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Metrics</span></code> is built such that you can always get the value by specifying
+the key in string format, even if the actual key is a
+<a class="reference internal" href="#pfl.metrics.StringMetricName" title="pfl.metrics.StringMetricName"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringMetricName</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metrics</strong> – (optional) An iterable of tuples <cite>(metric_name, value)</cite>
+to initialize the object with.
+This is equivalent to calling <cite>self[metric_name] = value</cite> for each
+entry.
+Use <cite>from_dict</cite> to initialize the class from a dict
+<cite>{metric_name: value}</cite>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Metrics.to_simple_dict">
+<span class="sig-name descname"><span class="pre">to_simple_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_serialize_all_metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_lowercase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Metrics.to_simple_dict" title="Link to this definition">#</a></dt>
+<dd><p>Returns a python dictionary of name-value pairs of metrics and their
+values, e.g. {‘Loss’: 0.12, ‘Accuracy’: 0.45}. All metric names are
+capitalized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force_serialize_all_metrics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Default to False. Indicate whether or not to include metrics that
+are marked to be ignored on serialization.</p></li>
+<li><p><strong>to_lowercase</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Default to False. Indicate lowercasing entire metrics key name.
+This uniformity is necessary for downstream analytics pipelines
+such as Splunk and Delphi.
+On the contrary, Proper-casing might be better for readability
+in stdout in iPython notebooks and logs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.metrics.Metrics.to_vectors">
+<span class="sig-name descname"><span class="pre">to_vectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.metrics.Metrics.to_vectors" title="Link to this definition">#</a></dt>
+<dd><p>Get a list of vector representations of the metric values in this
+object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>, which are vector representations of each
+metric value.
+The order of the vectors is the same for all <cite>Metrics</cite> objects with
+the same set of metric names.
+Performing element-wise addition of two of these vectors yields the
+same equivalent result of adding two
+<a class="reference internal" href="#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a> objects
+(without the correctness checks).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="model.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Models</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="hyperparam.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Hyperparameters</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on Jun 16, 2025</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Metrics</a><ul>
+<li><a class="reference internal" href="#pfl.metrics.StringMetricName"><code class="docutils literal notranslate"><span class="pre">StringMetricName</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.MetricName"><code class="docutils literal notranslate"><span class="pre">MetricName</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.TrainMetricName"><code class="docutils literal notranslate"><span class="pre">TrainMetricName</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.ComposableMetricName"><code class="docutils literal notranslate"><span class="pre">ComposableMetricName</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.MetricNamePostfix"><code class="docutils literal notranslate"><span class="pre">MetricNamePostfix</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.SkipSerialization"><code class="docutils literal notranslate"><span class="pre">SkipSerialization</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.MetricValue"><code class="docutils literal notranslate"><span class="pre">MetricValue</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.metrics.MetricValue.overall_value"><code class="docutils literal notranslate"><span class="pre">MetricValue.overall_value</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.MetricValue.to_vector"><code class="docutils literal notranslate"><span class="pre">MetricValue.to_vector()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.MetricValue.from_vector"><code class="docutils literal notranslate"><span class="pre">MetricValue.from_vector()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.metrics.user_average"><code class="docutils literal notranslate"><span class="pre">user_average()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.get_overall_value"><code class="docutils literal notranslate"><span class="pre">get_overall_value()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Weighted"><code class="docutils literal notranslate"><span class="pre">Weighted</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.metrics.Weighted.overall_value"><code class="docutils literal notranslate"><span class="pre">Weighted.overall_value</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Weighted.from_vector"><code class="docutils literal notranslate"><span class="pre">Weighted.from_vector()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Weighted.to_vector"><code class="docutils literal notranslate"><span class="pre">Weighted.to_vector()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.metrics.Summed"><code class="docutils literal notranslate"><span class="pre">Summed</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.metrics.Summed.overall_value"><code class="docutils literal notranslate"><span class="pre">Summed.overall_value</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Summed.from_vector"><code class="docutils literal notranslate"><span class="pre">Summed.from_vector()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Summed.to_vector"><code class="docutils literal notranslate"><span class="pre">Summed.to_vector()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.metrics.Histogram"><code class="docutils literal notranslate"><span class="pre">Histogram</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.metrics.Histogram.from_values_range"><code class="docutils literal notranslate"><span class="pre">Histogram.from_values_range()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Histogram.from_values_bins"><code class="docutils literal notranslate"><span class="pre">Histogram.from_values_bins()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Histogram.overall_value"><code class="docutils literal notranslate"><span class="pre">Histogram.overall_value</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Histogram.from_vector"><code class="docutils literal notranslate"><span class="pre">Histogram.from_vector()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Histogram.to_vector"><code class="docutils literal notranslate"><span class="pre">Histogram.to_vector()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.metrics.MetricsZero"><code class="docutils literal notranslate"><span class="pre">MetricsZero</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Metrics"><code class="docutils literal notranslate"><span class="pre">Metrics</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.metrics.Metrics.to_simple_dict"><code class="docutils literal notranslate"><span class="pre">Metrics.to_simple_dict()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.metrics.Metrics.to_vectors"><code class="docutils literal notranslate"><span class="pre">Metrics.to_vectors()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

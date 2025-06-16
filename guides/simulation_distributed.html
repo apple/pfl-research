@@ -1,0 +1,489 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="article:modified_time" content="2024-03-01T20:01:00+00:00" /><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Installation" href="../installation.html" /><link rel="prev" title="Federated learning with pfl" href="fl_introduction.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>Fast distributed simulations - pfl 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fl_introduction.html">Federated learning with pfl</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/internal/index.html">Internal API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/distribution.html">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/ops.html">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="fast-distributed-simulations">
+<span id="simulation-distributed"></span><h1>Fast distributed simulations<a class="headerlink" href="#fast-distributed-simulations" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">pfl</span></code> simulations are fast when set up correctly.
+This chapter provides help for making sure you are using <code class="docutils literal notranslate"><span class="pre">pfl</span></code> in the most optimal way.
+<code class="docutils literal notranslate"><span class="pre">pfl</span></code> supports distributed training, supporting multi-machine, multi-GPU, and multi-process training.
+Which setup is most efficient depends on what hardware is available, your use case and choice of hyperparameters.
+The training of users in a cohort is sharded across the allocated machines, GPUs and processes.
+Central evaluation can also be sharded.
+The figure below visualizes how <code class="docutils literal notranslate"><span class="pre">pfl</span></code> can distribute work for federated learning simulations.</p>
+<img alt="../_images/distributed-sim-viz.png" src="../_images/distributed-sim-viz.png" />
+<p><code class="docutils literal notranslate"><span class="pre">pfl</span></code> has two implementations for distributed simulations: one implementation using native <code class="docutils literal notranslate"><span class="pre">tf.distribute</span></code> and <code class="docutils literal notranslate"><span class="pre">torch.distributed</span></code> primitives, and one implementation with Horovod.
+* Native implementation: requires no further installation, but can be slower.
+* Horovod: generally faster, but can be cumbersome to install.</p>
+<section id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">#</a></h2>
+<p>Assume <code class="docutils literal notranslate"><span class="pre">train.py</span></code> implements PFL training by calling <code class="docutils literal notranslate"><span class="pre">FederatedAlgorithm.run</span></code>.
+To run on 2 GPUs on the same machine using native distributed libraries, do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PFL_WORKER_ADDRESSES</span><span class="o">=</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8001</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">0</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">1</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>To run on 2 GPUs on the same machine using Horovod, do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">horovodrun</span> <span class="o">--</span><span class="n">gloo</span> <span class="o">-</span><span class="n">np</span> <span class="mi">2</span> <span class="o">-</span><span class="n">H</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">2</span> <span class="n">python3</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Notice how we don’t need to change the Python code at all to enable distributed simulation.
+It is all configured by how you call the script to run simulation, and <code class="docutils literal notranslate"><span class="pre">pfl</span></code> will automatically adjust.</p>
+</section>
+<section id="distributed-simulation-with-horovod">
+<span id="simulation-distributed-horovod"></span><h2>Distributed simulation with Horovod<a class="headerlink" href="#distributed-simulation-with-horovod" title="Link to this heading">#</a></h2>
+<p>See <a class="reference external" href="https://horovod.readthedocs.io/en/stable">Horovod</a>’s website on how to set up it properly for your deep learning framework.
+In most cases, you can also use our setup script available in the <code class="docutils literal notranslate"><span class="pre">pfl</span></code> repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">apple</span><span class="o">/</span><span class="n">pfl</span><span class="o">-</span><span class="n">research</span><span class="o">.</span><span class="n">git</span>
+<span class="c1"># arg1: &quot;tf&quot;, &quot;pytorch&quot; or &quot;tf pytorch&quot;.</span>
+<span class="c1"># arg2: Install non-Python dependencies on Linux.</span>
+<span class="o">./</span><span class="n">pfl</span><span class="o">-</span><span class="n">research</span><span class="o">/</span><span class="n">build_scripts</span><span class="o">/</span><span class="n">install_horovod</span><span class="o">.</span><span class="n">sh</span> <span class="s2">&quot;tf pytorch&quot;</span> <span class="n">false</span>
+</pre></div>
+</div>
+<section id="multi-gpu-training">
+<span id="id1"></span><h3>Multi-GPU training<a class="headerlink" href="#multi-gpu-training" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pfl</span></code> supports distributed training with multiple GPUs.
+This section assumes the GPUs are located on a single machine, but you can scale up even further with multiple machines, see <a class="reference internal" href="#multi-machine-training">multi-machine_training</a>.
+Single-machine multi-GPU training is favourable if your GPU resources can fit onto 1 machine (at most 8 GPUs on common cloud machines) because it avoids network communication.
+To run <code class="docutils literal notranslate"><span class="pre">pfl</span></code> in multi-GPU mode, install <a class="reference external" href="https://horovod.readthedocs.io/en/stable">Horovod</a> and simply invoke your Python script with the <code class="docutils literal notranslate"><span class="pre">horovodrun</span></code> command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">horovodrun</span> <span class="o">--</span><span class="n">gloo</span> <span class="o">-</span><span class="n">np</span> <span class="mi">8</span> <span class="o">-</span><span class="n">H</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">8</span> <span class="n">python3</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>The above will run the script <code class="docutils literal notranslate"><span class="pre">train.py</span></code> in 8 parallel instances on localhost, using Gloo for distributed communication.
+See the <a class="reference external" href="https://horovod.readthedocs.io/en/stable">Horovod</a> documentation for more advanced configuration.
+If you have 8 GPUs on the machine, <code class="docutils literal notranslate"><span class="pre">pfl</span></code> will try to use 1 GPU for each process.
+<code class="docutils literal notranslate"><span class="pre">pfl</span></code> is built such that if running multiple processes using <a class="reference external" href="https://horovod.readthedocs.io/en/stable">Horovod</a>, training local users will automatically be distributed across the processes.</p>
+</section>
+<section id="multi-process-training">
+<span id="id2"></span><h3>Multi-process training<a class="headerlink" href="#multi-process-training" title="Link to this heading">#</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To run multi-process training, you need to allow multiple processes to allocate memory on GPU at the same time.
+This can be done by switching the GPU’s compute mode to “Default” using command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span> <span class="o">-</span><span class="n">c</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>If you only want to change this for certain GPUs, use the <code class="docutils literal notranslate"><span class="pre">-i</span></code> flag to specify which GPU.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pfl</span></code> supports training local models of users in multiple processes while sharing a GPU.
+This is compatible with both multi-machine mode and multi-GPU mode with <a class="reference external" href="https://horovod.readthedocs.io/en/stable">Horovod</a>.
+If either your model is small, or you have small datasets per user, the GPU utilization can be smaller because of the overhead that federated learning causes.
+Using multiple processes for each GPU can thereby bring additional speedups.
+In <a class="reference internal" href="#multi-gpu-training">multi-GPU_training</a>, the flags <code class="docutils literal notranslate"><span class="pre">-np</span></code> and <code class="docutils literal notranslate"><span class="pre">-H</span></code> specify how many processes should be training on the machine.
+If the machine has 8 GPUs, and your command is <code class="docutils literal notranslate"><span class="pre">horovodrun</span> <span class="pre">--gloo</span> <span class="pre">-np</span> <span class="pre">32</span> <span class="pre">-H</span> <span class="pre">localhost:32</span> <span class="pre">python3</span> <span class="pre">train.py</span></code>, then there will be 32 processes with an instance each running <code class="docutils literal notranslate"><span class="pre">pfl</span></code>, split among the 8 GPUs, i.e. 4 processes sharing each GPU.</p>
+<p>Also, keep in mind that the CPU cores available on your machine will also be shared with the parallelization of preparing user data if <a class="reference internal" href="../reference/data.html#pfl.data.tensorflow.TFFederatedDataset" title="pfl.data.tensorflow.TFFederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFFederatedDataset</span></code></a> or <a class="reference internal" href="../reference/data.html#pfl.data.pytorch.PyTorchFederatedDataset" title="pfl.data.pytorch.PyTorchFederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchFederatedDataset</span></code></a> is used.
+When adding the multi-process to your training setup, first try 1, 2, 3, …, processes per GPU and stop once you don’t see any noticable speedups.
+You can use <a class="reference internal" href="../reference/callback.html#pfl.callback.StopwatchCallback" title="pfl.callback.StopwatchCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">StopwatchCallback</span></code></a> to measure the speed of the simulation.
+The optimal number of processes per GPU can vary between 1-5, since single-process <code class="docutils literal notranslate"><span class="pre">pfl</span></code> already has high GPU utilization.
+The larger the cohort size, the smaller the models are and the smaller the user datasets are, the more you can benefit from increasing the number of processes.</p>
+</section>
+<section id="multi-machine-training">
+<span id="id3"></span><h3>Multi-machine training<a class="headerlink" href="#multi-machine-training" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pfl</span></code> supports distributed training with multiple machines across the network.
+This allows for scaling up simulations to an arbitrary number of GPUs.
+Since the distributed computation is training individual users, the limit of scaling up is a function of your cohort size and the time it takes to train a local model.
+Speedup from scaling up the official benchmarks availabe in <code class="docutils literal notranslate"><span class="pre">pfl-research</span></code> usually tapers off at 5-20 GPUs.</p>
+<p>See <a class="reference external" href="https://horovod.readthedocs.io/en/stable/running_include.html">how to run Horovod on multiple machines</a>.
+If you have 2 machines with IP <code class="docutils literal notranslate"><span class="pre">192.168.1.2</span></code> and <code class="docutils literal notranslate"><span class="pre">192.168.1.3</span></code>, the standard Horovod command will let you run <code class="docutils literal notranslate"><span class="pre">pfl</span></code> in multi-worker distributed mode:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">horovodrun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">32</span> <span class="o">-</span><span class="n">H</span> <span class="mf">192.168.1.2</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span><span class="mf">192.168.1.3</span><span class="p">:</span><span class="mi">16</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>If you have 8 GPUs on each machine, the above command will run multi-worker, multi-GPU, multi-process simulations, where each GPU is shared among 2 process training models.</p>
+</section>
+</section>
+<section id="distributed-simulation-with-native-tf-pytorch-libraries">
+<h2>Distributed simulation with native TF/PyTorch libraries<a class="headerlink" href="#distributed-simulation-with-native-tf-pytorch-libraries" title="Link to this heading">#</a></h2>
+<p>The concept is the same as when training with Horovod.
+<code class="docutils literal notranslate"><span class="pre">pfl</span></code> uses the TF/PyTorch native distributed communication libraries by default if you don’t invoke the training script with <code class="docutils literal notranslate"><span class="pre">horovodrun</span></code>.
+There are two environment variables to let <code class="docutils literal notranslate"><span class="pre">pfl</span></code> know that you intend to run simulation in distributed mode:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PFL_WORKER_ADDRESSES</span></code> - A comma separated list of <code class="docutils literal notranslate"><span class="pre">host:port</span></code> for all workers to run.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PFL_WORKER_RANK</span></code> - The rank of the current process.</p></li>
+</ul>
+<p>If you intend to run multiple processes on same machine (multi-GPU and multi-process training), the training script need to be called once for each process to start, and each process should be assigned a unique order in <code class="docutils literal notranslate"><span class="pre">PFL_WORKER_RANK</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PFL_WORKER_ADDRESSES</span><span class="o">=</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8001</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">0</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">1</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+</pre></div>
+</div>
+<section id="id4">
+<h3>Multi-GPU training<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>To run on multiple GPUs on a single machine, the addresses will all be <code class="docutils literal notranslate"><span class="pre">localhost</span></code> with unique ports.
+This is how to train 1 processes on 2 GPUs on 1 machine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PFL_WORKER_ADDRESSES</span><span class="o">=</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8001</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">0</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">1</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Multi-process training<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>To run on multiple processes sharing a GPU on a single machine, command will be the same as in previous section, but you can specify more processes than there are GPUs on the machine.
+This is how to train 2 processes on each GPU, using 2 GPUs on 1 machine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PFL_WORKER_ADDRESSES</span><span class="o">=</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8001</span><span class="p">,</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8002</span><span class="p">,</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8003</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">0</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">1</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">2</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">3</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>The result is that if there are <code class="docutils literal notranslate"><span class="pre">n</span></code> GPUs, then process <code class="docutils literal notranslate"><span class="pre">i</span></code> will have shared access to GPU number <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">%</span> <span class="pre">n</span></code>.
+The number of processes that can share a GPU and result in speedup depends on the amount of non-GPU overhead the FL setup has, which is use-case specific.
+The optimal number of processes to share a GPU is usually in the range <code class="docutils literal notranslate"><span class="pre">[1,5]</span></code>.</p>
+</section>
+<section id="id6">
+<h3>Multi-machine training<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>Multiple machines can be utilized in distributed simulation by simply specifying the public addresses of the machines in the command.
+This is how to train 2 processes on each machine, using 2 machines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Executed locally on machine 1 (IP 192.168.0.2)</span>
+<span class="n">export</span> <span class="n">PFL_WORKER_ADDRESSES</span><span class="o">=</span><span class="mf">192.168.0.2</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="mf">192.168.0.2</span><span class="p">:</span><span class="mi">8001</span><span class="p">,</span><span class="mf">192.168.0.3</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="mf">192.168.0.3</span><span class="p">:</span><span class="mi">8001</span><span class="p">,</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">0</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">1</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+
+<span class="c1"># Executed locally on machine 2 (IP 192.168.0.3)</span>
+<span class="n">export</span> <span class="n">PFL_WORKER_ADDRESSES</span><span class="o">=</span><span class="mf">192.168.0.2</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="mf">192.168.0.2</span><span class="p">:</span><span class="mi">8001</span><span class="p">,</span><span class="mf">192.168.0.3</span><span class="p">:</span><span class="mi">8000</span><span class="p">,</span><span class="mf">192.168.0.3</span><span class="p">:</span><span class="mi">8001</span><span class="p">,</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">2</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+<span class="n">PFL_WORKER_RANK</span><span class="o">=</span><span class="mi">3</span> <span class="n">python</span> <span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="central-evaluation">
+<h2>Central evaluation<a class="headerlink" href="#central-evaluation" title="Link to this heading">#</a></h2>
+<p>Central evaluation (<a class="reference internal" href="../reference/callback.html#pfl.callback.CentralEvaluationCallback" title="pfl.callback.CentralEvaluationCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralEvaluationCallback</span></code></a>) is often essential for assessing the global model performance.
+There are three things to keep in mind to minimise compute time for central evaluation:</p>
+<ul class="simple">
+<li><p>Performing this evaluation is usually not necessary every central iteration.
+<code class="docutils literal notranslate"><span class="pre">evaluation_frequency</span></code> allows you to run central evaluation at a lower frequency than every central iteration.</p></li>
+<li><p>In federated learning, a small local batch size is commonly used for training. You can set a larger batch size in the evaluation <a class="reference internal" href="../reference/hyperparam.html#pfl.hyperparam.base.ModelHyperParams" title="pfl.hyperparam.base.ModelHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelHyperParams</span></code></a> which can significantly speed up evaluation.</p></li>
+<li><p>In distributed simulations, <code class="docutils literal notranslate"><span class="pre">pfl</span></code> can shard the evaluation among available GPUs.</p></li>
+</ul>
+<img alt="../_images/distributed-sim-eval-duration.png" src="../_images/distributed-sim-eval-duration.png" />
+<p>The left panel of the figure above show the seconds per central iteration for the <a class="reference external" href="https://github.com/apple/pfl-research/tree/main/benchmarks/lm">LM example</a> before increasing <code class="docutils literal notranslate"><span class="pre">local_batch_size</span></code> and enabling sharded central evaluation.
+The right panel show the same metric when following the above guidelines.</p>
+</section>
+<section id="native-datasets">
+<h2>Native datasets<a class="headerlink" href="#native-datasets" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pfl</span></code> supports both its own dataset structure for representing users, <a class="reference internal" href="../reference/data.html#pfl.data.dataset.Dataset" title="pfl.data.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a>, as well as <code class="docutils literal notranslate"><span class="pre">tf.data.Dataset</span></code> using <a class="reference internal" href="../reference/data.html#pfl.data.tensorflow.TFFederatedDataset" title="pfl.data.tensorflow.TFFederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFFederatedDataset</span></code></a> and <code class="docutils literal notranslate"><span class="pre">torch.utils.data.Dataset</span></code> using <a class="reference internal" href="../reference/data.html#pfl.data.pytorch.PyTorchFederatedDataset" title="pfl.data.pytorch.PyTorchFederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchFederatedDataset</span></code></a>.</p>
+<p>If all data can fit into RAM, then using <a class="reference internal" href="../reference/data.html#pfl.data.dataset.Dataset" title="pfl.data.dataset.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a> is the fastest.
+If you need to load the data from disk in a lazy fashion, or if you do heavy preprocessing, then we recommend using <a class="reference internal" href="../reference/data.html#pfl.data.tensorflow.TFFederatedDataset" title="pfl.data.tensorflow.TFFederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFFederatedDataset</span></code></a> and <a class="reference internal" href="../reference/data.html#pfl.data.pytorch.PyTorchFederatedDataset" title="pfl.data.pytorch.PyTorchFederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyTorchFederatedDataset</span></code></a> respectively to allow for parallelization of preparing users’ data.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../installation.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Installation</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="fl_introduction.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Federated learning with pfl</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on Mar 01, 2024</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Fast distributed simulations</a><ul>
+<li><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li><a class="reference internal" href="#distributed-simulation-with-horovod">Distributed simulation with Horovod</a><ul>
+<li><a class="reference internal" href="#multi-gpu-training">Multi-GPU training</a></li>
+<li><a class="reference internal" href="#multi-process-training">Multi-process training</a></li>
+<li><a class="reference internal" href="#multi-machine-training">Multi-machine training</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#distributed-simulation-with-native-tf-pytorch-libraries">Distributed simulation with native TF/PyTorch libraries</a><ul>
+<li><a class="reference internal" href="#id4">Multi-GPU training</a></li>
+<li><a class="reference internal" href="#id5">Multi-process training</a></li>
+<li><a class="reference internal" href="#id6">Multi-machine training</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#central-evaluation">Central evaluation</a></li>
+<li><a class="reference internal" href="#native-datasets">Native datasets</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

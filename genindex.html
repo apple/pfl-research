@@ -1,0 +1,2606 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 --><title>Index - pfl 0.3.1 documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/fl_introduction.html">Federated learning with pfl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/simulation_distributed.html">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/algorithm.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/aggregate.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/aggregate.html#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/aggregate.html#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/aggregate.html#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="reference/internal/index.html">Internal API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/internal/bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/internal/bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/internal/distribution.html">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/internal/ops.html">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/internal/platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/internal/privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/internal/tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+</section>
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/data.html#pfl.data.dataset.AbstractDataset">AbstractDataset (class in pfl.data.dataset)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.user_state.AbstractUserStateStorage">AbstractUserStateStorage (class in pfl.data.user_state)</a>
+</li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.Aggregator.accumulate">accumulate() (pfl.aggregate.base.Aggregator method)</a>
+
+        <ul>
+          <li><a href="reference/aggregate.html#pfl.aggregate.base.SumAggregator.accumulate">(pfl.aggregate.base.SumAggregator method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/data.html#pfl.data.user_state.DiskUserStateStorage.acquire_lock">acquire_lock() (pfl.data.user_state.DiskUserStateStorage method)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism">AdaptiveClippingGaussianMechanism (class in pfl.privacy.adaptive_clipping)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.fedprox.AdaptMuOnMetricCallback">AdaptMuOnMetricCallback (class in pfl.algorithm.fedprox)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.add_branch_node">add_branch_node() (pfl.internal.tree.node.Node method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.add_gaussian_noise">add_gaussian_noise() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.add_gaussian_noise">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.add_gaussian_noise">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.add_laplacian_noise">add_laplacian_noise() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.add_laplacian_noise">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.add_laplacian_noise">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.add_leaf_node">add_leaf_node() (pfl.internal.tree.node.Node method)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.ftrl_mechanism.BandedMatrixFactorizationMechanism.add_noise">add_noise() (pfl.privacy.ftrl_mechanism.BandedMatrixFactorizationMechanism method)</a>
+
+        <ul>
+          <li><a href="reference/privacy.html#pfl.privacy.gaussian_mechanism.GaussianMechanism.add_noise">(pfl.privacy.gaussian_mechanism.GaussianMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.joint_mechanism.JointMechanism.add_noise">(pfl.privacy.joint_mechanism.JointMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.laplace_mechanism.LaplaceMechanism.add_noise">(pfl.privacy.laplace_mechanism.LaplaceMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.NoPrivacy.add_noise">(pfl.privacy.NoPrivacy method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.SplitPrivacyMechanism.add_noise">(pfl.privacy.privacy_mechanism.SplitPrivacyMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism.add_noise_squared_error">add_noise_squared_error() (pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism method)</a>
+
+        <ul>
+          <li><a href="reference/privacy.html#pfl.privacy.gaussian_mechanism.GaussianMechanism.add_noise_squared_error">(pfl.privacy.gaussian_mechanism.GaussianMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.laplace_mechanism.LaplaceMechanism.add_noise_squared_error">(pfl.privacy.laplace_mechanism.LaplaceMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDT.add_tree">add_tree() (pfl.internal.tree.gbdt.GBDT method)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.fedprox.AdaptMuOnMetricCallback.after_central_iteration">after_central_iteration() (pfl.algorithm.fedprox.AdaptMuOnMetricCallback method)</a>
+
+        <ul>
+          <li><a href="reference/callback.html#pfl.callback.AggregateMetricsToDisk.after_central_iteration">(pfl.callback.AggregateMetricsToDisk method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.CentralEvaluationCallback.after_central_iteration">(pfl.callback.CentralEvaluationCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.CentralEvaluationWithEMACallback.after_central_iteration">(pfl.callback.CentralEvaluationWithEMACallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.ConvergenceCallback.after_central_iteration">(pfl.callback.ConvergenceCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.EarlyStoppingCallback.after_central_iteration">(pfl.callback.EarlyStoppingCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.PolicyBasedModelCheckpointingCallback.after_central_iteration">(pfl.callback.PolicyBasedModelCheckpointingCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.ProfilerCallback.after_central_iteration">(pfl.callback.ProfilerCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.RestoreTrainingCallback.after_central_iteration">(pfl.callback.RestoreTrainingCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.StopwatchCallback.after_central_iteration">(pfl.callback.StopwatchCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TensorBoardCallback.after_central_iteration">(pfl.callback.TensorBoardCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TrackBestOverallMetrics.after_central_iteration">(pfl.callback.TrackBestOverallMetrics method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TrainingProcessCallback.after_central_iteration">(pfl.callback.TrainingProcessCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.WandbCallback.after_central_iteration">(pfl.callback.WandbCallback method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.federated_gbdt.GBDTClippingBound.after_central_iteration">(pfl.tree.federated_gbdt.GBDTClippingBound method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/callback.html#pfl.callback.AggregateMetricsToDisk">AggregateMetricsToDisk (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.Aggregator">Aggregator (class in pfl.aggregate.base)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.AlgorithmHyperParams">AlgorithmHyperParams (class in pfl.hyperparam.base)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext.all_reduce">all_reduce() (pfl.internal.ops.distributed.DistributedContext method)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.HorovodDistributedContext.all_reduce">(pfl.internal.ops.distributed.HorovodDistributedContext method)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.NotDistributedContext.all_reduce">(pfl.internal.ops.distributed.NotDistributedContext method)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.all_reduce">(pfl.internal.ops.pytorch_ops.PyTorchDistributedContext method)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.TFDistributedContext.all_reduce">(pfl.internal.ops.tensorflow_ops.TFDistributedContext method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.common_ops.all_reduce_metrics">all_reduce_metrics() (in module pfl.internal.ops.common_ops)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.base.EvaluatableModel.allows_distributed_evaluation">allows_distributed_evaluation (pfl.model.base.EvaluatableModel property)</a>
+
+        <ul>
+          <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.allows_distributed_evaluation">(pfl.model.gaussian_mixture_model.GaussianMixtureModel property)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.allows_distributed_evaluation">(pfl.model.pytorch.PyTorchModel property)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.allows_distributed_evaluation">(pfl.model.tensorflow.TFModel property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.compute_parameters.AnalyticGM_robust">AnalyticGM_robust() (in module pfl.privacy.compute_parameters)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.compute_parameters.AnalyticGM_robust_impl">AnalyticGM_robust_impl() (in module pfl.privacy.compute_parameters)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.distribution.any_product">any_product() (in module pfl.internal.distribution.distribution)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.distribution.any_sum">any_sum() (in module pfl.internal.distribution.distribution)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.TrainingStatistics.apply">apply() (pfl.stats.TrainingStatistics method)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.TrainingStatistics.apply_elementwise">apply_elementwise() (pfl.stats.TrainingStatistics method)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.base.Model.apply_model_update">apply_model_update() (pfl.model.base.Model method)</a>
+
+        <ul>
+          <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.apply_model_update">(pfl.model.gaussian_mixture_model.GaussianMixtureModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.apply_model_update">(pfl.model.pytorch.PyTorchModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.apply_model_update">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.apply_model_update">(pfl.tree.gbdt_model.GBDTModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/privacy_loss_bound.html#pfl.internal.privacy_loss_bound.ApproximatePrivacyLossBound.apply_multiple_times">apply_multiple_times() (pfl.internal.privacy_loss_bound.ApproximatePrivacyLossBound method)</a>
+
+        <ul>
+          <li><a href="reference/internal/privacy_loss_bound.html#pfl.internal.privacy_loss_bound.PrivacyLossBound.apply_multiple_times">(pfl.internal.privacy_loss_bound.PrivacyLossBound method)</a>
+</li>
+          <li><a href="reference/internal/privacy_loss_bound.html#pfl.internal.privacy_loss_bound.RenyiPrivacyLossBound.apply_multiple_times">(pfl.internal.privacy_loss_bound.RenyiPrivacyLossBound method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism.approximate_as_central_mechanism">approximate_as_central_mechanism() (pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism method)</a>
+</li>
+        <li><a href="reference/internal/privacy_loss_bound.html#pfl.internal.privacy_loss_bound.ApproximatePrivacyLossBound">ApproximatePrivacyLossBound (class in pfl.internal.privacy_loss_bound)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.federated_dataset.ArtificialFederatedDataset">ArtificialFederatedDataset (class in pfl.data.federated_dataset)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.ema.CentralExponentialMovingAverage.assign">assign() (pfl.model.ema.CentralExponentialMovingAverage method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.assign_variable">assign_variable() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.assign_variable">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.assign_variable">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.Backend.async_gather_results">async_gather_results() (pfl.aggregate.base.Backend method)</a>
+
+        <ul>
+          <li><a href="reference/aggregate.html#pfl.aggregate.simulate.SimulatedBackend.async_gather_results">(pfl.aggregate.simulate.SimulatedBackend method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/stats.html#pfl.stats.ElementWeightedMappedVectorStatistics.average">average() (pfl.stats.ElementWeightedMappedVectorStatistics method)</a>
+
+        <ul>
+          <li><a href="reference/stats.html#pfl.stats.WeightedStatistics.average">(pfl.stats.WeightedStatistics method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.Backend">Backend (class in pfl.aggregate.base)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.ftrl_mechanism.BandedMatrixFactorizationMechanism">BandedMatrixFactorizationMechanism (class in pfl.privacy.ftrl_mechanism)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.Barrier">Barrier (class in pfl.internal.ops.pytorch_ops)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float_functions.beta_function">beta_function() (in module pfl.internal.distribution.log_float_functions)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/aggregate.html#pfl.aggregate.data_transport.BFloat16DataTransport">BFloat16DataTransport (class in pfl.aggregate.data_transport)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float_functions.binomial_coefficients">binomial_coefficients() (in module pfl.internal.distribution.log_float_functions)</a>
+</li>
+        <li><a href="reference/internal/bisect.html#pfl.internal.bisect.bisect_automatic_range">bisect_automatic_range() (in module pfl.internal.bisect)</a>
+</li>
+        <li><a href="reference/internal/bisect.html#pfl.internal.bisect.bisect_range">bisect_range() (in module pfl.internal.bisect)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.BoolQuestionGenerator">BoolQuestionGenerator (class in pfl.internal.tree.questions)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/context.html#pfl.context.CentralContext">CentralContext (class in pfl.context)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.CentralEvaluationCallback">CentralEvaluationCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.CentralEvaluationWithEMACallback">CentralEvaluationWithEMACallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.ema.CentralExponentialMovingAverage">CentralExponentialMovingAverage (class in pfl.model.ema)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.CentrallyApplicablePrivacyMechanism">CentrallyApplicablePrivacyMechanism (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.CentrallyAppliedPrivacyMechanism">CentrallyAppliedPrivacyMechanism (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.CentralPrivacyMechanism">CentralPrivacyMechanism (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.common_ops.check_mlx_installed">check_mlx_installed() (in module pfl.internal.ops.common_ops)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.common_ops.check_pfl_tree_installed">check_pfl_tree_installed() (in module pfl.internal.ops.common_ops)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.JointPrivacyAccountant.check_valid_parameter_settings">check_valid_parameter_settings() (pfl.privacy.JointPrivacyAccountant method)</a>
+</li>
+        <li><a href="reference/common_types.html#pfl.common_types.Checkpointer">Checkpointer (class in pfl.common_types)</a>
+</li>
+        <li><a href="reference/exception.html#pfl.exception.CheckpointNotFoundError">CheckpointNotFoundError</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.CheckpointPolicy">CheckpointPolicy (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.tree_utils.choose_questions">choose_questions() (in module pfl.tree.tree_utils)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.user_state.AbstractUserStateStorage.clear_states">clear_states() (pfl.data.user_state.AbstractUserStateStorage method)</a>
+
+        <ul>
+          <li><a href="reference/data.html#pfl.data.user_state.DiskUserStateStorage.clear_states">(pfl.data.user_state.DiskUserStateStorage method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.user_state.InMemoryUserStateStorage.clear_states">(pfl.data.user_state.InMemoryUserStateStorage method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.ClippingBound">ClippingBound (class in pfl.internal.tree.gbdt_adaptive_hyperparameters)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.clone">clone() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.clone">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.clone">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.clone_variable">clone_variable() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.clone_variable">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.clone_variable">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.PrivacyAccountant.cohort_noise_parameter">cohort_noise_parameter (pfl.privacy.PrivacyAccountant property)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.JointPrivacyAccountant.cohort_noise_parameters">cohort_noise_parameters (pfl.privacy.JointPrivacyAccountant property)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.CommonFrameworkBridge">CommonFrameworkBridge (class in pfl.internal.bridge.base)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.mixture.Mixture.components">components (pfl.internal.distribution.mixture.Mixture property)</a>
+
+        <ul>
+          <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.components">(pfl.model.gaussian_mixture_model.GaussianMixtureModel property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/metrics.html#pfl.metrics.ComposableMetricName">ComposableMetricName (class in pfl.metrics)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.compute_first_order_gradient">compute_first_order_gradient() (pfl.tree.gbdt_model.GBDTModel method)</a>
+
+        <ul>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelClassifier.compute_first_order_gradient">(pfl.tree.gbdt_model.GBDTModelClassifier method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelRegressor.compute_first_order_gradient">(pfl.tree.gbdt_model.GBDTModelRegressor method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.JointPrivacyAccountant.compute_for_each_mechanism">compute_for_each_mechanism() (pfl.privacy.JointPrivacyAccountant method)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.compute_second_order_gradient">compute_second_order_gradient() (pfl.tree.gbdt_model.GBDTModel method)</a>
+
+        <ul>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelClassifier.compute_second_order_gradient">(pfl.tree.gbdt_model.GBDTModelClassifier method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelRegressor.compute_second_order_gradient">(pfl.tree.gbdt_model.GBDTModelRegressor method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.ComputeSecondOrderGradients">ComputeSecondOrderGradients (class in pfl.internal.tree.gbdt_adaptive_hyperparameters)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.concatenate">concatenate() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.concatenate">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.concatenate">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.joint_mechanism.JointMechanism.constrain_sensitivity">constrain_sensitivity() (pfl.privacy.joint_mechanism.JointMechanism method)</a>
+
+        <ul>
+          <li><a href="reference/privacy.html#pfl.privacy.NoPrivacy.constrain_sensitivity">(pfl.privacy.NoPrivacy method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.NormClipping.constrain_sensitivity">(pfl.privacy.privacy_mechanism.NormClipping method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.SplitPrivacyMechanism.constrain_sensitivity">(pfl.privacy.privacy_mechanism.SplitPrivacyMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism.construct_from_privacy_accountant">construct_from_privacy_accountant() (pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism class method)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.gaussian_mechanism.GaussianMechanism.construct_single_iteration">construct_single_iteration() (pfl.privacy.gaussian_mechanism.GaussianMechanism class method)</a>
+</li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.GenericPlatform.consume_metrics">consume_metrics() (pfl.internal.platform.generic_platform.GenericPlatform method)</a>
+
+        <ul>
+          <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.Platform.consume_metrics">(pfl.internal.platform.generic_platform.Platform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/callback.html#pfl.callback.ConvergenceCallback">ConvergenceCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/internal/privacy_loss_bound.html#pfl.internal.privacy_loss_bound.RenyiPrivacyLossBound.convert_to_approximate_dp">convert_to_approximate_dp() (pfl.internal.privacy_loss_bound.RenyiPrivacyLossBound method)</a>
+</li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.GenericPlatform.create_checkpoint_directories">create_checkpoint_directories() (pfl.internal.platform.generic_platform.GenericPlatform method)</a>
+
+        <ul>
+          <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.Platform.create_checkpoint_directories">(pfl.internal.platform.generic_platform.Platform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/data.html#pfl.data.sampling.CrossSiloUserSampler">CrossSiloUserSampler (class in pfl.data.sampling)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.current_depth">current_depth (pfl.tree.gbdt_model.GBDTModel property)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.current_tree">current_tree (pfl.tree.gbdt_model.GBDTModel property)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.ClippingBound.current_value">current_value() (pfl.internal.tree.gbdt_adaptive_hyperparameters.ClippingBound method)</a>
+
+        <ul>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.ComputeSecondOrderGradients.current_value">(pfl.internal.tree.gbdt_adaptive_hyperparameters.ComputeSecondOrderGradients method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.GBDTAdaptiveHyperparameter.current_value">(pfl.internal.tree.gbdt_adaptive_hyperparameters.GBDTAdaptiveHyperparameter method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.TrainCohortSize.current_value">(pfl.internal.tree.gbdt_adaptive_hyperparameters.TrainCohortSize method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.ValidationCohortSize.current_value">(pfl.internal.tree.gbdt_adaptive_hyperparameters.ValidationCohortSize method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/data.html#pfl.data.dataset.Dataset">Dataset (class in pfl.data.dataset)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.dataset.DatasetSplit">DatasetSplit (class in pfl.data.dataset)</a>
+</li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.data_transport.DataTransport">DataTransport (class in pfl.aggregate.data_transport)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.ema.CentralExponentialMovingAverage.decay">decay (pfl.model.ema.CentralExponentialMovingAverage property)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian.density">density() (pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian method)</a>
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#pfl.internal.distribution.distribution.Distribution.density">(pfl.internal.distribution.distribution.Distribution method)</a>
+</li>
+          <li><a href="reference/internal/distribution.html#pfl.internal.distribution.mixture.Mixture.density">(pfl.internal.distribution.mixture.Mixture method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.diagonal_gaussian.diagonal_standard_gaussian">diagonal_standard_gaussian() (in module pfl.internal.distribution.diagonal_gaussian)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian">DiagonalGaussian (class in pfl.internal.distribution.diagonal_gaussian)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.sampling.DirichletDataSampler">DirichletDataSampler (class in pfl.data.sampling)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.user_state.DiskUserStateStorage">DiskUserStateStorage (class in pfl.data.user_state)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext.distribute_range">distribute_range() (pfl.internal.ops.distributed.DistributedContext method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext.distribute_value">distribute_value() (pfl.internal.ops.distributed.DistributedContext method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext">DistributedContext (class in pfl.internal.ops.distributed)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.distribution.Distribution">Distribution (class in pfl.internal.distribution.distribution)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.SCAFFOLDFrameworkBridge.do_control_variate_sgd">do_control_variate_sgd() (pfl.internal.bridge.base.SCAFFOLDFrameworkBridge static method)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.do_multiple_epochs_of">do_multiple_epochs_of() (pfl.model.pytorch.PyTorchModel method)</a>
+
+        <ul>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.do_multiple_epochs_of">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.FedProxFrameworkBridge.do_proximal_sgd">do_proximal_sgd() (pfl.internal.bridge.base.FedProxFrameworkBridge static method)</a>
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.proximal.PyTorchFedProxBridge.do_proximal_sgd">(pfl.internal.bridge.pytorch.proximal.PyTorchFedProxBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.proximal.TFFedProxBridge.do_proximal_sgd">(pfl.internal.bridge.tensorflow.proximal.TFFedProxBridge static method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.SGDFrameworkBridge.do_sgd">do_sgd() (pfl.internal.bridge.base.SGDFrameworkBridge static method)</a>
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.sgd.PyTorchSGDBridge.do_sgd">(pfl.internal.bridge.pytorch.sgd.PyTorchSGDBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.sgd.TFSGDBridge.do_sgd">(pfl.internal.bridge.tensorflow.sgd.TFSGDBridge static method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/callback.html#pfl.callback.EarlyStoppingCallback">EarlyStoppingCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.ElementWeightedMappedVectorStatistics">ElementWeightedMappedVectorStatistics (class in pfl.stats)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.expectation_maximization_gmm.EMGMMHyperParams">EMGMMHyperParams (class in pfl.algorithm.expectation_maximization_gmm)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float_functions.erfc">erfc() (in module pfl.internal.distribution.log_float_functions)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.dataset.DatasetSplit.eval_kwargs">eval_kwargs (pfl.data.dataset.DatasetSplit property)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.base.EvaluatableModel">EvaluatableModel (class in pfl.model.base)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDT.evaluate">evaluate() (pfl.internal.tree.gbdt.GBDT method)</a>
+
+        <ul>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDTClassifier.evaluate">(pfl.internal.tree.gbdt.GBDTClassifier method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDTRegressor.evaluate">(pfl.internal.tree.gbdt.GBDTRegressor method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.base.EvaluatableModel.evaluate">(pfl.model.base.EvaluatableModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.evaluate">(pfl.model.gaussian_mixture_model.GaussianMixtureModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.evaluate">(pfl.model.pytorch.PyTorchModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.evaluate">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.evaluate">(pfl.tree.gbdt_model.GBDTModel method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float_functions.exp">exp() (in module pfl.internal.distribution.log_float_functions)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM">ExpectationMaximizationGMM (class in pfl.algorithm.expectation_maximization_gmm)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.exponential_moving_average_update">exponential_moving_average_update() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.exponential_moving_average_update">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.exponential_moving_average_update">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/tree.html#pfl.tree.tree_utils.Feature">Feature (class in pfl.tree.tree_utils)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedAlgorithm">FederatedAlgorithm (class in pfl.algorithm.base)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.federated_averaging.FederatedAveraging">FederatedAveraging (class in pfl.algorithm.federated_averaging)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDataset">FederatedDataset (class in pfl.data.federated_dataset)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDatasetBase">FederatedDatasetBase (class in pfl.data.federated_dataset)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDatasetMixture">FederatedDatasetMixture (class in pfl.data.federated_dataset)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.federated_gbdt.FederatedGBDT">FederatedGBDT (class in pfl.tree.federated_gbdt)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedNNAlgorithm">FederatedNNAlgorithm (class in pfl.algorithm.base)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.fedprox.FedProx">FedProx (class in pfl.algorithm.fedprox)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.FedProxFrameworkBridge">FedProxFrameworkBridge (class in pfl.internal.bridge.base)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.fedprox.FedProxParams">FedProxParams (class in pfl.algorithm.fedprox)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.flatten">flatten() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.flatten">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.flatten">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.data_transport.Float32DataTransport">Float32DataTransport (class in pfl.aggregate.data_transport)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.FloatEquidistantQuestionGenerator">FloatEquidistantQuestionGenerator (class in pfl.internal.tree.questions)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.FloatRandomQuestionGenerator">FloatRandomQuestionGenerator (class in pfl.internal.tree.questions)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.ftrl_mechanism.ForwardSubstitution">ForwardSubstitution (class in pfl.privacy.ftrl_mechanism)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.factory.FrameworkBridgeFactory">FrameworkBridgeFactory (class in pfl.internal.bridge.factory)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/privacy.html#pfl.privacy.gaussian_mechanism.GaussianMechanism.from_privacy_accountant">from_privacy_accountant() (pfl.privacy.gaussian_mechanism.GaussianMechanism class method)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.from_serialized_xgboost">from_serialized_xgboost() (pfl.internal.tree.node.Node static method)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.federated_dataset.ArtificialFederatedDataset.from_slices">from_slices() (pfl.data.federated_dataset.ArtificialFederatedDataset class method)</a>
+
+        <ul>
+          <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDataset.from_slices">(pfl.data.federated_dataset.FederatedDataset class method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDataset.from_slices_with_dirichlet_class_distribution">from_slices_with_dirichlet_class_distribution() (pfl.data.federated_dataset.FederatedDataset class method)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float.LogFloat.from_value">from_value() (pfl.internal.distribution.log_float.LogFloat class method)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.Histogram.from_values_bins">from_values_bins() (pfl.metrics.Histogram class method)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.Histogram.from_values_range">from_values_range() (pfl.metrics.Histogram class method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.KerasMetricValue.from_vector">from_vector() (pfl.internal.ops.tensorflow_ops.KerasMetricValue method)</a>
+
+        <ul>
+          <li><a href="reference/metrics.html#pfl.metrics.Histogram.from_vector">(pfl.metrics.Histogram method)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.MetricValue.from_vector">(pfl.metrics.MetricValue method)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.Summed.from_vector">(pfl.metrics.Summed method)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.Weighted.from_vector">(pfl.metrics.Weighted method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_snr.SNRMetric.from_vector">(pfl.privacy.privacy_snr.SNRMetric method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/stats.html#pfl.stats.ElementWeightedMappedVectorStatistics.from_weights">from_weights() (pfl.stats.ElementWeightedMappedVectorStatistics method)</a>
+
+        <ul>
+          <li><a href="reference/stats.html#pfl.stats.MappedVectorStatistics.from_weights">(pfl.stats.MappedVectorStatistics method)</a>
+</li>
+          <li><a href="reference/stats.html#pfl.stats.TrainingStatistics.from_weights">(pfl.stats.TrainingStatistics method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.FTRLFrameworkBridge">FTRLFrameworkBridge (class in pfl.internal.bridge.base)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.ftrl_mechanism.FTRLMatrixFactorizer">FTRLMatrixFactorizer (class in pfl.privacy.ftrl_mechanism)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.Backend.gather_results">gather_results() (pfl.aggregate.base.Backend method)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.GaussianApproximatedPrivacyMechanism">GaussianApproximatedPrivacyMechanism (class in pfl.privacy.approximate_mechanism)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.gaussian_mechanism.GaussianMechanism">GaussianMechanism (class in pfl.privacy.gaussian_mechanism)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel">GaussianMixtureModel (class in pfl.model.gaussian_mixture_model)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDT">GBDT (class in pfl.internal.tree.gbdt)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.GBDTAdaptiveHyperparameter">GBDTAdaptiveHyperparameter (class in pfl.internal.tree.gbdt_adaptive_hyperparameters)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.federated_gbdt.GBDTAlgorithmHyperParams">GBDTAlgorithmHyperParams (class in pfl.tree.federated_gbdt)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTClassificationModelHyperParams">GBDTClassificationModelHyperParams (class in pfl.tree.gbdt_model)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDTClassifier">GBDTClassifier (class in pfl.internal.tree.gbdt)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.federated_gbdt.GBDTClippingBound">GBDTClippingBound (class in pfl.tree.federated_gbdt)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel">GBDTModel (class in pfl.tree.gbdt_model)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelClassifier">GBDTModelClassifier (class in pfl.tree.gbdt_model)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelHyperParams">GBDTModelHyperParams (class in pfl.tree.gbdt_model)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelRegressor">GBDTModelRegressor (class in pfl.tree.gbdt_model)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDTRegressor">GBDTRegressor (class in pfl.internal.tree.gbdt)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.BoolQuestionGenerator.generate">generate() (pfl.internal.tree.questions.BoolQuestionGenerator method)</a>
+
+        <ul>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.FloatEquidistantQuestionGenerator.generate">(pfl.internal.tree.questions.FloatEquidistantQuestionGenerator method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.FloatRandomQuestionGenerator.generate">(pfl.internal.tree.questions.FloatRandomQuestionGenerator method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.IntEquidistantQuestionGenerator.generate">(pfl.internal.tree.questions.IntEquidistantQuestionGenerator method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.IntRandomQuestionGenerator.generate">(pfl.internal.tree.questions.IntRandomQuestionGenerator method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.QuestionGenerator.generate">(pfl.internal.tree.questions.QuestionGenerator method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/tree.html#pfl.tree.tree_utils.Feature.generate_feature_questions">generate_feature_questions() (pfl.tree.tree_utils.Feature method)</a>
+</li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.GenericPlatform">GenericPlatform (class in pfl.internal.platform.generic_platform)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.HyperParams.get">get() (pfl.hyperparam.base.HyperParams method)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.federated_dataset.ArtificialFederatedDataset.get_cohort">get_cohort() (pfl.data.federated_dataset.ArtificialFederatedDataset method)</a>
+
+        <ul>
+          <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDataset.get_cohort">(pfl.data.federated_dataset.FederatedDataset method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDatasetBase.get_cohort">(pfl.data.federated_dataset.FederatedDatasetBase method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.federated_dataset.FederatedDatasetMixture.get_cohort">(pfl.data.federated_dataset.FederatedDatasetMixture method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/data.html#pfl.data.sampling.get_data_sampler">get_data_sampler() (in module pfl.data.sampling)</a>
+</li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.GenericPlatform.get_default_callbacks">get_default_callbacks() (pfl.internal.platform.generic_platform.GenericPlatform method)</a>
+
+        <ul>
+          <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.Platform.get_default_callbacks">(pfl.internal.platform.generic_platform.Platform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.GenericPlatform.get_distributed_addresses">get_distributed_addresses() (pfl.internal.platform.generic_platform.GenericPlatform method)</a>
+
+        <ul>
+          <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.Platform.get_distributed_addresses">(pfl.internal.platform.generic_platform.Platform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.get_leaf_values">get_leaf_values() (pfl.internal.tree.node.Node method)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDT.get_max_min_predictions">get_max_min_predictions() (pfl.internal.tree.gbdt.GBDT method)</a>
+
+        <ul>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDTClassifier.get_max_min_predictions">(pfl.internal.tree.gbdt.GBDTClassifier method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.get_mixture_statistics">get_mixture_statistics() (pfl.model.gaussian_mixture_model.GaussianMixtureModel method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/model.html#pfl.model.base.StatefulModel.get_model_difference">get_model_difference() (pfl.model.base.StatefulModel method)</a>
+
+        <ul>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.get_model_difference">(pfl.model.pytorch.PyTorchModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.get_model_difference">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.common.get_or_make_tf_function">get_or_make_tf_function() (in module pfl.internal.bridge.tensorflow.common)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.get_overall_value">get_overall_value() (in module pfl.metrics)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.get_param_value">get_param_value() (in module pfl.hyperparam.base)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.base.StatefulModel.get_parameters">get_parameters() (pfl.model.base.StatefulModel method)</a>
+
+        <ul>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.get_parameters">(pfl.model.pytorch.PyTorchModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.get_parameters">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.selector.get_platform">get_platform() (in module pfl.internal.platform.selector)</a>
+</li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.GenericPlatform.get_platform_context">get_platform_context() (pfl.internal.platform.generic_platform.GenericPlatform method)</a>
+
+        <ul>
+          <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.Platform.get_platform_context">(pfl.internal.platform.generic_platform.Platform method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.common_ops.get_pytorch_major_version">get_pytorch_major_version() (in module pfl.internal.ops.common_ops)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.get_shape">get_shape() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.get_shape">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.get_shape">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism.get_squared_error">get_squared_error() (pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.common_ops.get_tf_major_version">get_tf_major_version() (in module pfl.internal.ops.common_ops)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.sampling.get_user_sampler">get_user_sampler() (in module pfl.data.sampling)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.ElementWeightedMappedVectorStatistics.get_weights">get_weights() (pfl.stats.ElementWeightedMappedVectorStatistics method)</a>
+
+        <ul>
+          <li><a href="reference/stats.html#pfl.stats.MappedVectorStatistics.get_weights">(pfl.stats.MappedVectorStatistics method)</a>
+</li>
+          <li><a href="reference/stats.html#pfl.stats.TrainingStatistics.get_weights">(pfl.stats.TrainingStatistics method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/data.html#pfl.data.dataset.AbstractDataset.get_worker_partition">get_worker_partition() (pfl.data.dataset.AbstractDataset method)</a>
+
+        <ul>
+          <li><a href="reference/data.html#pfl.data.dataset.Dataset.get_worker_partition">(pfl.data.dataset.Dataset method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.dataset.DatasetSplit.get_worker_partition">(pfl.data.dataset.DatasetSplit method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.pytorch.PyTorchDataDataset.get_worker_partition">(pfl.data.pytorch.PyTorchDataDataset method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.tensorflow.TFDataDataset.get_worker_partition">(pfl.data.tensorflow.TFDataDataset method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.global_gaussian">global_gaussian() (pfl.model.gaussian_mixture_model.GaussianMixtureModel method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.global_norm">global_norm() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.global_norm">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.global_norm">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext.global_rank">global_rank (pfl.internal.ops.distributed.DistributedContext property)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.HorovodDistributedContext.global_rank">(pfl.internal.ops.distributed.HorovodDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.NotDistributedContext.global_rank">(pfl.internal.ops.distributed.NotDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.global_rank">(pfl.internal.ops.pytorch_ops.PyTorchDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.TFDistributedContext.global_rank">(pfl.internal.ops.tensorflow_ops.TFDistributedContext property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GMMHyperParams">GMMHyperParams (class in pfl.model.gaussian_mixture_model)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.GradAccumulationState">GradAccumulationState (class in pfl.internal.ops.pytorch_ops)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/metrics.html#pfl.metrics.Histogram">Histogram (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.horovod_is_active">horovod_is_active() (in module pfl.internal.ops.distributed)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.HorovodDistributedContext">HorovodDistributedContext (class in pfl.internal.ops.distributed)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.HyperParam">HyperParam (class in pfl.hyperparam.base)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.HyperParams">HyperParams (class in pfl.hyperparam.base)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float_functions.incomplete_beta_function">incomplete_beta_function() (in module pfl.internal.distribution.log_float_functions)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.user_state.InMemoryUserStateStorage">InMemoryUserStateStorage (class in pfl.data.user_state)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.IntEquidistantQuestionGenerator">IntEquidistantQuestionGenerator (class in pfl.internal.tree.questions)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.IntRandomQuestionGenerator">IntRandomQuestionGenerator (class in pfl.internal.tree.questions)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.is_leaf">is_leaf() (pfl.internal.tree.node.Node method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.common_ops.is_mpi_running">is_mpi_running() (in module pfl.internal.ops.common_ops)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.common_ops.is_pytest_running">is_pytest_running() (in module pfl.internal.ops.common_ops)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.is_tensor">is_tensor() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.is_tensor">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.is_tensor">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/callback.html#pfl.callback.IterationFrequencyCheckpointPolicy">IterationFrequencyCheckpointPolicy (class in pfl.callback)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="J" class="genindex-section">
+  <h2>J</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/privacy.html#pfl.privacy.joint_mechanism.JointMechanism">JointMechanism (class in pfl.privacy.joint_mechanism)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/privacy.html#pfl.privacy.JointPrivacyAccountant">JointPrivacyAccountant (class in pfl.privacy)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.KerasMetricValue">KerasMetricValue (class in pfl.internal.ops.tensorflow_ops)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/privacy.html#pfl.privacy.laplace_mechanism.LaplaceMechanism">LaplaceMechanism (class in pfl.privacy.laplace_mechanism)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.FTRLFrameworkBridge.lbfgs_direction">lbfgs_direction() (pfl.internal.bridge.base.FTRLFrameworkBridge static method)</a>
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.ftrl.PyTorchFTRLBridge.lbfgs_direction">(pfl.internal.bridge.pytorch.ftrl.PyTorchFTRLBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.ftrl.TFFTRLBridge.lbfgs_direction">(pfl.internal.bridge.tensorflow.ftrl.TFFTRLBridge static method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedAlgorithm.load">load() (pfl.algorithm.base.FederatedAlgorithm method)</a>
+
+        <ul>
+          <li><a href="reference/common_types.html#pfl.common_types.Saveable.load">(pfl.common_types.Saveable method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.load">(pfl.model.pytorch.PyTorchModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.load">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.load">(pfl.tree.gbdt_model.GBDTModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/data.html#pfl.data.user_state.AbstractUserStateStorage.load_state">load_state() (pfl.data.user_state.AbstractUserStateStorage method)</a>
+
+        <ul>
+          <li><a href="reference/data.html#pfl.data.user_state.DiskUserStateStorage.load_state">(pfl.data.user_state.DiskUserStateStorage method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.user_state.InMemoryUserStateStorage.load_state">(pfl.data.user_state.InMemoryUserStateStorage method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.CommonFrameworkBridge.load_state">(pfl.internal.bridge.base.CommonFrameworkBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.numpy.common.NumpyCommonBridge.load_state">(pfl.internal.bridge.numpy.common.NumpyCommonBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.common.PyTorchCommonBridge.load_state">(pfl.internal.bridge.pytorch.common.PyTorchCommonBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.common.TFCommonBridge.load_state">(pfl.internal.bridge.tensorflow.common.TFCommonBridge static method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext.local_rank">local_rank (pfl.internal.ops.distributed.DistributedContext property)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.HorovodDistributedContext.local_rank">(pfl.internal.ops.distributed.HorovodDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.NotDistributedContext.local_rank">(pfl.internal.ops.distributed.NotDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_rank">(pfl.internal.ops.pytorch_ops.PyTorchDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_rank">(pfl.internal.ops.tensorflow_ops.TFDistributedContext property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext.local_size">local_size (pfl.internal.ops.distributed.DistributedContext property)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.HorovodDistributedContext.local_size">(pfl.internal.ops.distributed.HorovodDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.NotDistributedContext.local_size">(pfl.internal.ops.distributed.NotDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_size">(pfl.internal.ops.pytorch_ops.PyTorchDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_size">(pfl.internal.ops.tensorflow_ops.TFDistributedContext property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/common_types.html#pfl.common_types.LocalDiskCheckpointer">LocalDiskCheckpointer (class in pfl.common_types)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.LocalPrivacyMechanism">LocalPrivacyMechanism (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/context.html#pfl.context.LocalResultMetaData">LocalResultMetaData (class in pfl.context)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float.log">log() (in module pfl.internal.distribution.log_float)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.distribution.Distribution.log_densities">log_densities() (pfl.internal.distribution.distribution.Distribution method)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float.LogFloat.log_value">log_value (pfl.internal.distribution.log_float.LogFloat property)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float.LogFloat">LogFloat (class in pfl.internal.distribution.log_float)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.FTRLFrameworkBridge.loss_and_gradient">loss_and_gradient() (pfl.internal.bridge.base.FTRLFrameworkBridge static method)</a>
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.ftrl.PyTorchFTRLBridge.loss_and_gradient">(pfl.internal.bridge.pytorch.ftrl.PyTorchFTRLBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.ftrl.TFFTRLBridge.loss_and_gradient">(pfl.internal.bridge.tensorflow.ftrl.TFFTRLBridge static method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/algorithm.html#pfl.algorithm.expectation_maximization_gmm.make_compute_new_num_components">make_compute_new_num_components() (in module pfl.algorithm.expectation_maximization_gmm)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.MappedVectorStatistics">MappedVectorStatistics (class in pfl.stats)</a>
+</li>
+        <li><a href="reference/exception.html#pfl.exception.MatrixFactorizationError">MatrixFactorizationError</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.max_depth">max_depth() (pfl.internal.tree.node.Node method)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.MetricImprovementCheckpointPolicy">MetricImprovementCheckpointPolicy (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.MetricName">MetricName (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.MetricNamePostfix">MetricNamePostfix (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.Metrics">Metrics (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.MetricsZero">MetricsZero (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.MetricValue">MetricValue (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.sampling.MinimizeReuseDataSampler">MinimizeReuseDataSampler (class in pfl.data.sampling)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.sampling.MinimizeReuseUserSampler">MinimizeReuseUserSampler (class in pfl.data.sampling)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.mix_up">mix_up() (pfl.model.gaussian_mixture_model.GaussianMixtureModel method)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.mixture.Mixture">Mixture (class in pfl.internal.distribution.mixture)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.framework_types.MLFramework">MLFramework (class in pfl.internal.ops.framework_types)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.base.Model">Model (class in pfl.model.base)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.gaussian_mixture_model.GaussianMixtureModel.model">model (pfl.model.gaussian_mixture_model.GaussianMixtureModel property)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.ModelCheckpointingCallback">ModelCheckpointingCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.ModelHyperParams">ModelHyperParams (class in pfl.hyperparam.base)</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="reference/aggregate.html#module-pfl.aggregate.data_transport">pfl.aggregate.data_transport</a>
+</li>
+          <li><a href="reference/aggregate.html#module-pfl.aggregate.weighting">pfl.aggregate.weighting</a>
+</li>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.algorithm_utils">pfl.algorithm.algorithm_utils</a>
+</li>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.base">pfl.algorithm.base</a>
+</li>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.expectation_maximization_gmm">pfl.algorithm.expectation_maximization_gmm</a>
+</li>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.federated_averaging">pfl.algorithm.federated_averaging</a>
+</li>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.reptile">pfl.algorithm.reptile</a>
+</li>
+          <li><a href="reference/callback.html#module-pfl.callback">pfl.callback</a>
+</li>
+          <li><a href="reference/common_types.html#module-pfl.common_types">pfl.common_types</a>
+</li>
+          <li><a href="reference/context.html#module-pfl.context">pfl.context</a>
+</li>
+          <li><a href="reference/data.html#module-pfl.data.dataset">pfl.data.dataset</a>
+</li>
+          <li><a href="reference/data.html#module-pfl.data.federated_dataset">pfl.data.federated_dataset</a>
+</li>
+          <li><a href="reference/data.html#module-pfl.data.partition">pfl.data.partition</a>
+</li>
+          <li><a href="reference/data.html#module-pfl.data.pytorch">pfl.data.pytorch</a>
+</li>
+          <li><a href="reference/data.html#module-pfl.data.sampling">pfl.data.sampling</a>
+</li>
+          <li><a href="reference/data.html#module-pfl.data.tensorflow">pfl.data.tensorflow</a>
+</li>
+          <li><a href="reference/data.html#module-pfl.data.user_state">pfl.data.user_state</a>
+</li>
+          <li><a href="reference/exception.html#module-pfl.exception">pfl.exception</a>
+</li>
+          <li><a href="reference/hyperparam.html#module-pfl.hyperparam.base">pfl.hyperparam.base</a>
+</li>
+          <li><a href="reference/internal/bisect.html#module-pfl.internal.bisect">pfl.internal.bisect</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.base">pfl.internal.bridge.base</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.factory">pfl.internal.bridge.factory</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.numpy.common">pfl.internal.bridge.numpy.common</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.common">pfl.internal.bridge.pytorch.common</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.ftrl">pfl.internal.bridge.pytorch.ftrl</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.proximal">pfl.internal.bridge.pytorch.proximal</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.sgd">pfl.internal.bridge.pytorch.sgd</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.common">pfl.internal.bridge.tensorflow.common</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.ftrl">pfl.internal.bridge.tensorflow.ftrl</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.proximal">pfl.internal.bridge.tensorflow.proximal</a>
+</li>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.sgd">pfl.internal.bridge.tensorflow.sgd</a>
+</li>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.diagonal_gaussian">pfl.internal.distribution.diagonal_gaussian</a>
+</li>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.distribution">pfl.internal.distribution.distribution</a>
+</li>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.log_float">pfl.internal.distribution.log_float</a>
+</li>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.log_float_functions">pfl.internal.distribution.log_float_functions</a>
+</li>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.mixture">pfl.internal.distribution.mixture</a>
+</li>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.common_ops">pfl.internal.ops.common_ops</a>
+</li>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.distributed">pfl.internal.ops.distributed</a>
+</li>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.framework_types">pfl.internal.ops.framework_types</a>
+</li>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.numpy_ops">pfl.internal.ops.numpy_ops</a>
+</li>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.pytorch_ops">pfl.internal.ops.pytorch_ops</a>
+</li>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.selector">pfl.internal.ops.selector</a>
+</li>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.tensorflow_ops">pfl.internal.ops.tensorflow_ops</a>
+</li>
+          <li><a href="reference/internal/platform.html#module-pfl.internal.platform.generic_platform">pfl.internal.platform.generic_platform</a>
+</li>
+          <li><a href="reference/internal/platform.html#module-pfl.internal.platform.selector">pfl.internal.platform.selector</a>
+</li>
+          <li><a href="reference/internal/privacy_loss_bound.html#module-pfl.internal.privacy_loss_bound">pfl.internal.privacy_loss_bound</a>
+</li>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.gbdt">pfl.internal.tree.gbdt</a>
+</li>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.gbdt_adaptive_hyperparameters">pfl.internal.tree.gbdt_adaptive_hyperparameters</a>
+</li>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.node">pfl.internal.tree.node</a>
+</li>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.questions">pfl.internal.tree.questions</a>
+</li>
+          <li><a href="reference/metrics.html#module-pfl.metrics">pfl.metrics</a>
+</li>
+          <li><a href="reference/model.html#module-pfl.model.base">pfl.model.base</a>
+</li>
+          <li><a href="reference/model.html#module-pfl.model.ema">pfl.model.ema</a>
+</li>
+          <li><a href="reference/model.html#module-pfl.model.gaussian_mixture_model">pfl.model.gaussian_mixture_model</a>
+</li>
+          <li><a href="reference/model.html#module-pfl.model.pytorch">pfl.model.pytorch</a>
+</li>
+          <li><a href="reference/model.html#module-pfl.model.tensorflow">pfl.model.tensorflow</a>
+</li>
+          <li><a href="reference/postprocessor.html#module-pfl.postprocessor.base">pfl.postprocessor.base</a>
+</li>
+          <li><a href="reference/postprocessor.html#module-pfl.postprocessor.metrics">pfl.postprocessor.metrics</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.adaptive_clipping">pfl.privacy.adaptive_clipping</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.approximate_mechanism">pfl.privacy.approximate_mechanism</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.compute_parameters">pfl.privacy.compute_parameters</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.ftrl_mechanism">pfl.privacy.ftrl_mechanism</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.gaussian_mechanism">pfl.privacy.gaussian_mechanism</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.joint_mechanism">pfl.privacy.joint_mechanism</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.laplace_mechanism">pfl.privacy.laplace_mechanism</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.privacy_mechanism">pfl.privacy.privacy_mechanism</a>
+</li>
+          <li><a href="reference/privacy.html#module-pfl.privacy.privacy_snr">pfl.privacy.privacy_snr</a>
+</li>
+          <li><a href="reference/stats.html#module-pfl.stats">pfl.stats</a>
+</li>
+          <li><a href="reference/tree.html#module-pfl.tree.federated_gbdt">pfl.tree.federated_gbdt</a>
+</li>
+          <li><a href="reference/tree.html#module-pfl.tree.gbdt_model">pfl.tree.gbdt_model</a>
+</li>
+          <li><a href="reference/tree.html#module-pfl.tree.tree_utils">pfl.tree.tree_utils</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/privacy.html#pfl.privacy.adaptive_clipping.MutableClippingBound">MutableClippingBound (class in pfl.privacy.adaptive_clipping)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.NNAlgorithmParams">NNAlgorithmParams (class in pfl.algorithm.base)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.NNEvalHyperParams">NNEvalHyperParams (class in pfl.hyperparam.base)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.NNTrainHyperParams">NNTrainHyperParams (class in pfl.hyperparam.base)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node">Node (class in pfl.internal.tree.node)</a>
+</li>
+        <li><a href="reference/tree.html#pfl.tree.gbdt_model.NodeRecord">NodeRecord (class in pfl.tree.gbdt_model)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.NoPrivacy">NoPrivacy (class in pfl.privacy)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.norm">norm() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.norm">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.norm">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float_functions.normal_cdf">normal_cdf() (in module pfl.internal.distribution.log_float_functions)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.NormClipping">NormClipping (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.NormClippingOnly">NormClippingOnly (class in pfl.privacy)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.NotDistributedContext">NotDistributedContext (class in pfl.internal.ops.distributed)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.num_nodes">num_nodes() (pfl.internal.tree.node.Node method)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.MappedVectorStatistics.num_parameters">num_parameters (pfl.stats.MappedVectorStatistics property)</a>
+
+        <ul>
+          <li><a href="reference/stats.html#pfl.stats.TrainingStatistics.num_parameters">(pfl.stats.TrainingStatistics property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.numpy.common.NumpyCommonBridge">NumpyCommonBridge (class in pfl.internal.bridge.numpy.common)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.NumpyHorovodDistributedContext">NumpyHorovodDistributedContext (class in pfl.internal.ops.numpy_ops)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.NumpySeedScope">NumpySeedScope (class in pfl.internal.ops.numpy_ops)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/callback.html#pfl.callback.AggregateMetricsToDisk.on_train_begin">on_train_begin() (pfl.callback.AggregateMetricsToDisk method)</a>
+
+        <ul>
+          <li><a href="reference/callback.html#pfl.callback.CentralEvaluationCallback.on_train_begin">(pfl.callback.CentralEvaluationCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.CentralEvaluationWithEMACallback.on_train_begin">(pfl.callback.CentralEvaluationWithEMACallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.ProfilerCallback.on_train_begin">(pfl.callback.ProfilerCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.RestoreTrainingCallback.on_train_begin">(pfl.callback.RestoreTrainingCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.StopwatchCallback.on_train_begin">(pfl.callback.StopwatchCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TensorBoardCallback.on_train_begin">(pfl.callback.TensorBoardCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TrackBestOverallMetrics.on_train_begin">(pfl.callback.TrackBestOverallMetrics method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TrainingProcessCallback.on_train_begin">(pfl.callback.TrainingProcessCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.WandbCallback.on_train_begin">(pfl.callback.WandbCallback method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.federated_gbdt.GBDTClippingBound.on_train_begin">(pfl.tree.federated_gbdt.GBDTClippingBound method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/callback.html#pfl.callback.AggregateMetricsToDisk.on_train_end">on_train_end() (pfl.callback.AggregateMetricsToDisk method)</a>
+
+        <ul>
+          <li><a href="reference/callback.html#pfl.callback.PolicyBasedModelCheckpointingCallback.on_train_end">(pfl.callback.PolicyBasedModelCheckpointingCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.ProfilerCallback.on_train_end">(pfl.callback.ProfilerCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TensorBoardCallback.on_train_end">(pfl.callback.TensorBoardCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.TrainingProcessCallback.on_train_end">(pfl.callback.TrainingProcessCallback method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.WandbCallback.on_train_end">(pfl.callback.WandbCallback method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.one_hot">one_hot() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.one_hot">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.one_hot">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.ftrl_mechanism.FTRLMatrixFactorizer.optimize">optimize() (pfl.privacy.ftrl_mechanism.FTRLMatrixFactorizer method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.GradAccumulationState.optimizer_should_update">optimizer_should_update (pfl.internal.ops.pytorch_ops.GradAccumulationState property)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.KerasMetricValue.overall_value">overall_value (pfl.internal.ops.tensorflow_ops.KerasMetricValue property)</a>
+
+        <ul>
+          <li><a href="reference/metrics.html#pfl.metrics.Histogram.overall_value">(pfl.metrics.Histogram property)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.MetricValue.overall_value">(pfl.metrics.MetricValue property)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.Summed.overall_value">(pfl.metrics.Summed property)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.Weighted.overall_value">(pfl.metrics.Weighted property)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_snr.SNRMetric.overall_value">(pfl.privacy.privacy_snr.SNRMetric property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/data.html#pfl.data.partition.partition_by_dirichlet_class_distribution">partition_by_dirichlet_class_distribution() (in module pfl.data.partition)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.PersonalizedNNAlgorithm">PersonalizedNNAlgorithm (class in pfl.algorithm.base)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.PersonalizedNNAlgorithmParams">PersonalizedNNAlgorithmParams (class in pfl.algorithm.base)</a>
+</li>
+        <li>
+    pfl.aggregate.data_transport
+
+        <ul>
+          <li><a href="reference/aggregate.html#module-pfl.aggregate.data_transport">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.aggregate.weighting
+
+        <ul>
+          <li><a href="reference/aggregate.html#module-pfl.aggregate.weighting">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.algorithm.algorithm_utils
+
+        <ul>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.algorithm_utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.algorithm.base
+
+        <ul>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.algorithm.expectation_maximization_gmm
+
+        <ul>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.expectation_maximization_gmm">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.algorithm.federated_averaging
+
+        <ul>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.federated_averaging">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.algorithm.reptile
+
+        <ul>
+          <li><a href="reference/algorithm.html#module-pfl.algorithm.reptile">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.callback
+
+        <ul>
+          <li><a href="reference/callback.html#module-pfl.callback">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.common_types
+
+        <ul>
+          <li><a href="reference/common_types.html#module-pfl.common_types">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.context
+
+        <ul>
+          <li><a href="reference/context.html#module-pfl.context">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.data.dataset
+
+        <ul>
+          <li><a href="reference/data.html#module-pfl.data.dataset">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.data.federated_dataset
+
+        <ul>
+          <li><a href="reference/data.html#module-pfl.data.federated_dataset">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.data.partition
+
+        <ul>
+          <li><a href="reference/data.html#module-pfl.data.partition">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.data.pytorch
+
+        <ul>
+          <li><a href="reference/data.html#module-pfl.data.pytorch">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.data.sampling
+
+        <ul>
+          <li><a href="reference/data.html#module-pfl.data.sampling">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.data.tensorflow
+
+        <ul>
+          <li><a href="reference/data.html#module-pfl.data.tensorflow">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.data.user_state
+
+        <ul>
+          <li><a href="reference/data.html#module-pfl.data.user_state">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.exception
+
+        <ul>
+          <li><a href="reference/exception.html#module-pfl.exception">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.hyperparam.base
+
+        <ul>
+          <li><a href="reference/hyperparam.html#module-pfl.hyperparam.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bisect
+
+        <ul>
+          <li><a href="reference/internal/bisect.html#module-pfl.internal.bisect">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.base
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.factory
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.factory">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.numpy.common
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.numpy.common">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.pytorch.common
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.common">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.pytorch.ftrl
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.ftrl">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.pytorch.proximal
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.proximal">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.pytorch.sgd
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.pytorch.sgd">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.tensorflow.common
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.common">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.tensorflow.ftrl
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.ftrl">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.tensorflow.proximal
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.proximal">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.bridge.tensorflow.sgd
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#module-pfl.internal.bridge.tensorflow.sgd">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.distribution.diagonal_gaussian
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.diagonal_gaussian">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.distribution.distribution
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.distribution">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.distribution.log_float
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.log_float">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.distribution.log_float_functions
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.log_float_functions">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.distribution.mixture
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#module-pfl.internal.distribution.mixture">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.ops.common_ops
+
+        <ul>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.common_ops">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.ops.distributed
+
+        <ul>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.distributed">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.ops.framework_types
+
+        <ul>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.framework_types">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.ops.numpy_ops
+
+        <ul>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.numpy_ops">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.ops.pytorch_ops
+
+        <ul>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.pytorch_ops">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.ops.selector
+
+        <ul>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.selector">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.ops.tensorflow_ops
+
+        <ul>
+          <li><a href="reference/internal/ops.html#module-pfl.internal.ops.tensorflow_ops">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.platform.generic_platform
+
+        <ul>
+          <li><a href="reference/internal/platform.html#module-pfl.internal.platform.generic_platform">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.platform.selector
+
+        <ul>
+          <li><a href="reference/internal/platform.html#module-pfl.internal.platform.selector">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.privacy_loss_bound
+
+        <ul>
+          <li><a href="reference/internal/privacy_loss_bound.html#module-pfl.internal.privacy_loss_bound">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.tree.gbdt
+
+        <ul>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.gbdt">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.tree.gbdt_adaptive_hyperparameters
+
+        <ul>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.gbdt_adaptive_hyperparameters">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.tree.node
+
+        <ul>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.node">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.internal.tree.questions
+
+        <ul>
+          <li><a href="reference/internal/tree.html#module-pfl.internal.tree.questions">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.metrics
+
+        <ul>
+          <li><a href="reference/metrics.html#module-pfl.metrics">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    pfl.model.base
+
+        <ul>
+          <li><a href="reference/model.html#module-pfl.model.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.model.ema
+
+        <ul>
+          <li><a href="reference/model.html#module-pfl.model.ema">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.model.gaussian_mixture_model
+
+        <ul>
+          <li><a href="reference/model.html#module-pfl.model.gaussian_mixture_model">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.model.pytorch
+
+        <ul>
+          <li><a href="reference/model.html#module-pfl.model.pytorch">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.model.tensorflow
+
+        <ul>
+          <li><a href="reference/model.html#module-pfl.model.tensorflow">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.postprocessor.base
+
+        <ul>
+          <li><a href="reference/postprocessor.html#module-pfl.postprocessor.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.postprocessor.metrics
+
+        <ul>
+          <li><a href="reference/postprocessor.html#module-pfl.postprocessor.metrics">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.adaptive_clipping
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.adaptive_clipping">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.approximate_mechanism
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.approximate_mechanism">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.compute_parameters
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.compute_parameters">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.ftrl_mechanism
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.ftrl_mechanism">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.gaussian_mechanism
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.gaussian_mechanism">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.joint_mechanism
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.joint_mechanism">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.laplace_mechanism
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.laplace_mechanism">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.privacy_mechanism
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.privacy_mechanism">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.privacy.privacy_snr
+
+        <ul>
+          <li><a href="reference/privacy.html#module-pfl.privacy.privacy_snr">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.stats
+
+        <ul>
+          <li><a href="reference/stats.html#module-pfl.stats">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.tree.federated_gbdt
+
+        <ul>
+          <li><a href="reference/tree.html#module-pfl.tree.federated_gbdt">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.tree.gbdt_model
+
+        <ul>
+          <li><a href="reference/tree.html#module-pfl.tree.gbdt_model">module</a>
+</li>
+        </ul></li>
+        <li>
+    pfl.tree.tree_utils
+
+        <ul>
+          <li><a href="reference/tree.html#module-pfl.tree.tree_utils">module</a>
+</li>
+        </ul></li>
+        <li><a href="reference/exception.html#pfl.exception.PFLError">PFLError</a>
+</li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.generic_platform.Platform">Platform (class in pfl.internal.platform.generic_platform)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.PLDPrivacyAccountant">PLDPrivacyAccountant (class in pfl.privacy)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian.point_shape">point_shape (pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian property)</a>
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#pfl.internal.distribution.distribution.Distribution.point_shape">(pfl.internal.distribution.distribution.Distribution property)</a>
+</li>
+          <li><a href="reference/internal/distribution.html#pfl.internal.distribution.mixture.Mixture.point_shape">(pfl.internal.distribution.mixture.Mixture property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/callback.html#pfl.callback.PolicyBasedModelCheckpointingCallback">PolicyBasedModelCheckpointingCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/common_types.html#pfl.common_types.Population">Population (class in pfl.common_types)</a>
+</li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.data_transport.BFloat16DataTransport.postprocess_one_user">postprocess_one_user() (pfl.aggregate.data_transport.BFloat16DataTransport method)</a>
+
+        <ul>
+          <li><a href="reference/aggregate.html#pfl.aggregate.data_transport.DataTransport.postprocess_one_user">(pfl.aggregate.data_transport.DataTransport method)</a>
+</li>
+          <li><a href="reference/aggregate.html#pfl.aggregate.data_transport.Float32DataTransport.postprocess_one_user">(pfl.aggregate.data_transport.Float32DataTransport method)</a>
+</li>
+          <li><a href="reference/aggregate.html#pfl.aggregate.weighting.WeightByDatapoints.postprocess_one_user">(pfl.aggregate.weighting.WeightByDatapoints method)</a>
+</li>
+          <li><a href="reference/aggregate.html#pfl.aggregate.weighting.WeightByUser.postprocess_one_user">(pfl.aggregate.weighting.WeightByUser method)</a>
+</li>
+          <li><a href="reference/aggregate.html#pfl.aggregate.weighting.WeightingStrategy.postprocess_one_user">(pfl.aggregate.weighting.WeightingStrategy method)</a>
+</li>
+          <li><a href="reference/postprocessor.html#pfl.postprocessor.base.Postprocessor.postprocess_one_user">(pfl.postprocessor.base.Postprocessor method)</a>
+</li>
+          <li><a href="reference/postprocessor.html#pfl.postprocessor.metrics.SummaryMetrics.postprocess_one_user">(pfl.postprocessor.metrics.SummaryMetrics method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism.postprocess_one_user">(pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.GaussianApproximatedPrivacyMechanism.postprocess_one_user">(pfl.privacy.approximate_mechanism.GaussianApproximatedPrivacyMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.CentrallyAppliedPrivacyMechanism.postprocess_one_user">(pfl.privacy.privacy_mechanism.CentrallyAppliedPrivacyMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.LocalPrivacyMechanism.postprocess_one_user">(pfl.privacy.privacy_mechanism.LocalPrivacyMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/postprocessor.html#pfl.postprocessor.base.Postprocessor.postprocess_server">postprocess_server() (pfl.postprocessor.base.Postprocessor method)</a>
+
+        <ul>
+          <li><a href="reference/postprocessor.html#pfl.postprocessor.metrics.SummaryMetrics.postprocess_server">(pfl.postprocessor.metrics.SummaryMetrics method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism.postprocess_server">(pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.GaussianApproximatedPrivacyMechanism.postprocess_server">(pfl.privacy.approximate_mechanism.GaussianApproximatedPrivacyMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.CentrallyAppliedPrivacyMechanism.postprocess_server">(pfl.privacy.privacy_mechanism.CentrallyAppliedPrivacyMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.LocalPrivacyMechanism.postprocess_server">(pfl.privacy.privacy_mechanism.LocalPrivacyMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/postprocessor.html#pfl.postprocessor.base.Postprocessor.postprocess_server_live">postprocess_server_live() (pfl.postprocessor.base.Postprocessor method)</a>
+
+        <ul>
+          <li><a href="reference/privacy.html#pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism.postprocess_server_live">(pfl.privacy.adaptive_clipping.AdaptiveClippingGaussianMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.CentrallyAppliedPrivacyMechanism.postprocess_server_live">(pfl.privacy.privacy_mechanism.CentrallyAppliedPrivacyMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.LocalPrivacyMechanism.postprocess_server_live">(pfl.privacy.privacy_mechanism.LocalPrivacyMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/tree.html#pfl.tree.federated_gbdt.FederatedGBDT.postprocess_training_statistics">postprocess_training_statistics() (pfl.tree.federated_gbdt.FederatedGBDT static method)</a>
+</li>
+        <li><a href="reference/postprocessor.html#pfl.postprocessor.base.Postprocessor">Postprocessor (class in pfl.postprocessor.base)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDT.predict">predict() (pfl.internal.tree.gbdt.GBDT method)</a>
+
+        <ul>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDTClassifier.predict">(pfl.internal.tree.gbdt.GBDTClassifier method)</a>
+</li>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.predict">(pfl.internal.tree.node.Node method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.predict">(pfl.tree.gbdt_model.GBDTModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDTClassifier.predict_classes">predict_classes() (pfl.internal.tree.gbdt.GBDTClassifier method)</a>
+
+        <ul>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModelClassifier.predict_classes">(pfl.tree.gbdt_model.GBDTModelClassifier method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.PrivacyAccountant">PrivacyAccountant (class in pfl.privacy)</a>
+</li>
+        <li><a href="reference/internal/privacy_loss_bound.html#pfl.internal.privacy_loss_bound.PrivacyLossBound">PrivacyLossBound (class in pfl.internal.privacy_loss_bound)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.PrivacyMechanism">PrivacyMechanism (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.PrivacyMetricName">PrivacyMetricName (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.LocalPrivacyMechanism.privatize">privatize() (pfl.privacy.privacy_mechanism.LocalPrivacyMechanism method)</a>
+
+        <ul>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.SplitPrivacyMechanism.privatize">(pfl.privacy.privacy_mechanism.SplitPrivacyMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics">process_aggregated_statistics() (pfl.algorithm.base.FederatedAlgorithm method)</a>
+
+        <ul>
+          <li><a href="reference/algorithm.html#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.process_aggregated_statistics">(pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM method)</a>
+</li>
+          <li><a href="reference/algorithm.html#pfl.algorithm.federated_averaging.FederatedAveraging.process_aggregated_statistics">(pfl.algorithm.federated_averaging.FederatedAveraging method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.federated_gbdt.FederatedGBDT.process_aggregated_statistics">(pfl.tree.federated_gbdt.FederatedGBDT method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedAlgorithm.process_aggregated_statistics_from_all_contexts">process_aggregated_statistics_from_all_contexts() (pfl.algorithm.base.FederatedAlgorithm method)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.process_xgboost_node">process_xgboost_node() (in module pfl.internal.tree.node)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.ProfilerCallback">ProfilerCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.PRVPrivacyAccountant">PRVPrivacyAccountant (class in pfl.privacy)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.common.PyTorchCommonBridge">PyTorchCommonBridge (class in pfl.internal.bridge.pytorch.common)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.pytorch.PyTorchDataDataset">PyTorchDataDataset (class in pfl.data.pytorch)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext">PyTorchDistributedContext (class in pfl.internal.ops.pytorch_ops)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.pytorch.PyTorchFederatedDataset">PyTorchFederatedDataset (class in pfl.data.pytorch)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.proximal.PyTorchFedProxBridge">PyTorchFedProxBridge (class in pfl.internal.bridge.pytorch.proximal)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.ftrl.PyTorchFTRLBridge">PyTorchFTRLBridge (class in pfl.internal.bridge.pytorch.ftrl)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchHorovodDistributedContext">PyTorchHorovodDistributedContext (class in pfl.internal.ops.pytorch_ops)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel">PyTorchModel (class in pfl.model.pytorch)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchSeedScope">PyTorchSeedScope (class in pfl.internal.ops.pytorch_ops)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.sgd.PyTorchSGDBridge">PyTorchSGDBridge (class in pfl.internal.bridge.pytorch.sgd)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.pytorch.PyTorchTensorDataset">PyTorchTensorDataset (class in pfl.data.pytorch)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs">PyTorchTrainStepArgs (class in pfl.internal.ops.pytorch_ops)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.questions.QuestionGenerator">QuestionGenerator (class in pfl.internal.tree.questions)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/data.html#pfl.data.dataset.DatasetSplit.raw_data">raw_data (pfl.data.dataset.DatasetSplit property)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.RDPPrivacyAccountant">RDPPrivacyAccountant (class in pfl.privacy)</a>
+</li>
+        <li><a href="reference/internal/privacy_loss_bound.html#pfl.internal.privacy_loss_bound.RenyiPrivacyLossBound">RenyiPrivacyLossBound (class in pfl.internal.privacy_loss_bound)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.reptile.Reptile">Reptile (class in pfl.algorithm.reptile)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.reshape">reshape() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.reshape">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.reshape">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.mixture.Mixture.responsibilities">responsibilities() (pfl.internal.distribution.mixture.Mixture method)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.RestoreTrainingCallback">RestoreTrainingCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.ElementWeightedMappedVectorStatistics.reweight">reweight() (pfl.stats.ElementWeightedMappedVectorStatistics method)</a>
+
+        <ul>
+          <li><a href="reference/stats.html#pfl.stats.MappedVectorStatistics.reweight">(pfl.stats.MappedVectorStatistics method)</a>
+</li>
+          <li><a href="reference/stats.html#pfl.stats.WeightedStatistics.reweight">(pfl.stats.WeightedStatistics method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedAlgorithm.run">run() (pfl.algorithm.base.FederatedAlgorithm method)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.algorithm_utils.run_train_eval">run_train_eval() (in module pfl.algorithm.algorithm_utils)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian.sample">sample() (pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian method)</a>
+
+        <ul>
+          <li><a href="reference/internal/distribution.html#pfl.internal.distribution.distribution.Distribution.sample">(pfl.internal.distribution.distribution.Distribution method)</a>
+</li>
+          <li><a href="reference/internal/distribution.html#pfl.internal.distribution.mixture.Mixture.sample">(pfl.internal.distribution.mixture.Mixture method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedAlgorithm.save">save() (pfl.algorithm.base.FederatedAlgorithm method)</a>
+
+        <ul>
+          <li><a href="reference/common_types.html#pfl.common_types.Saveable.save">(pfl.common_types.Saveable method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.ema.CentralExponentialMovingAverage.save">(pfl.model.ema.CentralExponentialMovingAverage method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.save">(pfl.model.pytorch.PyTorchModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.save">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.gbdt_model.GBDTModel.save">(pfl.tree.gbdt_model.GBDTModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/data.html#pfl.data.user_state.AbstractUserStateStorage.save_state">save_state() (pfl.data.user_state.AbstractUserStateStorage method)</a>
+
+        <ul>
+          <li><a href="reference/data.html#pfl.data.user_state.DiskUserStateStorage.save_state">(pfl.data.user_state.DiskUserStateStorage method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.user_state.InMemoryUserStateStorage.save_state">(pfl.data.user_state.InMemoryUserStateStorage method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.CommonFrameworkBridge.save_state">(pfl.internal.bridge.base.CommonFrameworkBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.numpy.common.NumpyCommonBridge.save_state">(pfl.internal.bridge.numpy.common.NumpyCommonBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.common.PyTorchCommonBridge.save_state">(pfl.internal.bridge.pytorch.common.PyTorchCommonBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.common.TFCommonBridge.save_state">(pfl.internal.bridge.tensorflow.common.TFCommonBridge static method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/common_types.html#pfl.common_types.Saveable">Saveable (class in pfl.common_types)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.SCAFFOLDFrameworkBridge">SCAFFOLDFrameworkBridge (class in pfl.internal.bridge.base)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism.sensitivity_scaling">sensitivity_scaling() (pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism method)</a>
+
+        <ul>
+          <li><a href="reference/privacy.html#pfl.privacy.gaussian_mechanism.GaussianMechanism.sensitivity_scaling">(pfl.privacy.gaussian_mechanism.GaussianMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.laplace_mechanism.LaplaceMechanism.sensitivity_scaling">(pfl.privacy.laplace_mechanism.LaplaceMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism.sensitivity_squared_error">sensitivity_squared_error() (pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism method)</a>
+
+        <ul>
+          <li><a href="reference/privacy.html#pfl.privacy.gaussian_mechanism.GaussianMechanism.sensitivity_squared_error">(pfl.privacy.gaussian_mechanism.GaussianMechanism method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.laplace_mechanism.LaplaceMechanism.sensitivity_squared_error">(pfl.privacy.laplace_mechanism.LaplaceMechanism method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/common_types.html#pfl.common_types.Saveable.set_checkpointer">set_checkpointer() (pfl.common_types.Saveable method)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.base.StatefulModel.set_parameters">set_parameters() (pfl.model.base.StatefulModel method)</a>
+
+        <ul>
+          <li><a href="reference/model.html#pfl.model.pytorch.PyTorchModel.set_parameters">(pfl.model.pytorch.PyTorchModel method)</a>
+</li>
+          <li><a href="reference/model.html#pfl.model.tensorflow.TFModel.set_parameters">(pfl.model.tensorflow.TFModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/platform.html#pfl.internal.platform.selector.set_platform">set_platform() (in module pfl.internal.platform.selector)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.setup_amp">setup_amp() (in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.SGDFrameworkBridge">SGDFrameworkBridge (class in pfl.internal.bridge.base)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.ema.CentralExponentialMovingAverage.shadow_variable_map">shadow_variable_map (pfl.model.ema.CentralExponentialMovingAverage property)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.CheckpointPolicy.should_checkpoint_at_end">should_checkpoint_at_end() (pfl.callback.CheckpointPolicy method)</a>
+
+        <ul>
+          <li><a href="reference/callback.html#pfl.callback.MetricImprovementCheckpointPolicy.should_checkpoint_at_end">(pfl.callback.MetricImprovementCheckpointPolicy method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/callback.html#pfl.callback.CheckpointPolicy.should_checkpoint_now">should_checkpoint_now() (pfl.callback.CheckpointPolicy method)</a>
+
+        <ul>
+          <li><a href="reference/callback.html#pfl.callback.IterationFrequencyCheckpointPolicy.should_checkpoint_now">(pfl.callback.IterationFrequencyCheckpointPolicy method)</a>
+</li>
+          <li><a href="reference/callback.html#pfl.callback.MetricImprovementCheckpointPolicy.should_checkpoint_now">(pfl.callback.MetricImprovementCheckpointPolicy method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float.LogFloat.sign">sign (pfl.internal.distribution.log_float.LogFloat property)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_snr.SNRMetric.signal_l2_norm">signal_l2_norm (pfl.privacy.privacy_snr.SNRMetric property)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.simulate_bfloat16_transport">simulate_bfloat16_transport() (in module pfl.internal.ops.pytorch_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.simulate_bfloat16_transport">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedAlgorithm.simulate_one_user">simulate_one_user() (pfl.algorithm.base.FederatedAlgorithm method)</a>
+
+        <ul>
+          <li><a href="reference/algorithm.html#pfl.algorithm.base.FederatedNNAlgorithm.simulate_one_user">(pfl.algorithm.base.FederatedNNAlgorithm method)</a>
+</li>
+          <li><a href="reference/algorithm.html#pfl.algorithm.base.PersonalizedNNAlgorithm.simulate_one_user">(pfl.algorithm.base.PersonalizedNNAlgorithm method)</a>
+</li>
+          <li><a href="reference/algorithm.html#pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM.simulate_one_user">(pfl.algorithm.expectation_maximization_gmm.ExpectationMaximizationGMM method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.federated_gbdt.FederatedGBDT.simulate_one_user">(pfl.tree.federated_gbdt.FederatedGBDT method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.simulate.SimulatedBackend">SimulatedBackend (class in pfl.aggregate.simulate)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.SkipSerialization">SkipSerialization (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_snr.SNRMetric">SNRMetric (class in pfl.privacy.privacy_snr)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.dataset.AbstractDataset.split">split() (pfl.data.dataset.AbstractDataset method)</a>
+
+        <ul>
+          <li><a href="reference/data.html#pfl.data.dataset.Dataset.split">(pfl.data.dataset.Dataset method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.dataset.DatasetSplit.split">(pfl.data.dataset.DatasetSplit method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.pytorch.PyTorchDataDataset.split">(pfl.data.pytorch.PyTorchDataDataset method)</a>
+</li>
+          <li><a href="reference/data.html#pfl.data.tensorflow.TFDataDataset.split">(pfl.data.tensorflow.TFDataDataset method)</a>
+</li>
+          <li><a href="reference/internal/distribution.html#pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian.split">(pfl.internal.distribution.diagonal_gaussian.DiagonalGaussian method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_mechanism.SplitPrivacyMechanism">SplitPrivacyMechanism (class in pfl.privacy.privacy_mechanism)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.privacy_snr.SNRMetric.squared_error">squared_error (pfl.privacy.privacy_snr.SNRMetric property)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.approximate_mechanism.SquaredErrorLocalPrivacyMechanism">SquaredErrorLocalPrivacyMechanism (class in pfl.privacy.approximate_mechanism)</a>
+</li>
+        <li><a href="reference/context.html#pfl.context.CentralContext.state_description">state_description (pfl.context.CentralContext property)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.base.StatefulModel">StatefulModel (class in pfl.model.base)</a>
+</li>
+        <li><a href="reference/hyperparam.html#pfl.hyperparam.base.HyperParams.static_clone">static_clone() (pfl.hyperparam.base.HyperParams method)</a>
+</li>
+        <li><a href="reference/privacy.html#pfl.privacy.ftrl_mechanism.ForwardSubstitution.step">step() (pfl.privacy.ftrl_mechanism.ForwardSubstitution method)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.StopwatchCallback">StopwatchCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.StringMetricName">StringMetricName (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.SumAggregator">SumAggregator (class in pfl.aggregate.base)</a>
+</li>
+        <li><a href="reference/postprocessor.html#pfl.postprocessor.metrics.SummaryMetrics">SummaryMetrics (class in pfl.postprocessor.metrics)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.Summed">Summed (class in pfl.metrics)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/data.html#pfl.data.dataset.TabularDataset">TabularDataset (class in pfl.data.dataset)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.TensorBoardCallback">TensorBoardCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.TensorLike">TensorLike (class in pfl.stats)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.base.FTRLFrameworkBridge.terminate_fn">terminate_fn() (pfl.internal.bridge.base.FTRLFrameworkBridge static method)</a>
+
+        <ul>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.pytorch.ftrl.PyTorchFTRLBridge.terminate_fn">(pfl.internal.bridge.pytorch.ftrl.PyTorchFTRLBridge static method)</a>
+</li>
+          <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.ftrl.TFFTRLBridge.terminate_fn">(pfl.internal.bridge.tensorflow.ftrl.TFFTRLBridge static method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.common.TFCommonBridge">TFCommonBridge (class in pfl.internal.bridge.tensorflow.common)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.tensorflow.TFDataDataset">TFDataDataset (class in pfl.data.tensorflow)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.TFDistributedContext">TFDistributedContext (class in pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.tensorflow.TFFederatedDataset">TFFederatedDataset (class in pfl.data.tensorflow)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.proximal.TFFedProxBridge">TFFedProxBridge (class in pfl.internal.bridge.tensorflow.proximal)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.ftrl.TFFTRLBridge">TFFTRLBridge (class in pfl.internal.bridge.tensorflow.ftrl)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.TFHorovodDistributedContext">TFHorovodDistributedContext (class in pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        <li><a href="reference/model.html#pfl.model.tensorflow.TFModel">TFModel (class in pfl.model.tensorflow)</a>
+</li>
+        <li><a href="reference/internal/bridge.html#pfl.internal.bridge.tensorflow.sgd.TFSGDBridge">TFSGDBridge (class in pfl.internal.bridge.tensorflow.sgd)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.tensorflow.TFTensorDataset">TFTensorDataset (class in pfl.data.tensorflow)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.to_numpy">to_numpy() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.to_numpy">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.to_numpy">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt.GBDT.to_serialized_xgboost">to_serialized_xgboost() (pfl.internal.tree.gbdt.GBDT method)</a>
+
+        <ul>
+          <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.to_serialized_xgboost">(pfl.internal.tree.node.Node method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/metrics.html#pfl.metrics.Metrics.to_simple_dict">to_simple_dict() (pfl.metrics.Metrics method)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.numpy_ops.to_tensor">to_tensor() (in module pfl.internal.ops.numpy_ops)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.to_tensor">(in module pfl.internal.ops.pytorch_ops)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.to_tensor">(in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.KerasMetricValue.to_vector">to_vector() (pfl.internal.ops.tensorflow_ops.KerasMetricValue method)</a>
+
+        <ul>
+          <li><a href="reference/metrics.html#pfl.metrics.Histogram.to_vector">(pfl.metrics.Histogram method)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.MetricValue.to_vector">(pfl.metrics.MetricValue method)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.Summed.to_vector">(pfl.metrics.Summed method)</a>
+</li>
+          <li><a href="reference/metrics.html#pfl.metrics.Weighted.to_vector">(pfl.metrics.Weighted method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.privacy_snr.SNRMetric.to_vector">(pfl.privacy.privacy_snr.SNRMetric method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/metrics.html#pfl.metrics.Metrics.to_vectors">to_vectors() (pfl.metrics.Metrics method)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.TrackBestOverallMetrics">TrackBestOverallMetrics (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/data.html#pfl.data.dataset.DatasetSplit.train_kwargs">train_kwargs (pfl.data.dataset.DatasetSplit property)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.TrainCohortSize">TrainCohortSize (class in pfl.internal.tree.gbdt_adaptive_hyperparameters)</a>
+</li>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.node.Node.training_complete">training_complete() (pfl.internal.tree.node.Node method)</a>
+</li>
+        <li><a href="reference/callback.html#pfl.callback.TrainingProcessCallback">TrainingProcessCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.TrainingStatistics">TrainingStatistics (class in pfl.stats)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.TrainMetricName">TrainMetricName (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.try_cached_call">try_cached_call() (in module pfl.internal.ops.tensorflow_ops)</a>
+</li>
+        <li><a href="reference/hyperparam.html#typing.ParameterType">typing.ParameterType (built-in variable)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/model.html#pfl.model.ema.CentralExponentialMovingAverage.update">update() (pfl.model.ema.CentralExponentialMovingAverage method)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.user_average">user_average() (in module pfl.metrics)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/context.html#pfl.context.UserContext">UserContext (class in pfl.context)</a>
+</li>
+        <li><a href="reference/exception.html#pfl.exception.UserNotFoundError">UserNotFoundError</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/internal/tree.html#pfl.internal.tree.gbdt_adaptive_hyperparameters.ValidationCohortSize">ValidationCohortSize (class in pfl.internal.tree.gbdt_adaptive_hyperparameters)</a>
+</li>
+        <li><a href="reference/internal/distribution.html#pfl.internal.distribution.log_float.LogFloat.value">value (pfl.internal.distribution.log_float.LogFloat property)</a>
+</li>
+        <li><a href="reference/algorithm.html#pfl.algorithm.fedprox.AdaptMuOnMetricCallback.value">value() (pfl.algorithm.fedprox.AdaptMuOnMetricCallback method)</a>
+
+        <ul>
+          <li><a href="reference/hyperparam.html#pfl.hyperparam.base.HyperParam.value">(pfl.hyperparam.base.HyperParam method)</a>
+</li>
+          <li><a href="reference/privacy.html#pfl.privacy.adaptive_clipping.MutableClippingBound.value">(pfl.privacy.adaptive_clipping.MutableClippingBound method)</a>
+</li>
+          <li><a href="reference/tree.html#pfl.tree.federated_gbdt.GBDTClippingBound.value">(pfl.tree.federated_gbdt.GBDTClippingBound method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/callback.html#pfl.callback.WandbCallback">WandbCallback (class in pfl.callback)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.ElementWeightedMappedVectorStatistics.weight">weight (pfl.stats.ElementWeightedMappedVectorStatistics property)</a>
+
+        <ul>
+          <li><a href="reference/stats.html#pfl.stats.WeightedStatistics.weight">(pfl.stats.WeightedStatistics property)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.weighting.WeightByDatapoints">WeightByDatapoints (class in pfl.aggregate.weighting)</a>
+</li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.weighting.WeightByUser">WeightByUser (class in pfl.aggregate.weighting)</a>
+</li>
+        <li><a href="reference/metrics.html#pfl.metrics.Weighted">Weighted (class in pfl.metrics)</a>
+</li>
+        <li><a href="reference/stats.html#pfl.stats.WeightedStatistics">WeightedStatistics (class in pfl.stats)</a>
+</li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.weighting.WeightingStrategy">WeightingStrategy (class in pfl.aggregate.weighting)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.Aggregator.worker_reduce">worker_reduce() (pfl.aggregate.base.Aggregator method)</a>
+
+        <ul>
+          <li><a href="reference/aggregate.html#pfl.aggregate.base.SumAggregator.worker_reduce">(pfl.aggregate.base.SumAggregator method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/aggregate.html#pfl.aggregate.base.Aggregator.worker_reduce_metrics_only">worker_reduce_metrics_only() (pfl.aggregate.base.Aggregator method)</a>
+
+        <ul>
+          <li><a href="reference/aggregate.html#pfl.aggregate.base.SumAggregator.worker_reduce_metrics_only">(pfl.aggregate.base.SumAggregator method)</a>
+</li>
+        </ul></li>
+        <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.DistributedContext.world_size">world_size (pfl.internal.ops.distributed.DistributedContext property)</a>
+
+        <ul>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.HorovodDistributedContext.world_size">(pfl.internal.ops.distributed.HorovodDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.distributed.NotDistributedContext.world_size">(pfl.internal.ops.distributed.NotDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.world_size">(pfl.internal.ops.pytorch_ops.PyTorchDistributedContext property)</a>
+</li>
+          <li><a href="reference/internal/ops.html#pfl.internal.ops.tensorflow_ops.TFDistributedContext.world_size">(pfl.internal.ops.tensorflow_ops.TFDistributedContext property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

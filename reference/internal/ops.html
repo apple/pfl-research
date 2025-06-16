@@ -1,0 +1,1932 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="article:modified_time" content="2025-05-28T17:07:54+00:00" /><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Platform" href="platform.html" /><link rel="prev" title="Distribution" href="distribution.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>Ops - pfl 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/fl_introduction.html">Federated learning with pfl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/simulation_distributed.html">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../algorithm.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aggregate.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aggregate.html#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aggregate.html#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aggregate.html#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Internal API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribution.html">Distribution</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-pfl.internal.ops.framework_types">
+<span id="ops"></span><h1>Ops<a class="headerlink" href="#module-pfl.internal.ops.framework_types" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.framework_types.MLFramework">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.framework_types.</span></span><span class="sig-name descname"><span class="pre">MLFramework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.framework_types.MLFramework" title="Link to this definition">#</a></dt>
+<dd><p>An enumeration.</p>
+</dd></dl>
+
+<section id="module-pfl.internal.ops.selector">
+<span id="selector"></span><h2>Selector<a class="headerlink" href="#module-pfl.internal.ops.selector" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-pfl.internal.ops.common_ops">
+<span id="common-ops"></span><h2>Common ops<a class="headerlink" href="#module-pfl.internal.ops.common_ops" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.common_ops.all_reduce_metrics">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.common_ops.</span></span><span class="sig-name descname"><span class="pre">all_reduce_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.common_ops.all_reduce_metrics" title="Link to this definition">#</a></dt>
+<dd><p>Performs all reduce between workers on a <cite>Metrics</cite> object.
+If the current instance is not connected to a cluster, this will
+return the identity.</p>
+<p>When one worker calls this method, it will block until <cite>all_reduce_metrics</cite>
+has been called on all other worker instances as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metrics</strong> – A <cite>Metrics</cite> object that contains metrics from training with the data
+that was assigned for the local worker.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>Metrics</cite> object where all its elements has been summed across all
+workers.
+The returned <cite>Metrics</cite> now contains the same values for each worker.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.common_ops.get_tf_major_version">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.common_ops.</span></span><span class="sig-name descname"><span class="pre">get_tf_major_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.common_ops.get_tf_major_version" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The major version of the TensorFlow package installed.
+<code class="docutils literal notranslate"><span class="pre">0</span></code> if TensorFlow is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.common_ops.get_pytorch_major_version">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.common_ops.</span></span><span class="sig-name descname"><span class="pre">get_pytorch_major_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.common_ops.get_pytorch_major_version" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The major version of the PyTorch package installed.
+<code class="docutils literal notranslate"><span class="pre">0</span></code> if PyTorch is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.common_ops.check_mlx_installed">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.common_ops.</span></span><span class="sig-name descname"><span class="pre">check_mlx_installed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.common_ops.check_mlx_installed" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if mlx is installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.common_ops.check_pfl_tree_installed">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.common_ops.</span></span><span class="sig-name descname"><span class="pre">check_pfl_tree_installed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.common_ops.check_pfl_tree_installed" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if pfl is set up to train trees. False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.common_ops.is_pytest_running">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.common_ops.</span></span><span class="sig-name descname"><span class="pre">is_pytest_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.common_ops.is_pytest_running" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>True</cite> if pytest is currently running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.common_ops.is_mpi_running">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.common_ops.</span></span><span class="sig-name descname"><span class="pre">is_mpi_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.common_ops.is_mpi_running" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>True</cite> if script was called with <cite>mpirun</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pfl.internal.ops.distributed">
+<span id="distributed-ops"></span><h2>Distributed ops<a class="headerlink" href="#module-pfl.internal.ops.distributed" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.horovod_is_active">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.distributed.</span></span><span class="sig-name descname"><span class="pre">horovod_is_active</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.distributed.horovod_is_active" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>True</cite> if program was called with <cite>horovodrun</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.distributed.</span></span><span class="sig-name descname"><span class="pre">DistributedContext</span></span><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Collection of properties and methods related to distributed training.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext.local_rank">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext.local_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on current machine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext.global_rank">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext.global_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext.world_size">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext.world_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes over all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext.local_size">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext.local_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes on 1 machines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext.all_reduce">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext.all_reduce" title="Link to this definition">#</a></dt>
+<dd><p>Performs all reduce between processes on a list of tensors.
+When one process calls this method, it will block until <cite>all_reduce</cite>
+has been called on all other processes as well. Processes may be
+scattered across multiple workers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">Tensor</span></code>)]) – A list of tensors to reduce between processes.</p></li>
+<li><p><strong>average</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>False</cite> return sum, if <cite>True</cite> return the average.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">Tensor</span></code>)]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of tensors, representing the reduced versions of the
+input parameter <cite>tensors</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext.distribute_range">
+<span class="sig-name descname"><span class="pre">distribute_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext.distribute_range" title="Link to this definition">#</a></dt>
+<dd><p>Split <cite>range(value)</cite> among workers so that each workers gets
+a slice of approximately same length.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>An input of <code class="docutils literal notranslate"><span class="pre">5</span></code> when using 2 workers will return <code class="docutils literal notranslate"><span class="pre">range(0,3)</span></code>
+for worker 1 and <code class="docutils literal notranslate"><span class="pre">range(3,5)</span></code> for worker 2.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The integer value to split.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The split value for the current worker.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.DistributedContext.distribute_value">
+<span class="sig-name descname"><span class="pre">distribute_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.distributed.DistributedContext.distribute_value" title="Link to this definition">#</a></dt>
+<dd><p>Split an integer <code class="docutils literal notranslate"><span class="pre">value</span></code> among workers. Parameter <code class="docutils literal notranslate"><span class="pre">value</span></code> is
+interpreted as the number of units of work. Each worker gets its
+own integer. The integers assigned to all workers sum to <code class="docutils literal notranslate"><span class="pre">value</span></code>
+and are approximately equal.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>An input of <code class="docutils literal notranslate"><span class="pre">5</span></code> when using 2 workers will return <code class="docutils literal notranslate"><span class="pre">3</span></code> for worker
+1 and <code class="docutils literal notranslate"><span class="pre">2</span></code> for worker 2.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The integer value to split.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The split value for the current worker.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.HorovodDistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.distributed.</span></span><span class="sig-name descname"><span class="pre">HorovodDistributedContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hvd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.distributed.HorovodDistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Base class for distributed training operations with Horovod.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.HorovodDistributedContext.local_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.HorovodDistributedContext.local_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on current machine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.HorovodDistributedContext.global_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.HorovodDistributedContext.global_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.HorovodDistributedContext.world_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.HorovodDistributedContext.world_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes over all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.HorovodDistributedContext.local_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.HorovodDistributedContext.local_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes on 1 machines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.HorovodDistributedContext.all_reduce">
+<span class="sig-name descname"><span class="pre">all_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.distributed.HorovodDistributedContext.all_reduce" title="Link to this definition">#</a></dt>
+<dd><p>Performs all reduce between processes on a list of tensors.
+When one process calls this method, it will block until <cite>all_reduce</cite>
+has been called on all other processes as well. Processes may be
+scattered across multiple workers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">Tensor</span></code>)]) – A list of tensors to reduce between processes.</p></li>
+<li><p><strong>average</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>False</cite> return sum, if <cite>True</cite> return the average.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">Tensor</span></code>)]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of tensors, representing the reduced versions of the
+input parameter <cite>tensors</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.NotDistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.distributed.</span></span><span class="sig-name descname"><span class="pre">NotDistributedContext</span></span><a class="headerlink" href="#pfl.internal.ops.distributed.NotDistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Single-process “distributed” context. Can be used to not do
+distributed training.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.NotDistributedContext.local_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.NotDistributedContext.local_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on current machine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.NotDistributedContext.global_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.NotDistributedContext.global_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.NotDistributedContext.world_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.NotDistributedContext.world_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes over all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.NotDistributedContext.local_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.distributed.NotDistributedContext.local_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes on 1 machines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.distributed.NotDistributedContext.all_reduce">
+<span class="sig-name descname"><span class="pre">all_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.distributed.NotDistributedContext.all_reduce" title="Link to this definition">#</a></dt>
+<dd><p>Performs all reduce between processes on a list of tensors.
+When one process calls this method, it will block until <cite>all_reduce</cite>
+has been called on all other processes as well. Processes may be
+scattered across multiple workers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">Tensor</span></code>)]) – A list of tensors to reduce between processes.</p></li>
+<li><p><strong>average</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>False</cite> return sum, if <cite>True</cite> return the average.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">Tensor</span></code>)]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of tensors, representing the reduced versions of the
+input parameter <cite>tensors</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pfl.internal.ops.numpy_ops">
+<span id="numpy-ops"></span><h2>Numpy ops<a class="headerlink" href="#module-pfl.internal.ops.numpy_ops" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.NumpyHorovodDistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">NumpyHorovodDistributedContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.NumpyHorovodDistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Distributed training operations for NumPy tensors using a
+Horovod backend.
+Initializing an instance of this class performs the Horovod setup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>module_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The Horovod api to use. Most commonly ‘tensorflow’ or ‘pytorch’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.NumpySeedScope">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">NumpySeedScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.NumpySeedScope" title="Link to this definition">#</a></dt>
+<dd><p>Context manager for temporarily using another NumPy random state
+from the given seed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> – The seed for the temporary random state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.get_shape">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">get_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.get_shape" title="Link to this definition">#</a></dt>
+<dd><p>Get the shape of a <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variable<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple representing the shape.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.is_tensor">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">is_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.is_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Check whether the input is a Numpy array.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.add_laplacian_noise">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">add_laplacian_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.add_laplacian_noise" title="Link to this definition">#</a></dt>
+<dd><p>Add zero mean Laplacian noise to numpy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of numpy arrays to add noise to.</p></li>
+<li><p><strong>scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The noise scale <cite>b</cite> of laplacian noise.</p></li>
+<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – An integer for seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Same as <cite>tensors</cite> but with noise added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.add_gaussian_noise">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">add_gaussian_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stddev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.add_gaussian_noise" title="Link to this definition">#</a></dt>
+<dd><p>Add zero mean Gaussian noise to numpy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of numpy arrays to add noise to.</p></li>
+<li><p><strong>stddev</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Standard deviation of noise to add.</p></li>
+<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – An integer for seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Same as <cite>tensors</cite> but with noise added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.norm">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.norm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the norm of a numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A numpy array to calculate the norm for.</p></li>
+<li><p><strong>order</strong> – The order of the distance metric.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The norm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.global_norm">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">global_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.global_norm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the norm of the concatenation of the arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of numpy arrays to calculate global norm for.</p></li>
+<li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The order of the distance metric.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The global norm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.flatten">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.flatten" title="Link to this definition">#</a></dt>
+<dd><p>Flatten a list of numpy arrays into a single vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of numpy arrays to flatten.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>(vector, shapes, dtypes)</cite>, where <cite>vector</cite> is the flattened vector,
+<cite>shapes</cite> is a list of shapes of the input arrays and <cite>dtypes</cite> is a
+list of types of the input arrays. <cite>shapes</cite> and <cite>dtypes</cite> can be used
+with the <cite>reshape</cite> function to recover the original list of weights.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.reshape">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.reshape" title="Link to this definition">#</a></dt>
+<dd><p>Split and reshape a vector into a list of numpy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A 1-dimensional numpy array to split and reshape.</p></li>
+<li><p><strong>shapes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>]) – A list of tuples of integers, representing the shapes of multiple
+target weights to construct.</p></li>
+<li><p><strong>dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>]]) – A list of types for the new weights.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of numpy arrays constructed from the inputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.to_tensor">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">to_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.to_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Convert a numpy array to numpy array,
+i.e. identity in this case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.to_numpy">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.to_numpy" title="Link to this definition">#</a></dt>
+<dd><p>Convert a numpy array to numpy array,
+i.e. identity in this case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.clone">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.clone" title="Link to this definition">#</a></dt>
+<dd><p>Clone a numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.clone_variable">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">clone_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.clone_variable" title="Link to this definition">#</a></dt>
+<dd><p>Return a cloned copy of Numpy Array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>.</p></li>
+<li><p><strong>name</strong> – An unused argument to match the signature of TensorFlow internal ops.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> that is a cloned copy of <code class="docutils literal notranslate"><span class="pre">variable</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.assign_variable">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">assign_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.assign_variable" title="Link to this definition">#</a></dt>
+<dd><p>Assign value to reference variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> that will be assigned to <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> whose value is assigned to <code class="docutils literal notranslate"><span class="pre">reference</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.exponential_moving_average_update">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">exponential_moving_average_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ema_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.exponential_moving_average_update" title="Link to this definition">#</a></dt>
+<dd><p>Perform one step of EMA update for a list of variables and a list of
+paired EMA variables. For each (variable, EMA variable) pair, the update is
+as following: <code class="docutils literal notranslate"><span class="pre">ema_variable</span> <span class="pre">-=</span> <span class="pre">(1</span> <span class="pre">-</span> <span class="pre">decay)</span> <span class="pre">*</span> <span class="pre">(ema_variable</span> <span class="pre">-</span> <span class="pre">variable)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> representing the current values.</p></li>
+<li><p><strong>ema_variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> representing the EMA values to be updated.</p></li>
+<li><p><strong>decay</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – A <code class="docutils literal notranslate"><span class="pre">float</span></code> defining the EMA decay rate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.one_hot">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">one_hot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.one_hot" title="Link to this definition">#</a></dt>
+<dd><p>One-hot encode indices to vector with depth dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A vector of indices to be one-hot encoded.</p></li>
+<li><p><strong>depth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dimension of one-hot encoding.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One-hot encoded vectors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.numpy_ops.concatenate">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.numpy_ops.</span></span><span class="sig-name descname"><span class="pre">concatenate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.numpy_ops.concatenate" title="Link to this definition">#</a></dt>
+<dd><p>Join a list of tensors along an existing axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – List of tensors to be concatenated.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Axis to concatenate the tensors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A concatenated tensor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pfl.internal.ops.pytorch_ops">
+<span id="pytorch-ops"></span><h2>PyTorch ops<a class="headerlink" href="#module-pfl.internal.ops.pytorch_ops" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.setup_amp">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">setup_amp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amp_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_scaling</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.setup_amp" title="Link to this definition">#</a></dt>
+<dd><p>Setup <cite>torch.amp.autocast</cite> context and <cite>torch.cuda.amp.GradScaler</cite> for
+PyTorch native mixed precision training. Gradient scaling is only used
+when training on CUDA.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>amp_dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>]) – An optional <cite>torch.dtype</cite> indicating the precision level. If set to
+<cite>None</cite> then mix precision training is not enabled.</p></li>
+<li><p><strong>grad_scaling</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to turn on gradient scaling when training on CUDA.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">autocast</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">GradScaler</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of <cite>torch.amp.autocast</cite> context and <cite>torch.cuda.amp.GradScaler</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchDistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">PyTorchDistributedContext</span></span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Distributed training operations for PyTorch tensors using
+<cite>torch.distributed</cite> backend.
+Initializing an instance of this class starts the PyTorch
+server on each worker and synchronizes.
+Only supports single process, single GPU, multi-worker training.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on current machine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.global_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.global_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.world_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.world_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes over all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes on 1 machines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.all_reduce">
+<span class="sig-name descname"><span class="pre">all_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.all_reduce" title="Link to this definition">#</a></dt>
+<dd><p>Performs all reduce between processes on a list of tensors.
+When one process calls this method, it will block until <cite>all_reduce</cite>
+has been called on all other processes as well. Processes may be
+scattered across multiple workers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of tensors to reduce between processes.</p></li>
+<li><p><strong>average</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>False</cite> return sum, if <cite>True</cite> return the average.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of tensors, representing the reduced versions of the
+input parameter <cite>tensors</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchHorovodDistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">PyTorchHorovodDistributedContext</span></span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchHorovodDistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Distributed training operations for PyTorch tensors using a
+Horovod backend.
+Initializing an instance of this class performs the Horovod setup.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.get_shape">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">get_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.get_shape" title="Link to this definition">#</a></dt>
+<dd><p>Get the shape of a PyTorch variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>variable</strong> – A PyTorch tensor.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple representing the shape.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.is_tensor">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">is_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.is_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Check whether the input is a PyTorch tensor.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.flatten">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.flatten" title="Link to this definition">#</a></dt>
+<dd><p>Flatten a list of PyTorch tensors into a single vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of tensors to flatten.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>(vector, shapes, dtypes)</cite>, where <cite>vector</cite> is the flattened tensor,
+<cite>shapes</cite> is a list of shapes of the input arrays and <cite>dtypes</cite> is a
+list of types of the input arrays. <cite>shapes</cite> and <cite>dtypes</cite> can be used
+with the <cite>reshape</cite> function to recover the original list of weights.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.reshape">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.reshape" title="Link to this definition">#</a></dt>
+<dd><p>Split and reshape a vector into a list of PyTorch tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1-dimensional tensor to split and reshape.</p></li>
+<li><p><strong>shapes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>]) – A list of tuples of integers, representing the shapes of multiple
+target weights to construct.</p></li>
+<li><p><strong>dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>]]) – A list of types for the new weights.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of PyTorch tensors constructed from the inputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.simulate_bfloat16_transport">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">simulate_bfloat16_transport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.simulate_bfloat16_transport" title="Link to this definition">#</a></dt>
+<dd><p>Convert a numpy array to bfloat16 and then back to float32</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchSeedScope">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">PyTorchSeedScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchSeedScope" title="Link to this definition">#</a></dt>
+<dd><p>Context manager for temporarily using another PyTorch random state
+from the given seed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> – The seed for the temporary random state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.Barrier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">Barrier</span></span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.Barrier" title="Link to this definition">#</a></dt>
+<dd><p>Context manager for barrier in distributed communication. Replicates the
+functionality of:
+<a class="reference external" href="https://pytorch.org/docs/stable/distributed.html#torch.distributed.barrier">https://pytorch.org/docs/stable/distributed.html#torch.distributed.barrier</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.add_gaussian_noise">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">add_gaussian_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stddev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.add_gaussian_noise" title="Link to this definition">#</a></dt>
+<dd><p>Add zero mean Gaussian noise to tensors.
+Transferring data to GPU, adding noise, and back to NumPy is faster than
+<cite>np.random.normal</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of tensors to add noise to.</p></li>
+<li><p><strong>stddev</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Standard deviation of noise to add.</p></li>
+<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – An integer for seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Same as <cite>tensors</cite> but with noise added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.add_laplacian_noise">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">add_laplacian_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.add_laplacian_noise" title="Link to this definition">#</a></dt>
+<dd><p>Add zero mean Laplacian noise to tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of tensors to add noise to.</p></li>
+<li><p><strong>scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Scaling factor of noise to add.</p></li>
+<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – An integer for seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Same as <cite>tensors</cite> but with noise added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.clone">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.clone" title="Link to this definition">#</a></dt>
+<dd><p>Make a copy of the input tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.norm">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.norm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the norm of a PyTorch tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor to calculate the norm for.</p></li>
+<li><p><strong>order</strong> – The order of the distance metric (norm).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The norm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.global_norm">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">global_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.global_norm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the norm of the concatenation of the arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of numpy arrays to calculate global norm for.</p></li>
+<li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The order of the distance metric.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The global norm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.to_numpy">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.to_numpy" title="Link to this definition">#</a></dt>
+<dd><p>Convert a PyTorch tensor to a numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.to_tensor">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">to_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.to_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Convert a list of values or a numpy array to a float32 Torch tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.clone_variable">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">clone_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.clone_variable" title="Link to this definition">#</a></dt>
+<dd><p>Return a cloned copy of PyTorch tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>.</p></li>
+<li><p><strong>name</strong> – An unused argument to match the signature of TensorFlow internal ops.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> that is a cloned copy of <code class="docutils literal notranslate"><span class="pre">variable</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.assign_variable">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">assign_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.assign_variable" title="Link to this definition">#</a></dt>
+<dd><p>Assign value to reference variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> that will be assigned to <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> whose value is assigned to <code class="docutils literal notranslate"><span class="pre">reference</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.exponential_moving_average_update">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">exponential_moving_average_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ema_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.exponential_moving_average_update" title="Link to this definition">#</a></dt>
+<dd><p>Perform one step of EMA update for a list of variables and a list of
+paired EMA variables. For each (variable, EMA variable) pair, the update is
+as following: <code class="docutils literal notranslate"><span class="pre">ema_variable</span> <span class="pre">-=</span> <span class="pre">(1</span> <span class="pre">-</span> <span class="pre">decay)</span> <span class="pre">*</span> <span class="pre">(ema_variable</span> <span class="pre">-</span> <span class="pre">variable)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> representing the current values.</p></li>
+<li><p><strong>ema_variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> representing the EMA values to be updated.</p></li>
+<li><p><strong>decay</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – A <code class="docutils literal notranslate"><span class="pre">float</span></code> defining the EMA decay rate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.one_hot">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">one_hot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.one_hot" title="Link to this definition">#</a></dt>
+<dd><p>One-hot encode indices to vector with depth dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A vector of indices to be one-hot encoded.</p></li>
+<li><p><strong>depth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dimension of one-hot encoding.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One-hot encoded vectors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.concatenate">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">concatenate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.concatenate" title="Link to this definition">#</a></dt>
+<dd><p>Join a list of tensors along an existing axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – List of tensors to be concatenated.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Axis to concatenate the tensors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A concatenated tensor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.GradAccumulationState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">GradAccumulationState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulation_steps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.GradAccumulationState" title="Link to this definition">#</a></dt>
+<dd><p>Track gradient accumulation during local training.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.GradAccumulationState.optimizer_should_update">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimizer_should_update</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.GradAccumulationState.optimizer_should_update" title="Link to this definition">#</a></dt>
+<dd><p>Update every <cite>grad_accumulation_steps</cite> or is the last step</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.pytorch_ops.</span></span><span class="sig-name descname"><span class="pre">PyTorchTrainStepArgs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amp_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_scaler</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_grad_norm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_accumulation_state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs" title="Link to this definition">#</a></dt>
+<dd><p>Common args used by different local training algorithms in PyTorch.</p>
+</dd></dl>
+
+</section>
+<section id="module-pfl.internal.ops.tensorflow_ops">
+<span id="tensorflow-ops"></span><h2>TensorFlow ops<a class="headerlink" href="#module-pfl.internal.ops.tensorflow_ops" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.try_cached_call">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">try_cached_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.try_cached_call" title="Link to this definition">#</a></dt>
+<dd><p>Call the graph of <cite>fn</cite> which is a tf.Function.
+If the graph of <cite>fn</cite> exists in pfl’s cache, use the cached graph.
+This will result in significant speedups in TF&gt;2.3 because this is
+bypassing TensorFlow’s graph cache in tf.function (which has become
+incredibly slow).</p>
+<p>This feature can be disabled with the environment variable
+PFL_GRAPH_CACHE=false and should be done if one recognizes that pfl’s
+graph cache is regenerated too much (because it is not very sophisticated
+yet).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> – A function decorated with tf.Function.</p></li>
+<li><p><strong>key</strong> – A key for caching the graph of <cite>fn</cite>.</p></li>
+<li><p><strong>args</strong> – Arguments for calling <cite>fn</cite>.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments for calling <cite>fn</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The returned value from <cite>fn</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.TFDistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">TFDistributedContext</span></span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Distributed training operations for TF tensors using
+<cite>tensorflow.distribute</cite> backend.</p>
+<p>Initializing an instance of this class starts the TF servers and a
+distribution strategy that waits for synchronisation. If using
+distributed simulations, initialize a
+<code class="docutils literal notranslate"><span class="pre">MultiWorkerMirroredStrategy</span></code>, otherwise initialize a
+<code class="docutils literal notranslate"><span class="pre">OneDeviceStrategy</span></code>.</p>
+<p>Only supports single process, single GPU, multi-worker training.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on current machine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.TFDistributedContext.global_rank">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_rank</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.global_rank" title="Link to this definition">#</a></dt>
+<dd><p>The rank of the current process over all processes on all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.TFDistributedContext.world_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.world_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes over all machines.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_size" title="Link to this definition">#</a></dt>
+<dd><p>The total number of processes on 1 machines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.TFDistributedContext.all_reduce">
+<span class="sig-name descname"><span class="pre">all_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.all_reduce" title="Link to this definition">#</a></dt>
+<dd><p>Performs all reduce between processes on a list of tensors.
+When one process calls this method, it will block until <cite>all_reduce</cite>
+has been called on all other processes as well. Processes may be
+scattered across multiple workers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of tensors to reduce between processes.</p></li>
+<li><p><strong>average</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <cite>False</cite> return sum, if <cite>True</cite> return the average.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of tensors, representing the reduced versions of the
+input parameter <cite>tensors</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.TFHorovodDistributedContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">TFHorovodDistributedContext</span></span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.TFHorovodDistributedContext" title="Link to this definition">#</a></dt>
+<dd><p>Distributed training operations for TF tensors using a
+Horovod backend.
+Initializing an instance of this class performs the Horovod setup.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.get_shape">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">get_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.get_shape" title="Link to this definition">#</a></dt>
+<dd><p>Get the shape of a TensorFlow variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variable<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">tf.Variable</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple representing the shape.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.is_tensor">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">is_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.is_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Check whether the input is a TensorFlow tensor or variable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.simulate_bfloat16_transport">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">simulate_bfloat16_transport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.simulate_bfloat16_transport" title="Link to this definition">#</a></dt>
+<dd><p>Convert a tensor to bfloat16 and then back to float32</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.add_gaussian_noise">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">add_gaussian_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stddev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.add_gaussian_noise" title="Link to this definition">#</a></dt>
+<dd><p>Add zero mean Gaussian noise to tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of tensors to add noise to.</p></li>
+<li><p><strong>stddev</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Standard deviation of noise to add.</p></li>
+<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – An integer for seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Same as <cite>tensors</cite> but with noise added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.add_laplacian_noise">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">add_laplacian_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.add_laplacian_noise" title="Link to this definition">#</a></dt>
+<dd><p>Add zero mean Laplacian noise to tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of tensors to add noise to.</p></li>
+<li><p><strong>scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Scaling factor of noise to add.</p></li>
+<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – An integer for seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Same as <cite>tensors</cite> but with noise added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.clone">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.clone" title="Link to this definition">#</a></dt>
+<dd><p>Make a copy of the input tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.flatten">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.flatten" title="Link to this definition">#</a></dt>
+<dd><p>Flatten a list of tensors into a single vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A list of tensors to flatten.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>(vector, shapes, dtypes)</cite>, where <cite>vector</cite> is the flattened tensor,
+<cite>shapes</cite> is a list of shapes of the input arrays and <cite>dtypes</cite> is a
+list of types of the input arrays. <cite>shapes</cite> and <cite>dtypes</cite> can be used
+with the <cite>reshape</cite> function to recover the original list of weights.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.reshape">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.reshape" title="Link to this definition">#</a></dt>
+<dd><p>Split and reshape a vector into a list of TF tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1-dimensional tensor to split and reshape.</p></li>
+<li><p><strong>shapes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>]) – A list of tuples of integers, representing the shapes of multiple
+target weights to construct.</p></li>
+<li><p><strong>dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>]]) – A list of types for the new weights.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of TF tensors constructed from the inputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.norm">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.norm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the norm of a tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor to calculate the norm for.</p></li>
+<li><p><strong>order</strong> – The order of the distance metric (norm).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The norm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.global_norm">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">global_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.global_norm" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the norm of the concatenation of the arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A list of numpy arrays to calculate global norm for.</p></li>
+<li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The order of the distance metric.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The global norm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.to_numpy">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.to_numpy" title="Link to this definition">#</a></dt>
+<dd><p>Convert a tensor to a numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.to_tensor">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">to_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.to_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Convert a list of values or a numpy array to a TF tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.clone_variable">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">clone_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.clone_variable" title="Link to this definition">#</a></dt>
+<dd><p>Return a cloned copy of TensorFlow variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>) – A <code class="docutils literal notranslate"><span class="pre">tf.Variable</span></code>.</p></li>
+<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A <code class="docutils literal notranslate"><span class="pre">str</span></code> name for the cloned variable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">tf.Variable</span></code> that is a cloned copy of <code class="docutils literal notranslate"><span class="pre">variable</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.assign_variable">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">assign_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.assign_variable" title="Link to this definition">#</a></dt>
+<dd><p>Assign value to reference variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>) – A <code class="docutils literal notranslate"><span class="pre">tf.Variable</span></code> that will be assigned to <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>) – A <code class="docutils literal notranslate"><span class="pre">tf.Variable</span></code> whose value is assigned to <code class="docutils literal notranslate"><span class="pre">reference</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.exponential_moving_average_update">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">exponential_moving_average_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ema_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.exponential_moving_average_update" title="Link to this definition">#</a></dt>
+<dd><p>Perform one step of EMA update for a list of variables and a list of
+paired EMA variables. For each (variable, EMA variable) pair, the update is
+as following: <code class="docutils literal notranslate"><span class="pre">ema_variable</span> <span class="pre">-=</span> <span class="pre">(1</span> <span class="pre">-</span> <span class="pre">decay)</span> <span class="pre">*</span> <span class="pre">(ema_variable</span> <span class="pre">-</span> <span class="pre">variable)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>]) – A list of <code class="docutils literal notranslate"><span class="pre">tf.Variable</span></code> representing the current values.</p></li>
+<li><p><strong>ema_variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>]) – A list of <code class="docutils literal notranslate"><span class="pre">tf.Variable</span></code> representing the EMA values to be updated.</p></li>
+<li><p><strong>decay</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – A <code class="docutils literal notranslate"><span class="pre">float</span></code> defining the EMA decay rate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.one_hot">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">one_hot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.one_hot" title="Link to this definition">#</a></dt>
+<dd><p>One-hot encode indices to vector with depth dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A vector of indices to be one-hot encoded.</p></li>
+<li><p><strong>depth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The dimension of one-hot encoding.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>One-hot encoded vectors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.concatenate">
+<span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">concatenate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.concatenate" title="Link to this definition">#</a></dt>
+<dd><p>Join a list of tensors along an existing axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – List of tensors to be concatenated.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Axis to concatenate the tensors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A concatenated tensor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.KerasMetricValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.internal.ops.tensorflow_ops.</span></span><span class="sig-name descname"><span class="pre">KerasMetricValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keras_metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for representing a <code class="docutils literal notranslate"><span class="pre">tf.keras.metrics.Metric</span></code> as a
+<a class="reference internal" href="../metrics.html#pfl.metrics.MetricValue" title="pfl.metrics.MetricValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricValue</span></code></a> to be compatible with pfl framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keras_metric</strong> – The Keras metric to use for accumulating measurements of a metric.
+Keras metrics are mutable, but <code class="docutils literal notranslate"><span class="pre">KerasMetricValue</span></code> is not.</p></li>
+<li><p><strong>labels</strong> – Ground-truth labels that are used with <code class="docutils literal notranslate"><span class="pre">predictions</span></code> to set
+the state of the metric value.</p></li>
+<li><p><strong>predictions</strong> – <code class="docutils literal notranslate"><span class="pre">labels</span></code> and <code class="docutils literal notranslate"><span class="pre">predictions</span></code> are used to set the state of the metric
+value. Unlike <code class="docutils literal notranslate"><span class="pre">tf.keras.metrics.Metric</span></code>, the state doesn’t change.
+You should instead accumulate a metric value with addition of
+two <code class="docutils literal notranslate"><span class="pre">KerasMetricValue</span></code> objects.</p></li>
+<li><p><strong>state</strong> – Specify the state of <cite>keras_metric</cite> directly instead of generating it
+from <code class="docutils literal notranslate"><span class="pre">labels</span></code> and <code class="docutils literal notranslate"><span class="pre">predictions</span></code>. Don’t set <code class="docutils literal notranslate"><span class="pre">labels</span></code> and
+<code class="docutils literal notranslate"><span class="pre">predictions</span></code> if <code class="docutils literal notranslate"><span class="pre">state</span></code> is set.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.KerasMetricValue.overall_value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">overall_value</span></span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue.overall_value" title="Link to this definition">#</a></dt>
+<dd><p>Return the overall value, e.g. an average or a total.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.KerasMetricValue.to_vector">
+<span class="sig-name descname"><span class="pre">to_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue.to_vector" title="Link to this definition">#</a></dt>
+<dd><p>Get a vector representation of this metric value, with
+<code class="docutils literal notranslate"><span class="pre">dtype=float32</span></code>.
+Summing two vectors in this space must be equivalent to summing the two
+original objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.internal.ops.tensorflow_ops.KerasMetricValue.from_vector">
+<span class="sig-name descname"><span class="pre">from_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue.from_vector" title="Link to this definition">#</a></dt>
+<dd><p>Create a new metric value of this class from a vector representation.</p>
+<p>Note that this is a method on an object of this class, since it is
+possible that runtime attributes that do not change with addition are
+not serialized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../metrics.html#pfl.metrics.MetricValue" title="pfl.metrics.MetricValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetricValue</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="platform.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Platform</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="distribution.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Distribution</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on May 28, 2025</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Ops</a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.framework_types.MLFramework"><code class="docutils literal notranslate"><span class="pre">MLFramework</span></code></a></li>
+<li><a class="reference internal" href="#module-pfl.internal.ops.selector">Selector</a></li>
+<li><a class="reference internal" href="#module-pfl.internal.ops.common_ops">Common ops</a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.common_ops.all_reduce_metrics"><code class="docutils literal notranslate"><span class="pre">all_reduce_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.common_ops.get_tf_major_version"><code class="docutils literal notranslate"><span class="pre">get_tf_major_version()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.common_ops.get_pytorch_major_version"><code class="docutils literal notranslate"><span class="pre">get_pytorch_major_version()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.common_ops.check_mlx_installed"><code class="docutils literal notranslate"><span class="pre">check_mlx_installed()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.common_ops.check_pfl_tree_installed"><code class="docutils literal notranslate"><span class="pre">check_pfl_tree_installed()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.common_ops.is_pytest_running"><code class="docutils literal notranslate"><span class="pre">is_pytest_running()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.common_ops.is_mpi_running"><code class="docutils literal notranslate"><span class="pre">is_mpi_running()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.internal.ops.distributed">Distributed ops</a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.horovod_is_active"><code class="docutils literal notranslate"><span class="pre">horovod_is_active()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext"><code class="docutils literal notranslate"><span class="pre">DistributedContext</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext.local_rank"><code class="docutils literal notranslate"><span class="pre">DistributedContext.local_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext.global_rank"><code class="docutils literal notranslate"><span class="pre">DistributedContext.global_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext.world_size"><code class="docutils literal notranslate"><span class="pre">DistributedContext.world_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext.local_size"><code class="docutils literal notranslate"><span class="pre">DistributedContext.local_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext.all_reduce"><code class="docutils literal notranslate"><span class="pre">DistributedContext.all_reduce()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext.distribute_range"><code class="docutils literal notranslate"><span class="pre">DistributedContext.distribute_range()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.DistributedContext.distribute_value"><code class="docutils literal notranslate"><span class="pre">DistributedContext.distribute_value()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.HorovodDistributedContext"><code class="docutils literal notranslate"><span class="pre">HorovodDistributedContext</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.HorovodDistributedContext.local_rank"><code class="docutils literal notranslate"><span class="pre">HorovodDistributedContext.local_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.HorovodDistributedContext.global_rank"><code class="docutils literal notranslate"><span class="pre">HorovodDistributedContext.global_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.HorovodDistributedContext.world_size"><code class="docutils literal notranslate"><span class="pre">HorovodDistributedContext.world_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.HorovodDistributedContext.local_size"><code class="docutils literal notranslate"><span class="pre">HorovodDistributedContext.local_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.HorovodDistributedContext.all_reduce"><code class="docutils literal notranslate"><span class="pre">HorovodDistributedContext.all_reduce()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.NotDistributedContext"><code class="docutils literal notranslate"><span class="pre">NotDistributedContext</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.NotDistributedContext.local_rank"><code class="docutils literal notranslate"><span class="pre">NotDistributedContext.local_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.NotDistributedContext.global_rank"><code class="docutils literal notranslate"><span class="pre">NotDistributedContext.global_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.NotDistributedContext.world_size"><code class="docutils literal notranslate"><span class="pre">NotDistributedContext.world_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.NotDistributedContext.local_size"><code class="docutils literal notranslate"><span class="pre">NotDistributedContext.local_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.distributed.NotDistributedContext.all_reduce"><code class="docutils literal notranslate"><span class="pre">NotDistributedContext.all_reduce()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.internal.ops.numpy_ops">Numpy ops</a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.NumpyHorovodDistributedContext"><code class="docutils literal notranslate"><span class="pre">NumpyHorovodDistributedContext</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.NumpySeedScope"><code class="docutils literal notranslate"><span class="pre">NumpySeedScope</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.get_shape"><code class="docutils literal notranslate"><span class="pre">get_shape()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.is_tensor"><code class="docutils literal notranslate"><span class="pre">is_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.add_laplacian_noise"><code class="docutils literal notranslate"><span class="pre">add_laplacian_noise()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.add_gaussian_noise"><code class="docutils literal notranslate"><span class="pre">add_gaussian_noise()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.norm"><code class="docutils literal notranslate"><span class="pre">norm()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.global_norm"><code class="docutils literal notranslate"><span class="pre">global_norm()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.flatten"><code class="docutils literal notranslate"><span class="pre">flatten()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.reshape"><code class="docutils literal notranslate"><span class="pre">reshape()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.to_tensor"><code class="docutils literal notranslate"><span class="pre">to_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.clone"><code class="docutils literal notranslate"><span class="pre">clone()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.clone_variable"><code class="docutils literal notranslate"><span class="pre">clone_variable()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.assign_variable"><code class="docutils literal notranslate"><span class="pre">assign_variable()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.exponential_moving_average_update"><code class="docutils literal notranslate"><span class="pre">exponential_moving_average_update()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.one_hot"><code class="docutils literal notranslate"><span class="pre">one_hot()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.numpy_ops.concatenate"><code class="docutils literal notranslate"><span class="pre">concatenate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.internal.ops.pytorch_ops">PyTorch ops</a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.setup_amp"><code class="docutils literal notranslate"><span class="pre">setup_amp()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext"><code class="docutils literal notranslate"><span class="pre">PyTorchDistributedContext</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_rank"><code class="docutils literal notranslate"><span class="pre">PyTorchDistributedContext.local_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.global_rank"><code class="docutils literal notranslate"><span class="pre">PyTorchDistributedContext.global_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.world_size"><code class="docutils literal notranslate"><span class="pre">PyTorchDistributedContext.world_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.local_size"><code class="docutils literal notranslate"><span class="pre">PyTorchDistributedContext.local_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.all_reduce"><code class="docutils literal notranslate"><span class="pre">PyTorchDistributedContext.all_reduce()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchHorovodDistributedContext"><code class="docutils literal notranslate"><span class="pre">PyTorchHorovodDistributedContext</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.get_shape"><code class="docutils literal notranslate"><span class="pre">get_shape()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.is_tensor"><code class="docutils literal notranslate"><span class="pre">is_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.flatten"><code class="docutils literal notranslate"><span class="pre">flatten()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.reshape"><code class="docutils literal notranslate"><span class="pre">reshape()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.simulate_bfloat16_transport"><code class="docutils literal notranslate"><span class="pre">simulate_bfloat16_transport()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchSeedScope"><code class="docutils literal notranslate"><span class="pre">PyTorchSeedScope</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.Barrier"><code class="docutils literal notranslate"><span class="pre">Barrier</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.add_gaussian_noise"><code class="docutils literal notranslate"><span class="pre">add_gaussian_noise()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.add_laplacian_noise"><code class="docutils literal notranslate"><span class="pre">add_laplacian_noise()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.clone"><code class="docutils literal notranslate"><span class="pre">clone()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.norm"><code class="docutils literal notranslate"><span class="pre">norm()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.global_norm"><code class="docutils literal notranslate"><span class="pre">global_norm()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.to_tensor"><code class="docutils literal notranslate"><span class="pre">to_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.clone_variable"><code class="docutils literal notranslate"><span class="pre">clone_variable()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.assign_variable"><code class="docutils literal notranslate"><span class="pre">assign_variable()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.exponential_moving_average_update"><code class="docutils literal notranslate"><span class="pre">exponential_moving_average_update()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.one_hot"><code class="docutils literal notranslate"><span class="pre">one_hot()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.concatenate"><code class="docutils literal notranslate"><span class="pre">concatenate()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.GradAccumulationState"><code class="docutils literal notranslate"><span class="pre">GradAccumulationState</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.GradAccumulationState.optimizer_should_update"><code class="docutils literal notranslate"><span class="pre">GradAccumulationState.optimizer_should_update</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.internal.ops.pytorch_ops.PyTorchTrainStepArgs"><code class="docutils literal notranslate"><span class="pre">PyTorchTrainStepArgs</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.internal.ops.tensorflow_ops">TensorFlow ops</a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.try_cached_call"><code class="docutils literal notranslate"><span class="pre">try_cached_call()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext"><code class="docutils literal notranslate"><span class="pre">TFDistributedContext</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_rank"><code class="docutils literal notranslate"><span class="pre">TFDistributedContext.local_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.global_rank"><code class="docutils literal notranslate"><span class="pre">TFDistributedContext.global_rank</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.world_size"><code class="docutils literal notranslate"><span class="pre">TFDistributedContext.world_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.local_size"><code class="docutils literal notranslate"><span class="pre">TFDistributedContext.local_size</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.TFDistributedContext.all_reduce"><code class="docutils literal notranslate"><span class="pre">TFDistributedContext.all_reduce()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.TFHorovodDistributedContext"><code class="docutils literal notranslate"><span class="pre">TFHorovodDistributedContext</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.get_shape"><code class="docutils literal notranslate"><span class="pre">get_shape()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.is_tensor"><code class="docutils literal notranslate"><span class="pre">is_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.simulate_bfloat16_transport"><code class="docutils literal notranslate"><span class="pre">simulate_bfloat16_transport()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.add_gaussian_noise"><code class="docutils literal notranslate"><span class="pre">add_gaussian_noise()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.add_laplacian_noise"><code class="docutils literal notranslate"><span class="pre">add_laplacian_noise()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.clone"><code class="docutils literal notranslate"><span class="pre">clone()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.flatten"><code class="docutils literal notranslate"><span class="pre">flatten()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.reshape"><code class="docutils literal notranslate"><span class="pre">reshape()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.norm"><code class="docutils literal notranslate"><span class="pre">norm()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.global_norm"><code class="docutils literal notranslate"><span class="pre">global_norm()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.to_tensor"><code class="docutils literal notranslate"><span class="pre">to_tensor()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.clone_variable"><code class="docutils literal notranslate"><span class="pre">clone_variable()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.assign_variable"><code class="docutils literal notranslate"><span class="pre">assign_variable()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.exponential_moving_average_update"><code class="docutils literal notranslate"><span class="pre">exponential_moving_average_update()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.one_hot"><code class="docutils literal notranslate"><span class="pre">one_hot()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.concatenate"><code class="docutils literal notranslate"><span class="pre">concatenate()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue"><code class="docutils literal notranslate"><span class="pre">KerasMetricValue</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue.overall_value"><code class="docutils literal notranslate"><span class="pre">KerasMetricValue.overall_value</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue.to_vector"><code class="docutils literal notranslate"><span class="pre">KerasMetricValue.to_vector()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.internal.ops.tensorflow_ops.KerasMetricValue.from_vector"><code class="docutils literal notranslate"><span class="pre">KerasMetricValue.from_vector()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -1,0 +1,663 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="article:modified_time" content="2024-01-30T01:55:26+00:00" /><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Fast distributed simulations" href="simulation_distributed.html" /><link rel="prev" title="pfl: Python framework for Private Federated Learning simulations" href="../index.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>Federated learning with pfl - pfl 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Federated learning with pfl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation_distributed.html">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/algorithm.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/aggregate.html#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/internal/index.html">Internal API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/distribution.html">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/ops.html">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/internal/tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="federated-learning-with-pfl">
+<span id="fl-introduction"></span><h1>Federated learning with pfl<a class="headerlink" href="#federated-learning-with-pfl" title="Link to this heading">#</a></h1>
+<p>Federated learning (FL) allows training models in a distributed
+manner without storing data centrally on a server
+(<a class="reference external" href="https://arxiv.org/abs/1511.03575">Konecny et al., 2015</a>,
+<a class="reference external" href="https://arxiv.org/abs/1610.02527">Konecny et al., 2016</a>).</p>
+<p>This section discusses cross-device FL and how it can be implemented
+using <code class="docutils literal notranslate"><span class="pre">pfl</span></code>. The section also provides examples for preparing the
+data and the model, which are important inputs to the algorithms
+themselves. The section does not provide an exhaustive list
+of algorithms implemented in <code class="docutils literal notranslate"><span class="pre">pfl</span></code> but rather a few simple examples
+to get started.</p>
+<p>For a more complete view,
+<a class="reference external" href="https://github.com/apple/pfl-research/tree/main/benchmarks">our benchmarks</a>
+include examples of realistic dataset-model combinations with
+and without differential privacy and <a class="reference external" href="https://github.com/apple/pfl-research/tree/main/tutorials">several tutorials</a>
+are also available.</p>
+<section id="cross-device-federated-learning">
+<h2>Cross-device federated learning<a class="headerlink" href="#cross-device-federated-learning" title="Link to this heading">#</a></h2>
+<p>Stochastic gradient descent (SGD) is the standard algorithm
+for training neural networks. In a distributed setting, the
+training data are split between multiple servers in a data
+center that each have a subset of the data, and each server computes the
+gradient of the loss function with respect to the model parameters on
+its own subset of data.
+The sum of the gradients computed by each of the servers is the sum
+of the gradients over the union of the data on those servers.
+The model parameters are then updated by making a step in the
+direction of this gradient.</p>
+<p>The federated setting is similar in principle, with a small fraction
+of user devices taking the place of the servers in each iteration.
+However, in the federated setting the communication links are much
+slower, and the data can be unequally distributed amongst devices.
+The standard SGD algorithm in this setting is called <cite>federated SGD</cite>.</p>
+<p><a class="reference external" href="https://arxiv.org/abs/1602.05629">Federated averaging</a> is a
+generalized form of federated training. Instead of each device computing
+a single gradient, each device performs multiple steps of SGD locally
+on its data, and reports the model differences back to the server.
+The server then averages the model differences from all
+devices in the cohort and uses the average in place of a gradient.
+In practice, <a class="reference external" href="https://arxiv.org/abs/2003.00295">adaptive optimizers</a>
+are often incorporated into the local or central training.</p>
+<p>The number of devices participating in each iteration is referred
+to as cohort size (C). C is typically a small fraction of the overall
+population of devices.</p>
+<p>For practical and privacy reasons, user devices typically cannot maintain a state
+across FL rounds, although in some FL algorithms, devices are stateful. It is
+often assumed that in practice every user participates in the training at
+most once or once in a relatively long period of time.</p>
+<p>While FL on its own provides only limited privacy guarantees
+(<a class="reference external" href="https://arxiv.org/abs/2112.02918">Boenisch et al., 2023</a>;
+<a class="reference external" href="https://arxiv.org/abs/2202.07646">Carlini et al., 2023</a>;
+<a class="reference external" href="https://arxiv.org/abs/2209.05578">Kariyappa et al., 2023</a>),
+it can be combined with differential privacy (DP)
+(<a class="reference external" href="https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf">Dwork et al., 2014</a>)
+and secure aggregation
+(<a class="reference external" href="http://arxiv.org/abs/1611.04482">Bonawitz et al., 2016</a>;
+<a class="reference external" href="https://arxiv.org/abs/2307.15017">Talwar et al., 2023</a>)
+to provide strong privacy guarantees for users (or clients) while training
+high quality models (<a class="reference external" href="https://arxiv.org/abs/1607.00133">Abadi et al., 2016</a>)
+For example, to incorporate user-level differential privacy using
+Gaussian noise, before sending the model differences back to the server, the differences are
+first clipped to make sure that the norm is upper bounded by a given clipping
+bound, and Gaussian noise is then added to each coordinate. The higher the
+noise relative to the clipping bound, the stronger the privacy guarantees.
+The clipped and randomized vector is then sent back to the server instead of
+the raw model differences.</p>
+<p>This document provides a high level example of how to initialize the key
+components to get the basic FL simulation running and a few pointers on how
+to change these components.</p>
+</section>
+<section id="preparing-data">
+<h2>Preparing data<a class="headerlink" href="#preparing-data" title="Link to this heading">#</a></h2>
+<p>A federated dataset is a collection of smaller datasets that are each associated
+to a unique user. The federated dataset can be defined using <a class="reference internal" href="../reference/data.html#pfl.data.federated_dataset.FederatedDataset" title="pfl.data.federated_dataset.FederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedDataset</span></code></a>, which
+takes two key parameters: <code class="docutils literal notranslate"><span class="pre">make_dataset_fn</span></code> and <code class="docutils literal notranslate"><span class="pre">user_sampler</span></code>. We discuss these two parameters next.</p>
+<p>The first parameter, <code class="docutils literal notranslate"><span class="pre">make_dataset_fn</span></code>, is a function that returns the data
+of a particular user given the user ID. This is the place where you want to do any preprocessing.
+For example, imagine that there is one file that represents the data from each user:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>user1.json
+<span class="go">{&quot;x&quot;: [[0, 0], [1, 0], [0, 1], [1, 1]], &quot;y&quot;: [0, 0, 0, 1]}</span>
+</pre></div>
+</div>
+<p>The data loading function in this case can be implemented as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pfl.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+
+<span class="k">def</span> <span class="nf">make_dataset_fn</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_id</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">))</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]]</span> <span class="c1"># Make one-hot encodings</span>
+    <span class="k">return</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">raw_data</span><span class="o">=</span><span class="p">[</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>In the above example, the raw data of the returned <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> is a list of two entries. The first entry is the <code class="docutils literal notranslate"><span class="pre">x</span></code> argument and the second entry is the <code class="docutils literal notranslate"><span class="pre">y</span></code> argument. These arguments must match the <code class="docutils literal notranslate"><span class="pre">loss</span></code> and <code class="docutils literal notranslate"><span class="pre">metric</span></code> functions of the model.</p>
+<p>The expected order of the data inputs for other deep learning frameworks is described in their corresponding <a class="reference internal" href="../reference/model.html#models"><span class="std std-ref">Models</span></a>.</p>
+<p>The second parameter of <a class="reference internal" href="../reference/data.html#pfl.data.federated_dataset.FederatedDataset" title="pfl.data.federated_dataset.FederatedDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedDataset</span></code></a>, <code class="docutils literal notranslate"><span class="pre">user_sampler</span></code>, should also be a callable, and will return a sampled user identifier every call.
+<code class="docutils literal notranslate"><span class="pre">pfl</span></code> implements two different sampling functions by default (available from the factory function <a class="reference internal" href="../reference/data.html#pfl.data.sampling.get_user_sampler" title="pfl.data.sampling.get_user_sampler"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_user_sampler()</span></code></a>): random and minimize reuse.
+Random sampling generates each cohort with a uniform distribution.
+The minimize-reuse sampler maximizes the time between instances of reuse of the same user (see <a class="reference internal" href="../reference/data.html#pfl.data.sampling.MinimizeReuseUserSampler" title="pfl.data.sampling.MinimizeReuseUserSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimizeReuseUserSampler</span></code></a>).</p>
+<p>Although the random user sampler might seem the obvious choice because the cohorts in live FL deployments are typically
+selected at random, with a limited number of users available for the FL simulation, the minimize-reuse sampling may in fact have a more realistic behavior.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pfl.data.sampling</span> <span class="kn">import</span> <span class="n">get_user_sampler</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_ids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;user1&#39;</span><span class="p">,</span> <span class="s1">&#39;user2&#39;</span><span class="p">,</span> <span class="s1">&#39;user3&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sampler</span> <span class="o">=</span> <span class="n">get_user_sampler</span><span class="p">(</span><span class="s1">&#39;minimize_reuse&#39;</span><span class="p">,</span> <span class="n">user_ids</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sampled &#39;</span><span class="p">,</span> <span class="n">sampler</span><span class="p">())</span>
+<span class="go">&#39;sampled user1&#39;</span>
+<span class="go">&#39;sampled user2&#39;</span>
+<span class="go">&#39;sampled user3&#39;</span>
+<span class="go">&#39;sampled user1&#39;</span>
+<span class="go">&#39;sampled user2&#39;</span>
+</pre></div>
+</div>
+<p>When you have defined a callable for the parameter <code class="docutils literal notranslate"><span class="pre">make_dataset_fn</span></code> and a callable for the parameter <code class="docutils literal notranslate"><span class="pre">user_sampler</span></code>, the federated dataset can be created.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">FederatedDataset</span><span class="p">(</span><span class="n">make_dataset_fn</span><span class="p">,</span> <span class="n">sampler</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The dataset can be iterated through, sampling a user dataset each call.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="o">.</span><span class="n">raw_data</span>
+<span class="go">[array([[0, 0],</span>
+<span class="go">        [1, 0],</span>
+<span class="go">        [0, 1],</span>
+<span class="go">        [1, 1]]),</span>
+<span class="go"> array([[1., 0.],</span>
+<span class="go">        [1., 0.],</span>
+<span class="go">        [1., 0.],</span>
+<span class="go">        [0., 1.]])]</span>
+</pre></div>
+</div>
+<p>For more information on how to prepare datasets and federated datasets,
+please see
+<a class="reference external" href="https://github.com/apple/pfl-research/blob/main/tutorials/Creating%20Federated%20Dataset%20for%20PFL%20Experiment.ipynb">our tutorial on creating federated datasets</a>
+and
+<a class="reference external" href="https://github.com/apple/pfl-research/tree/main/benchmarks">our benchmarks</a>.</p>
+</section>
+<section id="defining-a-model">
+<h2>Defining a model<a class="headerlink" href="#defining-a-model" title="Link to this heading">#</a></h2>
+<p>Below we define a simple PyTorch model that can be used for binary classification with
+10 input features, and it includes binary cross-entropy loss and accuracy metrics. Note that the
+<code class="docutils literal notranslate"><span class="pre">loss</span></code> and <code class="docutils literal notranslate"><span class="pre">metrics</span></code> functions have two arguments, <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>, which we discussed above
+when defining the dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">pfl.model.pytorch</span> <span class="kn">import</span> <span class="n">PyTorchModel</span>
+
+<span class="k">class</span> <span class="nc">TestModel</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>  <span class="c1"># pylint: disable=arguments-differ</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">eval</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span> <span class="k">if</span> <span class="nb">eval</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="n">bce_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bce_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">loss_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">eval</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">correct</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="n">Weighted</span><span class="p">(</span><span class="n">loss_value</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">),</span>
+            <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">Weighted</span><span class="p">(</span><span class="n">correct</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="n">pytorch_model</span> <span class="o">=</span> <span class="n">TestModel</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">PyTorchModel</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">pytorch_model</span><span class="p">,</span>
+                     <span class="n">local_optimizer_create</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">,</span>
+                     <span class="n">central_optimizer</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span>
+                         <span class="n">pytorch_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="fl-algorithms-in-pfl">
+<h2>FL algorithms in pfl<a class="headerlink" href="#fl-algorithms-in-pfl" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>Federated averaging<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>To implement cross-device FL with federated averaging using <code class="docutils literal notranslate"><span class="pre">pfl</span></code>, the key algorithm to use is
+<a class="reference internal" href="../reference/algorithm.html#pfl.algorithm.federated_averaging.FederatedAveraging" title="pfl.algorithm.federated_averaging.FederatedAveraging"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedAveraging</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pfl.algorithm.federated_averaging</span> <span class="kn">import</span> <span class="n">FederatedAveraging</span>
+
+<span class="n">algorithm</span> <span class="o">=</span> <span class="n">FederatedAveraging</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Assuming we want to train a neural network, we can proceed by setting the key
+parameters for central and local training, and evaluation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_params</span> <span class="o">=</span> <span class="n">NNAlgorithmParams</span><span class="p">(</span>
+      <span class="n">central_num_iterations</span><span class="o">=</span><span class="n">central_num_epochs</span><span class="p">,</span>
+      <span class="n">evaluation_frequency</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+      <span class="n">train_cohort_size</span><span class="o">=</span><span class="n">cohort_size</span><span class="p">,</span>
+      <span class="n">val_cohort_size</span><span class="o">=</span><span class="n">val_cohort_size</span><span class="p">)</span>
+
+  <span class="n">model_train_params</span> <span class="o">=</span> <span class="n">NNTrainHyperParams</span><span class="p">(</span>
+      <span class="n">local_num_epochs</span><span class="o">=</span><span class="n">local_num_epochs</span><span class="p">,</span>
+      <span class="n">local_learning_rate</span><span class="o">=</span><span class="n">local_learning_rate</span><span class="p">,</span>
+      <span class="n">local_batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+  <span class="n">model_eval_params</span> <span class="o">=</span> <span class="n">NNEvalHyperParams</span><span class="p">(</span><span class="n">local_batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Backend simulates an algorithm on the given federated dataset, which
+includes sampling the users, running local training, applying
+privacy mechanisms and applying postprocessors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">backend</span> <span class="o">=</span> <span class="n">SimulatedBackend</span><span class="p">(</span><span class="n">training_data</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+                           <span class="n">val_data</span><span class="o">=</span><span class="n">val_dataset</span><span class="p">,</span>
+                           <span class="n">postprocessors</span><span class="o">=</span><span class="p">[])</span>
+</pre></div>
+</div>
+<p>Callbacks can be provided that can be run at various stages of
+the algorithm. In the example shown below, the callbacks enable
+evaluating the model on the central dataset before the training begins
+and between central iterations, and saving aggregate metrics after
+each 100 iterations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cb_eval</span> <span class="o">=</span> <span class="n">CentralEvaluationCallback</span><span class="p">(</span><span class="n">central_dataset</span><span class="p">,</span>
+                                    <span class="n">model_eval_params</span><span class="p">)</span>
+
+<span class="n">cb_save</span> <span class="o">=</span> <span class="n">AggregateMetricsToDisk</span><span class="p">(</span>
+    <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">,</span>
+    <span class="n">frequency</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">check_existing_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The algorithm can then be run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">algorithm_params</span><span class="o">=</span><span class="n">algorithm_params</span><span class="p">,</span>
+    <span class="n">model_train_params</span><span class="o">=</span><span class="n">model_train_params</span><span class="p">,</span>
+    <span class="n">model_eval_params</span><span class="o">=</span><span class="n">model_eval_params</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">cb_eval</span><span class="p">,</span> <span class="n">cb_save</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="reptile-fl-with-fine-tuning-personalization">
+<span id="reptile-example"></span><h3>Reptile: FL with fine-tuning (personalization)<a class="headerlink" href="#reptile-fl-with-fine-tuning-personalization" title="Link to this heading">#</a></h3>
+<p><a class="reference internal" href="../reference/algorithm.html#pfl.algorithm.reptile.Reptile" title="pfl.algorithm.reptile.Reptile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reptile</span></code></a>
+(<a class="reference external" href="https://arxiv.org/abs/1803.02999">Nichol et al., 2018</a>)
+combines federated averaging with fine-tuning where the
+model is fine tuned locally on each device prior to evaluation. Therefore,
+compared to traditional federated averaging, the evaluation should focus
+on metrics after running the local training. It is straightforward to switch
+the algorithm to enable fine-tuning (using the same parameters as in federated
+averaging):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pfl.algorithm.reptile</span> <span class="kn">import</span> <span class="n">Reptile</span>
+
+<span class="n">reptile</span> <span class="o">=</span> <span class="n">Reptile</span><span class="p">()</span>
+
+<span class="n">reptile</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">algorithm_params</span><span class="o">=</span><span class="n">algorithm_params</span><span class="p">,</span>
+    <span class="n">model_train_params</span><span class="o">=</span><span class="n">model_train_params</span><span class="p">,</span>
+    <span class="n">model_eval_params</span><span class="o">=</span><span class="n">model_eval_params</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">cb_eval</span><span class="p">,</span> <span class="n">cb_save</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="gradient-boosted-decision-trees">
+<span id="gbdt-example"></span><h3>Gradient Boosted Decision Trees<a class="headerlink" href="#gradient-boosted-decision-trees" title="Link to this heading">#</a></h3>
+<p>This section presents an example of using <code class="docutils literal notranslate"><span class="pre">pfl</span></code> to train a gradient boosted
+decision tree (GBDT) model with a
+specialized training algorithm. In this case, the algorithm incrementally
+grows the trees.</p>
+<p>The parameters for GBDT algorithm are defined using <a class="reference internal" href="../reference/tree.html#pfl.tree.federated_gbdt.GBDTAlgorithmHyperParams" title="pfl.tree.federated_gbdt.GBDTAlgorithmHyperParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">GBDTAlgorithmHyperParams</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pfl.tree.federated_gbdt</span> <span class="kn">import</span> <span class="n">GBDTAlgorithmHyperParams</span>
+<span class="kn">from</span> <span class="nn">pfl.tree.gbdt_model</span> <span class="kn">import</span> <span class="n">GBDTModelHyperParams</span>
+
+<span class="n">gbdt_algorithm_params</span> <span class="o">=</span> <span class="n">GBDTAlgorithmHyperParams</span><span class="p">(</span>
+    <span class="n">cohort_size</span><span class="o">=</span><span class="n">cohort_size</span><span class="p">,</span>
+    <span class="n">val_cohort_size</span><span class="o">=</span><span class="n">val_cohort_size</span><span class="p">,</span>
+    <span class="n">num_trees</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">model_train_params</span> <span class="o">=</span> <span class="n">GBDTModelHyperParams</span><span class="p">()</span>
+<span class="n">model_eval_params</span> <span class="o">=</span> <span class="n">GBDTModelHyperParams</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Two versions of GBDT models are implemented:
+<a class="reference internal" href="../reference/tree.html#pfl.tree.gbdt_model.GBDTModelClassifier" title="pfl.tree.gbdt_model.GBDTModelClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">GBDTModelClassifier</span></code></a> implements GBDT for classification and
+<a class="reference internal" href="../reference/tree.html#pfl.tree.gbdt_model.GBDTModelRegressor" title="pfl.tree.gbdt_model.GBDTModelRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">GBDTModelRegressor</span></code></a> implements GBDT for regression. Here is
+an example of creating a GBDT classifier model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pfl.tree.gbdt_model</span> <span class="kn">import</span> <span class="n">GBDTModelClassifier</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">GBDTModelClassifier</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="n">num_features</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To initialize the GBDT training algorithm, it’s necessary to provide details
+about the features. The code snippet below provides an example with 100 bool
+features and 10 floating point features from interval [0, 100] with 5
+equidistant boundaries to consider for tree splits:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pfl.tree.tree_utils</span> <span class="kn">import</span> <span class="n">Feature</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Feature</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">bool</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Feature</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="nb">float</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;equidistant&#39;</span><span class="p">)</span>
+
+<span class="n">gbdt_algorithm</span> <span class="o">=</span> <span class="n">FederatedGBDT</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The algorithm can then be run similarly as in other examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gbdt_algorithm</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">algorithm_params</span><span class="o">=</span><span class="n">gbdt_algorithm_params</span><span class="p">,</span>
+                   <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+                   <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                   <span class="n">model_train_params</span><span class="o">=</span><span class="n">model_train_params</span><span class="p">,</span>
+                   <span class="n">model_eval_params</span><span class="o">=</span><span class="n">model_eval_params</span><span class="p">,</span>
+                   <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">cb_eval</span><span class="p">,</span> <span class="n">cb_save</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="implementing-new-fl-algorithms-in-pfl">
+<h3>Implementing new FL algorithms in pfl<a class="headerlink" href="#implementing-new-fl-algorithms-in-pfl" title="Link to this heading">#</a></h3>
+<p>The above examples provide good starting points on how to implement
+new FL algorithms, although simpler versions can often be created
+by focusing on a single framework.</p>
+<p>Most new algorithms are likely
+to extend <a class="reference internal" href="../reference/algorithm.html#pfl.algorithm.federated_averaging.FederatedAveraging" title="pfl.algorithm.federated_averaging.FederatedAveraging"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedAveraging</span></code></a>.
+If the new algorithm requires
+the users to store states, consider using <code class="xref py py-class docutils literal notranslate"><span class="pre">SCAFFOLD</span></code> as an example
+of how to initialize and update user states. If the new algorithm
+modifies the loss function (e.g. by adding a regularization term),
+<a class="reference internal" href="../reference/algorithm.html#pfl.algorithm.fedprox.FedProx" title="pfl.algorithm.fedprox.FedProx"><code class="xref py py-class docutils literal notranslate"><span class="pre">FedProx</span></code></a> is a good starting point.
+If the algorithm modifies the training loop in some way, <a class="reference internal" href="#reptile-example"><span class="std std-ref">Reptile: FL with fine-tuning (personalization)</span></a>
+provides a good example. Finally, <a class="reference internal" href="#gbdt-example"><span class="std std-ref">Gradient Boosted Decision Trees</span></a>
+provide examples of implementing algorithms that require specialized
+training and evaluation instead of the typical federated averaging.</p>
+</section>
+</section>
+<section id="from-fl-to-pfl-incorporating-privacy">
+<h2>From FL to PFL: Incorporating Privacy<a class="headerlink" href="#from-fl-to-pfl-incorporating-privacy" title="Link to this heading">#</a></h2>
+<p>We discussed above that FL on its own does not guarantee privacy, and
+that is why we may want to incorporate differential privacy (DP) into FL.
+Private federated learning (PFL) is simply FL with
+DP, which can in practice be combined with secure aggregation.
+For more information on how to do incorporate DP into FL
+simulations using <code class="docutils literal notranslate"><span class="pre">pfl</span></code>, please see
+<a class="reference external" href="https://github.com/apple/pfl-research/tree/main/benchmarks">our benchmarks</a>
+and
+<a class="reference external" href="https://github.com/apple/pfl-research/tree/main/tutorials">tutorials</a>.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="simulation_distributed.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Fast distributed simulations</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on Jan 30, 2024</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Federated learning with pfl</a><ul>
+<li><a class="reference internal" href="#cross-device-federated-learning">Cross-device federated learning</a></li>
+<li><a class="reference internal" href="#preparing-data">Preparing data</a></li>
+<li><a class="reference internal" href="#defining-a-model">Defining a model</a></li>
+<li><a class="reference internal" href="#fl-algorithms-in-pfl">FL algorithms in pfl</a><ul>
+<li><a class="reference internal" href="#id2">Federated averaging</a></li>
+<li><a class="reference internal" href="#reptile-fl-with-fine-tuning-personalization">Reptile: FL with fine-tuning (personalization)</a></li>
+<li><a class="reference internal" href="#gradient-boosted-decision-trees">Gradient Boosted Decision Trees</a></li>
+<li><a class="reference internal" href="#implementing-new-fl-algorithms-in-pfl">Implementing new FL algorithms in pfl</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#from-fl-to-pfl-incorporating-privacy">From FL to PFL: Incorporating Privacy</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

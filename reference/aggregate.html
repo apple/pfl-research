@@ -1,0 +1,800 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="article:modified_time" content="2025-05-28T17:07:54+00:00" /><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Callbacks" href="callback.html" /><link rel="prev" title="Algorithms" href="algorithm.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>Backend - pfl 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pfl 0.3.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">pfl 0.3.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/fl_introduction.html">Federated learning with pfl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/simulation_distributed.html">Fast distributed simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithms</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#aggregator">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pfl.aggregate.data_transport">Data transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-pfl.aggregate.weighting">Weighting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callback.html">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exception.html">Exception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hyperparam.html">Hyperparameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessor.html">Postprocessor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="privacy.html">Differential privacy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Training statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tree.html">Gradient boosted decision trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment_variables.html">Environment variables</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="internal/index.html">Internal API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Internal API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="internal/bisect.html">Bisect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/bridge.html">Bridges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/distribution.html">Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/ops.html">Ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/platform.html">Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/privacy_loss_bound.html">Privacy loss bound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal/tree.html">Tree</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="backend">
+<span id="backends"></span><h1>Backend<a class="headerlink" href="#backend" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.base.Backend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.base.</span></span><span class="sig-name descname"><span class="pre">Backend</span></span><a class="headerlink" href="#pfl.aggregate.base.Backend" title="Link to this definition">#</a></dt>
+<dd><p>Backend base class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.Backend.gather_results">
+<span class="sig-name descname"><span class="pre">gather_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_algorithm</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.Backend.gather_results" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate or compute training statistics on devices and aggregate them.</p>
+<p>This call blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="model.html#pfl.model.base.Model" title="pfl.model.base.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A model to use for training users.
+Subclasses can refine the type of <code class="docutils literal notranslate"><span class="pre">Model</span></code> they expect</p></li>
+<li><p><strong>training_algorithm</strong> – An object that defines the training algorithm.
+Subclasses can have additional requirements on the type of this
+object.</p></li>
+<li><p><strong>central_context</strong> (<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>) – Settings to use for this round.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>], <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary of the raw statistics (if this is a training round) and
+aggregated metrics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.Backend.async_gather_results">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_gather_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_algorithm</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.Backend.async_gather_results" title="Link to this definition">#</a></dt>
+<dd><p>Should implement the map-reduce procedure of locally training on devices
+and aggregating the model updates.
+Can be either a simulation or using live infrastructure.
+If an implementation of <code class="docutils literal notranslate"><span class="pre">async_gather_results</span></code> requires runs of it to
+be non-overlapping in time, don’t use <code class="docutils literal notranslate"><span class="pre">await</span></code> in it.</p>
+<p>Implementations of this may require that calls to it are started in a
+fixed order.</p>
+<p>For the parameters, see <cite>gather_results</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>], <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.simulate.SimulatedBackend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.simulate.</span></span><span class="sig-name descname"><span class="pre">SimulatedBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">training_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocessors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_overshoot_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.simulate.SimulatedBackend" title="Link to this definition">#</a></dt>
+<dd><p>Backend that simulates an algorithm on the given federated datasets.
+The simulation performs the following:</p>
+<ol class="arabic simple">
+<li><p>Perform the following steps on all users (can be parallelized with
+multiple workers):</p>
+<ol class="loweralpha simple">
+<li><p>Sample a user <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> from the source <code class="docutils literal notranslate"><span class="pre">FederatedDatasetBase</span></code>.</p></li>
+<li><dl class="simple">
+<dt>Train model on the user dataset and extract the model updates.</dt><dd><p>The algorithm used for local training is injected by
+<code class="docutils literal notranslate"><span class="pre">training_algorithm</span></code> when calling <code class="docutils literal notranslate"><span class="pre">gather_results</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><p>Apply local clipping to individual contribution.</p></li>
+<li><p>Privatize individual contribution with <code class="docutils literal notranslate"><span class="pre">local_privacy</span></code>.</p></li>
+</ol>
+</li>
+<li><p>Apply central clipping of individual contribution.</p></li>
+<li><p>Sum all the individual contributions.</p></li>
+<li><p>Add central noise.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>training_data</strong> (<a class="reference internal" href="data.html#pfl.data.federated_dataset.FederatedDatasetBase" title="pfl.data.federated_dataset.FederatedDatasetBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedDatasetBase</span></code></a>) – Training dataset generator, derived from <cite>FederatedDatasetBase</cite>.</p></li>
+<li><p><strong>val_data</strong> (<a class="reference internal" href="data.html#pfl.data.federated_dataset.FederatedDatasetBase" title="pfl.data.federated_dataset.FederatedDatasetBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedDatasetBase</span></code></a>) – Validation dataset generator, derived from <cite>FederatedDatasetBase</cite>.</p></li>
+<li><p><strong>postprocessors</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="postprocessor.html#pfl.postprocessor.base.Postprocessor" title="pfl.postprocessor.base.Postprocessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Postprocessor</span></code></a>]]) – Steps for postprocessing statistics returned by users, e.g. weighting,
+sparsification, compression.</p></li>
+<li><p><strong>aggregator</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#pfl.aggregate.base.Aggregator" title="pfl.aggregate.base.Aggregator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Aggregator</span></code></a>]) – The aggregation method to use. If not specified, use the default
+<a class="reference internal" href="#pfl.aggregate.base.SumAggregator" title="pfl.aggregate.base.SumAggregator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pfl.aggregate.base.SumAggregator</span></code></a> which will sum all
+statistics of users trained in each process, then all-reduce sum
+across processes.</p></li>
+<li><p><strong>max_overshoot_fraction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Simulate overshooting the number of results received from users. This
+is disabled by default, but is expected to be up to 0.05-0.10 when
+training live.
+The overshooting is assumed to be a fraction
+<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">~</span> <span class="pre">Uniform(0,max_overshoot_fraction)</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.simulate.SimulatedBackend.async_gather_results">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_gather_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_algorithm</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.simulate.SimulatedBackend.async_gather_results" title="Link to this definition">#</a></dt>
+<dd><p>Run a simulation on a cohort of user datasets.
+Returns aggregated statistics and metrics from the procedure described
+in the class description.</p>
+<p>This implementation is not actually asynchronous and it yields execution
+only once it is completely done.
+The work may be split up amongst multiple workers.
+In this case, the order in which this method is called must be the same
+across workers, so that their synchronisation points line up.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="model.html#pfl.model.base.Model" title="pfl.model.base.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>) – A model to be used for gathering the statistics.</p></li>
+<li><p><strong>training_algorithm</strong> (<a class="reference internal" href="algorithm.html#pfl.algorithm.base.FederatedAlgorithm" title="pfl.algorithm.base.FederatedAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedAlgorithm</span></code></a>) – An object that inherits from
+<a class="reference internal" href="algorithm.html#pfl.algorithm.base.FederatedAlgorithm" title="pfl.algorithm.base.FederatedAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">FederatedAlgorithm</span></code></a>,
+which injects the algorithm-specific behaviour.</p></li>
+<li><p><strong>central_context</strong> (<a class="reference internal" href="context.html#pfl.context.CentralContext" title="pfl.context.CentralContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">CentralContext</span></code></a>) – Settings to use for this round.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>], <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A dictionary of the raw model updates and a metrics object
+of aggregated statistics. The model updates are weighted depending
+on the weighting strategy. The model update can be <code class="docutils literal notranslate"><span class="pre">None</span></code> if the
+algorithm does not train on the val population.</p>
+<p>If using local and central DP, useful privacy metrics with the
+category “local DP” and “central DP” are returned.
+Metrics from training are returned with the population as the
+category.
+<code class="docutils literal notranslate"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">devices</span></code> is the number of users
+that the data came from.
+<code class="docutils literal notranslate"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">data</span> <span class="pre">points</span></code> is self-explanatory.
+<code class="docutils literal notranslate"><span class="pre">total</span> <span class="pre">weight</span></code> is the denominator for a potentially weighted
+aggregation.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="aggregator">
+<h1>Aggregator<a class="headerlink" href="#aggregator" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.base.Aggregator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.base.</span></span><span class="sig-name descname"><span class="pre">Aggregator</span></span><a class="headerlink" href="#pfl.aggregate.base.Aggregator" title="Link to this definition">#</a></dt>
+<dd><p>Base class for aggregating <a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">pfl.stats.TrainingStatistics</span></code></a> and
+<a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">pfl.metrics.Metrics</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.Aggregator.accumulate">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accumulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_stats</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.Aggregator.accumulate" title="Link to this definition">#</a></dt>
+<dd><p>Accumulate user statistics on current worker process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>accumulated</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)]) – The state of the server-side statistics accumulator. If <cite>None</cite>,
+then <code class="docutils literal notranslate"><span class="pre">user_stats</span></code> is the first contribution in the
+aggregation.</p></li>
+<li><p><strong>user_stats</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)) – Statistics from the user to accumulate. Each variable in the
+object will be accumulated separately, which means each accumulated
+user needs to have statistics of the same structure, e.g.
+the same number of variables of the same shapes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.Aggregator.worker_reduce">
+<span class="sig-name descname"><span class="pre">worker_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregated_worker_stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregated_worker_metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.Aggregator.worker_reduce" title="Link to this definition">#</a></dt>
+<dd><p>User statistics and metrics are first summed on each worker process,
+then they are reduced across workers using this method.
+This method can be ignored in concrete aggregator classes if they are
+not compatible with multi-process training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics), <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.Aggregator.worker_reduce_metrics_only">
+<span class="sig-name descname"><span class="pre">worker_reduce_metrics_only</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregated_worker_metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.Aggregator.worker_reduce_metrics_only" title="Link to this definition">#</a></dt>
+<dd><p>This method is run instead of <code class="docutils literal notranslate"><span class="pre">worker_reduce</span></code> when the
+accumulated statistics is <code class="docutils literal notranslate"><span class="pre">None</span></code>, what happens e.g. in a
+validation iteration.</p>
+<p>User metrics are first summed on each worker process, then they
+are reduced across workers using this method. This method
+can be ignored in concrete aggregator classes if they are not
+compatible with multi-process training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.base.SumAggregator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.base.</span></span><span class="sig-name descname"><span class="pre">SumAggregator</span></span><a class="headerlink" href="#pfl.aggregate.base.SumAggregator" title="Link to this definition">#</a></dt>
+<dd><p>Aggregation of user statistics as a regular sum.
+Reduction across worker processes are done with an all-reduce sum.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.SumAggregator.accumulate">
+<span class="sig-name descname"><span class="pre">accumulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_stats</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.SumAggregator.accumulate" title="Link to this definition">#</a></dt>
+<dd><p>Accumulate user statistics on current worker process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>accumulated</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)]) – The state of the server-side statistics accumulator. If <cite>None</cite>,
+then <code class="docutils literal notranslate"><span class="pre">user_stats</span></code> is the first contribution in the
+aggregation.</p></li>
+<li><p><strong>user_stats</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)) – Statistics from the user to accumulate. Each variable in the
+object will be accumulated separately, which means each accumulated
+user needs to have statistics of the same structure, e.g.
+the same number of variables of the same shapes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.SumAggregator.worker_reduce_metrics_only">
+<span class="sig-name descname"><span class="pre">worker_reduce_metrics_only</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregated_worker_metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.SumAggregator.worker_reduce_metrics_only" title="Link to this definition">#</a></dt>
+<dd><p>This method is run instead of <code class="docutils literal notranslate"><span class="pre">worker_reduce</span></code> when the
+accumulated statistics is <code class="docutils literal notranslate"><span class="pre">None</span></code>, what happens e.g. in a
+validation iteration.</p>
+<p>User metrics are first summed on each worker process, then they
+are reduced across workers using this method. This method
+can be ignored in concrete aggregator classes if they are not
+compatible with multi-process training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.base.SumAggregator.worker_reduce">
+<span class="sig-name descname"><span class="pre">worker_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregated_worker_stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">central_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregated_worker_metrics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.base.SumAggregator.worker_reduce" title="Link to this definition">#</a></dt>
+<dd><p>User statistics and metrics are first summed on each worker process,
+then they are reduced across workers using this method.
+This method can be ignored in concrete aggregator classes if they are
+not compatible with multi-process training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">StatisticsType</span></code>, bound= TrainingStatistics), <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pfl.aggregate.data_transport">
+<span id="data-transport"></span><h1>Data transport<a class="headerlink" href="#module-pfl.aggregate.data_transport" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.data_transport.DataTransport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.data_transport.</span></span><span class="sig-name descname"><span class="pre">DataTransport</span></span><a class="headerlink" href="#pfl.aggregate.data_transport.DataTransport" title="Link to this definition">#</a></dt>
+<dd><p>Data transport base class. Specifies in what format model updates are sent.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.data_transport.DataTransport.postprocess_one_user">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">postprocess_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.data_transport.DataTransport.postprocess_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Simulate the transport of model updates in the format specified by this
+class.
+This is simulated by converting to the transport format and then converting
+back to the original format, which will result in the same eventual loss
+of information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stats</strong> (<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>) – The model update to simulate transport with.</p></li>
+<li><p><strong>user_context</strong> (<a class="reference internal" href="context.html#pfl.context.UserContext" title="pfl.context.UserContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserContext</span></code></a>) – Information about the user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The same (transported) model update and any new metrics generated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.data_transport.Float32DataTransport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.data_transport.</span></span><span class="sig-name descname"><span class="pre">Float32DataTransport</span></span><a class="headerlink" href="#pfl.aggregate.data_transport.Float32DataTransport" title="Link to this definition">#</a></dt>
+<dd><p>Use the float32 (legacy) format for data transport. Has no effect in
+simulations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.data_transport.Float32DataTransport.postprocess_one_user">
+<span class="sig-name descname"><span class="pre">postprocess_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.data_transport.Float32DataTransport.postprocess_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Simulate the transport of model updates in the format specified by this
+class.
+This is simulated by converting to the transport format and then converting
+back to the original format, which will result in the same eventual loss
+of information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stats</strong> (<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>) – The model update to simulate transport with.</p></li>
+<li><p><strong>user_context</strong> (<a class="reference internal" href="context.html#pfl.context.UserContext" title="pfl.context.UserContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserContext</span></code></a>) – Information about the user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The same (transported) model update and any new metrics generated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.data_transport.BFloat16DataTransport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.data_transport.</span></span><span class="sig-name descname"><span class="pre">BFloat16DataTransport</span></span><a class="headerlink" href="#pfl.aggregate.data_transport.BFloat16DataTransport" title="Link to this definition">#</a></dt>
+<dd><p>Use the bfloat16 format for data transport. Simulates this behaviour by
+converting model updates
+<code class="docutils literal notranslate"><span class="pre">original_format</span> <span class="pre">-&gt;</span> <span class="pre">bfloat16</span> <span class="pre">-&gt;</span> <span class="pre">original_format</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.data_transport.BFloat16DataTransport.postprocess_one_user">
+<span class="sig-name descname"><span class="pre">postprocess_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.data_transport.BFloat16DataTransport.postprocess_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Simulate the transport of model updates in the format specified by this
+class.
+This is simulated by converting to the transport format and then converting
+back to the original format, which will result in the same eventual loss
+of information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stats</strong> (<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>) – The model update to simulate transport with.</p></li>
+<li><p><strong>user_context</strong> (<a class="reference internal" href="context.html#pfl.context.UserContext" title="pfl.context.UserContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserContext</span></code></a>) – Information about the user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="stats.html#pfl.stats.TrainingStatistics" title="pfl.stats.TrainingStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingStatistics</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The same (transported) model update and any new metrics generated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pfl.aggregate.weighting">
+<span id="weighting"></span><h1>Weighting<a class="headerlink" href="#module-pfl.aggregate.weighting" title="Link to this heading">#</a></h1>
+<p>Weighting strategies are <a class="reference internal" href="postprocessor.html#pfl.postprocessor.base.Postprocessor" title="pfl.postprocessor.base.Postprocessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Postprocessor</span></code></a>
+that provide different ways of applying a weight to each
+individual statistics contribution before aggregation. This is a way to
+increase the magnitude of contributions that are considered important by
+some metric and decrease the magnitude of less important contributions.</p>
+<p>How to use this feature is a philosophical question. When using federated SGD
+(1 local iteration), then it makes sense to weight by datapoints using
+<a class="reference internal" href="#pfl.aggregate.weighting.WeightByDatapoints" title="pfl.aggregate.weighting.WeightByDatapoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightByDatapoints</span></code></a>, since this sums the
+gradient over the whole data set. However, when the number of local gradient
+steps is much higher than <code class="docutils literal notranslate"><span class="pre">1</span></code>, and the local models are overtrained, it
+makes more sense to assign each locally overtrained model the same weight,
+i.e. weighting by users using
+<a class="reference internal" href="#pfl.aggregate.weighting.WeightByUser" title="pfl.aggregate.weighting.WeightByUser"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightByUser</span></code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Scaling user statistics with different weights will require you to adjust
+the clipping bound of your privacy mechanism accordingly.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.weighting.WeightingStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.weighting.</span></span><span class="sig-name descname"><span class="pre">WeightingStrategy</span></span><a class="headerlink" href="#pfl.aggregate.weighting.WeightingStrategy" title="Link to this definition">#</a></dt>
+<dd><p>Base class for weighting schemes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.weighting.WeightingStrategy.postprocess_one_user">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">postprocess_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.weighting.WeightingStrategy.postprocess_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Re-weights <code class="docutils literal notranslate"><span class="pre">stats</span></code> in-place according to the weighting scheme of
+this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="stats.html#pfl.stats.WeightedStatistics" title="pfl.stats.WeightedStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedStatistics</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.weighting.WeightByUser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.weighting.</span></span><span class="sig-name descname"><span class="pre">WeightByUser</span></span><a class="headerlink" href="#pfl.aggregate.weighting.WeightByUser" title="Link to this definition">#</a></dt>
+<dd><p>Re-weights <code class="docutils literal notranslate"><span class="pre">statistics</span></code> in-place by user.
+This is generally used with federated averaging if you want a
+simple unweighted average of local model updates (statistics).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.weighting.WeightByUser.postprocess_one_user">
+<span class="sig-name descname"><span class="pre">postprocess_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.weighting.WeightByUser.postprocess_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Re-weights <code class="docutils literal notranslate"><span class="pre">stats</span></code> in-place according to the weighting scheme of
+this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="stats.html#pfl.stats.WeightedStatistics" title="pfl.stats.WeightedStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedStatistics</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pfl.aggregate.weighting.WeightByDatapoints">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pfl.aggregate.weighting.</span></span><span class="sig-name descname"><span class="pre">WeightByDatapoints</span></span><a class="headerlink" href="#pfl.aggregate.weighting.WeightByDatapoints" title="Link to this definition">#</a></dt>
+<dd><p>Re-weights <code class="docutils literal notranslate"><span class="pre">statistics</span></code> in-place by the number of data points of user.
+This is generally used with federated averaging if you want to weight the
+averaging by the number of data points used for training the model on each
+device.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pfl.aggregate.weighting.WeightByDatapoints.postprocess_one_user">
+<span class="sig-name descname"><span class="pre">postprocess_one_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pfl.aggregate.weighting.WeightByDatapoints.postprocess_one_user" title="Link to this definition">#</a></dt>
+<dd><p>Re-weights <code class="docutils literal notranslate"><span class="pre">stats</span></code> in-place according to the weighting scheme of
+this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="stats.html#pfl.stats.WeightedStatistics" title="pfl.stats.WeightedStatistics"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedStatistics</span></code></a>, <a class="reference internal" href="metrics.html#pfl.metrics.Metrics" title="pfl.metrics.Metrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">Metrics</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="callback.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Callbacks</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="algorithm.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Algorithms</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024 Apple Inc.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on May 28, 2025</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Backend</a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.base.Backend"><code class="docutils literal notranslate"><span class="pre">Backend</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.base.Backend.gather_results"><code class="docutils literal notranslate"><span class="pre">Backend.gather_results()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.aggregate.base.Backend.async_gather_results"><code class="docutils literal notranslate"><span class="pre">Backend.async_gather_results()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.aggregate.simulate.SimulatedBackend"><code class="docutils literal notranslate"><span class="pre">SimulatedBackend</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.simulate.SimulatedBackend.async_gather_results"><code class="docutils literal notranslate"><span class="pre">SimulatedBackend.async_gather_results()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#aggregator">Aggregator</a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.base.Aggregator"><code class="docutils literal notranslate"><span class="pre">Aggregator</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.base.Aggregator.accumulate"><code class="docutils literal notranslate"><span class="pre">Aggregator.accumulate()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.aggregate.base.Aggregator.worker_reduce"><code class="docutils literal notranslate"><span class="pre">Aggregator.worker_reduce()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.aggregate.base.Aggregator.worker_reduce_metrics_only"><code class="docutils literal notranslate"><span class="pre">Aggregator.worker_reduce_metrics_only()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.aggregate.base.SumAggregator"><code class="docutils literal notranslate"><span class="pre">SumAggregator</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.base.SumAggregator.accumulate"><code class="docutils literal notranslate"><span class="pre">SumAggregator.accumulate()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.aggregate.base.SumAggregator.worker_reduce_metrics_only"><code class="docutils literal notranslate"><span class="pre">SumAggregator.worker_reduce_metrics_only()</span></code></a></li>
+<li><a class="reference internal" href="#pfl.aggregate.base.SumAggregator.worker_reduce"><code class="docutils literal notranslate"><span class="pre">SumAggregator.worker_reduce()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.aggregate.data_transport">Data transport</a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.data_transport.DataTransport"><code class="docutils literal notranslate"><span class="pre">DataTransport</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.data_transport.DataTransport.postprocess_one_user"><code class="docutils literal notranslate"><span class="pre">DataTransport.postprocess_one_user()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.aggregate.data_transport.Float32DataTransport"><code class="docutils literal notranslate"><span class="pre">Float32DataTransport</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.data_transport.Float32DataTransport.postprocess_one_user"><code class="docutils literal notranslate"><span class="pre">Float32DataTransport.postprocess_one_user()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.aggregate.data_transport.BFloat16DataTransport"><code class="docutils literal notranslate"><span class="pre">BFloat16DataTransport</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.data_transport.BFloat16DataTransport.postprocess_one_user"><code class="docutils literal notranslate"><span class="pre">BFloat16DataTransport.postprocess_one_user()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pfl.aggregate.weighting">Weighting</a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.weighting.WeightingStrategy"><code class="docutils literal notranslate"><span class="pre">WeightingStrategy</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.weighting.WeightingStrategy.postprocess_one_user"><code class="docutils literal notranslate"><span class="pre">WeightingStrategy.postprocess_one_user()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.aggregate.weighting.WeightByUser"><code class="docutils literal notranslate"><span class="pre">WeightByUser</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.weighting.WeightByUser.postprocess_one_user"><code class="docutils literal notranslate"><span class="pre">WeightByUser.postprocess_one_user()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pfl.aggregate.weighting.WeightByDatapoints"><code class="docutils literal notranslate"><span class="pre">WeightByDatapoints</span></code></a><ul>
+<li><a class="reference internal" href="#pfl.aggregate.weighting.WeightByDatapoints.postprocess_one_user"><code class="docutils literal notranslate"><span class="pre">WeightByDatapoints.postprocess_one_user()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -4,6 +4,10 @@ description: 'Install dependencies for benchmark tests'
 runs:
   using: 'composite'
   steps:
+    - name: Install Poetry
+      shell: bash
+      run: pipx install poetry==1.6.1
+
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
@@ -13,6 +17,5 @@ runs:
       shell: bash
       run: |
         cd benchmarks
-        pip install poetry
         poetry install -E tf -E pytorch --no-root || true
         echo "PYTHONPATH=." >> $GITHUB_ENV

@@ -10,8 +10,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v4
- 
     - name: Create extras file for cache key
       shell: bash
       run: echo "${{ inputs.extras }}" > extras.txt
@@ -31,17 +29,8 @@ runs:
         pip install poetry
         poetry config virtualenvs.in-project true
         
-    - name: Cache Poetry dependencies
-      # TODO resotre cache
-      uses: actions/cache@v3
-      with:
-        path: .venv
-        key: v2-poetry-deps-${{ hashFiles('poetry.lock') }}-${{ hashFiles('extras.txt') }}
-        
     - name: Install dependencies
       shell: bash
       run: |
         poetry install -E "${{ inputs.extras }}" -q || true
         poetry run ./build_scripts/install_horovod.sh "${{ inputs.extras }}" true
-      
-    # TODO save cache

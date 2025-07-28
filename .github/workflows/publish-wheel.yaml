@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  publish-wheel:
+  build-wheel:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -14,9 +14,31 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: Publish wheel
-        run: make build-and-publish
-        env:
-          # TODO set up these secrets in your GitHub repository
-          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      - name: Build the wheel
+        run: make build
+      - name: Upload python package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: packages/backend/dist/
+
+  publish-wheel:
+    runs-on: ubuntu-22.04
+    needs:
+      - build-wheel
+    permissions:
+      id-token: write
+    environment:
+      name: pypi
+      url: https://pypi.org/project/pfl/
+    steps:
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
+      - name: Publish release distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

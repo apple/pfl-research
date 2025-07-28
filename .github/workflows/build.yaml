@@ -1,0 +1,135 @@
+name: Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Run pre-commit hooks
+        run: |
+          pip install pre-commit
+          make check
+          if ! git diff --quiet; then 
+            echo 'Style checks failed, please install pre-commit and run pre-commit run --all and push the change'
+            exit 1
+          fi
+
+  build-documentation-wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Full Install
+        uses: ./.github/actions/full-install
+        with:
+          extras: "tf pytorch trees"
+      - name: Build documentation
+        run: make docs
+      - name: Build wheel
+        run: make build
+      - name: Install wheel
+        run: python -m pip install dist/*.whl
+
+  test-tf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Full Install
+        uses: ./.github/actions/full-install
+        with:
+          extras: "tf trees"
+      - name: Test with TensorFlow
+        run: make test
+
+  test-pytorch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Full Install
+        uses: ./.github/actions/full-install
+        with:
+          extras: "pytorch trees"
+      - name: Test with PyTorch
+        run: make test
+
+  test-benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Benchmark Install
+        uses: ./.github/actions/benchmark-install
+      - name: Run tests in benchmarks
+        run: |
+          cd benchmarks
+          poetry run pytest test/ --durations 0 -n4
+
+  check-run-cifar10:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Benchmark Install
+        uses: ./.github/actions/benchmark-install
+      - name: Download data
+        run: |
+          mkdir -p ./benchmarks/data/cifar10
+          curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_train.p \
+            -o ./benchmarks/data/cifar10/cifar10_train.p
+          curl https://pfl-data.s3.us-east-2.amazonaws.com/cifar10_ci/cifar10_test.p \
+            -o ./benchmarks/data/cifar10/cifar10_test.p
+      - name: (PyTorch) run a few iterations of CIFAR10 training
+        run: |
+          cd benchmarks
+          poetry run python image_classification/pytorch/train.py \
+            --args_config image_classification/configs/baseline.yaml \
+            --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+      - name: (TensorFlow) run a few iterations of CIFAR10 training
+        run: |
+          cd benchmarks
+          poetry run python image_classification/tf/train.py \
+            --args_config image_classification/configs/baseline.yaml \
+            --central_num_iterations 11 --cohort_size 2 --val_cohort_size 2
+
+  check-run-lm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Benchmark Install
+        uses: ./.github/actions/benchmark-install
+      - name: Download data
+        run: |
+          mkdir -p ./benchmarks/data/stackoverflow
+          curl https://pfl-data.s3.us-east-2.amazonaws.com/stackoverflow/stackoverflow_ci.hdf5 \
+            -o ./benchmarks/data/stackoverflow/stackoverflow_ci.hdf5
+      - name: (PyTorch) run a few iterations of LM training
+        run: |
+          cd benchmarks
+          poetry run python -m lm.pytorch.train \
+            --args_config lm/configs/baseline.yaml \
+            --data_path ./data/stackoverflow/stackoverflow_ci.hdf5 \
+            --central_num_iterations 3 --cohort_size 2 --val_cohort_size 2 \
+            --central_data_fraction 1.0
+      - name: (TensorFlow) run a few iterations of LM training
+        run: |
+          cd benchmarks
+          poetry run python -m lm.tf.train \
+            --args_config lm/configs/baseline.yaml \
+            --data_path ./data/stackoverflow/stackoverflow_ci.hdf5 \
+            --central_num_iterations 3 --cohort_size 2 --val_cohort_size 2 \
+            --central_data_fraction 1.0
+
+  check-run-flair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Benchmark Install
+        uses: ./.github/actions/benchmark-install
+      - name: Download data
+        run: |
+          mkdir -p ./benchmarks/data/flair
+          curl https://pfl-data.s3.us-east-2.amazonaws.com/flair/flair_federated_ci.hdf5 \
+            -o ./benchmarks/data/flair/flair_federated_ci.hdf5
+      - name: (PyTorch) run a few iterations of training
+        run: |
+          cd benchmarks
+          poetry run python -m flair.train \
+            --args_config flair/configs/baseline.yaml \
+            --data_path ./data/flair/flair_federated_ci.hdf5 \
+            --central_num_iterations 3 --cohort_size 2 --val_cohort_size 2

@@ -1,0 +1,22 @@
+name: Publish Wheel
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish-wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Publish wheel
+        run: make build-and-publish
+        env:
+          # TODO set up these secrets in your GitHub repository
+          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}

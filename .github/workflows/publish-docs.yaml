@@ -1,0 +1,26 @@
+name: Publish Documentation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Full Install
+        uses: ./.github/actions/full-install
+        with:
+          extras: "tf pytorch trees"
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Publish docs
+        run: make docs-and-publish

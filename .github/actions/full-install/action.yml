@@ -1,0 +1,47 @@
+name: 'Full Install'
+description: 'Install dependencies using Poetry with optional extras'
+
+inputs:
+  extras:
+    description: 'Space-separated list of extras to install (e.g., "tf pytorch trees")'
+    required: false
+    default: 'tf pytorch trees'
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v4
+ 
+    - name: Create extras file for cache key
+      shell: bash
+      run: echo "${{ inputs.extras }}" > extras.txt
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'poetry'
+        cache-dependency-path: |
+          poetry.lock
+          extras.txt
+    
+    - name: Install Poetry and configure virtualenv location
+      shell: bash
+      run: |
+        pip install poetry
+        poetry config virtualenvs.in-project true
+        
+    - name: Cache Poetry dependencies
+      # TODO resotre cache
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: v2-poetry-deps-${{ hashFiles('poetry.lock') }}-${{ hashFiles('extras.txt') }}
+        
+    - name: Install dependencies
+      shell: bash
+      run: |
+        poetry install -E "${{ inputs.extras }}" -q || true
+        poetry run ./build_scripts/install_horovod.sh "${{ inputs.extras }}" true
+      
+    # TODO save cache

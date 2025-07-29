@@ -20,12 +20,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: python-dist
-          path: packages/backend/dist/
+          path: dist/
 
   publish-wheel:
-    runs-on: ubuntu-22.04
-    needs:
-      - build-wheel
+    runs-on: ubuntu-latest
+    needs: build-wheel
     permissions:
       id-token: write
     environment:

@@ -10,10 +10,8 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Full Install
-        uses: ./.github/actions/full-install
-        with:
-          extras: "trees"
+      - name: Install Poetry and Python
+        uses: ./.github/actions/python-install
       - name: Build docs
         run: TZ=UTC make docs
       - name: Upload static files as artifact

@@ -14,17 +14,8 @@ runs:
       shell: bash
       run: echo "${{ inputs.extras }}" > extras.txt
 
-    - name: Install Poetry
-      shell: bash
-      # install poetry before python because the setup-python action
-      # tries to use poetry to resolve cache configuration
-      run: pipx install poetry==1.6.1
-
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-        cache: 'poetry'
+    - name: Install Poetry and Python
+      uses: ./.github/actions/python-install
 
     - name: Install dependencies
       shell: bash

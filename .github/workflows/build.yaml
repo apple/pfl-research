@@ -7,13 +7,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      - name: Install Poetry and Python
+        uses: ./.github/actions/python-install
       - name: Run pre-commit hooks
         run: |
-          pip install pre-commit poetry
+          pip install pre-commit
           make check
           if ! git diff --quiet; then 
             echo 'Style checks failed, please install pre-commit and run pre-commit run --all and push the change'

@@ -42,8 +42,10 @@ docs: ## Build documentation
 	@poetry run sphinx-build -b html docs/source docs/build
 	@echo "🚀 Compiled documentation available in docs/build/"
 
+### TODO: Remove the next three targets when we drop CircleCI config
 .PHONY: docs-and-publish
 docs-and-publish: 
+	# TODO: remove this file when we drop CircleCI
 	@./build_scripts/publish_docs.sh
 
 .PHONY: publish

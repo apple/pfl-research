@@ -329,7 +329,7 @@ class FederatedDataset(FederatedDatasetBase):
         In most cases you want to use `MinimizeReuseUserSampler` because its
         behaviour mimics what usually happens in live federated learning with
         user devices.
-        See `MinimizeReuseUserSampler` for explanation why.
+        See `pfl.data.sampling.MinimizeReuseUserSampler` for explanation why.
 
         The factory called `get_user_sampler` provides some examples of how this
         callable might look like.

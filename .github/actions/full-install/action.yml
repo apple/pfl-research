@@ -1,0 +1,24 @@
+name: 'Full Install'
+description: 'Install dependencies using Poetry with optional extras'
+
+inputs:
+  extras:
+    description: 'Space-separated list of extras to install (e.g., "tf pytorch trees")'
+    required: false
+    default: 'tf pytorch trees'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create extras file for cache key
+      shell: bash
+      run: echo "${{ inputs.extras }}" > extras.txt
+
+    - name: Install Poetry and Python
+      uses: ./.github/actions/python-install
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        poetry install -E "${{ inputs.extras }}" -q || true
+        poetry run ./build_scripts/install_horovod.sh "${{ inputs.extras }}" true

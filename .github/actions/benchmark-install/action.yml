@@ -1,0 +1,15 @@
+name: 'Benchmark Install'
+description: 'Install dependencies for benchmark tests'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Poetry and Python
+      uses: ./.github/actions/python-install
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        cd benchmarks
+        poetry install -E tf -E pytorch --no-root || true
+        echo "PYTHONPATH=." >> $GITHUB_ENV

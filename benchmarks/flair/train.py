@@ -27,7 +27,7 @@ from pfl.aggregate.simulate import SimulatedBackend
 from pfl.callback.aggregate_metrics_to_disk import AggregateMetricsToDisk
 from pfl.callback.central_evaluation import CentralEvaluationCallback
 from pfl.callback.checkpoint import ModelCheckpointingCallback
-from pfl.callback.stopwarch import StopwatchCallback
+from pfl.callback.stopwatch import StopwatchCallback
 from pfl.callback.track_best_overall_metrics import TrackBestOverallMetrics
 from pfl.callback.wandb import WandbCallback
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams

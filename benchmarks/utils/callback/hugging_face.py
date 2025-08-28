@@ -4,7 +4,7 @@ from typing import Tuple
 
 from transformers import PreTrainedModel, PreTrainedTokenizer
 
-from pfl.callback import ModelCheckpointingCallback
+from pfl.callback.checkpoint import ModelCheckpointingCallback
 from pfl.internal.ops import get_ops
 from pfl.metrics import Metrics
 from pfl.model.base import StatefulModel

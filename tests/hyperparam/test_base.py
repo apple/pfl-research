@@ -2,7 +2,7 @@
 
 import pytest
 
-from pfl.callback import TrainingProcessCallback
+from pfl.callback.training_process import TrainingProcessCallback
 from pfl.hyperparam.base import HyperParam, NNTrainHyperParams
 
 

@@ -5,7 +5,7 @@ from typing import Tuple, Union
 
 from pfl.algorithm.base import NNAlgorithmParams
 from pfl.algorithm.federated_averaging import FederatedAveraging
-from pfl.callback import TrainingProcessCallback
+from pfl.callback.training_process import TrainingProcessCallback
 from pfl.context import CentralContext
 from pfl.data.dataset import AbstractDatasetType
 from pfl.hyperparam.base import HyperParam, HyperParamClsOrFloat

@@ -8,7 +8,7 @@ import pytest
 from pytest_lazyfixture import lazy_fixture
 
 from pfl.algorithm import FederatedAveraging, NNAlgorithmParams
-from pfl.callback import ModelCheckpointingCallback
+from pfl.callback.checkpoint import ModelCheckpointingCallback
 from pfl.common_types import Population
 from pfl.context import CentralContext
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams

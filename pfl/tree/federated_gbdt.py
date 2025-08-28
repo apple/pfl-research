@@ -7,7 +7,7 @@ from typing import List, Optional, Tuple, TypeVar, Union
 import numpy as np
 
 from pfl.algorithm import FederatedAlgorithm
-from pfl.callback import TrainingProcessCallback
+from pfl.callback.training_process import TrainingProcessCallback
 from pfl.common_types import Population
 from pfl.context import CentralContext
 from pfl.data.dataset import TabularDataset

@@ -1,7 +1,7 @@
 import numpy as np
 
 from pfl.aggregate.simulate import SimulatedBackend
-from pfl.callback import ModelCheckpointingCallback
+from pfl.callback.checkpoint import ModelCheckpointingCallback
 from pfl.privacy import CentrallyAppliedPrivacyMechanism, GaussianMechanism, PLDPrivacyAccountant
 from publications.mdm.mdm import (
     MDMAlgorithm,

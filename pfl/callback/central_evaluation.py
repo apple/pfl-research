@@ -5,7 +5,7 @@ Callbacks that evaluate the model against a centrally held dataset.
 import logging
 from typing import Callable, Optional, Tuple
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.data.dataset import AbstractDatasetType
 from pfl.hyperparam.base import ModelHyperParams
 from pfl.internal import ops
@@ -14,8 +14,6 @@ from pfl.model.base import EvaluatableModelType, ModelType, StatefulModel
 from pfl.model.ema import CentralExponentialMovingAverage
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class CentralEvaluationCallback(TrainingProcessCallback[EvaluatableModelType]):

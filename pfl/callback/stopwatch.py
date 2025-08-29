@@ -3,13 +3,11 @@ import logging
 import time
 from typing import List, Tuple
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.metrics import Metrics, StringMetricName
 from pfl.model.base import ModelType
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class StopwatchCallback(TrainingProcessCallback):

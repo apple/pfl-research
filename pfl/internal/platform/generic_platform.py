@@ -5,7 +5,7 @@ import sys
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.internal.ops.selector import get_default_framework_module as get_ops
 from pfl.metrics import Metrics
 

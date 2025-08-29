@@ -7,8 +7,6 @@ from pfl.model.base import ModelType
 
 logger = logging.getLogger(name=__name__)
 
-# pylint: disable=too-many-lines
-
 
 class TrainingProcessCallback(Generic[ModelType]):
     """

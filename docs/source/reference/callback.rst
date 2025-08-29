@@ -33,7 +33,7 @@ Callbacks
 .. automodule:: pfl.callback.track_best_overall_metrics
    :members:
 
-.. automodule:: pfl.callback.training_process
+.. automodule:: pfl.callback.base
    :members:
 
 .. automodule:: pfl.callback.wandb

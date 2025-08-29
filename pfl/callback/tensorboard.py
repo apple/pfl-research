@@ -5,15 +5,13 @@ import re
 import subprocess
 from typing import Optional, Tuple, Union
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.common_types import Population
 from pfl.internal.ops.selector import get_default_framework_module as get_ops
 from pfl.metrics import Metrics
 from pfl.model.base import ModelType
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class TensorBoardCallback(TrainingProcessCallback):

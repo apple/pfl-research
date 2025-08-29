@@ -2,7 +2,7 @@
 import logging
 from typing import Callable, List, Tuple, Union
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.common_types import Checkpointer, LocalDiskCheckpointer, Saveable
 from pfl.exception import CheckpointNotFoundError
 from pfl.internal.ops.selector import get_default_framework_module as get_ops
@@ -10,8 +10,6 @@ from pfl.metrics import Metrics, StringMetricName
 from pfl.model.base import ModelType
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class RestoreTrainingCallback(TrainingProcessCallback):

@@ -4,13 +4,11 @@ import logging
 import os
 from typing import Optional, Tuple
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.metrics import Metrics
 from pfl.model.base import ModelType
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class ProfilerCallback(TrainingProcessCallback):

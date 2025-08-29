@@ -7,14 +7,12 @@ import operator
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Tuple
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.internal.ops.selector import get_default_framework_module as get_ops
 from pfl.metrics import MetricName, Metrics, get_overall_value
 from pfl.model.base import StatefulModel
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class CheckpointPolicy(ABC):

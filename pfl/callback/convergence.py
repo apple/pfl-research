@@ -4,14 +4,12 @@ import typing
 from typing import Any, Callable, List, Tuple, Union
 
 from pfl.aggregate.base import get_num_datapoints_weight_name
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.common_types import Population
 from pfl.metrics import Metrics, StringMetricName, get_overall_value
 from pfl.model.base import ModelType
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class ConvergenceCallback(TrainingProcessCallback):

@@ -2,13 +2,11 @@
 import logging
 from typing import Dict, List, Optional, Tuple, Union
 
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.metrics import MetricNamePostfix, Metrics, StringMetricName, get_overall_value
 from pfl.model.base import ModelType
 
 logger = logging.getLogger(name=__name__)
-
-# pylint: disable=too-many-lines
 
 
 class TrackBestOverallMetrics(TrainingProcessCallback):

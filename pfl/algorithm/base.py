@@ -12,7 +12,7 @@ from typing import Generic, List, Optional, Tuple, TypeVar
 import numpy as np
 
 from pfl.aggregate.base import Backend
-from pfl.callback.training_process import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.common_types import Population, Saveable
 from pfl.context import CentralContext
 from pfl.data.dataset import AbstractDatasetType

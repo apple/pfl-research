@@ -3,7 +3,7 @@ from typing import Tuple
 
 import tensorflow as tf
 
-from pfl.callback import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.metrics import Metrics, StringMetricName
 from pfl.model.tensorflow import TFModel
 

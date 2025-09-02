@@ -24,14 +24,12 @@ from utils.callback.mlx import get_polynomial_decay_schedule_with_warmup
 from utils.logging import init_logging
 
 from pfl.aggregate.simulate import SimulatedBackend
-from pfl.callback import (
-    AggregateMetricsToDisk,
-    CentralEvaluationCallback,
-    ModelCheckpointingCallback,
-    StopwatchCallback,
-    TrackBestOverallMetrics,
-    WandbCallback,
-)
+from pfl.callback.aggregate_metrics_to_disk import AggregateMetricsToDisk
+from pfl.callback.central_evaluation import CentralEvaluationCallback
+from pfl.callback.checkpoint import ModelCheckpointingCallback
+from pfl.callback.stopwatch import StopwatchCallback
+from pfl.callback.track_best_overall_metrics import TrackBestOverallMetrics
+from pfl.callback.wandb import WandbCallback
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.model.mlx import MLXModel
 from pfl.privacy import CentrallyAppliedPrivacyMechanism

@@ -11,7 +11,7 @@ import numpy as np
 from pfl.aggregate.simulate import SimulatedBackend
 from pfl.algorithm import NNAlgorithmParams, algorithm_utils
 from pfl.algorithm.federated_averaging import FederatedAveraging
-from pfl.callback import CentralEvaluationCallback
+from pfl.callback.central_evaluation import CentralEvaluationCallback
 from pfl.data.dataset import Dataset
 from pfl.data.federated_dataset import ArtificialFederatedDataset, FederatedDataset
 from pfl.data.sampling import get_data_sampler, get_user_sampler

@@ -2865,4 +2865,4 @@ trees = ["scikit-learn", "xgboost"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.12"
-content-hash = "2ea9727be0cb8708f8490fbacd287668cfff1845d9522c5b429243dd23623500"
+content-hash = "470b5e2489740a4a50055273e79999a5c8dc7657ea29e0243d35eb24781f4425"

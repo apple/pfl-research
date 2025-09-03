@@ -10,23 +10,25 @@ import numpy as np
 import pytest
 
 from pfl.algorithm.federated_averaging import FederatedAveraging
-from pfl.callback import (
-    AggregateMetricsToDisk,
+from pfl.callback.aggregate_metrics_to_disk import AggregateMetricsToDisk
+from pfl.callback.central_evaluation import (
     CentralEvaluationCallback,
     CentralEvaluationWithEMACallback,
+)
+from pfl.callback.checkpoint import (
     CheckpointPolicy,
-    ConvergenceCallback,
-    EarlyStoppingCallback,
     MetricImprovementCheckpointPolicy,
     ModelCheckpointingCallback,
     PolicyBasedModelCheckpointingCallback,
-    ProfilerCallback,
-    RestoreTrainingCallback,
-    StopwatchCallback,
-    TensorBoardCallback,
-    TrackBestOverallMetrics,
-    WandbCallback,
 )
+from pfl.callback.convergence import ConvergenceCallback
+from pfl.callback.early_stopping import EarlyStoppingCallback
+from pfl.callback.profiler import ProfilerCallback
+from pfl.callback.restore_training import RestoreTrainingCallback
+from pfl.callback.stopwatch import StopwatchCallback
+from pfl.callback.tensorboard import TensorBoardCallback
+from pfl.callback.track_best_overall_metrics import TrackBestOverallMetrics
+from pfl.callback.wandb import WandbCallback
 from pfl.common_types import Population, Saveable
 from pfl.data.dataset import Dataset
 from pfl.hyperparam import ModelHyperParams
@@ -680,7 +682,7 @@ class TestProfilerCallback:
 
     @patch.object(cProfile.Profile, 'enable')
     @patch.object(cProfile.Profile, 'disable')
-    @patch('pfl.callback.ProfilerCallback.platform')
+    @patch('pfl.callback.profiler.ProfilerCallback.platform')
     @pytest.mark.parametrize(
         'frequency, warmup_iterations, num_iterations, expected',
         [(1, 0, 10, list(range(10))), (2, 3, 10, [3, 5, 7, 9]),
@@ -721,7 +723,7 @@ class TestProfilerCallback:
 
     @patch.object(cProfile.Profile, 'enable')
     @patch.object(cProfile.Profile, 'disable')
-    @patch('pfl.callback.ProfilerCallback.platform')
+    @patch('pfl.callback.profiler.ProfilerCallback.platform')
     @pytest.mark.parametrize(
         'frequency, warmup_iterations, num_iterations, expected',
         [(None, 0, 10, 1), (None, 3, 5, 1), (None, 10, 5, 0)])
@@ -762,7 +764,9 @@ class TestProfilerCallback:
 
 class TestAggregateMetricsToDisk:
 
-    @patch('pfl.callback.AggregateMetricsToDisk.platform')
+    @patch(
+        'pfl.callback.aggregate_metrics_to_disk.AggregateMetricsToDisk.platform'
+    )
     @pytest.mark.parametrize('frequency,expected_lines', [(1, [
         'central_iteration,M1,M2,M3\n',
         '0,0,1,\n',
@@ -853,7 +857,7 @@ class TestTrackBestOverallMetrics:
 
 class TestWandbCallback:
 
-    @patch('pfl.callback.WandbCallback.wandb')
+    @patch('pfl.callback.wandb.WandbCallback.wandb')
     def test_callback(self, mock_wandb, mock_model, metrics):
 
         wandb_project_id = 'wandb-project'

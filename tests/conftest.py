@@ -14,7 +14,7 @@ from pytest_lazyfixture import lazy_fixture
 
 from pfl.aggregate.base import Backend, get_total_weight_name
 from pfl.algorithm.base import FederatedAlgorithm, NNAlgorithmParams
-from pfl.callback import TrainingProcessCallback
+from pfl.callback.base import TrainingProcessCallback
 from pfl.common_types import Population
 from pfl.context import CentralContext, UserContext
 from pfl.data.dataset import Dataset, TabularDataset

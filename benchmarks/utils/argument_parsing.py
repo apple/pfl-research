@@ -55,7 +55,11 @@ def maybe_inject_arguments_from_config():
         for key, value in config.items():
             # Only add config items if they are not already in sys.argv
             if f"--{key}" not in sys.argv:
-                sys.argv.extend([f"--{key}", str(value)])
+                if isinstance(value, list):
+                    sys.argv.append(f"--{key}")
+                    sys.argv.extend([str(v) for v in value])
+                else:
+                    sys.argv.extend([f"--{key}", str(value)])
 
 
 def add_seed_arguments(

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pfl"
-version = "0.3.1"
+version = "0.4.0"
 description = "Simulation framework for Private Federated Learning"
 authors = ["Apple"]
 repository = "https://github.com/apple/pfl-research"
@@ -19,7 +19,7 @@ python = ">=3.10,<3.12"
 multiprocess = "^0.70.15"
 numpy = "^1.21"
 scipy = "^1.7.3"
-dp-accounting = "^0.4"
+dp-accounting = ">=0.4,<0.6"
 prv-accountant = "^0.2.0"
 #### Will be installed only with "pytorch" install extra
 torch = [
@@ -45,6 +45,7 @@ mlx = { version = "^0.15.2", optional = true }
 #### Needed in case you want to install Horovod
 cmake = "^3.27.5"
 wheel = "^0.41.2"
+packaging = "^25.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
@@ -210,7 +211,7 @@ markers = [
 # Run with command:
 # poetry run bump-my-version bump <major/minor/patch>
 [tool.bumpversion]
-current_version = "0.3.1"
+current_version = "0.4.0"
 commit = "True"
 tag = "False"
 

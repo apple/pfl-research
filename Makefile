@@ -42,19 +42,6 @@ docs: ## Build documentation
 	@poetry run sphinx-build -b html docs/source docs/build
 	@echo "🚀 Compiled documentation available in docs/build/"
 
-.PHONY: docs-and-publish
-docs-and-publish: 
-	@./build_scripts/publish_docs.sh
-
-.PHONY: publish
-publish: ## publish a release to pypi.
-	@echo "🚀 Publishing."
-	@poetry config pypi-token.pypi $(PYPI_TOKEN)
-	@poetry publish
-
-.PHONY: build-and-publish
-build-and-publish: build publish ## Build and publish.
-
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

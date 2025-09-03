@@ -101,7 +101,7 @@ If the machine has 8 GPUs, and your command is ``horovodrun --gloo -np 32 -H loc
 
 Also, keep in mind that the CPU cores available on your machine will also be shared with the parallelization of preparing user data if :class:`~pfl.data.tensorflow.TFFederatedDataset` or :class:`~pfl.data.pytorch.PyTorchFederatedDataset` is used.
 When adding the multi-process to your training setup, first try 1, 2, 3, ..., processes per GPU and stop once you don't see any noticable speedups.
-You can use :class:`~pfl.callback.StopwatchCallback` to measure the speed of the simulation.
+You can use :class:`~pfl.callback.stopwatch.StopwatchCallback` to measure the speed of the simulation.
 The optimal number of processes per GPU can vary between 1-5, since single-process ``pfl`` already has high GPU utilization.
 The larger the cohort size, the smaller the models are and the smaller the user datasets are, the more you can benefit from increasing the number of processes.
 
@@ -196,7 +196,7 @@ This is how to train 2 processes on each machine, using 2 machines:
 Central evaluation
 ------------------
 
-Central evaluation (:class:`~pfl.callback.CentralEvaluationCallback`) is often essential for assessing the global model performance. 
+Central evaluation (:class:`~pfl.callback.central_evaluation.CentralEvaluationCallback`) is often essential for assessing the global model performance.
 There are three things to keep in mind to minimise compute time for central evaluation:
 
 * Performing this evaluation is usually not necessary every central iteration.

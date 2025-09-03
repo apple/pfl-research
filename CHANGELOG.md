@@ -15,6 +15,17 @@
 * 
 
 
+## v0.4.0
+
+### Breaking change!
+
+* Callbacks have been split up into sub-modules under the module `pfl.callback` (#124).
+
+### Tasks completed
+
+* Added `packaging` as a dependency, which was missing (#121).
+
+
 ## v0.3.1
 
 ### Tasks completed

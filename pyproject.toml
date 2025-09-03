@@ -19,7 +19,7 @@ python = ">=3.10,<3.12"
 multiprocess = "^0.70.15"
 numpy = "^1.21"
 scipy = "^1.7.3"
-dp-accounting = "^0.4"
+dp-accounting = ">=0.4,<0.6"
 prv-accountant = "^0.2.0"
 #### Will be installed only with "pytorch" install extra
 torch = [

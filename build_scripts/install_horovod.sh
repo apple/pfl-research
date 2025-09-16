@@ -56,21 +56,19 @@ if "$INSTALL_PKGS"; then
 fi
 
 # Avoid "Compatibility with CMake < 3.5 has been removed from CMake."
-export CMAKE_ARGS="${CMAKE_ARGS:--DCMAKE_POLICY_VERSION_MINIMUM=3.5}"
-
 if (($INSTALL_TF && $INSTALL_PYTORCH)); then
     # Install Horovod for both PyTorch and TF.
-    HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_PYTORCH=1 HOROVOD_WITH_GLOO=1 python -m pip install \
+    CMAKE_ARGS="--DCMAKE_POLICY_VERSION_MINIMUM=3.5" HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_PYTORCH=1 HOROVOD_WITH_GLOO=1 python -m pip install \
         --progress-bar off --no-cache-dir horovod[tensorflow,pytorch]
 
 elif "$INSTALL_TF"; then
     # Install Horovod for any TF version.
-    HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_GLOO=1 python -m pip install \
+    CMAKE_ARGS="--DCMAKE_POLICY_VERSION_MINIMUM=3.5" HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_GLOO=1 python -m pip install \
         --progress-bar off --no-cache-dir horovod[tensorflow]
 
 elif "$INSTALL_PYTORCH"; then
     # Install Horovod for PyTorch.
-    HOROVOD_WITH_PYTORCH=1 HOROVOD_WITH_GLOO=1 python -m pip install \
+    CMAKE_ARGS="--DCMAKE_POLICY_VERSION_MINIMUM=3.5" HOROVOD_WITH_PYTORCH=1 HOROVOD_WITH_GLOO=1 python -m pip install \
         --progress-bar off --no-cache-dir horovod[pytorch]
 fi
 

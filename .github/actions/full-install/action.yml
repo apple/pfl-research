@@ -19,6 +19,9 @@ runs:
 
     - name: Install dependencies
       shell: bash
+      env:
+        # Work around Horovod/gloo on newer CMake
+        CMAKE_ARGS: -DCMAKE_POLICY_VERSION_MINIMUM=3.5
       run: |
         poetry install -E "${{ inputs.extras }}" -q || true
         poetry run ./build_scripts/install_horovod.sh "${{ inputs.extras }}" true

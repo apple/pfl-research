@@ -64,7 +64,7 @@ sphinx-last-updated-by-git = "^0.3.8"
 
 [tool.poetry.extras]
 pytorch = [ 'torch', 'cmake']
-tf = ['tensorflow', 'tensorflow-macos', 'tensorflow-probability', 'cmake']
+tf = ['tensorflow', 'tensorflow-probability', 'cmake']
 mlx = ['mlx']
 trees = ['scikit-learn', 'xgboost']
 

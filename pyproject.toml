@@ -15,15 +15,15 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = ">=3.10,<3.13"
 multiprocess = "^0.70.15"
-numpy = "^1.21"
+numpy = ">=1.21,<3"
 scipy = "^1.7.3"
 dp-accounting = ">=0.4,<0.6"
 prv-accountant = "^0.2.0"
 #### Will be installed only with "pytorch" install extra
 torch = [
-  { version = "^2.0.1", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "^2.0.1", source = "torch_cu124", markers = "sys_platform == 'linux'", optional = true },
   { version = "^2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 #### Will be installed only with "tf" install extra
@@ -33,19 +33,19 @@ tensorflow = [
 ]
 # Require TF2.14 for M1 because looks like installing Horovod with <TF2.13 on M1 doesn't work.
 tensorflow-macos = { version = "^2.14", markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", optional = true}
-tensorflow-probability = { version = "^0.22", optional = true }
+tensorflow-probability = { version = ">=0.22", optional = true }
 
 #### Will be installed only with "trees" install extra
 scikit-learn = { version = "^1.0.2", optional = true }
-xgboost = { version = "^1.4.2", optional = true }
+xgboost = { version = ">=1.4.2,<4", optional = true }
 
 #### Will be installed only with "mlx" install extra
-mlx = { version = "^0.15.2", optional = true }
+mlx = { version = ">=0.15.2,<0.30", optional = true }
 
 #### Needed in case you want to install Horovod
-cmake = "^3.27.5"
-wheel = "^0.41.2"
-packaging = "^25.0"
+cmake = ">=3.27.5,<5"
+wheel = ">=0.41.2,<0.46"
+packaging = ">=24.0,<26"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
@@ -74,8 +74,8 @@ mlx = ['mlx']
 trees = ['scikit-learn', 'xgboost']
 
 [[tool.poetry.source]]
-name = "torch_cu118"
-url = "https://download.pytorch.org/whl/cu118"
+name = "torch_cu124"
+url = "https://download.pytorch.org/whl/cu124"
 priority = "supplemental"
 
 [[tool.poetry.source]]

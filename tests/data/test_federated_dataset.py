@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.data import (
     ArtificialFederatedDataset,
@@ -362,16 +362,16 @@ def make_fed_data_tf(user_id_to_weight):
 
 
 @pytest.mark.parametrize('make_fed_data', [
-    pytest.param(lazy_fixture('make_fed_data_numpy'), id='numpy'),
-    pytest.param(lazy_fixture('make_artificial_fed_data_numpy'),
+    pytest.param(lf('make_fed_data_numpy'), id='numpy'),
+    pytest.param(lf('make_artificial_fed_data_numpy'),
                  id='artificial_numpy'),
-    pytest.param(lazy_fixture('make_fed_data_pytorch'),
+    pytest.param(lf('make_fed_data_pytorch'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ],
                  id='pytorch'),
-    pytest.param(lazy_fixture('make_fed_data_tf'),
+    pytest.param(lf('make_fed_data_tf'),
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() < 2,
                                         reason='not tf>=2')
@@ -429,8 +429,8 @@ class TestFrameworkFederatedDataset:
 @pytest.mark.parametrize(
     'make_fed_data',
     [
-        pytest.param(lazy_fixture('make_fed_data_numpy'), id='numpy'),
-        pytest.param(lazy_fixture('make_fed_data_pytorch'),
+        pytest.param(lf('make_fed_data_numpy'), id='numpy'),
+        pytest.param(lf('make_fed_data_pytorch'),
                      marks=[
                          pytest.mark.skipif(not get_pytorch_major_version(),
                                             reason='PyTorch not installed')
@@ -439,7 +439,7 @@ class TestFrameworkFederatedDataset:
         # TODO: Other tests get stuck when this is run with pytest. Need to fix.
         # It is related to using multiprocess in the generator of
         # tf.data.Dataset.from_generator
-        #pytest.param(lazy_fixture('make_fed_data_tf'),
+        #pytest.param(lf('make_fed_data_tf'),
         #             marks=[
         #                 pytest.mark.skipif(get_tf_major_version() < 2,
         #                                    reason='not tf>=2'),

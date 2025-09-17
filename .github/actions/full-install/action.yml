@@ -21,4 +21,3 @@ runs:
       shell: bash
       run: |
         poetry install -E "${{ inputs.extras }}" -q || true
-        poetry run ./build_scripts/install_horovod.sh "${{ inputs.extras }}" true

@@ -3,7 +3,7 @@ from typing import List, cast
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 from scipy.special import expit
 
 from pfl.internal.ops.common_ops import check_pfl_tree_installed
@@ -105,20 +105,20 @@ class TestGBDTModel:
 
     @pytest.mark.parametrize(
         'model, expected',
-        [(lazy_fixture('gbdt_model_classifier_empty'), 0),
-         (lazy_fixture('gbdt_model_classifier_one_tree_incomplete'), 2),
-         (lazy_fixture('gbdt_model_classifier_one_tree_complete'), 0),
-         (lazy_fixture('gbdt_model_regressor_two_trees_incomplete'), 2),
-         (lazy_fixture('gbdt_model_regressor_two_trees_complete'), 0)])
+        [(lf('gbdt_model_classifier_empty'), 0),
+         (lf('gbdt_model_classifier_one_tree_incomplete'), 2),
+         (lf('gbdt_model_classifier_one_tree_complete'), 0),
+         (lf('gbdt_model_regressor_two_trees_incomplete'), 2),
+         (lf('gbdt_model_regressor_two_trees_complete'), 0)])
     def test_current_depth(self, model, expected):
         assert model.current_depth == expected
 
     @pytest.mark.parametrize('model, num_nodes_to_split', [
-        (lazy_fixture('gbdt_model_classifier_empty'), 1),
-        (lazy_fixture('gbdt_model_classifier_one_tree_incomplete'), 4),
-        (lazy_fixture('gbdt_model_classifier_one_tree_complete'), 1),
-        (lazy_fixture('gbdt_model_classifier_two_trees_incomplete'), 4),
-        (lazy_fixture('gbdt_model_classifier_two_trees_complete'), 1),
+        (lf('gbdt_model_classifier_empty'), 1),
+        (lf('gbdt_model_classifier_one_tree_incomplete'), 4),
+        (lf('gbdt_model_classifier_one_tree_complete'), 1),
+        (lf('gbdt_model_classifier_two_trees_incomplete'), 4),
+        (lf('gbdt_model_classifier_two_trees_complete'), 1),
     ])
     def test_load_and_save(self, model, num_nodes_to_split, gbdt_datapoints,
                            num_features, max_depth, tmp_path, root_NodeRecord):
@@ -220,15 +220,15 @@ class TestGBDTModel:
         assert model.nodes_to_split == [root_NodeRecord]
 
     @pytest.mark.parametrize('model, value, expected', [
-        (lazy_fixture('gbdt_model_classifier_empty'), 1.0, 1.0),
-        (lazy_fixture('gbdt_model_classifier_empty'), -1.0, -1.0),
-        (lazy_fixture('gbdt_model_classifier_one_tree_complete'), 1.0, 1.0),
-        (lazy_fixture('gbdt_model_classifier_one_tree_complete'), -1.0, -1.0),
-        (lazy_fixture('gbdt_model_classifier_one_tree_incomplete'), 1.0, 1.0),
-        (lazy_fixture('gbdt_model_classifier_one_tree_incomplete'), -1.0,
+        (lf('gbdt_model_classifier_empty'), 1.0, 1.0),
+        (lf('gbdt_model_classifier_empty'), -1.0, -1.0),
+        (lf('gbdt_model_classifier_one_tree_complete'), 1.0, 1.0),
+        (lf('gbdt_model_classifier_one_tree_complete'), -1.0, -1.0),
+        (lf('gbdt_model_classifier_one_tree_incomplete'), 1.0, 1.0),
+        (lf('gbdt_model_classifier_one_tree_incomplete'), -1.0,
          -1.0),
-        (lazy_fixture('gbdt_model_classifier_two_trees_complete'), 2.0, 2.0),
-        (lazy_fixture('gbdt_model_classifier_two_trees_complete'), -0.5, -0.5)
+        (lf('gbdt_model_classifier_two_trees_complete'), 2.0, 2.0),
+        (lf('gbdt_model_classifier_two_trees_complete'), -0.5, -0.5)
     ])
     def test_compute_node_value_no_prior(self, model, value, expected,
                                          learning_rate):
@@ -237,15 +237,15 @@ class TestGBDTModel:
         np.testing.assert_almost_equal(leaf_value, expected_leaf_value)
 
     @pytest.mark.parametrize('model, value, expected', [
-        (lazy_fixture('gbdt_model_classifier_empty'), 1.0, 0.79),
-        (lazy_fixture('gbdt_model_classifier_empty'), -1.0, -0.61),
-        (lazy_fixture('gbdt_model_classifier_one_tree_complete'), 1.0, 0.79),
-        (lazy_fixture('gbdt_model_classifier_one_tree_complete'), -1.0, -0.61),
-        (lazy_fixture('gbdt_model_classifier_one_tree_incomplete'), 1.0, 0.79),
-        (lazy_fixture('gbdt_model_classifier_one_tree_incomplete'), -1.0,
+        (lf('gbdt_model_classifier_empty'), 1.0, 0.79),
+        (lf('gbdt_model_classifier_empty'), -1.0, -0.61),
+        (lf('gbdt_model_classifier_one_tree_complete'), 1.0, 0.79),
+        (lf('gbdt_model_classifier_one_tree_complete'), -1.0, -0.61),
+        (lf('gbdt_model_classifier_one_tree_incomplete'), 1.0, 0.79),
+        (lf('gbdt_model_classifier_one_tree_incomplete'), -1.0,
          -0.61),
-        (lazy_fixture('gbdt_model_classifier_two_trees_complete'), 2.0, 1.49),
-        (lazy_fixture('gbdt_model_classifier_two_trees_complete'), -0.5, -0.26)
+        (lf('gbdt_model_classifier_two_trees_complete'), 2.0, 1.49),
+        (lf('gbdt_model_classifier_two_trees_complete'), -0.5, -0.26)
     ])
     def test_compute_node_value_with_prior(self, model, value, expected,
                                            learning_rate):
@@ -261,11 +261,11 @@ class TestGBDTModelClassifier:
 
     @pytest.mark.parametrize(
         'model, expected',
-        [(lazy_fixture('gbdt_model_classifier_empty'),
+        [(lf('gbdt_model_classifier_empty'),
           expit(np.array([0., 0., 0., 0.]))),
-         (lazy_fixture('gbdt_model_classifier_one_tree_complete'),
+         (lf('gbdt_model_classifier_one_tree_complete'),
           expit(np.array([0.3, 0.4, -0.3, -0.4]))),
-         (lazy_fixture('gbdt_model_classifier_two_trees_incomplete'),
+         (lf('gbdt_model_classifier_two_trees_incomplete'),
           expit(np.array([0.3, 0.4, -0.3, -0.4])))])
     def test_predict(self, model, expected, gbdt_datapoints):
         np.testing.assert_almost_equal(model.predict(gbdt_datapoints),
@@ -274,10 +274,10 @@ class TestGBDTModelClassifier:
 
     @pytest.mark.parametrize(
         'model, expected',
-        [(lazy_fixture('gbdt_model_classifier_empty'), np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_model_classifier_one_tree_complete'),
+        [(lf('gbdt_model_classifier_empty'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_model_classifier_one_tree_complete'),
           np.array([1, 1, 0, 0])),
-         (lazy_fixture('gbdt_model_classifier_two_trees_incomplete'),
+         (lf('gbdt_model_classifier_two_trees_incomplete'),
           np.array([1, 1, 0, 0]))])
     def test_predict_classes(self, model, expected, gbdt_datapoints):
         np.testing.assert_almost_equal(model.predict_classes(gbdt_datapoints),
@@ -285,11 +285,11 @@ class TestGBDTModelClassifier:
                                        decimal=4)
 
     @pytest.mark.parametrize('model', [
-        lazy_fixture('gbdt_model_classifier_empty'),
-        lazy_fixture('gbdt_model_classifier_one_tree_complete'),
-        lazy_fixture('gbdt_model_classifier_two_trees_complete'),
-        lazy_fixture('gbdt_model_classifier_one_tree_incomplete'),
-        lazy_fixture('gbdt_model_classifier_two_trees_incomplete'),
+        lf('gbdt_model_classifier_empty'),
+        lf('gbdt_model_classifier_one_tree_complete'),
+        lf('gbdt_model_classifier_two_trees_complete'),
+        lf('gbdt_model_classifier_one_tree_incomplete'),
+        lf('gbdt_model_classifier_two_trees_incomplete'),
     ])
     def test_evaluate(self, model, gbdt_user_dataset):
         predictions = model.predict_classes(gbdt_user_dataset.raw_data[0])
@@ -314,10 +314,10 @@ class TestGBDTModelRegressor:
 
     @pytest.mark.parametrize(
         'model, expected',
-        [(lazy_fixture('gbdt_model_regressor_empty'), np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_model_regressor_one_tree_complete'),
+        [(lf('gbdt_model_regressor_empty'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_model_regressor_one_tree_complete'),
           np.array([0.3, 0.4, -0.3, -0.4])),
-         (lazy_fixture('gbdt_model_regressor_two_trees_incomplete'),
+         (lf('gbdt_model_regressor_two_trees_incomplete'),
           np.array([0.3, 0.4, -0.3, -0.4]))])
     def test_predict(self, model, expected, gbdt_datapoints):
         np.testing.assert_almost_equal(model.predict(gbdt_datapoints),
@@ -325,11 +325,11 @@ class TestGBDTModelRegressor:
                                        decimal=4)
 
     @pytest.mark.parametrize('model', [
-        lazy_fixture('gbdt_model_regressor_empty'),
-        lazy_fixture('gbdt_model_regressor_one_tree_complete'),
-        lazy_fixture('gbdt_model_regressor_two_trees_complete'),
-        lazy_fixture('gbdt_model_regressor_one_tree_incomplete'),
-        lazy_fixture('gbdt_model_regressor_two_trees_incomplete'),
+        lf('gbdt_model_regressor_empty'),
+        lf('gbdt_model_regressor_one_tree_complete'),
+        lf('gbdt_model_regressor_two_trees_complete'),
+        lf('gbdt_model_regressor_one_tree_incomplete'),
+        lf('gbdt_model_regressor_two_trees_incomplete'),
     ])
     def test_evaluate(self, model, gbdt_user_dataset):
         # Only installed with [tree] install extra.

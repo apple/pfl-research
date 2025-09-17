@@ -12,9 +12,7 @@ The figure below visualizes how ``pfl`` can distribute work for federated learni
 
 .. image:: ../images/distributed-sim-viz.png
 
-``pfl`` has two implementations for distributed simulations: one implementation using native ``tf.distribute`` and ``torch.distributed`` primitives, and one implementation with Horovod. 
-* Native implementation: requires no further installation, but can be slower.
-* Horovod: generally faster, but can be cumbersome to install.
+``pfl`` has support for distributed simulations using native ``tf.distribute`` and ``torch.distributed`` primitives.
 
 Quickstart
 ----------
@@ -29,31 +27,8 @@ To run on 2 GPUs on the same machine using native distributed libraries, do this
     PFL_WORKER_RANK=1 python train.py &
 
     
-To run on 2 GPUs on the same machine using Horovod, do this:
-
-.. code-block::
-
-    horovodrun --gloo -np 2 -H localhost:2 python3 train.py
-
-
 Notice how we don't need to change the Python code at all to enable distributed simulation.
 It is all configured by how you call the script to run simulation, and ``pfl`` will automatically adjust.
-
-
-.. _simulation_distributed_horovod:
-
-Distributed simulation with Horovod
------------------------------------
-
-See `Horovod`_'s website on how to set up it properly for your deep learning framework.
-In most cases, you can also use our setup script available in the ``pfl`` repository:
-
-.. code-block::
-
-   git clone https://github.com/apple/pfl-research.git
-   # arg1: "tf", "pytorch" or "tf pytorch".
-   # arg2: Install non-Python dependencies on Linux.
-   ./pfl-research/build_scripts/install_horovod.sh "tf pytorch" false
 
 
 .. _multi-GPU_training:

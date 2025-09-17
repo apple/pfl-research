@@ -3,7 +3,7 @@ import math
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.internal.tree import (
     BoolQuestionGenerator,
@@ -43,28 +43,28 @@ class TestQuestionGenerators:
 
     @pytest.mark.parametrize(
         'question_generator, min_val, max_val, num_questions, expected', [
-            (lazy_fixture('float_equidistant_question_generator'), 0, 1, 9,
+            (lf('float_equidistant_question_generator'), 0, 1, 9,
              [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]),
-            (lazy_fixture('float_equidistant_question_generator'), -1, 1, 7,
+            (lf('float_equidistant_question_generator'), -1, 1, 7,
              [-0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75]),
-            (lazy_fixture('float_equidistant_question_generator'), -1, 1, 0,
+            (lf('float_equidistant_question_generator'), -1, 1, 0,
              []),
-            (lazy_fixture('int_equidistant_question_generator'), 0, 2, 20,
+            (lf('int_equidistant_question_generator'), 0, 2, 20,
              [0.67, 1.33]),
-            (lazy_fixture('int_equidistant_question_generator'), 0, 2, 1,
+            (lf('int_equidistant_question_generator'), 0, 2, 1,
              [1.0]),
-            (lazy_fixture('int_equidistant_question_generator'), 0, 2, 2,
+            (lf('int_equidistant_question_generator'), 0, 2, 2,
              [0.67, 1.33]),
-            (lazy_fixture('int_equidistant_question_generator'), 5, 8, 2,
+            (lf('int_equidistant_question_generator'), 5, 8, 2,
              [6.0, 7.0]),
-            (lazy_fixture('int_equidistant_question_generator'), 5, 8, 4,
+            (lf('int_equidistant_question_generator'), 5, 8, 4,
              [5.75, 6.5, 7.25]),
-            (lazy_fixture('int_equidistant_question_generator'), 5, 8, 0, []),
-            (lazy_fixture('int_equidistant_question_generator'), 0, 0.6, 1,
+            (lf('int_equidistant_question_generator'), 5, 8, 0, []),
+            (lf('int_equidistant_question_generator'), 0, 0.6, 1,
              []),
-            (lazy_fixture('int_equidistant_question_generator'), 0.1, 1, 1,
+            (lf('int_equidistant_question_generator'), 0.1, 1, 1,
              []),
-            (lazy_fixture('int_equidistant_question_generator'), 0, 1.6, 1,
+            (lf('int_equidistant_question_generator'), 0, 1.6, 1,
              [0.5]),
         ])
     def test_equidistant_question_generator(self, question_generator, min_val,
@@ -75,9 +75,9 @@ class TestQuestionGenerators:
 
     @pytest.mark.parametrize(
         'question_generator, min_val, max_val, num_questions', [
-            (lazy_fixture('float_random_question_generator'), 0, 5, 20),
-            (lazy_fixture('float_random_question_generator'), -1, 1, 7),
-            (lazy_fixture('float_random_question_generator'), -1, 1, 0),
+            (lf('float_random_question_generator'), 0, 5, 20),
+            (lf('float_random_question_generator'), -1, 1, 7),
+            (lf('float_random_question_generator'), -1, 1, 0),
         ])
     def test_float_random_question_generator(self, question_generator, min_val,
                                              max_val, num_questions):
@@ -95,13 +95,13 @@ class TestQuestionGenerators:
             'question_generator, min_val, max_val, num_questions, expected_num_questions'  # pylint: disable=line-too-long
         ),
         [
-            (lazy_fixture('int_random_question_generator'), 0, 5, 20, 5),
-            (lazy_fixture('int_random_question_generator'), -1, 1, 7, 2),
-            (lazy_fixture('int_random_question_generator'), -1, 1, 0, 0),
-            (lazy_fixture('int_random_question_generator'), 0.1, 0.6, 1, 0),
-            (lazy_fixture('int_random_question_generator'), -0.1, 1.1, 3, 1),
-            (lazy_fixture('int_random_question_generator'), 0, 1.1, 3, 1),
-            (lazy_fixture('int_random_question_generator'), -1, 1.1, 3, 2),
+            (lf('int_random_question_generator'), 0, 5, 20, 5),
+            (lf('int_random_question_generator'), -1, 1, 7, 2),
+            (lf('int_random_question_generator'), -1, 1, 0, 0),
+            (lf('int_random_question_generator'), 0.1, 0.6, 1, 0),
+            (lf('int_random_question_generator'), -0.1, 1.1, 3, 1),
+            (lf('int_random_question_generator'), 0, 1.1, 3, 1),
+            (lf('int_random_question_generator'), -1, 1.1, 3, 2),
         ])
     def test_int_random_question_generator(self, question_generator, min_val,
                                            max_val, num_questions,
@@ -117,9 +117,9 @@ class TestQuestionGenerators:
 
     @pytest.mark.parametrize(
         'question_generator, min_val, max_val, num_questions', [
-            (lazy_fixture('bool_question_generator'), 0, 1, 1),
-            (lazy_fixture('bool_question_generator'), -1, 1, 7),
-            (lazy_fixture('bool_question_generator'), -2, 1, 0),
+            (lf('bool_question_generator'), 0, 1, 1),
+            (lf('bool_question_generator'), -1, 1, 7),
+            (lf('bool_question_generator'), -2, 1, 0),
         ])
     def test_bool_question_generator(self, question_generator, min_val,
                                      max_val, num_questions):

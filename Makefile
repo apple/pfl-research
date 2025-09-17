@@ -20,7 +20,7 @@ check: ## Run code quality tools.
 .PHONY: cov
 cov: ## Run test coverage
 	@echo "🚀 Checking test coverage"
-	@pytest --doctest-modules tests --cov --cov-config=pyproject.toml --cov-report=term  --disable_horovod
+	@pytest --doctest-modules tests --cov --cov-config=pyproject.toml --cov-report=term
 
 .PHONY: test
 test: ## Test the code with pytest

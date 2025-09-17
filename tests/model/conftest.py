@@ -84,6 +84,8 @@ def check_save_and_load_central_optimizer_impl():
         }
         # Make sure central optimizer variables were changed before testing loading.
         for k in setup.model.central_optimizer_variable_map:
+            if k == 'learning_rate':
+                continue
             assert np.any(
                 np.not_equal(original_optimizer_var_values[k],
                              changed_optimizer_var_values[k]))

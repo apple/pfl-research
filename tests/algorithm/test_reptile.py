@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.algorithm.base import PersonalizedNNAlgorithmParams
 from pfl.common_types import Population
@@ -52,13 +52,13 @@ def reptile_setup(new_event_loop, nn_algorithm_params_dict,
 
 
 @pytest.mark.parametrize('model_setup', [
-    pytest.param(lazy_fixture('pytorch_model_setup'),
+    pytest.param(lf('pytorch_model_setup'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ],
                  id='pytorch'),
-    pytest.param(lazy_fixture('tensorflow_model_setup'),
+    pytest.param(lf('tensorflow_model_setup'),
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() < 2,
                                         reason='not tf>=2')

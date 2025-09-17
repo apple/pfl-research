@@ -11,22 +11,20 @@ from pfl.internal.ops.common_ops import check_mlx_installed, get_pytorch_major_v
 
 class TestMultiProcess:
     """
-    Test cases for checking that running with multiple processes with Horovod
+    Test cases for checking that running with multiple processes
     will give the same results as 1 process.
     """
 
     @pytest.mark.parametrize('backend_tup', [
-        pytest.param(('pytorch', 'horovodrun --gloo -np 2 -H localhost:2'),
+        pytest.param(('pytorch', 'torchrun --nproc_per_node=2'),
                      id='pytorch',
                      marks=[
-                         pytest.mark.horovod,
                          pytest.mark.skipif(not get_pytorch_major_version(),
                                             reason='PyTorch not installed')
                      ]),
-        pytest.param(('tensorflow', 'horovodrun --gloo -np 2 -H localhost:2'),
+        pytest.param(('tensorflow', 'PFL_WORKER_RANK=0 python {} & PFL_WORKER_RANK=1 python {} && wait'),
                      id='tensorflow',
                      marks=[
-                         pytest.mark.horovod,
                          pytest.mark.skipif(get_tf_major_version() < 2,
                                             reason='not tf>=2')
                      ]),
@@ -72,18 +70,56 @@ class TestMultiProcess:
 
         # Run `run_training_on_fake_data.py` with two workers.
         worker1_env = os.environ.copy()
-        cmd_arguments = [
-            *cmd_prefix.split(), sys.executable, train_script_path,
-            '--output_path', worker1_result_path, '--backend_framework',
-            backend_framework, '--use_metric_spec',
-            str(True), *common_arguments
-        ]
-        p1 = subprocess.Popen(cmd_arguments,
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE,
-                              env=worker1_env)
-
-        std1, err1 = p1.communicate()
+        
+        if backend_framework == 'tensorflow':
+            # For TensorFlow, we need to run two separate processes with different worker ranks
+            cmd1 = [sys.executable, train_script_path,
+                   '--output_path', worker1_result_path, '--backend_framework',
+                   backend_framework, '--use_metric_spec',
+                   str(True), *common_arguments]
+            cmd2 = cmd1.copy()
+            
+            worker1_env['PFL_WORKER_RANK'] = '0'
+            worker1_env['PFL_WORKER_ADDRESSES'] = 'localhost:12345,localhost:12346'
+            worker2_env = os.environ.copy()
+            worker2_env['PFL_WORKER_RANK'] = '1'
+            worker2_env['PFL_WORKER_ADDRESSES'] = 'localhost:12345,localhost:12346'
+            
+            p1 = subprocess.Popen(cmd1, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=worker1_env)
+            p2 = subprocess.Popen(cmd2, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=worker2_env)
+            
+            std1, err1 = p1.communicate()
+            std2, err2 = p2.communicate()
+            
+        elif backend_framework == 'pytorch':
+            # For PyTorch, use torchrun
+            cmd_arguments = cmd_prefix.split() + [train_script_path,
+                           '--output_path', worker1_result_path, '--backend_framework',
+                           backend_framework, '--use_metric_spec',
+                           str(True), *common_arguments]
+            
+            # Set up distributed environment for PyTorch
+            worker1_env['PFL_WORKER_ADDRESSES'] = 'localhost:12345,localhost:12346'
+            
+            p1 = subprocess.Popen(cmd_arguments,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE,
+                                  env=worker1_env)
+            std1, err1 = p1.communicate()
+            
+        else:
+            # For other frameworks (like MLX), use the original approach
+            cmd_arguments = [
+                *cmd_prefix.split(), sys.executable, train_script_path,
+                '--output_path', worker1_result_path, '--backend_framework',
+                backend_framework, '--use_metric_spec',
+                str(True), *common_arguments
+            ]
+            p1 = subprocess.Popen(cmd_arguments,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE,
+                                  env=worker1_env)
+            std1, err1 = p1.communicate()
         # Load results from the pickles dumped by the other processes.
         try:
             with open(f'{worker1_result_path}.0', 'rb') as f:

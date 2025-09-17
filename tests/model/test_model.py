@@ -7,7 +7,7 @@ from typing import cast
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.common_types import Population
 from pfl.hyperparam import NNTrainHyperParams
@@ -19,7 +19,7 @@ from pfl.stats import MappedVectorStatistics
 
 from ..conftest import ModelSetup
 
-pytorch_pytest_param = pytest.param(lazy_fixture('pytorch_model_setup'),
+pytorch_pytest_param = pytest.param(lf('pytorch_model_setup'),
                                     marks=[
                                         pytest.mark.skipif(
                                             not get_pytorch_major_version(),
@@ -27,11 +27,11 @@ pytorch_pytest_param = pytest.param(lazy_fixture('pytorch_model_setup'),
                                     ],
                                     id='pytorch')
 tf_pytest_param = pytest.param(
-    lazy_fixture('tensorflow_model_setup'),
+    lf('tensorflow_model_setup'),
     marks=[pytest.mark.skipif(get_tf_major_version() < 2, reason='not tf>=2')],
     id='tensorflow')
 
-mlx_pytest_param = pytest.param(lazy_fixture('mlx_model_setup'),
+mlx_pytest_param = pytest.param(lf('mlx_model_setup'),
                                 marks=[
                                     pytest.mark.skipif(
                                         not check_mlx_installed(),

@@ -23,7 +23,7 @@ extensions = [
 
 autodoc_member_order = 'bysource'
 autodoc_mock_imports = [
-    'horovod', 'numpy', 'scipy', 'sklearn', 'tensorflow',
+    'numpy', 'scipy', 'sklearn', 'tensorflow',
     'tensorflow_probability', 'torch', 'pandas', 'pyarrow',
     'pfl.internal.ops.selector', 'xgboost'
 ]

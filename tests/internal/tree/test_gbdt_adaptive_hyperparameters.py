@@ -1,6 +1,6 @@
 # Copyright © 2023-2024 Apple Inc.
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.internal.ops.common_ops import check_pfl_tree_installed
 
@@ -55,13 +55,13 @@ class TestAdaptiveHyperparameters:
 
     @pytest.mark.parametrize(
         'model, per_layer_modifier_function, base_value, expected, leaf_nodes_reduction_factor',  # pylint: disable=line-too-long
-        [(lazy_fixture('gbdt_model_classifier_incomplete_branch_nodes'),
+        [(lf('gbdt_model_classifier_incomplete_branch_nodes'),
           'none', 200, 200, 1),
-         (lazy_fixture('gbdt_model_classifier_incomplete_branch_nodes'),
+         (lf('gbdt_model_classifier_incomplete_branch_nodes'),
           'linear', 200, 400, 3),
-         (lazy_fixture('gbdt_model_classifier_incomplete_branch_nodes'),
+         (lf('gbdt_model_classifier_incomplete_branch_nodes'),
           'power', 200, 400, 1),
-         (lazy_fixture('gbdt_model_classifier_incomplete_leaf_nodes'), 'power',
+         (lf('gbdt_model_classifier_incomplete_leaf_nodes'), 'power',
           200, 40, 5)])
     def test_TrainCohortSize(self, model, per_layer_modifier_function,
                              base_value, expected,
@@ -84,9 +84,9 @@ class TestAdaptiveHyperparameters:
 
     @pytest.mark.parametrize(
         'model, base_value, expected',
-        [(lazy_fixture('gbdt_model_classifier'), 200, 200),
-         (lazy_fixture('gbdt_model_classifier_incomplete_branch_nodes'), 200,
-          0), (lazy_fixture('gbdt_model_classifier'), 0, 0)])
+        [(lf('gbdt_model_classifier'), 200, 200),
+         (lf('gbdt_model_classifier_incomplete_branch_nodes'), 200,
+          0), (lf('gbdt_model_classifier'), 0, 0)])
     def test_ValidationCohortSize(self, model, base_value, expected):
         assert ValidationCohortSize(base_value).current_value(
             model) == expected
@@ -97,9 +97,9 @@ class TestAdaptiveHyperparameters:
         ValidationCohortSize(base_value)
 
     @pytest.mark.parametrize('model, expected', [
-        (lazy_fixture('gbdt_model_classifier'), 1.5),
-        (lazy_fixture('gbdt_model_classifier_incomplete_branch_nodes'), 0.375),
-        (lazy_fixture('gbdt_model_classifier_two_trees_incomplete'), 0.234375)
+        (lf('gbdt_model_classifier'), 1.5),
+        (lf('gbdt_model_classifier_incomplete_branch_nodes'), 0.375),
+        (lf('gbdt_model_classifier_two_trees_incomplete'), 0.234375)
     ])
     def test_ClippingBound(self, model, expected):
         base_value = 1.5
@@ -116,11 +116,11 @@ class TestAdaptiveHyperparameters:
         ClippingBound(base_value, layer_multiplier, tree_multiplier)
 
     @pytest.mark.parametrize('base_value, model, expected', [
-        (False, lazy_fixture('gbdt_model_classifier_incomplete_branch_nodes'),
+        (False, lf('gbdt_model_classifier_incomplete_branch_nodes'),
          False),
-        (True, lazy_fixture('gbdt_model_classifier_incomplete_branch_nodes'),
+        (True, lf('gbdt_model_classifier_incomplete_branch_nodes'),
          True),
-        (False, lazy_fixture('gbdt_model_classifier_leaf_node_to_split'), True)
+        (False, lf('gbdt_model_classifier_leaf_node_to_split'), True)
     ])
     def test_ComputeSecondOrderGradients(self, base_value, model, expected):
         assert ComputeSecondOrderGradients(base_value).current_value(

@@ -16,7 +16,7 @@ from pfl.internal.ops.framework_types import MLFramework
 from pfl.internal.platform.selector import get_platform
 from pfl.metrics import MetricValue
 
-from .distributed import DistributedContext, HorovodDistributedContext, horovod_is_active
+from .distributed import DistributedContext
 
 logger = logging.getLogger(name=__name__)
 
@@ -165,6 +165,12 @@ class TFDistributedContext(DistributedContext):
         # hence local size will always be 1.
         return 1
 
+    def _flatten(self, tensors):
+        return flatten(tensors)
+
+    def _reshape(self, vector, shapes, dtypes):
+        return reshape(vector, shapes, dtypes)
+
     @tf_function
     def _all_reduce_tensor(self, tensor, reduce_op):
         """ Helper function for doing the all-reduce across workers """
@@ -199,46 +205,13 @@ class TFDistributedContext(DistributedContext):
 
         reduce_op = tf.distribute.ReduceOp('MEAN' if average else 'SUM')
 
-        vector, *reshape_context = flatten(tensors)
+        vector, *reshape_context = self._flatten(tensors)
 
         with self._distributed.scope():
             # Reduce across replicas.
             reduced_vector = self._all_reduce_tensor(vector, reduce_op)
 
-        return reshape(reduced_vector, *reshape_context)
-
-
-class TFHorovodDistributedContext(HorovodDistributedContext):
-    """
-    Distributed training operations for TF tensors using a
-    Horovod backend.
-    Initializing an instance of this class performs the Horovod setup.
-    """
-
-    def __init__(self):
-        import horovod.tensorflow as hvd
-        super().__init__(hvd)
-        hvd.init()
-
-        logger.info('local_rank=%i local_size=%i rank=%i size=%i',
-                    hvd.local_rank(), hvd.local_size(), hvd.rank(), hvd.size())
-        self._post_init_check(hvd)
-
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        for gpu in gpus:
-            tf.config.experimental.set_memory_growth(gpu, True)
-        if gpus:
-            tf.config.experimental.set_visible_devices(
-                gpus[hvd.local_rank() % len(gpus)], 'GPU')
-
-        logger.info('local rank %i uses GPU: %s', hvd.local_rank(),
-                    tf.config.get_visible_devices('GPU'))
-
-    def _flatten(self, tensors):
-        return flatten(tensors)
-
-    def _reshape(self, vector, shapes, dtypes):
-        return reshape(vector, shapes, dtypes)
+        return self._reshape(reduced_vector, *reshape_context)
 
 
 # The correct distribution strategy needs to be initialized before any
@@ -246,8 +219,7 @@ class TFHorovodDistributedContext(HorovodDistributedContext):
 # TensorFlow server requires.
 # This is why the strategy is initialized in the module scope.
 distributed: DistributedContext
-distributed = TFHorovodDistributedContext() if horovod_is_active(
-) else TFDistributedContext()
+distributed = TFDistributedContext()
 
 
 def get_shape(variable):
@@ -483,7 +455,11 @@ def _shared_name(variable: tf.Variable):
     """
     Get TensorFlow variable name without the suffix :0.
     """
-    return variable.name[:variable.name.rindex(":")]
+    try:
+        return variable.name[:variable.name.rindex(":")]
+    except ValueError:
+        # Its not there in tf>=2.15
+        return variable.name
 
 
 def clone_variable(variable: tf.Variable, name: str) -> tf.Variable:
@@ -587,7 +563,11 @@ def _run_data_to_state_graph(metric: tf.keras.metrics.Metric, labels, preds):
 
         @tf.function(experimental_relax_shapes=True, input_signature=spec)
         def data_to_state_graph(labels, preds):
-            metric.reset_states()
+            try:
+                # tf>=2.15
+                metric.reset_state()
+            except AttributeError:
+                metric.reset_states()
             metric.update_state(labels, preds)
             return [tf.identity(v) for v in metric.variables]
 

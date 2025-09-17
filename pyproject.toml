@@ -28,7 +28,7 @@ torch = [
 ]
 #### Will be installed only with "tf" install extra
 tensorflow = { version = "^2.16.1", optional = true }
-tensorflow-probability = { version = ">=0.24", optional = true }
+tensorflow-probability = { version = ">=0.24", extras = ["tf"], optional = true }
 
 #### Will be installed only with "trees" install extra
 scikit-learn = { version = ">=1.0.2,<2", optional = true }
@@ -37,8 +37,6 @@ xgboost = { version = ">=1.4.2,<4", optional = true }
 #### Will be installed only with "mlx" install extra
 mlx = { version = ">=0.15.2,<0.30", optional = true }
 
-#### Needed in case you want to install Horovod
-cmake = ">=3.27.5,<5"
 wheel = ">=0.41.2,<0.46"
 packaging = ">=24.0,<26"
 
@@ -53,8 +51,8 @@ pytest-env = "^1.1.5"
 pytest-xdist = "^3.8.0"
 bump-my-version = "^1.2.2"
 ruff = "^0.13.0"
-pytest-lazy-fixture = "^0.6.3"
 mypy = "^1.18.1"
+pytest-lazy-fixtures = "^1.4.0"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^8.0.0"
@@ -199,7 +197,6 @@ filterwarnings = [
 
 markers = [
     "macos: mark test that should only run on MacOS, enable with --macos",
-    "disable_horovod: mark test that use Horovod. If you don't have Horovod installed, you can still run tests with --disable_horovod",
     "disable_slow: mark test that is slow. We need to speed up these tests for reasonable runtime on CircleCI"
 ]
 

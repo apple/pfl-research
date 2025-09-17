@@ -69,7 +69,7 @@ class TFModel(StatefulModel):
 
     # Checkpoint constants
     _MODEL_H5_NAME = "model.h5"
-    _MODEL_CKPT_NAME = "model.ckpt"
+    _MODEL_CKPT_NAME = "model.weights.h5"
     _CENTRAL_OPTIMIZER_CKPT_NAME = "central_optimizer.ckpt"
 
     def __init__(self,
@@ -98,6 +98,7 @@ class TFModel(StatefulModel):
             variable.name: variable
             for variable in model.trainable_variables
         }
+        self._trainable_variables = tuple(model.trainable_variables)
         self._model = model
         self._metrics = metrics
         self._central_optimizer = central_optimizer
@@ -127,12 +128,20 @@ class TFModel(StatefulModel):
     @property
     def central_optimizer_variable_map(
             self) -> Optional[Dict[str, tf.Variable]]:
-        if len(self._central_optimizer.variables()) == 0:
+        if len(self._get_variables(self._central_optimizer)) == 0:
             return None
         return {
             variable.name: variable
-            for variable in self._central_optimizer.variables()
+            for variable in self._get_variables(self._central_optimizer)
         }
+
+    def _get_variables(self, optimizer):
+        try:
+            variables = optimizer.variables()
+        except TypeError:
+            # tf>=2.15
+            variables = optimizer.variables
+        return variables
 
     def save(self, dir_path: str) -> None:
         if not os.path.isdir(dir_path):
@@ -151,13 +160,11 @@ class TFModel(StatefulModel):
         if self._checkpoint_format_hdf5:
             # Load HDF5 checkpoint from disk.
             save_path = os.path.join(dir_path, self._MODEL_H5_NAME)
-            if not os.path.exists(save_path):
-                raise CheckpointNotFoundError(save_path)
         else:
             # Load TensorFlow checkpoint from disk.
             save_path = os.path.join(dir_path, self._MODEL_CKPT_NAME)
-            if len(tf.io.gfile.glob(save_path + '.index')) == 0:
-                raise CheckpointNotFoundError(save_path)
+        if not os.path.exists(save_path):
+            raise CheckpointNotFoundError(save_path)
 
         self._model.load_weights(save_path)
         # load central optimizer as well if it exits
@@ -208,7 +215,9 @@ class TFModel(StatefulModel):
 
     @tensorflow_ops.tf_function
     def _set_model_parameters(self, source_tensors):
-        self._set_parameters(source_tensors, list(self.variable_map.values()))
+        for source, destination in zip(source_tensors,
+                                       self._trainable_variables):
+            destination.assign(source)
 
     def get_parameters(
         self,
@@ -233,10 +242,9 @@ class TFModel(StatefulModel):
             return placeholders
 
     def set_parameters(self, w: MappedVectorStatistics) -> None:
-        tensorflow_ops.try_cached_call(self._set_parameters,
+        tensorflow_ops.try_cached_call(self._set_model_parameters,
                                        f'set_parameters-{self._postfix}',
-                                       [w[name] for name in self.variable_map],
-                                       list(self.variable_map.values()))
+                                       [w[name] for name in self.variable_map])
 
     @tensorflow_ops.tf_function
     def _get_model_difference(self, other_parameters, model_variable_map):
@@ -265,10 +273,14 @@ class TFModel(StatefulModel):
     @tensorflow_ops.tf_function
     def _reset_local_optimizer(self, optimizer, learning_rate):
         # Reset the variables of the optimizer to all zeros.
-        for state in optimizer.variables():
+        for state in self._get_variables(optimizer):
             state.assign(tf.zeros_like(state))
         # Override the learning rate.
-        optimizer.lr.assign(learning_rate)
+        try:
+            # tf>=2.15
+            optimizer.learning_rate.assign(learning_rate)
+        except AttributeError:
+            optimizer.lr.assign(learning_rate)
 
     def do_multiple_epochs_of(self, user_dataset: AbstractDatasetType,
                               train_params: NNTrainHyperParams,

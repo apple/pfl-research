@@ -10,7 +10,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.aggregate.base import Backend, get_total_weight_name
 from pfl.algorithm.base import FederatedAlgorithm, NNAlgorithmParams
@@ -138,10 +138,6 @@ def pytest_addoption(parser):
                      action='store_true',
                      default=False,
                      help='run tests that require MacOS')
-    parser.addoption('--disable_horovod',
-                     action='store_true',
-                     default=False,
-                     help='run tests that require MacOS')
     parser.addoption('--disable_slow',
                      action='store_true',
                      default=False,
@@ -150,9 +146,6 @@ def pytest_addoption(parser):
 
 
 def pytest_collection_modifyitems(config, items):
-    disable_horovod = config.getoption("--disable_horovod")
-    skip_horovod_marker = pytest.mark.skip(
-        reason="Test disabled with --disable_horovod")
     disable_slow = config.getoption("--disable_slow")
     skip_slow_marker = pytest.mark.skip(
         reason="Test disabled with --disable_slow")
@@ -161,8 +154,6 @@ def pytest_collection_modifyitems(config, items):
     skip_macos_marker = pytest.mark.skip(reason='need --macos option to run')
 
     for item in items:
-        if "horovod" in item.keywords and disable_horovod:
-            item.add_marker(skip_horovod_marker)
         if "is_slow" in item.keywords and disable_slow:
             item.add_marker(skip_slow_marker)
         if "macos" in item.keywords and disable_macos:
@@ -761,9 +752,9 @@ def get_keras_model_sequential():
 
 @pytest.fixture(scope="function",
                 params=[
-                    pytest.param(lazy_fixture('get_keras_model_functional'),
+                    pytest.param(lf('get_keras_model_functional'),
                                  id='functional'),
-                    pytest.param(lazy_fixture('get_keras_model_sequential'),
+                    pytest.param(lf('get_keras_model_sequential'),
                                  id='sequential'),
                 ])
 def get_model(request):

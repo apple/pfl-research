@@ -7,21 +7,22 @@ authors = ["Apple"]
 
 [tool.poetry.dependencies]
 # Use newer python versions at your own risk, they have not been fully tested with `pfl`.
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.13"
 awscli = "^1.32.29"
 h5py = "^3.8.0"
-multiprocess = "^0.70.12"
+multiprocess = ">=0.70.15,<0.71"
 tqdm = "^4.63.1"
-tensorflow = { version = "^2.14.0", optional = true }
-tensorflow_probability = { version = "^0.22", optional = true }
+tensorflow = { version = "2.17.0", optional = true }
+tensorflow-probability = { version = "0.24", extras = ["tf"], optional = true }
 tensorflow_addons = { version = ">=0.20.0,<1", optional = true }
 torch = [
-  { version = "^2.0.1", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
-  { version = "^2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
+  { version = "2.6.0", source = "torch_cu124", markers = "sys_platform == 'linux'", optional = true },
+  { version = "2.6.0", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
+# https://github.com/pytorch/pytorch/wiki/PyTorch-Versions
 torchvision = [
-  { version = "^0.15.2", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
-  { version = "^0.15.2", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
+  { version = "0.21.0", source = "torch_cu124", markers = "sys_platform == 'linux'", optional = true },
+  { version = "0.21.0", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 # Installs pfl from source.
 pfl = [
@@ -42,19 +43,19 @@ mlx = ["pfl", "mlx"]
 
 [tool.poetry.group.dev.dependencies]
 mock = "^5.1.0"
-pytest = "^7.2.0"
-pre-commit = "^2.20.0"
-pytest-xdist = "^3.3.1"
-pytest-lazy-fixture = "^0.6.3"
-mypy = "1.5"
-ruff = "0.0.290"
+pytest = "^8.4.2"
+pre-commit = "^4.3.0"
+pytest-xdist = "^3.8.0"
+pytest-lazy-fixtures = "^1.4.0"
+mypy = "^1.18.1"
+ruff = "^0.13.0"
 scikit-learn = "^1.0.2"
 yapf = "^0.40.1"
 
 # TODO: these pytorch sources are only needed while pfl is installed from github address.
 [[tool.poetry.source]]
-name = "torch_cu118"
-url = "https://download.pytorch.org/whl/cu118"
+name = "torch_cu124"
+url = "https://download.pytorch.org/whl/cu124"
 priority = "supplemental"
 
 [[tool.poetry.source]]

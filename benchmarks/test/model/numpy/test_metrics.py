@@ -11,8 +11,8 @@ _seed = 42
 
 def pr_auc_score(y_true, y_score, average):
     if average == "micro":
-        precision, recall, _ = precision_recall_curve(
-            y_true=y_true.ravel(), probas_pred=y_score.ravel())
+        precision, recall, _ = precision_recall_curve(y_true=y_true.ravel(),
+                                                      y_score=y_score.ravel())
         return auc(recall, precision)
     elif average == "macro":
         num_classes = y_score.shape[1]

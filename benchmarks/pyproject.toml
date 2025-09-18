@@ -14,7 +14,6 @@ multiprocess = ">=0.70.15,<0.71"
 tqdm = "^4.63.1"
 tensorflow = { version = "2.17.0", optional = true }
 tensorflow-probability = { version = "0.24", extras = ["tf"], optional = true }
-tensorflow_addons = { version = ">=0.20.0,<1", optional = true }
 torch = [
   { version = "2.6.0", source = "torch_cu124", markers = "sys_platform == 'linux'", optional = true },
   { version = "2.6.0", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
@@ -37,7 +36,7 @@ werkzeug = ">=3.0.3"
 
 
 [tool.poetry.extras]
-tf = ["pfl", "tensorflow_addons", "tensorflow"]
+tf = ["pfl", "tensorflow"]
 pytorch = ["pfl", "torchvision", "torch"]
 mlx = ["pfl", "mlx"]
 

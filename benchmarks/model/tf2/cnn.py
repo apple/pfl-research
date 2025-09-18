@@ -10,12 +10,12 @@ from tensorflow.keras.layers import (
     Dropout,
     Flatten,
     GlobalAveragePooling2D,
+    GroupNormalization,
     Input,
     MaxPool2D,
 )
 
 # yapf: enable
-from tensorflow_addons.layers.normalizations import GroupNormalization  # type: ignore
 
 
 def simple_cnn(input_shape: Tuple[int, ...],

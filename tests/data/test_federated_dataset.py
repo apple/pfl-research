@@ -363,8 +363,7 @@ def make_fed_data_tf(user_id_to_weight):
 
 @pytest.mark.parametrize('make_fed_data', [
     pytest.param(lf('make_fed_data_numpy'), id='numpy'),
-    pytest.param(lf('make_artificial_fed_data_numpy'),
-                 id='artificial_numpy'),
+    pytest.param(lf('make_artificial_fed_data_numpy'), id='artificial_numpy'),
     pytest.param(lf('make_fed_data_pytorch'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),

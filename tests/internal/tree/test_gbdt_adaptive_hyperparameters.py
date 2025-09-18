@@ -55,14 +55,14 @@ class TestAdaptiveHyperparameters:
 
     @pytest.mark.parametrize(
         'model, per_layer_modifier_function, base_value, expected, leaf_nodes_reduction_factor',  # pylint: disable=line-too-long
-        [(lf('gbdt_model_classifier_incomplete_branch_nodes'),
-          'none', 200, 200, 1),
-         (lf('gbdt_model_classifier_incomplete_branch_nodes'),
-          'linear', 200, 400, 3),
-         (lf('gbdt_model_classifier_incomplete_branch_nodes'),
-          'power', 200, 400, 1),
-         (lf('gbdt_model_classifier_incomplete_leaf_nodes'), 'power',
-          200, 40, 5)])
+        [(lf('gbdt_model_classifier_incomplete_branch_nodes'), 'none', 200,
+          200, 1),
+         (lf('gbdt_model_classifier_incomplete_branch_nodes'), 'linear', 200,
+          400, 3),
+         (lf('gbdt_model_classifier_incomplete_branch_nodes'), 'power', 200,
+          400, 1),
+         (lf('gbdt_model_classifier_incomplete_leaf_nodes'), 'power', 200, 40,
+          5)])
     def test_TrainCohortSize(self, model, per_layer_modifier_function,
                              base_value, expected,
                              leaf_nodes_reduction_factor):
@@ -85,8 +85,8 @@ class TestAdaptiveHyperparameters:
     @pytest.mark.parametrize(
         'model, base_value, expected',
         [(lf('gbdt_model_classifier'), 200, 200),
-         (lf('gbdt_model_classifier_incomplete_branch_nodes'), 200,
-          0), (lf('gbdt_model_classifier'), 0, 0)])
+         (lf('gbdt_model_classifier_incomplete_branch_nodes'), 200, 0),
+         (lf('gbdt_model_classifier'), 0, 0)])
     def test_ValidationCohortSize(self, model, base_value, expected):
         assert ValidationCohortSize(base_value).current_value(
             model) == expected
@@ -96,11 +96,11 @@ class TestAdaptiveHyperparameters:
     def test_ValidationCohortSize_fail(self, base_value):
         ValidationCohortSize(base_value)
 
-    @pytest.mark.parametrize('model, expected', [
-        (lf('gbdt_model_classifier'), 1.5),
-        (lf('gbdt_model_classifier_incomplete_branch_nodes'), 0.375),
-        (lf('gbdt_model_classifier_two_trees_incomplete'), 0.234375)
-    ])
+    @pytest.mark.parametrize(
+        'model, expected',
+        [(lf('gbdt_model_classifier'), 1.5),
+         (lf('gbdt_model_classifier_incomplete_branch_nodes'), 0.375),
+         (lf('gbdt_model_classifier_two_trees_incomplete'), 0.234375)])
     def test_ClippingBound(self, model, expected):
         base_value = 1.5
         layer_multiplier = 0.5
@@ -115,13 +115,11 @@ class TestAdaptiveHyperparameters:
                                 tree_multiplier):
         ClippingBound(base_value, layer_multiplier, tree_multiplier)
 
-    @pytest.mark.parametrize('base_value, model, expected', [
-        (False, lf('gbdt_model_classifier_incomplete_branch_nodes'),
-         False),
-        (True, lf('gbdt_model_classifier_incomplete_branch_nodes'),
-         True),
-        (False, lf('gbdt_model_classifier_leaf_node_to_split'), True)
-    ])
+    @pytest.mark.parametrize(
+        'base_value, model, expected',
+        [(False, lf('gbdt_model_classifier_incomplete_branch_nodes'), False),
+         (True, lf('gbdt_model_classifier_incomplete_branch_nodes'), True),
+         (False, lf('gbdt_model_classifier_leaf_node_to_split'), True)])
     def test_ComputeSecondOrderGradients(self, base_value, model, expected):
         assert ComputeSecondOrderGradients(base_value).current_value(
             model) == expected

@@ -408,9 +408,7 @@ class TestFederatedGBDT:
                 'compute_second_order_gradients': False,
                 'report_gradients_both_sides_split': False,
                 'report_node_sum_gradients': True,
-            },
-             lf(
-                 'regression_first_order_gradients_one_side_only_node_sum')),
+            }, lf('regression_first_order_gradients_one_side_only_node_sum')),
             (
                 {
                     'compute_first_order_gradients': True,
@@ -418,22 +416,18 @@ class TestFederatedGBDT:
                     'report_gradients_both_sides_split': False,
                     'report_node_sum_gradients': False,
                 },
-                lf(
-                    'regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
-                )),
+                lf('regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
+                   )),
             ({
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_feature_result_difference': True,
-            },
-             lf(
-                 'regression_first_order_gradients_feature_difference')),
+            }, lf('regression_first_order_gradients_feature_difference')),
             ({
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_node_result_difference': True,
-            },
-             lf('regression_first_order_gradients_node_difference'))
+            }, lf('regression_first_order_gradients_node_difference'))
         ],
         indirect=['gbdt_internal_algorithm_params'])
     def test_decode_training_statistics(
@@ -527,30 +521,24 @@ class TestFederatedGBDT:
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': True
             }, lf('regression_first_second_order_gradients'),
-             lf('train_population'),
-             lf('gbdt_regression_model_hyper_params')),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
             (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False
-            }, lf('regression_first_order_gradients'),
-             lf('train_population'),
+            }, lf('regression_first_order_gradients'), lf('train_population'),
              lf('gbdt_regression_model_hyper_params')),
             (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': False,
                 'compute_second_order_gradients': True
-            }, lf('regression_second_order_gradients'),
-             lf('train_population'),
+            }, lf('regression_second_order_gradients'), lf('train_population'),
              lf('gbdt_regression_model_hyper_params')),
             (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_gradients_both_sides_split': False,
                 'report_node_sum_gradients': True,
-            },
-             lf(
-                 'regression_first_order_gradients_one_side_only_node_sum'),
-             lf('train_population'),
-             lf('gbdt_regression_model_hyper_params')),
+            }, lf('regression_first_order_gradients_one_side_only_node_sum'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
             (
                 lf('gbdt_model_regressor_empty'),
                 {
@@ -559,35 +547,28 @@ class TestFederatedGBDT:
                     'report_gradients_both_sides_split': False,
                     'report_node_sum_gradients': False,
                 },
-                lf(
-                    'regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
-                ),
+                lf('regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
+                   ),
                 lf('train_population'),
                 lf('gbdt_regression_model_hyper_params')),
             (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_feature_result_difference': True,
-            },
-             lf('regression_first_order_gradients_feature_difference'
-                          ), lf('train_population'),
-             lf('gbdt_regression_model_hyper_params')),
+            }, lf('regression_first_order_gradients_feature_difference'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
             (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_node_result_difference': True,
-            },
-             lf('regression_first_order_gradients_node_difference'),
-             lf('train_population'),
-             lf('gbdt_regression_model_hyper_params')),
+            }, lf('regression_first_order_gradients_node_difference'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
             (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': True,
                 'weight_vector': weight_translate_vector
-            },
-             lf('weighted_regression_first_second_order_gradients'),
-             lf('train_population'),
-             lf('gbdt_regression_model_hyper_params')),
+            }, lf('weighted_regression_first_second_order_gradients'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
         ],
         indirect=['gbdt_internal_algorithm_params'])
     def test_simulate_one_user(self, gbdt_algorithm, model, gbdt_user_dataset,
@@ -616,10 +597,9 @@ class TestFederatedGBDT:
             assert statistics is None
         assert metrics and isinstance(metrics, Metrics)
 
-    @pytest.mark.parametrize(
-        'model, statistics',
-        [(lf('gbdt_model_regressor_empty'),
-          lf('regression_first_second_order_gradients'))])
+    @pytest.mark.parametrize('model, statistics',
+                             [(lf('gbdt_model_regressor_empty'),
+                               lf('regression_first_second_order_gradients'))])
     def test_process_aggregated_statistics(self, gbdt_algorithm,
                                            gbdt_internal_algorithm_params,
                                            gbdt_regression_model_hyper_params,
@@ -678,10 +658,10 @@ class TestFederatedGBDT:
         # pylint: disable=protected-access
         assert model.current_tree == gbdt_algorithm_params.num_trees + 1
 
-    @pytest.mark.parametrize('model', [
-        lf('gbdt_model_regressor_empty'),
-        lf('gbdt_model_regressor_empty')
-    ])
+    @pytest.mark.parametrize(
+        'model',
+        [lf('gbdt_model_regressor_empty'),
+         lf('gbdt_model_regressor_empty')])
     def test_get_next_central_contexts(self, gbdt_algorithm, model,
                                        gbdt_algorithm_params,
                                        gbdt_regression_model_hyper_params):

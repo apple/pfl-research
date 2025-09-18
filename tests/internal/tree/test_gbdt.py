@@ -150,12 +150,11 @@ class TestGBDT:
         check_equal_nodes(gbdt.trees[-1], branch_node)
 
     @pytest.mark.parametrize(
-        'gbdt, expected',
-        [(lf('gbdt_regressor_two_trees_trained'),
-          [expected_xgboost_output_one_tree_trained()] * 2),
-         (lf('gbdt_regressor_two_trees_incomplete'),
-          [expected_xgboost_output_one_tree_trained()]),
-         (lf('gbdt_classifier_one_tree_incomplete'), [])])
+        'gbdt, expected', [(lf('gbdt_regressor_two_trees_trained'),
+                            [expected_xgboost_output_one_tree_trained()] * 2),
+                           (lf('gbdt_regressor_two_trees_incomplete'),
+                            [expected_xgboost_output_one_tree_trained()]),
+                           (lf('gbdt_classifier_one_tree_incomplete'), [])])
     def test_to_serialized_xgboost(self, gbdt, expected):
         assert gbdt.to_serialized_xgboost() == expected
 
@@ -164,8 +163,7 @@ class TestGBDTClassifier:
 
     @pytest.mark.parametrize(
         'gbdt, expected',
-        [(lf('empty_gbdt_classifier'),
-          expit(np.array([0., 0., 0., 0.]))),
+        [(lf('empty_gbdt_classifier'), expit(np.array([0., 0., 0., 0.]))),
          (lf('gbdt_classifier_one_tree_trained'),
           expit(np.array([0.3, 0.4, -0.3, -0.4]))),
          (lf('gbdt_classifier_two_trees_trained'),
@@ -180,14 +178,10 @@ class TestGBDTClassifier:
     @pytest.mark.parametrize(
         'gbdt, expected',
         [(lf('empty_gbdt_classifier'), np.array([0, 0, 0, 0])),
-         (lf('gbdt_classifier_one_tree_trained'),
-          np.array([1, 1, 0, 0])),
-         (lf('gbdt_classifier_two_trees_trained'),
-          np.array([1, 1, 0, 0])),
-         (lf('gbdt_classifier_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
-         (lf('gbdt_classifier_two_trees_incomplete'),
-          np.array([1, 1, 0, 0]))])
+         (lf('gbdt_classifier_one_tree_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_two_trees_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_one_tree_incomplete'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_classifier_two_trees_incomplete'), np.array([1, 1, 0, 0]))])
     def test_predict_classes(self, gbdt, expected, gbdt_datapoints):
         np.testing.assert_almost_equal(gbdt.predict_classes(gbdt_datapoints),
                                        expected,
@@ -196,14 +190,10 @@ class TestGBDTClassifier:
     @pytest.mark.parametrize(
         'gbdt, targets',
         [(lf('empty_gbdt_classifier'), np.array([0, 0, 0, 0])),
-         (lf('gbdt_classifier_one_tree_trained'),
-          np.array([1, 1, 0, 0])),
-         (lf('gbdt_classifier_two_trees_trained'),
-          np.array([1, 1, 0, 0])),
-         (lf('gbdt_classifier_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
-         (lf('gbdt_classifier_two_trees_incomplete'),
-          np.array([1, 1, 0, 0]))])
+         (lf('gbdt_classifier_one_tree_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_two_trees_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_one_tree_incomplete'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_classifier_two_trees_incomplete'), np.array([1, 1, 0, 0]))])
     def test_evaluate(self, gbdt, targets, gbdt_datapoints,
                       check_dictionaries_almost_equal):
         predictions = gbdt.predict_classes(gbdt_datapoints)
@@ -211,17 +201,13 @@ class TestGBDTClassifier:
         actual_metrics = gbdt.evaluate(gbdt_datapoints, targets)
         check_dictionaries_almost_equal(actual_metrics, expected_metrics)
 
-    @pytest.mark.parametrize(
-        'gbdt, expected',
-        [(lf('empty_gbdt_classifier'), (expit(0), expit(0))),
-         (lf('gbdt_classifier_one_tree_trained'),
-          (expit(0.4), expit(-0.4))),
-         (lf('gbdt_classifier_two_trees_trained'),
-          (expit(0.8), expit(-0.8))),
-         (lf('gbdt_classifier_one_tree_incomplete'),
-          (expit(0), expit(0))),
-         (lf('gbdt_classifier_two_trees_incomplete'),
-          (expit(0.4), expit(-0.4)))])
+    @pytest.mark.parametrize('gbdt, expected', [
+        (lf('empty_gbdt_classifier'), (expit(0), expit(0))),
+        (lf('gbdt_classifier_one_tree_trained'), (expit(0.4), expit(-0.4))),
+        (lf('gbdt_classifier_two_trees_trained'), (expit(0.8), expit(-0.8))),
+        (lf('gbdt_classifier_one_tree_incomplete'), (expit(0), expit(0))),
+        (lf('gbdt_classifier_two_trees_incomplete'), (expit(0.4), expit(-0.4)))
+    ])
     def test_get_max_min_predictions(self, gbdt, expected):
         assert gbdt.get_max_min_predictions() == expected
 
@@ -235,8 +221,7 @@ class TestGBDTRegressor:
           np.array([0.3, 0.4, -0.3, -0.4])),
          (lf('gbdt_regressor_two_trees_trained'),
           np.array([0.6, 0.8, -0.6, -0.8])),
-         (lf('gbdt_regressor_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
+         (lf('gbdt_regressor_one_tree_incomplete'), np.array([0, 0, 0, 0])),
          (lf('gbdt_regressor_two_trees_incomplete'),
           np.array([0.3, 0.4, -0.3, -0.4]))])
     def test_predict(self, gbdt, expected, gbdt_datapoints):
@@ -245,14 +230,10 @@ class TestGBDTRegressor:
     @pytest.mark.parametrize(
         'gbdt, targets',
         [(lf('empty_gbdt_regressor'), np.array([0, 0, 0, 0])),
-         (lf('gbdt_regressor_one_tree_trained'),
-          np.array([1, 1, 0, 0])),
-         (lf('gbdt_regressor_two_trees_trained'),
-          np.array([1, 1, 0, 0])),
-         (lf('gbdt_regressor_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
-         (lf('gbdt_regressor_two_trees_incomplete'),
-          np.array([1, 1, 0, 0]))])
+         (lf('gbdt_regressor_one_tree_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_regressor_two_trees_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_regressor_one_tree_incomplete'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_regressor_two_trees_incomplete'), np.array([1, 1, 0, 0]))])
     def test_evaluate(self, gbdt, targets, gbdt_datapoints,
                       check_dictionaries_almost_equal):
         predictions = gbdt.predict(gbdt_datapoints)

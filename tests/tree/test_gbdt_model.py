@@ -219,34 +219,32 @@ class TestGBDTModel:
 
         assert model.nodes_to_split == [root_NodeRecord]
 
-    @pytest.mark.parametrize('model, value, expected', [
-        (lf('gbdt_model_classifier_empty'), 1.0, 1.0),
-        (lf('gbdt_model_classifier_empty'), -1.0, -1.0),
-        (lf('gbdt_model_classifier_one_tree_complete'), 1.0, 1.0),
-        (lf('gbdt_model_classifier_one_tree_complete'), -1.0, -1.0),
-        (lf('gbdt_model_classifier_one_tree_incomplete'), 1.0, 1.0),
-        (lf('gbdt_model_classifier_one_tree_incomplete'), -1.0,
-         -1.0),
-        (lf('gbdt_model_classifier_two_trees_complete'), 2.0, 2.0),
-        (lf('gbdt_model_classifier_two_trees_complete'), -0.5, -0.5)
-    ])
+    @pytest.mark.parametrize(
+        'model, value, expected',
+        [(lf('gbdt_model_classifier_empty'), 1.0, 1.0),
+         (lf('gbdt_model_classifier_empty'), -1.0, -1.0),
+         (lf('gbdt_model_classifier_one_tree_complete'), 1.0, 1.0),
+         (lf('gbdt_model_classifier_one_tree_complete'), -1.0, -1.0),
+         (lf('gbdt_model_classifier_one_tree_incomplete'), 1.0, 1.0),
+         (lf('gbdt_model_classifier_one_tree_incomplete'), -1.0, -1.0),
+         (lf('gbdt_model_classifier_two_trees_complete'), 2.0, 2.0),
+         (lf('gbdt_model_classifier_two_trees_complete'), -0.5, -0.5)])
     def test_compute_node_value_no_prior(self, model, value, expected,
                                          learning_rate):
         leaf_value = model._compute_node_value(value)  # pylint: disable=protected-access
         expected_leaf_value = learning_rate * expected
         np.testing.assert_almost_equal(leaf_value, expected_leaf_value)
 
-    @pytest.mark.parametrize('model, value, expected', [
-        (lf('gbdt_model_classifier_empty'), 1.0, 0.79),
-        (lf('gbdt_model_classifier_empty'), -1.0, -0.61),
-        (lf('gbdt_model_classifier_one_tree_complete'), 1.0, 0.79),
-        (lf('gbdt_model_classifier_one_tree_complete'), -1.0, -0.61),
-        (lf('gbdt_model_classifier_one_tree_incomplete'), 1.0, 0.79),
-        (lf('gbdt_model_classifier_one_tree_incomplete'), -1.0,
-         -0.61),
-        (lf('gbdt_model_classifier_two_trees_complete'), 2.0, 1.49),
-        (lf('gbdt_model_classifier_two_trees_complete'), -0.5, -0.26)
-    ])
+    @pytest.mark.parametrize(
+        'model, value, expected',
+        [(lf('gbdt_model_classifier_empty'), 1.0, 0.79),
+         (lf('gbdt_model_classifier_empty'), -1.0, -0.61),
+         (lf('gbdt_model_classifier_one_tree_complete'), 1.0, 0.79),
+         (lf('gbdt_model_classifier_one_tree_complete'), -1.0, -0.61),
+         (lf('gbdt_model_classifier_one_tree_incomplete'), 1.0, 0.79),
+         (lf('gbdt_model_classifier_one_tree_incomplete'), -1.0, -0.61),
+         (lf('gbdt_model_classifier_two_trees_complete'), 2.0, 1.49),
+         (lf('gbdt_model_classifier_two_trees_complete'), -0.5, -0.26)])
     def test_compute_node_value_with_prior(self, model, value, expected,
                                            learning_rate):
         prior_value = 0.3
@@ -259,14 +257,13 @@ class TestGBDTModel:
                     reason='pfl [tree] not installed')
 class TestGBDTModelClassifier:
 
-    @pytest.mark.parametrize(
-        'model, expected',
-        [(lf('gbdt_model_classifier_empty'),
-          expit(np.array([0., 0., 0., 0.]))),
-         (lf('gbdt_model_classifier_one_tree_complete'),
-          expit(np.array([0.3, 0.4, -0.3, -0.4]))),
-         (lf('gbdt_model_classifier_two_trees_incomplete'),
-          expit(np.array([0.3, 0.4, -0.3, -0.4])))])
+    @pytest.mark.parametrize('model, expected', [
+        (lf('gbdt_model_classifier_empty'), expit(np.array([0., 0., 0., 0.]))),
+        (lf('gbdt_model_classifier_one_tree_complete'),
+         expit(np.array([0.3, 0.4, -0.3, -0.4]))),
+        (lf('gbdt_model_classifier_two_trees_incomplete'),
+         expit(np.array([0.3, 0.4, -0.3, -0.4])))
+    ])
     def test_predict(self, model, expected, gbdt_datapoints):
         np.testing.assert_almost_equal(model.predict(gbdt_datapoints),
                                        expected,
@@ -275,8 +272,8 @@ class TestGBDTModelClassifier:
     @pytest.mark.parametrize(
         'model, expected',
         [(lf('gbdt_model_classifier_empty'), np.array([0, 0, 0, 0])),
-         (lf('gbdt_model_classifier_one_tree_complete'),
-          np.array([1, 1, 0, 0])),
+         (lf('gbdt_model_classifier_one_tree_complete'), np.array([1, 1, 0, 0
+                                                                   ])),
          (lf('gbdt_model_classifier_two_trees_incomplete'),
           np.array([1, 1, 0, 0]))])
     def test_predict_classes(self, model, expected, gbdt_datapoints):

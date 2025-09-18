@@ -101,10 +101,7 @@ class PyTorchDistributedContext(DistributedContext):
     def __init__(self):
         worker_rank, worker_addresses = get_platform(
         ).get_distributed_addresses(verbose=True)
-        if torch.cuda.is_available():
-            backend = 'nccl'
-        else:
-            backend = 'gloo'
+        backend = 'nccl' if torch.cuda.is_available() else 'gloo'
         if "TORCHELASTIC_RUN_ID" in os.environ:
             # Using torchrun.
             torch.distributed.init_process_group(backend=backend)

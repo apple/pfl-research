@@ -103,10 +103,10 @@ for _ in range(epochs):
     ```
     """
 
-    @pytest.mark.parametrize('make_algorithm_setup', [
-        lf('make_fedprox_setup'),
-        lf('make_adafedprox_setup')
-    ])
+    @pytest.mark.parametrize(
+        'make_algorithm_setup',
+        [lf('make_fedprox_setup'),
+         lf('make_adafedprox_setup')])
     @pytest.mark.parametrize('mu,expected_weight_diff, expected_loss', [
         (0.0, np.array([[0.5, 0.5], [1., 1.]]), 1.5),
         (1.0, np.array([[0.375, 0.375], [0.75, 0.75]]), 2.125),

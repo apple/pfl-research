@@ -32,10 +32,9 @@ def in_memory_state_storage(tmp_path):
                                         reason='PyTorch not installed')
                  ]),
 ])
-@pytest.mark.parametrize('storage', [
-    lf('in_memory_state_storage'),
-    lf('disk_user_state_storage')
-])
+@pytest.mark.parametrize(
+    'storage', [lf('in_memory_state_storage'),
+                lf('disk_user_state_storage')])
 class TestUserState:
 
     def test_save_load(self, storage, ops_module):

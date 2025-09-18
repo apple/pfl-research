@@ -3770,4 +3770,4 @@ trees = ["scikit-learn", "xgboost"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "4134ecca4f4adead2b910fb9426f9ee33b97411dd71dc45d2cda909df5a3edae"
+content-hash = "c03088f0b207574b580f7cc97eabd285519c6d02f5d7c3f918ed009137613816"

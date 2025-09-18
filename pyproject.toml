@@ -61,8 +61,8 @@ furo = "^2025.7.19"
 sphinx-last-updated-by-git = "^0.3.8"
 
 [tool.poetry.extras]
-pytorch = [ 'torch', 'cmake']
-tf = ['tensorflow', 'tensorflow-probability', 'cmake']
+pytorch = ['torch']
+tf = ['tensorflow', 'tensorflow-probability']
 mlx = ['mlx']
 trees = ['scikit-learn', 'xgboost']
 

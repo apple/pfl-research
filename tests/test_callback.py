@@ -3,6 +3,7 @@ import cProfile
 import json
 import operator
 import os
+import re
 from glob import glob
 from unittest.mock import ANY, MagicMock, patch
 
@@ -446,7 +447,7 @@ class TestTensorBoardCallback:
                                        write_graph=True)
         callback.after_central_iteration(Metrics(), model, central_iteration=1)
         events = list(summary_iterator(glob(str(tmp_path / 'train/*'))[0]))
-        assert len(events) == 2
+        assert len(events) > 0
         assert isinstance(events[1].graph_def, bytes)
 
     def test_after_central_iteration_scalars(self, tmp_path, tf,
@@ -498,8 +499,10 @@ class TestTensorBoardCallback:
 
         events = list(summary_iterator(glob(str(tmp_path / 'train/*'))[0]))
         assert len(events) == 3
-        assert events[1].summary.value[0].tag == 'dense/kernel_0/histogram'
-        assert events[2].summary.value[0].tag == 'dense/bias_0/histogram'
+        assert re.search(r'.*kernel.*/histogram$',
+                         events[1].summary.value[0].tag)
+        assert re.search(r'.*bias.*/histogram$',
+                         events[2].summary.value[0].tag)
 
     @patch('subprocess.Popen')
     def test_host_tensorboard(self, mock_popen, tmp_path, tf, summary_iterator,

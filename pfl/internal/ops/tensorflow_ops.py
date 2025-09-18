@@ -198,7 +198,7 @@ class TFDistributedContext(DistributedContext):
     def all_reduce(self,
                    tensors: List[tf.Tensor],
                    average: bool = False) -> List[tf.Tensor]:
-        if self.world_size <= 1:
+        if self._world_size <= 1:
             # In the case of a single worker, just return identity instead
             # of doing unnecessary flatten and reshape.
             return tensors

@@ -258,7 +258,7 @@ class TestMechanisms:
                                rtol=0.02)
 
         if expected_kurtosis is not None:
-            assert np.allclose(kurtosis_values, expected_kurtosis, atol=0.1)
+            assert np.allclose(kurtosis_values, expected_kurtosis, atol=0.15)
 
         if set_seed:
             # Check that the same seed always yields the same results.

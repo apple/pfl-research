@@ -101,15 +101,18 @@ class PyTorchDistributedContext(DistributedContext):
     def __init__(self):
         worker_rank, worker_addresses = get_platform(
         ).get_distributed_addresses(verbose=True)
-        self._global_rank = worker_rank
-        self._world_size = 1 if worker_addresses is None else len(
-            worker_addresses)
-
-        if self._world_size > 1:
-            if torch.cuda.is_available():
-                backend = 'nccl'
-            else:
-                backend = 'gloo'
+        if torch.cuda.is_available():
+            backend = 'nccl'
+        else:
+            backend = 'gloo'
+        if "TORCHELASTIC_RUN_ID" in os.environ:
+            # Using torchrun.
+            torch.distributed.init_process_group(backend=backend)
+            self._global_rank = int(os.environ['RANK'])
+            self._world_size = int(os.environ['WORLD_SIZE'])
+        elif worker_addresses is not None:
+            self._global_rank = worker_rank
+            self._world_size = len(worker_addresses)
             # We assume that the master is always in the first position.
             init_method = f'tcp://{worker_addresses[0]}'
             torch.distributed.init_process_group(
@@ -117,12 +120,13 @@ class PyTorchDistributedContext(DistributedContext):
                 init_method=init_method,
                 rank=worker_rank,
                 world_size=len(worker_addresses))
+        else:
+            self._global_rank = 0
+            self._world_size = 1
 
     @property
     def local_rank(self) -> int:
-        # Only supports single process, single GPU, multi-worker training,
-        # hence local rank will always be 0.
-        return 0
+        return int(os.environ.get('LOCAL_RANK', 0))
 
     @property
     def global_rank(self) -> int:
@@ -134,9 +138,7 @@ class PyTorchDistributedContext(DistributedContext):
 
     @property
     def local_size(self) -> int:
-        # Only supports single process, single GPU, multi-worker training,
-        # hence local size will always be 1.
-        return 1
+        return int(os.environ.get('LOCAL_WORLD_SIZE', 1))
 
     def _flatten(self, tensors):
         return flatten(tensors)
@@ -153,7 +155,7 @@ class PyTorchDistributedContext(DistributedContext):
         flat, *reshape_context = self._flatten(tensors)
         torch.distributed.all_reduce(flat, op=torch.distributed.reduce_op.SUM)
         if average:
-            flat /= self.world_size
+            flat /= self._world_size
         return self._reshape(flat, tensors, *reshape_context)
 
 

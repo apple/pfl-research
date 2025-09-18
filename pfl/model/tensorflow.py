@@ -242,9 +242,8 @@ class TFModel(StatefulModel):
             return placeholders
 
     def set_parameters(self, w: MappedVectorStatistics) -> None:
-        tensorflow_ops.try_cached_call(self._set_model_parameters,
-                                       f'set_parameters-{self._postfix}',
-                                       [w[name] for name in self.variable_map])
+        for variable_name, value in w.items():
+            self.variable_map[variable_name].assign(value)
 
     @tensorflow_ops.tf_function
     def _get_model_difference(self, other_parameters, model_variable_map):

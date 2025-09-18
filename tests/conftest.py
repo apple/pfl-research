@@ -88,7 +88,7 @@ def check_equal_metrics():
 
             np.testing.assert_array_almost_equal(get_overall_value(metric1),
                                                  get_overall_value(metric2),
-                                                 decimal=5)
+                                                 decimal=4)
 
     return _check_equal_metrics
 

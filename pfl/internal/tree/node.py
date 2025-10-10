@@ -310,7 +310,7 @@ class Node:
             for (node_dict, parent, is_left) in current_nodes:
                 (feature, threshold, value) = process_xgboost_node(node_dict)
                 # leaf node
-                if value:
+                if value is not None:
                     if parent is None:
                         root = Node(value=value)
                     else:
@@ -323,6 +323,14 @@ class Node:
                     else:
                         node = parent.add_branch_node(is_left, feature,
                                                       threshold)
+			assert 'children' in node_dict.keys(), (
+			    "The XGBoost model has not been saved in a compatible format with "
+			    "pfl-research. Please save the XGBoost model in JSON dump format as "
+			    "follows: bst = xgb.XGBClassifier(...).fit(X, y); booster = "
+			    "bst.get_booster(); booster.dump_model('model_dump.json', "
+			    'dump_format=\"json\") and load the \"model_dump.json\" file into '
+			    "pfl-research GBDTModelClassifier object."
+			)
 
                     for child in node_dict['children']:
                         if child['nodeid'] == node_dict['yes']:

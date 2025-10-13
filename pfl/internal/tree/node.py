@@ -323,7 +323,7 @@ class Node:
                     else:
                         node = parent.add_branch_node(is_left, feature,
                                                       threshold)
-                        assert 'children' in node_dict.keys(), (
+                        assert 'children' in node_dict, (
                             "The XGBoost model has not been saved in a compatible format with "
                             "pfl-research. Please save the XGBoost model in JSON dump format as "
                             "follows: bst = xgb.XGBClassifier(...).fit(X, y); booster = "

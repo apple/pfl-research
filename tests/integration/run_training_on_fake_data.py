@@ -289,10 +289,6 @@ def dump_statistics_to_disk(backend, algorithm, args, model, central_data,
     metrics = Metrics([(k, get_overall_value(v)) for k, v in metrics])
 
     if args.output_path is not None:
-        print('outputing',
-              get_ops().distributed.world_size,
-              get_ops().distributed.global_rank,
-              get_ops().distributed.local_rank)
         if get_ops().distributed.world_size > 1:
             with open(
                     f'{args.output_path}.{get_ops().distributed.global_rank}',

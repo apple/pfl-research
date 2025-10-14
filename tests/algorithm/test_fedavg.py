@@ -424,9 +424,7 @@ class TestFederatedAveraging:
         checkpointer = LocalDiskCheckpointer(str(tmp_path))
         algo.set_checkpointer(checkpointer)
 
-        # Mock backend that throws error on first gather_results call
         mock_backend = MagicMock()
-
         async def mock_gather_results_with_crash(*args, **kwargs):
             central_context = kwargs['central_context']
             # Crash on iteration=2

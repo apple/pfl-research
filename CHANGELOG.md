@@ -2,13 +2,18 @@
 
 ## Unreleased
 
+### Breaking change!
+
+* Removed Horovod support (#130).
+* Upgrading minimum dependencies in `docs` and `dev` install-extras (#130).
+
 ### New features
 
 * 
 
 ### Tasks completed
 
-* 
+* Support up to `torch==2.6.0` and `tensorflow==2.17.0` (#130).
 
 ### Bug fixes
 

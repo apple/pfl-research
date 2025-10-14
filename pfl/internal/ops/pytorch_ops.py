@@ -13,7 +13,7 @@ from pfl.internal.ops.framework_types import MLFramework
 from pfl.internal.platform.selector import get_platform
 
 from .common_ops import get_pytorch_major_version, is_pytest_running
-from .distributed import DistributedContext, HorovodDistributedContext, horovod_is_active
+from .distributed import DistributedContext
 
 logger = logging.getLogger(name=__name__)
 
@@ -101,15 +101,15 @@ class PyTorchDistributedContext(DistributedContext):
     def __init__(self):
         worker_rank, worker_addresses = get_platform(
         ).get_distributed_addresses(verbose=True)
-        self._global_rank = worker_rank
-        self._world_size = 1 if worker_addresses is None else len(
-            worker_addresses)
-
-        if self._world_size > 1:
-            if torch.cuda.is_available():
-                backend = torch.distributed.dist_backend.NCCL
-            else:
-                backend = torch.distributed.dist_backend.GLOO
+        backend = 'nccl' if torch.cuda.is_available() else 'gloo'
+        if "TORCHELASTIC_RUN_ID" in os.environ:
+            # Using torchrun.
+            torch.distributed.init_process_group(backend=backend)
+            self._global_rank = int(os.environ['RANK'])
+            self._world_size = int(os.environ['WORLD_SIZE'])
+        elif worker_addresses is not None:
+            self._global_rank = worker_rank
+            self._world_size = len(worker_addresses)
             # We assume that the master is always in the first position.
             init_method = f'tcp://{worker_addresses[0]}'
             torch.distributed.init_process_group(
@@ -117,12 +117,13 @@ class PyTorchDistributedContext(DistributedContext):
                 init_method=init_method,
                 rank=worker_rank,
                 world_size=len(worker_addresses))
+        else:
+            self._global_rank = 0
+            self._world_size = 1
 
     @property
     def local_rank(self) -> int:
-        # Only supports single process, single GPU, multi-worker training,
-        # hence local rank will always be 0.
-        return 0
+        return int(os.environ.get('LOCAL_RANK', 0))
 
     @property
     def global_rank(self) -> int:
@@ -134,9 +135,13 @@ class PyTorchDistributedContext(DistributedContext):
 
     @property
     def local_size(self) -> int:
-        # Only supports single process, single GPU, multi-worker training,
-        # hence local size will always be 1.
-        return 1
+        return int(os.environ.get('LOCAL_WORLD_SIZE', 1))
+
+    def _flatten(self, tensors):
+        return flatten(tensors)
+
+    def _reshape(self, vector, tensors, _shapes, _dtypes):
+        return inmemory_reshape(vector, tensors)
 
     def all_reduce(self,
                    tensors: List[torch.Tensor],
@@ -144,58 +149,18 @@ class PyTorchDistributedContext(DistributedContext):
         if self._world_size <= 1:
             return tensors
 
-        flat, _, _ = flatten(tensors)
+        flat, *reshape_context = self._flatten(tensors)
         torch.distributed.all_reduce(flat, op=torch.distributed.reduce_op.SUM)
         if average:
-            flat /= self.world_size
-        return inmemory_reshape(flat, tensors)
-
-
-class PyTorchHorovodDistributedContext(HorovodDistributedContext):
-    """
-    Distributed training operations for PyTorch tensors using a
-    Horovod backend.
-    Initializing an instance of this class performs the Horovod setup.
-    """
-
-    def __init__(self):
-        import horovod.torch as hvd
-        super().__init__(hvd)
-        hvd.init()
-
-        logger.info('local_rank=%i local_size=%i rank=%i size=%i',
-                    hvd.local_rank(), hvd.local_size(), hvd.rank(), hvd.size())
-        self._post_init_check(hvd)
-
-        if torch.cuda.is_available(
-        ) and "CUDA_VISIBLE_DEVICES" not in os.environ:
-            # As per https://pytorch.org/docs/stable/generated/torch.cuda.set_device.html#torch.cuda.set_device
-            # setting "CUDA_VISIBLE_DEVICES" in env is preferred than
-            # `torch.cuda.set_device`, invoking this only when
-            # "CUDA_VISIBLE_DEVICES" is not set.
-            gpu_id = hvd.local_rank() % torch.cuda.device_count()
-            torch.cuda.set_device(gpu_id)
-            logger.info('local rank %i uses GPU: %i', hvd.local_rank(), gpu_id)
-
-    def _flatten(self, tensors):
-        vector, *reshape_context = flatten(tensors)
-        # Tensors on "MPS" does not work with Horovod, put on CPU.
-        if (hasattr(torch.backends, 'mps')
-                and torch.backends.mps.is_available()):
-            vector = vector.cpu()
-        return (vector, *reshape_context)
-
-    def _reshape(self, vector, shapes, dtypes):
-        vector = vector.to(device=get_default_device())
-        return reshape(vector, shapes, dtypes)
+            flat /= self._world_size
+        return self._reshape(flat, tensors, *reshape_context)
 
 
 # Only initialize a distributed context if in the main process.
 # Otherwise, this will try to re-initialize for every subprocess in DataLoader.
 distributed: Optional[DistributedContext]
 if torch.multiprocessing.get_context().current_process().name == 'MainProcess':
-    distributed = PyTorchHorovodDistributedContext() if horovod_is_active(
-    ) else PyTorchDistributedContext()
+    distributed = PyTorchDistributedContext()
 else:
     # This will only execute inside a DataLoader subprocess, which should not
     # use any distributed context anyway.

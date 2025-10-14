@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.data.dataset import Dataset, DatasetSplit, TabularDataset
 from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
@@ -190,12 +190,12 @@ pt_mark = [
 
 
 @pytest.mark.parametrize('user_dataset', [
-    lazy_fixture('dataset'),
-    pytest.param(lazy_fixture('tf_dataset'), marks=tf_mark),
-    pytest.param(lazy_fixture('tf_tensor_dataset'), marks=tf_mark),
-    pytest.param(lazy_fixture('tf_data_dataset'), marks=tf_mark),
-    pytest.param(lazy_fixture('pytorch_dataset'), marks=pt_mark),
-    pytest.param(lazy_fixture('pytorch_data_dataset'), marks=pt_mark),
+    lf('dataset'),
+    pytest.param(lf('tf_dataset'), marks=tf_mark),
+    pytest.param(lf('tf_tensor_dataset'), marks=tf_mark),
+    pytest.param(lf('tf_data_dataset'), marks=tf_mark),
+    pytest.param(lf('pytorch_dataset'), marks=pt_mark),
+    pytest.param(lf('pytorch_data_dataset'), marks=pt_mark),
 ])
 class TestAllDatasets:
 

@@ -1,7 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.algorithm.fedprox import AdaptMuOnMetricCallback, FedProx, FedProxParams
 from pfl.common_types import Population
@@ -62,13 +62,13 @@ def make_adafedprox_setup():
 
 
 model_setup_marks = [
-    pytest.param(lazy_fixture('pytorch_model_setup'),
+    pytest.param(lf('pytorch_model_setup'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ],
                  id='pytorch'),
-    pytest.param(lazy_fixture('tensorflow_model_setup'),
+    pytest.param(lf('tensorflow_model_setup'),
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() < 2,
                                         reason='not tf>=2')
@@ -103,10 +103,10 @@ for _ in range(epochs):
     ```
     """
 
-    @pytest.mark.parametrize('make_algorithm_setup', [
-        lazy_fixture('make_fedprox_setup'),
-        lazy_fixture('make_adafedprox_setup')
-    ])
+    @pytest.mark.parametrize(
+        'make_algorithm_setup',
+        [lf('make_fedprox_setup'),
+         lf('make_adafedprox_setup')])
     @pytest.mark.parametrize('mu,expected_weight_diff, expected_loss', [
         (0.0, np.array([[0.5, 0.5], [1., 1.]]), 1.5),
         (1.0, np.array([[0.375, 0.375], [0.75, 0.75]]), 2.125),
@@ -229,10 +229,10 @@ def testcase_decrease_mu_after_consecutive_improvements():
 class TestAdaFedProx:
 
     @pytest.mark.parametrize('setup', [
-        lazy_fixture('testcase_skip_iteration'),
-        lazy_fixture('testcase_decrease_increase_flat'),
-        lazy_fixture('testcase_decrease_increase_small_step'),
-        lazy_fixture('testcase_decrease_mu_after_consecutive_improvements'),
+        lf('testcase_skip_iteration'),
+        lf('testcase_decrease_increase_flat'),
+        lf('testcase_decrease_increase_small_step'),
+        lf('testcase_decrease_mu_after_consecutive_improvements'),
     ])
     def test_process_aggregated_statistics(self, setup, model_setup):
         for metric_value, mu in zip(setup['metric_values'],

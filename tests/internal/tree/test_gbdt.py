@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 from scipy.special import expit
 
 from pfl.internal.tree.gbdt import GBDTClassifier, GBDTRegressor
@@ -138,9 +138,9 @@ def expected_xgboost_output_one_tree_trained():
 class TestGBDT:
 
     @pytest.mark.parametrize('gbdt', [
-        lazy_fixture('empty_gbdt_regressor'),
-        lazy_fixture('gbdt_regressor_two_trees_trained'),
-        pytest.param(lazy_fixture('gbdt_regressor_one_tree_incomplete'),
+        lf('empty_gbdt_regressor'),
+        lf('gbdt_regressor_two_trees_trained'),
+        pytest.param(lf('gbdt_regressor_one_tree_incomplete'),
                      marks=pytest.mark.xfail)
     ])
     def test_add_tree(self, gbdt, branch_node, check_equal_nodes):
@@ -150,12 +150,11 @@ class TestGBDT:
         check_equal_nodes(gbdt.trees[-1], branch_node)
 
     @pytest.mark.parametrize(
-        'gbdt, expected',
-        [(lazy_fixture('gbdt_regressor_two_trees_trained'),
-          [expected_xgboost_output_one_tree_trained()] * 2),
-         (lazy_fixture('gbdt_regressor_two_trees_incomplete'),
-          [expected_xgboost_output_one_tree_trained()]),
-         (lazy_fixture('gbdt_classifier_one_tree_incomplete'), [])])
+        'gbdt, expected', [(lf('gbdt_regressor_two_trees_trained'),
+                            [expected_xgboost_output_one_tree_trained()] * 2),
+                           (lf('gbdt_regressor_two_trees_incomplete'),
+                            [expected_xgboost_output_one_tree_trained()]),
+                           (lf('gbdt_classifier_one_tree_incomplete'), [])])
     def test_to_serialized_xgboost(self, gbdt, expected):
         assert gbdt.to_serialized_xgboost() == expected
 
@@ -164,30 +163,25 @@ class TestGBDTClassifier:
 
     @pytest.mark.parametrize(
         'gbdt, expected',
-        [(lazy_fixture('empty_gbdt_classifier'),
-          expit(np.array([0., 0., 0., 0.]))),
-         (lazy_fixture('gbdt_classifier_one_tree_trained'),
+        [(lf('empty_gbdt_classifier'), expit(np.array([0., 0., 0., 0.]))),
+         (lf('gbdt_classifier_one_tree_trained'),
           expit(np.array([0.3, 0.4, -0.3, -0.4]))),
-         (lazy_fixture('gbdt_classifier_two_trees_trained'),
+         (lf('gbdt_classifier_two_trees_trained'),
           expit(np.array([0.6, 0.8, -0.6, -0.8]))),
-         (lazy_fixture('gbdt_classifier_one_tree_incomplete'),
+         (lf('gbdt_classifier_one_tree_incomplete'),
           expit(np.array([0., 0., 0., 0.]))),
-         (lazy_fixture('gbdt_classifier_two_trees_incomplete'),
+         (lf('gbdt_classifier_two_trees_incomplete'),
           expit(np.array([0.3, 0.4, -0.3, -0.4])))])
     def test_predict(self, gbdt, expected, gbdt_datapoints):
         np.testing.assert_equal(gbdt.predict(gbdt_datapoints), expected)
 
     @pytest.mark.parametrize(
         'gbdt, expected',
-        [(lazy_fixture('empty_gbdt_classifier'), np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_classifier_one_tree_trained'),
-          np.array([1, 1, 0, 0])),
-         (lazy_fixture('gbdt_classifier_two_trees_trained'),
-          np.array([1, 1, 0, 0])),
-         (lazy_fixture('gbdt_classifier_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_classifier_two_trees_incomplete'),
-          np.array([1, 1, 0, 0]))])
+        [(lf('empty_gbdt_classifier'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_classifier_one_tree_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_two_trees_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_one_tree_incomplete'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_classifier_two_trees_incomplete'), np.array([1, 1, 0, 0]))])
     def test_predict_classes(self, gbdt, expected, gbdt_datapoints):
         np.testing.assert_almost_equal(gbdt.predict_classes(gbdt_datapoints),
                                        expected,
@@ -195,15 +189,11 @@ class TestGBDTClassifier:
 
     @pytest.mark.parametrize(
         'gbdt, targets',
-        [(lazy_fixture('empty_gbdt_classifier'), np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_classifier_one_tree_trained'),
-          np.array([1, 1, 0, 0])),
-         (lazy_fixture('gbdt_classifier_two_trees_trained'),
-          np.array([1, 1, 0, 0])),
-         (lazy_fixture('gbdt_classifier_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_classifier_two_trees_incomplete'),
-          np.array([1, 1, 0, 0]))])
+        [(lf('empty_gbdt_classifier'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_classifier_one_tree_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_two_trees_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_classifier_one_tree_incomplete'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_classifier_two_trees_incomplete'), np.array([1, 1, 0, 0]))])
     def test_evaluate(self, gbdt, targets, gbdt_datapoints,
                       check_dictionaries_almost_equal):
         predictions = gbdt.predict_classes(gbdt_datapoints)
@@ -211,17 +201,13 @@ class TestGBDTClassifier:
         actual_metrics = gbdt.evaluate(gbdt_datapoints, targets)
         check_dictionaries_almost_equal(actual_metrics, expected_metrics)
 
-    @pytest.mark.parametrize(
-        'gbdt, expected',
-        [(lazy_fixture('empty_gbdt_classifier'), (expit(0), expit(0))),
-         (lazy_fixture('gbdt_classifier_one_tree_trained'),
-          (expit(0.4), expit(-0.4))),
-         (lazy_fixture('gbdt_classifier_two_trees_trained'),
-          (expit(0.8), expit(-0.8))),
-         (lazy_fixture('gbdt_classifier_one_tree_incomplete'),
-          (expit(0), expit(0))),
-         (lazy_fixture('gbdt_classifier_two_trees_incomplete'),
-          (expit(0.4), expit(-0.4)))])
+    @pytest.mark.parametrize('gbdt, expected', [
+        (lf('empty_gbdt_classifier'), (expit(0), expit(0))),
+        (lf('gbdt_classifier_one_tree_trained'), (expit(0.4), expit(-0.4))),
+        (lf('gbdt_classifier_two_trees_trained'), (expit(0.8), expit(-0.8))),
+        (lf('gbdt_classifier_one_tree_incomplete'), (expit(0), expit(0))),
+        (lf('gbdt_classifier_two_trees_incomplete'), (expit(0.4), expit(-0.4)))
+    ])
     def test_get_max_min_predictions(self, gbdt, expected):
         assert gbdt.get_max_min_predictions() == expected
 
@@ -230,29 +216,24 @@ class TestGBDTRegressor:
 
     @pytest.mark.parametrize(
         'gbdt, expected',
-        [(lazy_fixture('empty_gbdt_regressor'), np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_regressor_one_tree_trained'),
+        [(lf('empty_gbdt_regressor'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_regressor_one_tree_trained'),
           np.array([0.3, 0.4, -0.3, -0.4])),
-         (lazy_fixture('gbdt_regressor_two_trees_trained'),
+         (lf('gbdt_regressor_two_trees_trained'),
           np.array([0.6, 0.8, -0.6, -0.8])),
-         (lazy_fixture('gbdt_regressor_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_regressor_two_trees_incomplete'),
+         (lf('gbdt_regressor_one_tree_incomplete'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_regressor_two_trees_incomplete'),
           np.array([0.3, 0.4, -0.3, -0.4]))])
     def test_predict(self, gbdt, expected, gbdt_datapoints):
         np.testing.assert_equal(gbdt.predict(gbdt_datapoints), expected)
 
     @pytest.mark.parametrize(
         'gbdt, targets',
-        [(lazy_fixture('empty_gbdt_regressor'), np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_regressor_one_tree_trained'),
-          np.array([1, 1, 0, 0])),
-         (lazy_fixture('gbdt_regressor_two_trees_trained'),
-          np.array([1, 1, 0, 0])),
-         (lazy_fixture('gbdt_regressor_one_tree_incomplete'),
-          np.array([0, 0, 0, 0])),
-         (lazy_fixture('gbdt_regressor_two_trees_incomplete'),
-          np.array([1, 1, 0, 0]))])
+        [(lf('empty_gbdt_regressor'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_regressor_one_tree_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_regressor_two_trees_trained'), np.array([1, 1, 0, 0])),
+         (lf('gbdt_regressor_one_tree_incomplete'), np.array([0, 0, 0, 0])),
+         (lf('gbdt_regressor_two_trees_incomplete'), np.array([1, 1, 0, 0]))])
     def test_evaluate(self, gbdt, targets, gbdt_datapoints,
                       check_dictionaries_almost_equal):
         predictions = gbdt.predict(gbdt_datapoints)
@@ -265,10 +246,10 @@ class TestGBDTRegressor:
 
     @pytest.mark.parametrize(
         'gbdt, expected',
-        [(lazy_fixture('empty_gbdt_regressor'), (0, 0)),
-         (lazy_fixture('gbdt_regressor_one_tree_trained'), (0.4, -0.4)),
-         (lazy_fixture('gbdt_regressor_two_trees_trained'), (0.8, -0.8)),
-         (lazy_fixture('gbdt_regressor_one_tree_incomplete'), (0, 0)),
-         (lazy_fixture('gbdt_regressor_two_trees_incomplete'), (0.4, -0.4))])
+        [(lf('empty_gbdt_regressor'), (0, 0)),
+         (lf('gbdt_regressor_one_tree_trained'), (0.4, -0.4)),
+         (lf('gbdt_regressor_two_trees_trained'), (0.8, -0.8)),
+         (lf('gbdt_regressor_one_tree_incomplete'), (0, 0)),
+         (lf('gbdt_regressor_two_trees_incomplete'), (0.4, -0.4))])
     def test_get_max_min_predictions(self, gbdt, expected):
         assert gbdt.get_max_min_predictions() == expected

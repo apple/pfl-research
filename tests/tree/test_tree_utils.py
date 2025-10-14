@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.internal.ops.common_ops import check_pfl_tree_installed
 
@@ -69,10 +69,9 @@ def gbdt_model_classifier_incomplete_branch_nodes(tree_incomplete_2_layers,
 class TestFeature:
 
     @pytest.mark.parametrize('feature, expected', [
-        (lazy_fixture('bool_feature'), []),
-        (lazy_fixture('int_equidistant_feature'), [0.8, 1.6, 2.4, 3.2]),
-        (lazy_fixture('float_equidistant_feature'),
-         [25.0, 40.0, 55.0, 70.0, 85.0]),
+        (lf('bool_feature'), []),
+        (lf('int_equidistant_feature'), [0.8, 1.6, 2.4, 3.2]),
+        (lf('float_equidistant_feature'), [25.0, 40.0, 55.0, 70.0, 85.0]),
     ])
     def test_generate_feature_questions(self, feature, node_record, expected):
         questions = feature.generate_feature_questions(node_record)

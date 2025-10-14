@@ -374,7 +374,7 @@ def _make_pytorch_model():
             else:
                 self.train()
             l1loss = torch.nn.BCELoss(reduction='sum')
-            return l1loss(self(torch.FloatTensor(x)), torch.FloatTensor(y))
+            return l1loss(self(torch.tensor(x)), torch.tensor(y))
 
         def metrics(self, x, y):
             loss_value = self.loss(x, y, is_eval=True)

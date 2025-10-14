@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.common_types import Population
 from pfl.context import CentralContext, UserContext
@@ -26,17 +26,17 @@ _clipping_indicator_name = "adaptive_clipping/clipping_indicator"
 class TestAdaptiveClipping:
     # These fixtures sets the internal framework module.
     @pytest.mark.parametrize('ops_module', [
-        pytest.param(lazy_fixture('tensorflow_ops'),
+        pytest.param(lf('tensorflow_ops'),
                      marks=[
                          pytest.mark.skipif(get_tf_major_version() < 2,
                                             reason='not tf>=2')
                      ]),
-        pytest.param(lazy_fixture('tensorflow_ops'),
+        pytest.param(lf('tensorflow_ops'),
                      marks=[
                          pytest.mark.skipif(get_tf_major_version() < 2,
                                             reason='not tf>=2')
                      ]),
-        pytest.param(lazy_fixture('pytorch_ops'),
+        pytest.param(lf('pytorch_ops'),
                      marks=[
                          pytest.mark.skipif(not get_pytorch_major_version(),
                                             reason='PyTorch not installed')

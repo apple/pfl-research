@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.internal.tree.node import Node
 
@@ -83,9 +83,7 @@ class TestNode:
             assert not branch_node.left_child
 
     @pytest.mark.xfail(raises=AssertionError, strict=True)
-    @pytest.mark.parametrize(
-        'node', [lazy_fixture('undefined_node'),
-                 lazy_fixture('leaf_node')])
+    @pytest.mark.parametrize('node', [lf('undefined_node'), lf('leaf_node')])
     def test_add_leaf_node_fail(self, node):
         node.add_leaf_node(is_left=True, value=0.3)
 
@@ -103,71 +101,64 @@ class TestNode:
             assert not branch_node.left_child
 
     @pytest.mark.xfail(raises=AssertionError, strict=True)
-    @pytest.mark.parametrize(
-        'node', [lazy_fixture('undefined_node'),
-                 lazy_fixture('leaf_node')])
+    @pytest.mark.parametrize('node', [lf('undefined_node'), lf('leaf_node')])
     def test_add_branch_node_fail(self, node):
         node.add_branch_node(True, 0, 0.5)
 
     @pytest.mark.xfail(raises=AssertionError, strict=True)
-    @pytest.mark.parametrize('node', [
-        lazy_fixture('tree_incomplete_2_layers'),
-        lazy_fixture('undefined_node')
-    ])
+    @pytest.mark.parametrize(
+        'node', [lf('tree_incomplete_2_layers'),
+                 lf('undefined_node')])
     def test_predict_fail(self, node, gbdt_datapoints):
         node.predict(gbdt_datapoints)
 
     @pytest.mark.parametrize(
         'node, expected',
-        [(lazy_fixture('tree_fully_trained_3_layers'),
-          np.array([0.3, 0.4, -0.3, -0.4])),
-         (lazy_fixture('leaf_node'), np.array([0.3, 0.3, 0.3, 0.3]))])
+        [(lf('tree_fully_trained_3_layers'), np.array([0.3, 0.4, -0.3, -0.4])),
+         (lf('leaf_node'), np.array([0.3, 0.3, 0.3, 0.3]))])
     def test_predict_success(self, node, gbdt_datapoints, expected):
         predictions = node.predict(gbdt_datapoints)
         np.testing.assert_array_equal(predictions, expected)
 
     @pytest.mark.parametrize(
         'node, expected',
-        [(lazy_fixture('tree_fully_trained_3_layers'), [0.3, 0.4, -0.3, -0.4]),
-         (lazy_fixture('leaf_node'), [0.3]),
-         (lazy_fixture('tree_incomplete_2_layers'), []),
-         (lazy_fixture('branch_node'), []),
-         (lazy_fixture('undefined_node'), [])])
+        [(lf('tree_fully_trained_3_layers'), [0.3, 0.4, -0.3, -0.4]),
+         (lf('leaf_node'), [0.3]), (lf('tree_incomplete_2_layers'), []),
+         (lf('branch_node'), []), (lf('undefined_node'), [])])
     def test_get_leaf_values(self, node, expected):
         assert node.get_leaf_values() == expected
 
     @pytest.mark.parametrize('node, expected',
-                             [(lazy_fixture('tree_fully_trained_3_layers'), 7),
-                              (lazy_fixture('leaf_node'), 1),
-                              (lazy_fixture('tree_incomplete_2_layers'), 3),
-                              (lazy_fixture('branch_node'), 1),
-                              (lazy_fixture('undefined_node'), 0)])
+                             [(lf('tree_fully_trained_3_layers'), 7),
+                              (lf('leaf_node'), 1),
+                              (lf('tree_incomplete_2_layers'), 3),
+                              (lf('branch_node'), 1),
+                              (lf('undefined_node'), 0)])
     def test_num_nodes(self, node, expected):
         assert node.num_nodes() == expected
 
     @pytest.mark.parametrize('node, expected',
-                             [(lazy_fixture('tree_fully_trained_3_layers'), 3),
-                              (lazy_fixture('leaf_node'), 1),
-                              (lazy_fixture('tree_incomplete_2_layers'), 2),
-                              (lazy_fixture('branch_node'), 1),
-                              (lazy_fixture('undefined_node'), 0)])
+                             [(lf('tree_fully_trained_3_layers'), 3),
+                              (lf('leaf_node'), 1),
+                              (lf('tree_incomplete_2_layers'), 2),
+                              (lf('branch_node'), 1),
+                              (lf('undefined_node'), 0)])
     def test_max_depth(self, node, expected):
         assert node.max_depth() == expected
 
-    @pytest.mark.parametrize(
-        'node, expected', [(lazy_fixture('tree_fully_trained_3_layers'), True),
-                           (lazy_fixture('leaf_node'), True),
-                           (lazy_fixture('tree_incomplete_2_layers'), False),
-                           (lazy_fixture('branch_node'), False),
-                           (lazy_fixture('undefined_node'), False)])
+    @pytest.mark.parametrize('node, expected',
+                             [(lf('tree_fully_trained_3_layers'), True),
+                              (lf('leaf_node'), True),
+                              (lf('tree_incomplete_2_layers'), False),
+                              (lf('branch_node'), False),
+                              (lf('undefined_node'), False)])
     def test_training_complete(self, node, expected):
         assert node.training_complete() == expected
 
     @pytest.mark.xfail(raises=AssertionError, strict=True)
-    @pytest.mark.parametrize('node', [
-        lazy_fixture('tree_incomplete_2_layers'),
-        lazy_fixture('undefined_node')
-    ])
+    @pytest.mark.parametrize(
+        'node', [lf('tree_incomplete_2_layers'),
+                 lf('undefined_node')])
     def test_to_serialized_xgboost_fail(self, node):
         node.to_serialized_xgboost()
 

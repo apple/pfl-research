@@ -10,21 +10,6 @@ Tensor = TypeVar('Tensor')
 NUMPY_DISTRIBUTE_VAR_NAME = 'PFL_NUMPY_DISTRIBUTE_METHOD'
 
 
-def horovod_is_active() -> bool:
-    """
-    :return:
-        `True` if program was called with `horovodrun`.
-    """
-    # MPI
-    is_using_mpi_horovod = os.environ.get('OMPI_COMMAND') and os.environ.get(
-        'OMPI_ARGV')
-    # Gloo
-    is_using_gloo_horovod = os.environ.get(
-        'HOROVOD_HOSTNAME') and os.environ.get(
-            'HOROVOD_RANK') and os.environ.get('HOROVOD_SIZE')
-    return bool(is_using_mpi_horovod or is_using_gloo_horovod)
-
-
 class DistributedContext(ABC, Generic[Tensor]):
     """
     Collection of properties and methods related to distributed training.
@@ -125,70 +110,6 @@ class DistributedContext(ABC, Generic[Tensor]):
         start_index = (value * self.global_rank) // self.world_size
         end_index = (value * (self.global_rank + 1)) // self.world_size
         return end_index - start_index
-
-
-class HorovodDistributedContext(DistributedContext):
-    """
-    Base class for distributed training operations with Horovod.
-    """
-
-    def __init__(self, hvd):
-        self._hvd = hvd
-
-    def _post_init_check(self, hvd):
-        if hvd.size() == 1:
-            raise RuntimeError(
-                'You are running Horovod backend but number of '
-                'worker and processes are 1. If you intend to only run on a '
-                'single worker and process, don\'t use Horovod.'
-                'If you intend to run multiple processes/workers, then your '
-                'run command was incorrect')
-
-    @property
-    def hvd(self):
-        return self._hvd
-
-    @property
-    def local_rank(self) -> int:
-        return self.hvd.local_rank()
-
-    @property
-    def global_rank(self) -> int:
-        return self.hvd.rank()
-
-    @property
-    def world_size(self) -> int:
-        return self.hvd.size()
-
-    @property
-    def local_size(self) -> int:
-        return self.hvd.local_size()
-
-    @abstractmethod
-    def _flatten(
-            self,
-            tensors: List[Tensor]) -> Tuple[Tensor, List[Tuple], List[Type]]:
-        pass
-
-    @abstractmethod
-    def _reshape(self, vector: Tensor, shapes: List[Tuple],
-                 dtypes: List[Type]) -> List[Tensor]:
-        pass
-
-    def all_reduce(self,
-                   tensors: List[Tensor],
-                   average: bool = False) -> List[Tensor]:
-        if self.world_size <= 1:
-            # In the case of a single worker, just return identity instead
-            # of doing unnecessary flatten and reshape.
-            return tensors
-
-        flat_vector, reshape_shapes, reshape_types = self._flatten(tensors)
-        reduce_op = (self.hvd.mpi_ops.Average
-                     if average else self.hvd.mpi_ops.Sum)
-        reduced_flat_vector = self.hvd.allreduce(flat_vector, op=reduce_op)
-        return self._reshape(reduced_flat_vector, reshape_shapes,
-                             reshape_types)
 
 
 class NotDistributedContext(DistributedContext):

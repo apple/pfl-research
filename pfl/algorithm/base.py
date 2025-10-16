@@ -13,7 +13,7 @@ import numpy as np
 
 from pfl.aggregate.base import Backend
 from pfl.callback.base import TrainingProcessCallback
-from pfl.common_types import Population, Saveable
+from pfl.common_types import Checkpointer, Population, Saveable
 from pfl.context import CentralContext
 from pfl.data.dataset import AbstractDatasetType
 from pfl.exception import CheckpointNotFoundError
@@ -77,9 +77,16 @@ class FederatedAlgorithm(Saveable,
         self._random_state = np.random.RandomState(
             np.random.randint(0, 2**32, dtype=np.uint32))
         self._current_central_iteration = 0
+        self._checkpointer = None
 
     def _get_seed(self):
         return self._random_state.randint(0, 2**32, dtype=np.uint32)
+
+    def set_checkpointer(self, checkpointer: Checkpointer) -> None:
+        """
+        Set checkpointer such that intermediate state can be saved.
+        """
+        self._checkpointer = checkpointer
 
     def save(self, dir_path: str) -> None:
         state_path = os.path.join(dir_path, 'algorithm_checkpoint.json')
@@ -274,10 +281,18 @@ class FederatedAlgorithm(Saveable,
              all_metrics) = self.get_next_central_contexts(
                  model, self._current_central_iteration, algorithm_params,
                  model_train_params, model_eval_params)
+
             if new_central_contexts is None:
                 break
             else:
                 central_contexts = new_central_contexts
+
+            if self._checkpointer is not None:
+                # Need to save new algorithm state here such that if we
+                # restore from a crashed experiment, we restore the current
+                # central iteration, and not from last time checkpointing
+                # callback was called.
+                self._checkpointer.invoke_save(self)
 
             if not has_reported_on_train_metrics:
                 all_metrics |= on_train_metrics

@@ -1,5 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
+import json
 import math
+import os
 import pathlib
 from unittest.mock import MagicMock, call, patch
 
@@ -9,7 +11,7 @@ from pytest_lazy_fixtures import lf
 
 from pfl.algorithm import FederatedAveraging, NNAlgorithmParams
 from pfl.callback.checkpoint import ModelCheckpointingCallback
-from pfl.common_types import Population
+from pfl.common_types import LocalDiskCheckpointer, Population
 from pfl.context import CentralContext
 from pfl.hyperparam import NNEvalHyperParams, NNTrainHyperParams
 from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
@@ -403,3 +405,66 @@ class TestFederatedAveraging:
         assert 'on_train_begin' not in mock_platform.consume_metrics.call_args_list[
             4][0][0]
         assert mock_platform.consume_metrics.call_count == 5
+
+    @patch('pfl.algorithm.base.get_platform')
+    def test_checkpoint_during_gather_results_crash(self, mock_get_platform,
+                                                    fedavg_setup, mock_model,
+                                                    nn_eval_params,
+                                                    nn_train_params, tmp_path):
+        """
+        Test that checkpoint is saved with current_central_iteration before
+        gather_results, so if gather_results crashes, the restored checkpoint
+        has the correct iteration number (not iteration - 1).
+        """
+
+        mock_platform = MagicMock()
+        mock_get_platform.return_value = mock_platform
+
+        algo = FederatedAveraging()
+        checkpointer = LocalDiskCheckpointer(str(tmp_path))
+        algo.set_checkpointer(checkpointer)
+
+        mock_backend = MagicMock()
+
+        async def mock_gather_results_with_crash(*args, **kwargs):
+            central_context = kwargs['central_context']
+            # Crash on iteration=2
+            if central_context.current_central_iteration == 2:
+                checkpoint_path = os.path.join(tmp_path,
+                                               'algorithm_checkpoint.json')
+                assert os.path.exists(checkpoint_path)
+                with open(checkpoint_path) as f:
+                    state = json.load(f)
+                    assert state[
+                        'current_central_iteration'] == central_context.current_central_iteration
+
+                raise RuntimeError("Simulated crash during gather_results")
+
+            if central_context.population == Population.TRAIN:
+                stats = MappedVectorStatistics(
+                    {'var1': np.ones((2, 3))},
+                    weight=central_context.cohort_size)
+            else:
+                stats = None
+            return stats, Metrics()
+
+        mock_backend.async_gather_results.side_effect = mock_gather_results_with_crash
+
+        with pytest.raises(RuntimeError,
+                           match="Simulated crash during gather_results"):
+            algo.run(algorithm_params=fedavg_setup['algorithm_params'],
+                     backend=mock_backend,
+                     model=mock_model,
+                     model_train_params=nn_train_params,
+                     model_eval_params=nn_eval_params,
+                     callbacks=[])
+
+        checkpoint_path = os.path.join(tmp_path, 'algorithm_checkpoint.json')
+        with open(checkpoint_path) as f:
+            state = json.load(f)
+            assert state['current_central_iteration'] == 2
+
+        # Restore from checkpoint
+        restored_algo = FederatedAveraging()
+        restored_algo.load(str(tmp_path))
+        assert restored_algo._current_central_iteration == 2

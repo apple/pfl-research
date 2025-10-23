@@ -4,6 +4,25 @@
 
 ### Breaking change!
 
+*
+
+### New features
+
+*
+
+### Tasks completed
+
+*
+
+### Bug fixes
+
+*
+
+
+## v0.5.0
+
+### Breaking change!
+
 * Removed Horovod support (#130).
 * Upgrading minimum dependencies in `docs` and `dev` install-extras (#130).
 
@@ -17,7 +36,7 @@
 
 ### Bug fixes
 
-* 
+* FederatedAlgorithm should restore current iteration if crash during gather_results (#132).
 
 
 ## v0.4.0

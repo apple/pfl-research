@@ -203,7 +203,7 @@ markers = [
 # Run with command:
 # poetry run bump-my-version bump <major/minor/patch>
 [tool.bumpversion]
-current_version = "0.4.0"
+current_version = "0.5.0"
 commit = "True"
 tag = "False"
 

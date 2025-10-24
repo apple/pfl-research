@@ -569,8 +569,11 @@ class Metrics:
     def __or__(self, other) -> 'Metrics':
         overlap = set(self._hash_to_keyvalue) & set(other._hash_to_keyvalue)
         if overlap != set():
-            raise ValueError(f'Combining two "Metrics" objects that have '
-                             f'{len(overlap)} overlapping names: {overlap}')
+            raise ValueError(
+                f'Combining two "Metrics" objects that have '
+                f'{len(overlap)} overlapping names '
+                f'hashes={overlap}, '
+                f'strings={[self._hash_to_keyvalue[h] for h in overlap]}')
 
         return Metrics(itertools.chain(self, other))
 

@@ -15,67 +15,60 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
-multiprocess = "^0.70.15"
-numpy = "^1.21"
-scipy = "^1.7.3"
+python = ">=3.10,<3.13"
+multiprocess = ">=0.70.15,<0.71"
+numpy = ">=1.21,<3"
+scipy = ">=1.7.3"
 dp-accounting = ">=0.4,<0.6"
 prv-accountant = "^0.2.0"
 #### Will be installed only with "pytorch" install extra
 torch = [
-  { version = "^2.0.1", source = "torch_cu118", markers = "sys_platform == 'linux'", optional = true },
+  { version = "^2.0.1", source = "torch_cu124", markers = "sys_platform == 'linux'", optional = true },
   { version = "^2.0.1", source = "PyPI", markers = "sys_platform == 'darwin'",  optional = true },
 ]
 #### Will be installed only with "tf" install extra
-tensorflow = [
-    {version = "^2.14", markers = "sys_platform == 'linux'", optional = true},
-    {version = "^2.14", markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'", optional = true}
-]
-# Require TF2.14 for M1 because looks like installing Horovod with <TF2.13 on M1 doesn't work.
-tensorflow-macos = { version = "^2.14", markers = "sys_platform == 'darwin' and platform_machine == 'arm64'", optional = true}
-tensorflow-probability = { version = "^0.22", optional = true }
+tensorflow = { version = "^2.16.1", optional = true }
+tensorflow-probability = { version = ">=0.24", extras = ["tf"], optional = true }
 
 #### Will be installed only with "trees" install extra
-scikit-learn = { version = "^1.0.2", optional = true }
-xgboost = { version = "^1.4.2", optional = true }
+scikit-learn = { version = ">=1.0.2,<2", optional = true }
+xgboost = { version = ">=1.4.2,<4", optional = true }
 
 #### Will be installed only with "mlx" install extra
-mlx = { version = "^0.15.2", optional = true }
+mlx = { version = ">=0.15.2,<0.30", optional = true }
 
-#### Needed in case you want to install Horovod
-cmake = "^3.27.5"
-wheel = "^0.41.2"
-packaging = "^25.0"
+wheel = ">=0.41.2,<0.46"
+packaging = ">=24.0,<26"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.2.0"
-pytest-cov = "^4.0.0"
-deptry = "^0.6.4"
-pre-commit = "^2.20.0"
-tox = "^3.25.1"
+pytest = "^8.4.2"
+pytest-cov = "^7.0.0"
+deptry = "^0.23.1"
+pre-commit = "^4.3.0"
+tox = "^4.30.2"
 yapf = "^0.40.1"
-pytest-env = "^1.0.1"
-pytest-xdist = "^3.3.1"
-bump-my-version = "^0.9.3"
-ruff = "0.0.290"
-pytest-lazy-fixture = "^0.6.3"
-mypy = "1.5"
+pytest-env = "^1.1.5"
+pytest-xdist = "^3.8.0"
+bump-my-version = "^1.2.2"
+ruff = "^0.13.0"
+mypy = "^1.18.1"
+pytest-lazy-fixtures = "^1.4.0"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^7.1.2"
-sphinx-autodoc-typehints = "^1.24.0"
-furo = "^2023.8.19"
-sphinx-last-updated-by-git = "^0.3.6"
+sphinx = "^8.0.0"
+sphinx-autodoc-typehints = "^3.0.0"
+furo = "^2025.7.19"
+sphinx-last-updated-by-git = "^0.3.8"
 
 [tool.poetry.extras]
-pytorch = [ 'torch', 'cmake']
-tf = ['tensorflow', 'tensorflow-macos', 'tensorflow-probability', 'cmake']
+pytorch = ['torch']
+tf = ['tensorflow', 'tensorflow-probability']
 mlx = ['mlx']
 trees = ['scikit-learn', 'xgboost']
 
 [[tool.poetry.source]]
-name = "torch_cu118"
-url = "https://download.pytorch.org/whl/cu118"
+name = "torch_cu124"
+url = "https://download.pytorch.org/whl/cu124"
 priority = "supplemental"
 
 [[tool.poetry.source]]
@@ -204,14 +197,13 @@ filterwarnings = [
 
 markers = [
     "macos: mark test that should only run on MacOS, enable with --macos",
-    "disable_horovod: mark test that use Horovod. If you don't have Horovod installed, you can still run tests with --disable_horovod",
     "disable_slow: mark test that is slow. We need to speed up these tests for reasonable runtime on CircleCI"
 ]
 
 # Run with command:
 # poetry run bump-my-version bump <major/minor/patch>
 [tool.bumpversion]
-current_version = "0.4.0"
+current_version = "0.5.0"
 commit = "True"
 tag = "False"
 

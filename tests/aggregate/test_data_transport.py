@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.aggregate.data_transport import BFloat16DataTransport, Float32DataTransport
 from pfl.internal.ops.common_ops import get_pytorch_major_version, get_tf_major_version
@@ -29,12 +29,12 @@ class TestFloat32DataTransport:
 
 # These fixtures sets the internal framework module.
 @pytest.mark.parametrize('ops_module', [
-    pytest.param(lazy_fixture('tensorflow_ops'),
+    pytest.param(lf('tensorflow_ops'),
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() < 2,
                                         reason='not tf>=2')
                  ]),
-    pytest.param(lazy_fixture('pytorch_ops'),
+    pytest.param(lf('pytorch_ops'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')

@@ -1,6 +1,31 @@
 # Change Log
 
+
 ## Unreleased
+
+### Breaking change!
+
+*
+
+### New features
+
+*
+
+### Tasks completed
+
+*
+
+### Bug fixes
+
+*
+
+
+## v0.5.0
+
+### Breaking change!
+
+* Removed Horovod support (#130).
+* Upgrading minimum dependencies in `docs` and `dev` install-extras (#130).
 
 ### New features
 
@@ -8,11 +33,12 @@
 
 ### Tasks completed
 
-* 
+* Support up to `torch==2.6.0` and `tensorflow==2.17.0` (#130).
 
 ### Bug fixes
 
-* 
+* FederatedAlgorithm should restore current iteration if crash during gather_results (#132).
+* Fix xgboost model loading (#131).
 
 
 ## v0.4.0

@@ -225,6 +225,17 @@ class GBDTModel(EvaluatableModel, Generic[GBDTKind]):
         training will not adapt the existing trees in the GBDT loaded using
         this function.
 
+        Example
+        --------
+        >>> import xgboost as xgb
+        >>> clf = xgb.XGBClassifier(...).fit(X,y)
+        >>> booster = clf.get_booster()
+        >>> model_file_path = "xgb_model_dump.json"
+        >>> booster.dump_model(model_file_path, dump_format="json")
+        >>> from pfl.tree.gbdt_model import GBDTModelClassifier
+        >>> model = GBDTModelClassifier(num_features=..., max_depth=...)
+        >>> model.load(path=model_file_path)
+
         :param path:
             Path to a XGBoost model or a json serialisation of a GBDT model.
             Extension of file must be either .model or .json.

@@ -40,14 +40,14 @@ def _run_test_two_workers(tmp_path,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          env=env)
-    _, err = p.communicate()
+    out, err = p.communicate()
     # Load results from the pickle dumped by the other process.
     try:
         with open(single_worker_result_path, 'rb') as f:
             stats_single, metrics_single = pickle.load(f)
     except:
         raise AssertionError(
-            f'Single worker process failed, did not dump statistics to disk. Error: {err}'
+            f'Single worker process failed, did not dump statistics to disk. Error: {err}, {out}'
         )
 
     # Run `run_training_on_fake_data.py` with two workers.

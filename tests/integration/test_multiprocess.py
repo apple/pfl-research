@@ -16,27 +16,21 @@ class TestMultiProcess:
     """
 
     @pytest.mark.parametrize('backend_tup', [
-        pytest.param(('pytorch', 'horovodrun --gloo -np 2 -H localhost:2'),
+        pytest.param(('pytorch', 'torchrun --nproc_per_node=2'),
                      id='pytorch',
                      marks=[
-                         pytest.mark.horovod,
                          pytest.mark.skipif(not get_pytorch_major_version(),
                                             reason='PyTorch not installed')
                      ]),
-        pytest.param(('tensorflow', 'horovodrun --gloo -np 2 -H localhost:2'),
-                     id='tensorflow',
+        pytest.param((
+            'mlx',
+            f'mpirun -np 2 -x DYLD_LIBRARY_PATH=/opt/homebrew/lib {sys.executable}'
+        ),
+                     id='mlx',
                      marks=[
-                         pytest.mark.horovod,
-                         pytest.mark.skipif(get_tf_major_version() < 2,
-                                            reason='not tf>=2')
-                     ]),
-        pytest.param(
-            ('mlx', 'mpirun -np 2 -x DYLD_LIBRARY_PATH=/opt/homebrew/lib'),
-            id='mlx',
-            marks=[
-                pytest.mark.skipif(not check_mlx_installed(),
-                                   reason='MLX not installed')
-            ])
+                         pytest.mark.skipif(not check_mlx_installed(),
+                                            reason='MLX not installed')
+                     ])
     ])
     def test_two_processes(self, tmp_path, ports, backend_tup,
                            check_equal_stats, check_equal_metrics):
@@ -73,9 +67,9 @@ class TestMultiProcess:
         # Run `run_training_on_fake_data.py` with two workers.
         worker1_env = os.environ.copy()
         cmd_arguments = [
-            *cmd_prefix.split(), sys.executable, train_script_path,
-            '--output_path', worker1_result_path, '--backend_framework',
-            backend_framework, '--use_metric_spec',
+            *cmd_prefix.split(), train_script_path, '--output_path',
+            worker1_result_path, '--backend_framework', backend_framework,
+            '--use_metric_spec',
             str(True), *common_arguments
         ]
         p1 = subprocess.Popen(cmd_arguments,

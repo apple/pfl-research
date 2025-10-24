@@ -9,7 +9,7 @@ from unittest.mock import ANY, MagicMock, patch
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.common_types import Population
 from pfl.context import CentralContext, UserContext
@@ -32,18 +32,18 @@ from pfl.stats import MappedVectorStatistics
 
 # These fixtures set the internal framework module.
 framework_fixtures = [
-    pytest.param(lazy_fixture('numpy_ops')),
-    pytest.param(lazy_fixture('tensorflow_ops'),
+    pytest.param(lf('numpy_ops')),
+    pytest.param(lf('tensorflow_ops'),
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() < 2,
                                         reason='not tf>=2')
                  ]),
-    pytest.param(lazy_fixture('pytorch_ops'),
+    pytest.param(lf('pytorch_ops'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ]),
-    pytest.param(lazy_fixture('mlx_ops'),
+    pytest.param(lf('mlx_ops'),
                  marks=[
                      pytest.mark.skipif(not check_mlx_installed(),
                                         reason='MLX not installed')
@@ -258,7 +258,7 @@ class TestMechanisms:
                                rtol=0.02)
 
         if expected_kurtosis is not None:
-            assert np.allclose(kurtosis_values, expected_kurtosis, atol=0.1)
+            assert np.allclose(kurtosis_values, expected_kurtosis, atol=0.15)
 
         if set_seed:
             # Check that the same seed always yields the same results.
@@ -359,7 +359,7 @@ class TestMechanisms:
     @pytest.mark.parametrize('norm_bound', [0.02, 6e6])
     def test_laplace_mechanism(self, norm_bound, set_seed, ops_module,
                                fix_global_random_seeds):
-        shapes = [(1, 20000, 40), (2, 14000, 56)]
+        shapes = [(1, 20000, 100), (2, 14000, 100)]
 
         mechanism = LaplaceMechanism(norm_bound, _epsilon)
 

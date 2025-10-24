@@ -7,7 +7,7 @@ import h5py
 import numpy as np
 import pytest
 from dataset.stackoverflow.numpy import get_fraction_of_users, get_metadata, get_user_weights
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.data.sampling import MinimizeReuseUserSampler
 from pfl.internal.ops import get_pytorch_major_version, get_tf_major_version
@@ -120,9 +120,9 @@ class TestStackOverflowNumpy:
 @pytest.mark.parametrize(
     'so_module',
     [
-        pytest.param(lazy_fixture('numpy_so_module'), id='numpy'),
+        pytest.param(lf('numpy_so_module'), id='numpy'),
         pytest.param(
-            lazy_fixture('tf2_so_module'),
+            lf('tf2_so_module'),
             marks=[
                 pytest.mark.skipif(get_tf_major_version() < 2,
                                    reason='not tf>=2'),
@@ -131,7 +131,7 @@ class TestStackOverflowNumpy:
                 pytest.mark.macos
             ],
             id='tf_v2'),
-        pytest.param(lazy_fixture('pytorch_so_module'),
+        pytest.param(lf('pytorch_so_module'),
                      marks=[
                          pytest.mark.skipif(not get_pytorch_major_version(),
                                             reason='PyTorch not installed'),

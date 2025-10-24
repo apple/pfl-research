@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.aggregate.simulate import SimulatedBackend
 from pfl.common_types import Population
@@ -394,23 +394,21 @@ class TestFederatedGBDT:
             ({
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': True
-            }, lazy_fixture('regression_first_second_order_gradients')),
+            }, lf('regression_first_second_order_gradients')),
             ({
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False
-            }, lazy_fixture('regression_first_order_gradients')),
+            }, lf('regression_first_order_gradients')),
             ({
                 'compute_first_order_gradients': False,
                 'compute_second_order_gradients': True
-            }, lazy_fixture('regression_second_order_gradients')),
+            }, lf('regression_second_order_gradients')),
             ({
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_gradients_both_sides_split': False,
                 'report_node_sum_gradients': True,
-            },
-             lazy_fixture(
-                 'regression_first_order_gradients_one_side_only_node_sum')),
+            }, lf('regression_first_order_gradients_one_side_only_node_sum')),
             (
                 {
                     'compute_first_order_gradients': True,
@@ -418,22 +416,18 @@ class TestFederatedGBDT:
                     'report_gradients_both_sides_split': False,
                     'report_node_sum_gradients': False,
                 },
-                lazy_fixture(
-                    'regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
-                )),
+                lf('regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
+                   )),
             ({
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_feature_result_difference': True,
-            },
-             lazy_fixture(
-                 'regression_first_order_gradients_feature_difference')),
+            }, lf('regression_first_order_gradients_feature_difference')),
             ({
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_node_result_difference': True,
-            },
-             lazy_fixture('regression_first_order_gradients_node_difference'))
+            }, lf('regression_first_order_gradients_node_difference'))
         ],
         indirect=['gbdt_internal_algorithm_params'])
     def test_decode_training_statistics(
@@ -487,9 +481,9 @@ class TestFederatedGBDT:
                     regression_second_order_gradients_right[i_start:i_end])
 
     @pytest.mark.parametrize('statistics, l2_regularization, expected',
-                             [(lazy_fixture('statistics_1'), 1,
+                             [(lf('statistics_1'), 1,
                                (1, -1, 1.5, 1.0, 0.5, 1.0)),
-                              (lazy_fixture('statistics_2'), 1,
+                              (lf('statistics_2'), 1,
                                (0, -1, 9.0, 3.0, 3.0, 0.0))])
     def test_postprocess_training_statistics(self, statistics,
                                              l2_regularization, expected):
@@ -501,9 +495,9 @@ class TestFederatedGBDT:
 
     @pytest.mark.xfail(raises=(AssertionError, ValueError), strict=True)
     @pytest.mark.parametrize('statistics, l2_regularization',
-                             [(lazy_fixture('fail_statistics_1'), 1),
-                              (lazy_fixture('fail_statistics_2'), 1),
-                              (lazy_fixture('statistics_1'), -1)])
+                             [(lf('fail_statistics_1'), 1),
+                              (lf('fail_statistics_2'), 1),
+                              (lf('statistics_1'), -1)])
     def test_postprocess_training_statistics_fail(self, statistics,
                                                   l2_regularization):
         FederatedGBDT.postprocess_training_statistics(statistics,
@@ -512,82 +506,69 @@ class TestFederatedGBDT:
     @pytest.mark.parametrize(
         'model, gbdt_internal_algorithm_params, expected_statistics, population, model_params',  # pylint: disable=line-too-long
         [
-            (lazy_fixture('gbdt_model_classifier_empty'), {
+            (lf('gbdt_model_classifier_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': True
-            }, lazy_fixture('classification_first_second_order_gradients'),
-             lazy_fixture('train_population'),
-             lazy_fixture('gbdt_classification_model_hyper_params')),
-            (lazy_fixture('gbdt_model_classifier_empty'), {
+            }, lf('classification_first_second_order_gradients'),
+             lf('train_population'),
+             lf('gbdt_classification_model_hyper_params')),
+            (lf('gbdt_model_classifier_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': True
-            }, None, lazy_fixture('val_population'),
-             lazy_fixture('gbdt_classification_model_hyper_params')),
-            (lazy_fixture('gbdt_model_regressor_empty'), {
+            }, None, lf('val_population'),
+             lf('gbdt_classification_model_hyper_params')),
+            (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': True
-            }, lazy_fixture('regression_first_second_order_gradients'),
-             lazy_fixture('train_population'),
-             lazy_fixture('gbdt_regression_model_hyper_params')),
-            (lazy_fixture('gbdt_model_regressor_empty'), {
+            }, lf('regression_first_second_order_gradients'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
+            (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False
-            }, lazy_fixture('regression_first_order_gradients'),
-             lazy_fixture('train_population'),
-             lazy_fixture('gbdt_regression_model_hyper_params')),
-            (lazy_fixture('gbdt_model_regressor_empty'), {
+            }, lf('regression_first_order_gradients'), lf('train_population'),
+             lf('gbdt_regression_model_hyper_params')),
+            (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': False,
                 'compute_second_order_gradients': True
-            }, lazy_fixture('regression_second_order_gradients'),
-             lazy_fixture('train_population'),
-             lazy_fixture('gbdt_regression_model_hyper_params')),
-            (lazy_fixture('gbdt_model_regressor_empty'), {
+            }, lf('regression_second_order_gradients'), lf('train_population'),
+             lf('gbdt_regression_model_hyper_params')),
+            (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_gradients_both_sides_split': False,
                 'report_node_sum_gradients': True,
-            },
-             lazy_fixture(
-                 'regression_first_order_gradients_one_side_only_node_sum'),
-             lazy_fixture('train_population'),
-             lazy_fixture('gbdt_regression_model_hyper_params')),
+            }, lf('regression_first_order_gradients_one_side_only_node_sum'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
             (
-                lazy_fixture('gbdt_model_regressor_empty'),
+                lf('gbdt_model_regressor_empty'),
                 {
                     'compute_first_order_gradients': True,
                     'compute_second_order_gradients': False,
                     'report_gradients_both_sides_split': False,
                     'report_node_sum_gradients': False,
                 },
-                lazy_fixture(
-                    'regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
-                ),
-                lazy_fixture('train_population'),
-                lazy_fixture('gbdt_regression_model_hyper_params')),
-            (lazy_fixture('gbdt_model_regressor_empty'), {
+                lf('regression_first_order_gradients_one_side_only_one_right_gradient'  # pylint: disable=line-too-long
+                   ),
+                lf('train_population'),
+                lf('gbdt_regression_model_hyper_params')),
+            (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_feature_result_difference': True,
-            },
-             lazy_fixture('regression_first_order_gradients_feature_difference'
-                          ), lazy_fixture('train_population'),
-             lazy_fixture('gbdt_regression_model_hyper_params')),
-            (lazy_fixture('gbdt_model_regressor_empty'), {
+            }, lf('regression_first_order_gradients_feature_difference'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
+            (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': False,
                 'report_per_node_result_difference': True,
-            },
-             lazy_fixture('regression_first_order_gradients_node_difference'),
-             lazy_fixture('train_population'),
-             lazy_fixture('gbdt_regression_model_hyper_params')),
-            (lazy_fixture('gbdt_model_regressor_empty'), {
+            }, lf('regression_first_order_gradients_node_difference'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
+            (lf('gbdt_model_regressor_empty'), {
                 'compute_first_order_gradients': True,
                 'compute_second_order_gradients': True,
                 'weight_vector': weight_translate_vector
-            },
-             lazy_fixture('weighted_regression_first_second_order_gradients'),
-             lazy_fixture('train_population'),
-             lazy_fixture('gbdt_regression_model_hyper_params')),
+            }, lf('weighted_regression_first_second_order_gradients'),
+             lf('train_population'), lf('gbdt_regression_model_hyper_params')),
         ],
         indirect=['gbdt_internal_algorithm_params'])
     def test_simulate_one_user(self, gbdt_algorithm, model, gbdt_user_dataset,
@@ -616,10 +597,9 @@ class TestFederatedGBDT:
             assert statistics is None
         assert metrics and isinstance(metrics, Metrics)
 
-    @pytest.mark.parametrize(
-        'model, statistics',
-        [(lazy_fixture('gbdt_model_regressor_empty'),
-          lazy_fixture('regression_first_second_order_gradients'))])
+    @pytest.mark.parametrize('model, statistics',
+                             [(lf('gbdt_model_regressor_empty'),
+                               lf('regression_first_second_order_gradients'))])
     def test_process_aggregated_statistics(self, gbdt_algorithm,
                                            gbdt_internal_algorithm_params,
                                            gbdt_regression_model_hyper_params,
@@ -653,10 +633,10 @@ class TestFederatedGBDT:
     @pytest.mark.parametrize('gbdt_algorithm_params, model',
                              [({
                                  'num_trees': 1
-                             }, lazy_fixture('gbdt_model_regressor_empty')),
+                             }, lf('gbdt_model_regressor_empty')),
                               ({
                                   'num_trees': 5
-                              }, lazy_fixture('gbdt_model_regressor_empty'))],
+                              }, lf('gbdt_model_regressor_empty'))],
                              indirect=['gbdt_algorithm_params'])
     def test_run(self, gbdt_algorithm, gbdt_algorithm_params, model, tmp_path,
                  gbdt_federated_dataset, gbdt_regression_model_hyper_params):
@@ -678,10 +658,10 @@ class TestFederatedGBDT:
         # pylint: disable=protected-access
         assert model.current_tree == gbdt_algorithm_params.num_trees + 1
 
-    @pytest.mark.parametrize('model', [
-        lazy_fixture('gbdt_model_regressor_empty'),
-        lazy_fixture('gbdt_model_regressor_empty')
-    ])
+    @pytest.mark.parametrize(
+        'model',
+        [lf('gbdt_model_regressor_empty'),
+         lf('gbdt_model_regressor_empty')])
     def test_get_next_central_contexts(self, gbdt_algorithm, model,
                                        gbdt_algorithm_params,
                                        gbdt_regression_model_hyper_params):

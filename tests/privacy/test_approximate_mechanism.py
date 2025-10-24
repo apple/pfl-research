@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.metrics import Metrics
 from pfl.privacy import GaussianMechanism, LaplaceMechanism
@@ -149,7 +149,7 @@ class TestApproximateMechanism:
                           atol=30 * math.sqrt(num_dimensions) /
                           math.sqrt(num_samples)).all()
 
-    @pytest.mark.parametrize('framework', [lazy_fixture('numpy_ops')])
+    @pytest.mark.parametrize('framework', [lf('numpy_ops')])
     @pytest.mark.parametrize('num_samples,num_dimensions', [(10, 20),
                                                             (10, 1000),
                                                             (100, 20),

@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.data.user_state import DiskUserStateStorage, InMemoryUserStateStorage
 from pfl.exception import UserNotFoundError
@@ -20,22 +20,21 @@ def in_memory_state_storage(tmp_path):
 
 
 @pytest.mark.parametrize('ops_module', [
-    pytest.param(lazy_fixture('numpy_ops')),
-    pytest.param(lazy_fixture('tensorflow_ops'),
+    pytest.param(lf('numpy_ops')),
+    pytest.param(lf('tensorflow_ops'),
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() < 2,
                                         reason='not tf>=2')
                  ]),
-    pytest.param(lazy_fixture('pytorch_ops'),
+    pytest.param(lf('pytorch_ops'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ]),
 ])
-@pytest.mark.parametrize('storage', [
-    lazy_fixture('in_memory_state_storage'),
-    lazy_fixture('disk_user_state_storage')
-])
+@pytest.mark.parametrize(
+    'storage', [lf('in_memory_state_storage'),
+                lf('disk_user_state_storage')])
 class TestUserState:
 
     def test_save_load(self, storage, ops_module):

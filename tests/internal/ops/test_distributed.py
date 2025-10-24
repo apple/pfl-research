@@ -5,10 +5,9 @@ import os
 from unittest.mock import PropertyMock, patch
 
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.internal.ops import get_pytorch_major_version, get_tf_major_version
-from pfl.internal.ops.distributed import horovod_is_active
 
 # Fixtures for distributed contexts to test.
 # World size is overridden to 3 and global_rank is overridden to 1
@@ -31,29 +30,25 @@ def numpy_legacy_dist():
 
 
 @pytest.fixture
-def mock_hvd_properties():
-    patches = []
-    if get_tf_major_version():
-        patches.append(patch('horovod.tensorflow.size', return_value=3))
-        patches.append(patch('horovod.tensorflow.rank', return_value=1))
-    if get_pytorch_major_version():
-        patches.append(patch('horovod.torch.size', return_value=3))
-        patches.append(patch('horovod.torch.rank', return_value=1))
-    with contextlib.ExitStack() as stack:
-        [stack.enter_context(p) for p in patches]
-        yield
+def numpy_tf_dist():
+    with patch.dict(os.environ, {'PFL_NUMPY_DISTRIBUTE_METHOD': 'tensorflow'}), \
+         patch('pfl.internal.ops.tensorflow_ops.TFDistributedContext.world_size',
+               new_callable=PropertyMock, return_value=3), \
+         patch('pfl.internal.ops.tensorflow_ops.TFDistributedContext.global_rank',
+               new_callable=PropertyMock, return_value=1):
+        from pfl.internal.ops.numpy_ops import _create_tf_based_numpy_distributed_context
+        yield _create_tf_based_numpy_distributed_context()
 
 
 @pytest.fixture
-def numpy_tf_dist(mock_hvd_properties):
-    from pfl.internal.ops.numpy_ops import NumpyHorovodDistributedContext
-    return NumpyHorovodDistributedContext('tensorflow')
-
-
-@pytest.fixture
-def numpy_pytorch_dist(mock_hvd_properties):
-    from pfl.internal.ops.numpy_ops import NumpyHorovodDistributedContext
-    return NumpyHorovodDistributedContext('torch')
+def numpy_pytorch_dist():
+    with patch.dict(os.environ, {'PFL_NUMPY_DISTRIBUTE_METHOD': 'pytorch'}), \
+         patch('pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.world_size',
+               new_callable=PropertyMock, return_value=3), \
+         patch('pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.global_rank',
+               new_callable=PropertyMock, return_value=1):
+        from pfl.internal.ops.numpy_ops import _create_pytorch_based_numpy_distributed_context
+        yield _create_pytorch_based_numpy_distributed_context()
 
 
 @pytest.fixture
@@ -75,9 +70,13 @@ def pytorch_legacy_dist():
 
 
 @pytest.fixture
-def pytorch_hvd_dist(mock_hvd_properties):
-    from pfl.internal.ops.pytorch_ops import PyTorchHorovodDistributedContext
-    return PyTorchHorovodDistributedContext()
+def pytorch_native_dist():
+    with patch('pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.world_size',
+               new_callable=PropertyMock, return_value=3), \
+         patch('pfl.internal.ops.pytorch_ops.PyTorchDistributedContext.global_rank',
+               new_callable=PropertyMock, return_value=1):
+        from pfl.internal.ops.pytorch_ops import PyTorchDistributedContext
+        yield PyTorchDistributedContext()
 
 
 @pytest.fixture
@@ -99,26 +98,13 @@ def tensorflow_legacy_dist():
 
 
 @pytest.fixture
-def tensorflow_hvd_dist(mock_hvd_properties):
-    from pfl.internal.ops.tensorflow_ops import TFHorovodDistributedContext
-    yield TFHorovodDistributedContext()
-
-
-@pytest.mark.horovod
-def test_horovod_is_active():
-    with patch.object(os, 'environ', {}):
-        assert not horovod_is_active()
-    with patch.dict(os.environ, {
-            'OMPI_COMMAND': 'python',
-            'OMPI_ARGV': 'main.py'
-    }):
-        assert horovod_is_active()
-    with patch.dict(os.environ, {
-            'HOROVOD_HOSTNAME': 'localhost',
-            'HOROVOD_RANK': '0',
-            'HOROVOD_SIZE': '1'
-    }):
-        assert horovod_is_active()
+def tensorflow_native_dist():
+    with patch('pfl.internal.ops.tensorflow_ops.TFDistributedContext.world_size',
+               new_callable=PropertyMock, return_value=3), \
+         patch('pfl.internal.ops.tensorflow_ops.TFDistributedContext.global_rank',
+               new_callable=PropertyMock, return_value=1):
+        from pfl.internal.ops.tensorflow_ops import TFDistributedContext
+        yield TFDistributedContext()
 
 
 pytorch_mark = pytest.mark.skipif(not get_pytorch_major_version(),
@@ -128,33 +114,32 @@ tf_mark = pytest.mark.skipif(get_tf_major_version() != 2, reason='tf!=2')
 
 
 @pytest.mark.parametrize('distributed,ops_setup', [
-    pytest.param(lazy_fixture('numpy_legacy_dist'),
-                 lazy_fixture('numpy_ops_setup'),
-                 id='numpy_legacy'),
-    pytest.param(lazy_fixture('numpy_tf_dist'),
-                 lazy_fixture('numpy_ops_setup'),
-                 id='numpy_hvd_tf',
-                 marks=[tf_mark, pytest.mark.horovod]),
-    pytest.param(lazy_fixture('numpy_pytorch_dist'),
-                 lazy_fixture('numpy_ops_setup'),
-                 id='numpy_hvd_pytorch',
-                 marks=[pytorch_mark, pytest.mark.horovod]),
-    pytest.param(lazy_fixture('pytorch_legacy_dist'),
-                 lazy_fixture('pytorch_ops_setup'),
+    pytest.param(
+        lf('numpy_legacy_dist'), lf('numpy_ops_setup'), id='numpy_legacy'),
+    pytest.param(lf('numpy_tf_dist'),
+                 lf('numpy_ops_setup'),
+                 id='numpy_tf_dist',
+                 marks=[tf_mark]),
+    pytest.param(lf('numpy_pytorch_dist'),
+                 lf('numpy_ops_setup'),
+                 id='numpy_pytorch_dist',
+                 marks=[pytorch_mark]),
+    pytest.param(lf('pytorch_legacy_dist'),
+                 lf('pytorch_ops_setup'),
                  id='pytorch_legacy',
                  marks=[pytorch_mark]),
-    pytest.param(lazy_fixture('pytorch_hvd_dist'),
-                 lazy_fixture('pytorch_ops_setup'),
-                 id='pytorch_hvd',
-                 marks=[pytorch_mark, pytest.mark.horovod]),
-    pytest.param(lazy_fixture('tensorflow_legacy_dist'),
-                 lazy_fixture('tensorflow_ops_setup'),
+    pytest.param(lf('pytorch_native_dist'),
+                 lf('pytorch_ops_setup'),
+                 id='pytorch_native',
+                 marks=[pytorch_mark]),
+    pytest.param(lf('tensorflow_legacy_dist'),
+                 lf('tensorflow_ops_setup'),
                  id='tensorflow_legacy',
                  marks=[tf_mark]),
-    pytest.param(lazy_fixture('tensorflow_hvd_dist'),
-                 lazy_fixture('tensorflow_ops_setup'),
-                 id='tensorflow_hvd',
-                 marks=[tf_mark, pytest.mark.horovod]),
+    pytest.param(lf('tensorflow_native_dist'),
+                 lf('tensorflow_ops_setup'),
+                 id='tensorflow_native',
+                 marks=[tf_mark]),
 ])
 class TestDistributedContext:
 

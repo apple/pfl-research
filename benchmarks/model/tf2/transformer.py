@@ -1,4 +1,5 @@
 # Copyright © 2023-2024 Apple Inc.
+import keras.ops as ops
 import tensorflow as tf
 
 from model.tf2.layer import CausalEncoderLayer, PositionalEmbedding
@@ -60,9 +61,8 @@ def lm_transformer(embedding_size: int,
     if embedding_size != hidden_size:
         intermediate = tf.keras.layers.Dense(embedding_size)(intermediate)
 
-    logits = tf.matmul(intermediate,
-                       input_embedding.embedding.embeddings,
-                       transpose_b=True)
+    logits = ops.matmul(intermediate,
+                        ops.transpose(input_embedding.embedding.embeddings))
 
     keras_model = tf.keras.Model(inputs=inputs, outputs=logits)
     print(keras_model.summary())

@@ -4,7 +4,7 @@ import math
 
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.internal.ops import (
     all_reduce_metrics,
@@ -18,20 +18,20 @@ from pfl.stats import MappedVectorStatistics
 
 
 @pytest.mark.parametrize('ops_setup', [
-    pytest.param(lazy_fixture('numpy_ops_setup'), id='numpy_ops'),
-    pytest.param(lazy_fixture('pytorch_ops_setup'),
+    pytest.param(lf('numpy_ops_setup'), id='numpy_ops'),
+    pytest.param(lf('pytorch_ops_setup'),
                  id='pytorch_ops',
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ]),
-    pytest.param(lazy_fixture('tensorflow_ops_setup'),
+    pytest.param(lf('tensorflow_ops_setup'),
                  id='tensorflow_ops',
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() != 2,
                                         reason='tf!=2')
                  ]),
-    pytest.param(lazy_fixture('mlx_ops_setup'),
+    pytest.param(lf('mlx_ops_setup'),
                  marks=[
                      pytest.mark.skipif(not check_mlx_installed(),
                                         reason='MLX not installed')
@@ -162,18 +162,18 @@ class TestOps:
 
 
 @pytest.mark.parametrize('ops_setup', [
-    pytest.param(lazy_fixture('numpy_ops_setup')),
-    pytest.param(lazy_fixture('pytorch_ops_setup'),
+    pytest.param(lf('numpy_ops_setup')),
+    pytest.param(lf('pytorch_ops_setup'),
                  marks=[
                      pytest.mark.skipif(not get_pytorch_major_version(),
                                         reason='PyTorch not installed')
                  ]),
-    pytest.param(lazy_fixture('tensorflow_ops_setup'),
+    pytest.param(lf('tensorflow_ops_setup'),
                  marks=[
                      pytest.mark.skipif(get_tf_major_version() != 2,
                                         reason='tf!=2')
                  ]),
-    pytest.param(lazy_fixture('mlx_ops_setup'),
+    pytest.param(lf('mlx_ops_setup'),
                  marks=[
                      pytest.mark.skipif(not check_mlx_installed(),
                                         reason='MLX not installed')

@@ -9,45 +9,58 @@ import numpy as np
 
 from pfl.internal.ops.framework_types import MLFramework
 
-from .distributed import NUMPY_DISTRIBUTE_VAR_NAME, DistributedContext, HorovodDistributedContext, NotDistributedContext
+from .distributed import NUMPY_DISTRIBUTE_VAR_NAME, DistributedContext, NotDistributedContext
 
 logger = logging.getLogger(name=__name__)
 
 FRAMEWORK_TYPE = MLFramework.NUMPY
 
 
-class NumpyHorovodDistributedContext(HorovodDistributedContext):
-    """
-    Distributed training operations for NumPy tensors using a
-    Horovod backend.
-    Initializing an instance of this class performs the Horovod setup.
+# Wrap into functions to make testable.
+def _create_tf_based_numpy_distributed_context():
+    from pfl.internal.ops.tensorflow_ops import TFDistributedContext
 
-    :param module_name:
-        The Horovod api to use. Most commonly 'tensorflow' or 'pytorch'.
-    """
+    class TFBasedNumpyDistributedContext(TFDistributedContext):
+        """
+        Distributed training operations for NumpPy tensors using
+        `tensorflow.distribute` backend.
+        """
 
-    def __init__(self, module_name: str):
-        logger.info('Trying to use Horovod with %s.', module_name)
-        hvd = importlib.import_module(f'horovod.{module_name}')
-        super().__init__(hvd)
-        hvd.init()
-        logger.info('local_rank=%i local_size=%i rank=%i size=%i',
-                    hvd.local_rank(), hvd.local_size(), hvd.rank(), hvd.size())
+        def _flatten(self, tensors):
+            return flatten(tensors)
 
-    def _flatten(self, tensors):
-        return flatten(tensors)
+        def _reshape(self, vector, shapes, dtypes):
+            # to_numpy in this case is able to handle tensors of both frameworks.
+            return reshape(to_numpy(vector), shapes, dtypes)
 
-    def _reshape(self, vector, shapes, dtypes):
-        # to_numpy in this case is able to handle tensors of both frameworks.
-        return reshape(to_numpy(vector), shapes, dtypes)
+    return TFBasedNumpyDistributedContext()
+
+
+def _create_pytorch_based_numpy_distributed_context():
+    from pfl.internal.ops.pytorch_ops import PyTorchDistributedContext
+
+    class PyTorchBasedNumpyDistributedContext(PyTorchDistributedContext):
+        """
+        Distributed training operations for NumpPy tensors using
+        `torch.distributed` backend.
+        """
+
+        def _flatten(self, tensors):
+            return flatten(tensors)
+
+        def _reshape(self, vector, shapes, dtypes):
+            # to_numpy in this case is able to handle tensors of both frameworks.
+            return reshape(to_numpy(vector), shapes, dtypes)
+
+    return PyTorchBasedNumpyDistributedContext()
 
 
 # Initialize distributed context.
 distributed: DistributedContext
 if os.environ.get(NUMPY_DISTRIBUTE_VAR_NAME, '').lower() == 'tensorflow':
-    distributed = NumpyHorovodDistributedContext('tensorflow')
+    distributed = _create_tf_based_numpy_distributed_context()
 elif os.environ.get(NUMPY_DISTRIBUTE_VAR_NAME, '').lower() == 'pytorch':
-    distributed = NumpyHorovodDistributedContext('torch')
+    distributed = _create_pytorch_based_numpy_distributed_context()
 elif os.environ.get(NUMPY_DISTRIBUTE_VAR_NAME, '').lower() == 'none':
     distributed = NotDistributedContext()
 else:

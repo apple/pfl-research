@@ -1,7 +1,7 @@
 # Copyright © 2023-2024 Apple Inc.
 import numpy as np
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from pfl.algorithm.scaffold import SCAFFOLD, SCAFFOLDParams
 from pfl.common_types import Population
@@ -53,7 +53,7 @@ for _ in range(epochs):
     @pytest.mark.parametrize(
         'model_setup',
         [
-            pytest.param(lazy_fixture('pytorch_model_setup'),
+            pytest.param(lf('pytorch_model_setup'),
                          marks=[
                              pytest.mark.skipif(
                                  not get_pytorch_major_version(),
@@ -61,7 +61,7 @@ for _ in range(epochs):
                          ],
                          id='pytorch'),
             # not yet implemented for tf.
-            #pytest.param(lazy_fixture('tensorflow_model_setup'),
+            #pytest.param(lf('tensorflow_model_setup'),
             #             marks=[
             #                 pytest.mark.skipif(get_tf_major_version() < 2,
             #                                    reason='not tf>=2')

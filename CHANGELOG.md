@@ -1,5 +1,6 @@
 # Change Log
 
+
 ## Unreleased
 
 ### Breaking change!
@@ -37,6 +38,7 @@
 ### Bug fixes
 
 * FederatedAlgorithm should restore current iteration if crash during gather_results (#132).
+* Fix xgboost model loading (#131).
 
 
 ## v0.4.0

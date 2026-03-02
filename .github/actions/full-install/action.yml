@@ -12,12 +12,15 @@ runs:
   steps:
     - name: Create extras file for cache key
       shell: bash
-      run: echo "${{ inputs.extras }}" > extras.txt
+      run: echo "${INPUTS_EXTRAS}" > extras.txt
+      env:
+        INPUTS_EXTRAS: ${{ inputs.extras }}
 
     - name: Install Poetry and Python
       uses: ./.github/actions/python-install
 
     - name: Install dependencies
       shell: bash
-      run: |
-        poetry install -E "${{ inputs.extras }}" -q || true
+      run: poetry install -E "${INPUTS_EXTRAS}" -q || true
+      env:
+        INPUTS_EXTRAS: ${{ inputs.extras }}

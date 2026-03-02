@@ -9,7 +9,7 @@ jobs:
   code-quality:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install Poetry and Python
         uses: ./.github/actions/python-install
       - name: Run pre-commit hooks
@@ -24,7 +24,7 @@ jobs:
   build-documentation-wheel:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Full Install
         uses: ./.github/actions/full-install
         with:
@@ -39,7 +39,7 @@ jobs:
   test-tf:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Full Install
         uses: ./.github/actions/full-install
         with:
@@ -50,7 +50,7 @@ jobs:
   test-pytorch:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Full Install
         uses: ./.github/actions/full-install
         with:
@@ -61,7 +61,7 @@ jobs:
   test-benchmarks:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Benchmark Install
         uses: ./.github/actions/benchmark-install
       - name: Run tests in benchmarks
@@ -72,7 +72,7 @@ jobs:
   check-run-cifar10:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Benchmark Install
         uses: ./.github/actions/benchmark-install
       - name: Download data
@@ -98,7 +98,7 @@ jobs:
   check-run-lm:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Benchmark Install
         uses: ./.github/actions/benchmark-install
       - name: Download data
@@ -126,7 +126,7 @@ jobs:
   check-run-flair:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Benchmark Install
         uses: ./.github/actions/benchmark-install
       - name: Download data

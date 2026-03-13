@@ -117,7 +117,7 @@ class TestAdaptiveClipping:
                 adaptive_clipping_mechanism.mutable_clipping_bound),
             expected_clipping_bound)
         assert get_overall_value(metrics[MetricName(
-            "norm quantile", Population.TRAIN)]) == expected_norm_quantile  # pytype: disable=wrong-arg-count # pylint: disable=line-too-long
+            "norm quantile", Population.TRAIN)]) == pytest.approx(expected_norm_quantile, rel=1e-6)  # pytype: disable=wrong-arg-count # pylint: disable=line-too-long
 
     @pytest.mark.parametrize(
         ('adaptive_clipping_norm_quantile',

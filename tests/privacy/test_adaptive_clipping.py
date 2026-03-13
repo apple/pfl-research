@@ -108,6 +108,8 @@ class TestAdaptiveClipping:
         assert _clipping_indicator_name not in stats
         expected_norm_quantile = (expected_noise[1] / cohort_size /
                                   expected_clipping_indicator_scale + 1) / 2
+        expected_norm_quantile = np.float32(
+            ops_module.to_numpy(expected_norm_quantile).item())
         expected_clipping_bound = clipping_bound * math.exp(
             -0.2 * (expected_norm_quantile - 0.5))
         np.testing.assert_allclose(

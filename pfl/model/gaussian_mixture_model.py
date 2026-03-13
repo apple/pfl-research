@@ -249,7 +249,7 @@ class GaussianMixtureModel(EvaluatableModel):
             mean_name = f'mean-{component_index}'
             variance_name = f'variance-{component_index}'
 
-            responsibility = (float(statistics[responsibility_name]) /
+            responsibility = (statistics[responsibility_name].item() /
                               responsibility_scale)
             weight = (responsibility / overall_weight)
 

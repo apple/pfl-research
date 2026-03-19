@@ -20,6 +20,13 @@
 *
 
 
+## v0.5.1
+
+### Tasks completed
+
+* Fix Numpy 2 compatibility (#137).
+* Update conversion between Renyi-DP and approximate-DP based on CKS20 (#138).
+
 ## v0.5.0
 
 ### Breaking change!

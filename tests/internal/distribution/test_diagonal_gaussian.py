@@ -162,8 +162,8 @@ def test_sample(mean, variance, num_samples):
                               axis=0) - np.square(sample_mean)
 
     if gaussian.point_shape == ():
-        sample_mean = float(sample_mean)
-        sample_variance = float(sample_variance)
+        sample_mean = sample_mean.item()
+        sample_variance = sample_variance.item()
 
     assert sample_mean == pytest.approx(mean, abs=5 / math.sqrt(num_samples))
     assert sample_variance == pytest.approx(variance,

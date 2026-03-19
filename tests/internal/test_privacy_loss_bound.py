@@ -3,7 +3,9 @@
 Test privacy_guarantee.py.
 """
 
-from pfl.internal.privacy_loss_bound import ApproximatePrivacyLossBound, PrivacyLossBound
+import pytest
+
+from pfl.internal.privacy_loss_bound import ApproximatePrivacyLossBound, PrivacyLossBound, RenyiPrivacyLossBound
 
 
 class TestPrivacyLossBound:
@@ -120,3 +122,22 @@ class TestApproximatePrivacyLossBound:
         assert not (adp_2_e_5 < adp_1_e_5)
         assert not (adp_2_e_5 < adp_2_e_6)
         assert not (adp_2_e_5 < adp_2_e_5)  # pylint: disable=comparison-with-itself
+
+
+class TestRenyiPrivacyLossBound:
+
+    @pytest.mark.parametrize("order,rdp_epsilon,delta,adp_epsilon", [
+        (2.0, 1.0, 1e-5, 11.126631103850338),
+        (2.0, 1.0, 1e-3, 6.521460917862246),
+        (10.0, 0.5, 1e-5, 1.4180106367839715),
+        (10.0, 0.5, 1e-3, 0.9063250605630727),
+        (100.0, 0.1, 1e-8, 0.2295002758431074),
+    ])
+    def test_convert_to_approximate_dp(self, order: float, rdp_epsilon: float,
+                                       delta: float, adp_epsilon: float):
+        rdp = RenyiPrivacyLossBound(order=order, epsilon=rdp_epsilon)
+        adp = rdp.convert_to_approximate_dp(desired_delta=delta)
+
+        assert isinstance(adp, ApproximatePrivacyLossBound)
+        assert adp.delta == delta
+        assert adp.epsilon == pytest.approx(adp_epsilon, abs=1e-10)

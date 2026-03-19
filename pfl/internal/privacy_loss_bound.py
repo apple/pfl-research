@@ -165,6 +165,8 @@ class RenyiPrivacyLossBound:
 
         The bound that is returned has a higher epsilon, since the privacy
         loss after multiple applications is greater.
+
+        :param num_applications: number of times to apply Rényi DP.
         """
         return RenyiPrivacyLossBound(self.order,
                                      num_applications * self.epsilon)
@@ -177,20 +179,19 @@ class RenyiPrivacyLossBound:
 
         The desired δ parameter is given, and the corresponding ε is returned.
 
-        This implements Mironov (2017), Proposition 3.
+        This implements [CKS20](https://arxiv.org/pdf/2004.00010),
+        Proposition 12.
         It may well be possible to improve the bound that this relies on in the
         future.
 
-        :param order:
-            The order of the Rényi differential privacy.
-        :param renyi_epsilon:
-            The epsilon parameter in terms of Rényi differential privacy.
         :param desired_delta:
             The desired delta parameter for the approximate DP bound.
         """
         return ApproximatePrivacyLossBound(
-            self.epsilon + (math.log(1 / desired_delta) / (self.order - 1)),
-            desired_delta)
+            self.epsilon +
+            (math.log(1.0 / desired_delta) +
+             (self.order - 1.0) * math.log(1.0 - 1.0 / self.order) -
+             math.log(self.order)) / (self.order - 1.0), desired_delta)
 
     def __str__(self):
         return f'({self.order}, {self.epsilon})-Rényi-DP'

@@ -622,8 +622,10 @@ class FederatedGBDT(FederatedAlgorithm[GBDTAlgorithmHyperParamsType,
             self._finish_tree_id = (model.current_tree +
                                     algorithm_params.num_trees)
 
-        # stop condition
-        if model.current_tree > self._finish_tree_id:
+        # stop condition: use >= so that exactly num_trees trees are trained.
+        # When current_depth == 0, current_tree == len(trees), so >= stops
+        # as soon as the target number of trees have been completed.
+        if model.current_tree >= self._finish_tree_id:
             return None, model, Metrics()
 
         # train cohort size

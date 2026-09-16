@@ -656,7 +656,7 @@ class TestFederatedGBDT:
                                    callbacks=[])
 
         # pylint: disable=protected-access
-        assert model.current_tree == gbdt_algorithm_params.num_trees + 1
+        assert model.current_tree == gbdt_algorithm_params.num_trees
 
     @pytest.mark.parametrize(
         'model',
@@ -665,6 +665,12 @@ class TestFederatedGBDT:
     def test_get_next_central_contexts(self, gbdt_algorithm, model,
                                        gbdt_algorithm_params,
                                        gbdt_regression_model_hyper_params):
+        # Run iteration 0 to set gbdt_algorithm._finish_tree_id
+        gbdt_algorithm.get_next_central_contexts(
+            model, 0, gbdt_algorithm_params,
+            gbdt_regression_model_hyper_params,
+            gbdt_regression_model_hyper_params)
+
         iteration = 1
         (configs, output_model,
          metrics) = (gbdt_algorithm.get_next_central_contexts(

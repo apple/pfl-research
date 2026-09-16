@@ -555,5 +555,50 @@ class TestCrossSiloFederatedDataset:
             np.testing.assert_array_equal(dataset.raw_data[0], [expected_data])
 
 
+@pytest.mark.skipif(not get_pytorch_major_version(),
+                    reason='PyTorch not installed')
+class TestPyTorchFederatedDatasetMakeUserDataset:
+    """
+    ``make_user_dataset_fn`` overriding how a user's records become a dataset.
+
+    Without it a user is always a `PyTorchTensorDataset` built by stacking
+    tensors, which cannot express a user whose records are dictionaries needing
+    a collator.
+    """
+
+    @staticmethod
+    def _fed_data(**kwargs):
+        import torch
+        from torch.utils.data import TensorDataset
+
+        from pfl.data.pytorch import PyTorchFederatedDataset
+        data = torch.Tensor(np.arange(6) * 10).cpu()
+        sampler = MinimizeReuseUserSampler(range(6))
+        return PyTorchFederatedDataset(TensorDataset(data), sampler, **kwargs)
+
+    def test_the_hook_builds_every_user_dataset(self):
+        seen = []
+
+        def make_user_dataset(tensors):
+            seen.append(tensors)
+            return TabularDataset(np.array([1]),
+                                  np.array([2]),
+                                  metadata={'from_hook': True})
+
+        fed_data = self._fed_data(make_user_dataset_fn=make_user_dataset)
+        dataset, _ = next(fed_data)
+
+        assert len(seen) == 1
+        assert isinstance(dataset, TabularDataset)
+        assert dataset.metadata == {'from_hook': True}
+
+    def test_without_the_hook_the_default_dataset_is_built(self):
+        from pfl.data.pytorch import PyTorchTensorDataset
+
+        dataset, _ = next(self._fed_data())
+        assert isinstance(dataset, PyTorchTensorDataset)
+        np.testing.assert_array_equal(dataset.raw_data[0], [0])
+
+
 if __name__ == '__main__':
     unittest.main()

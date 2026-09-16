@@ -115,6 +115,7 @@ class SummaryMetrics(Postprocessor):
         self._stddev = stddev
         self._hist_name = SkipSerialization(
             MetricNamePostfix(self._metric_name, 'histogram'))
+        self._warned_missing = False
 
     def postprocess_one_user(
             self, *, stats: TrainingStatistics,
@@ -136,6 +137,16 @@ class SummaryMetrics(Postprocessor):
             `metrics` contains the histogram metric for one user.
         """
         if self._metric_name not in user_context.metrics:
+            # Once, not once per user per round. Without it the run completes
+            # looking healthy while emitting no summary at all.
+            if not self._warned_missing:
+                self._warned_missing = True
+                logger.warning(
+                    'SummaryMetrics found no metric %r in the user context, so '
+                    'it will emit no histogram. Check that the name matches '
+                    'the producer exactly, that this postprocessor is ordered '
+                    'after whatever emits it, and that `frequency` matches how '
+                    'often it is generated.', self._metric_name)
             return stats, Metrics()
 
         user_value = get_overall_value(user_context.metrics[self._metric_name])
@@ -148,14 +159,21 @@ class SummaryMetrics(Postprocessor):
     def _quantile(self, counts, bins, quantile_target):
         cdf = np.cumsum(counts)
         cdf = cdf / cdf[-1]
-        ix_right = len(cdf[cdf < quantile_target])
-        ix_left = ix_right - 1
-        quantile_left = cdf[ix_left]
-        quantile_right = cdf[ix_right]
+        # `cdf[i]` is the mass at bin `i`'s right edge `bins[i + 1]`, and the
+        # mass at the histogram's left edge is 0 with no entry in `cdf`. So when
+        # the target falls in the first bin, reading the bin below as `cdf[-1]`
+        # and `bins[-1]` wraps to the far end of the histogram and extrapolates
+        # backwards past `min_bound` - a negative gradient norm, say. Low
+        # quantiles of a right-skewed distribution hit this every time.
+        ix = min(len(cdf[cdf < quantile_target]), len(cdf) - 1)
+        mass_left = cdf[ix - 1] if ix else 0.0
+        mass_right = cdf[ix]
+        if mass_right == mass_left:
+            return bins[ix]
 
-        # Estimate quantile with linear interpolation.
-        return bins[ix_left] + (bins[ix_right] - bins[ix_left]) * (
-            quantile_target - quantile_left) / (quantile_right - quantile_left)
+        # Estimate quantile with linear interpolation across bin `ix`.
+        return bins[ix] + (bins[ix + 1] - bins[ix]) * (
+            quantile_target - mass_left) / (mass_right - mass_left)
 
     def postprocess_server(
             self, *, stats: TrainingStatistics,

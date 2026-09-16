@@ -1,4 +1,5 @@
 # Copyright © 2023-2024 Apple Inc.
+import dataclasses
 import math
 from typing import List, Optional, Tuple
 
@@ -175,6 +176,12 @@ class SimulatedBackend(Backend):
                      postprocessor_metrics) = p.postprocess_one_user(
                          stats=user_statistics, user_context=user_context)
                     metrics_one_user |= postprocessor_metrics
+                    # Let a later postprocessor summarise what an earlier one
+                    # emitted. `Metrics.__ior__` does not exist, so the `|=`
+                    # above rebinds, and the frozen context would otherwise keep
+                    # pointing at what `simulate_one_user` returned.
+                    user_context = dataclasses.replace(
+                        user_context, metrics=metrics_one_user)
 
                 if server_statistics is None:
                     user_statistics = user_statistics.apply_elementwise(

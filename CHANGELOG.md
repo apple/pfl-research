@@ -1,6 +1,5 @@
 # Change Log
 
-
 ## Unreleased
 
 ### Breaking change!
@@ -9,12 +8,22 @@
 
 ### New features
 
-* `PyTorchFederatedDataset` takes `make_user_dataset_fn`, so a user's records
-  can become any `AbstractDataset` rather than only a tensor dataset.
+*
 
 ### Tasks completed
 
 *
+
+### Bug fixes
+
+*
+
+## v0.5.2
+
+### New features
+
+* `PyTorchFederatedDataset` takes `make_user_dataset_fn`, so a user's records
+  can become any `AbstractDataset` rather than only a tensor dataset.
 
 ### Bug fixes
 

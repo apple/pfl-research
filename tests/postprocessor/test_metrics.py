@@ -100,11 +100,67 @@ class TestSummaryMetrics:
         assert len(metrics_before) == 1
 
         assert len(metrics_after) == 3
+        # 40% of 24 users is the 9.6th, which sits in bin 1 (users 5-12), 70% of
+        # the way through it: 0.9 + 0.7 * 0.1. Likewise the 14.4th for 0.6.
         assert metrics_after.to_simple_dict() == {
-            'Train population | loss | quantile=0.4': 0.87,
-            'Train population | loss | quantile=0.6': 0.92,
+            'Train population | loss | quantile=0.4': pytest.approx(0.97),
+            'Train population | loss | quantile=0.6': pytest.approx(1.02),
             'Train population | loss | stddev': pytest.approx(0.0745356),
         }
+
+    @pytest.mark.parametrize('quantile', [0.01, 0.1, 0.25])
+    def test_quantile_inside_the_first_bin_stays_in_range(
+            self, postprocessor, quantile):
+        # A right-skewed distribution puts its low quantiles inside bin 0, where
+        # the bin below and the mass below both have to come from outside `cdf`.
+        # Reading them as `cdf[-1]` and `bins[-1]` instead wrapped to the far end
+        # of the histogram and extrapolated backwards past `min_bound`, so a
+        # gradient-norm summary reported negative norms.
+        bins = np.linspace(0.0, 1.5, 3001)
+        counts = np.zeros(3000)
+        counts[0] = 40
+        counts[40] = 34
+        counts[400] = 30
+        counts[900] = 24
+
+        value = postprocessor._quantile(counts, bins, quantile)
+        assert bins[0] <= value <= bins[1]
+
+    def test_quantiles_agree_with_numpy_on_the_underlying_sample(
+            self, postprocessor):
+        # The independent check that pins both halves of the interpolation: which
+        # bin the target falls in, and where inside that bin it lands. Bins are
+        # fine enough that a histogram quantile and a sample quantile may differ
+        # by at most one bin width.
+        rng = np.random.default_rng(0)
+        sample = rng.lognormal(mean=0.0, sigma=0.5, size=200000)
+        bins = np.linspace(0.0, 20.0, 20001)
+        counts, _ = np.histogram(sample, bins=bins)
+
+        for quantile in (0.01, 0.1, 0.5, 0.9, 0.99):
+            assert postprocessor._quantile(counts, bins,
+                                           quantile) == pytest.approx(
+                                               np.quantile(sample, quantile),
+                                               abs=bins[1] - bins[0])
+
+    def test_a_missing_source_metric_warns_once(self, postprocessor, caplog):
+        """
+        A missing source produces no output at all, so a whole run completes
+        looking healthy and carrying nothing. Once, not once per user per round.
+        """
+        stats = MappedVectorStatistics({'var1': np.arange(10)})
+        context = UserContext(num_datapoints=1,
+                              seed=None,
+                              metrics=Metrics([('other', 1.0)]))
+
+        with caplog.at_level('WARNING', logger='pfl.postprocessor.metrics'):
+            for _ in range(3):
+                _, metrics = postprocessor.postprocess_one_user(
+                    stats=stats, user_context=context)
+
+        assert len(metrics) == 0
+        assert len(caplog.records) == 1
+        assert 'no metric' in caplog.records[0].getMessage()
 
     def test_postprocess_server_skip_metric_not_present(
             self, postprocessor, central_context, check_equal_stats,

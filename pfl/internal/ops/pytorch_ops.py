@@ -28,6 +28,7 @@ with contextlib.suppress(RuntimeError):
 
 def get_default_device():
     manual_device = os.environ.get('PFL_PYTORCH_DEVICE', None)
+    local_rank = os.environ.get('LOCAL_RANK', None)
     if manual_device:
         # Default device can be overridden with env var.
         default_device = torch.device(manual_device)
@@ -35,7 +36,11 @@ def get_default_device():
         # Always use CPU when running tests.
         default_device = torch.device('cpu')
     elif torch.cuda.is_available():
-        default_device = torch.device('cuda')
+        # Under a multi-process launcher (`torchrun`) each rank must take its own
+        # device. A bare `cuda` is device 0 for every rank, which would put the
+        # whole job on one GPU and leave the rest of the node idle.
+        default_device = torch.device('cuda' if local_rank is
+                                      None else f'cuda:{local_rank}')
     elif (hasattr(torch.backends, 'mps')
           and torch.backends.mps.is_available()):
         default_device = torch.device('mps')
@@ -104,6 +109,10 @@ class PyTorchDistributedContext(DistributedContext):
         backend = 'nccl' if torch.cuda.is_available() else 'gloo'
         if "TORCHELASTIC_RUN_ID" in os.environ:
             # Using torchrun.
+            if torch.cuda.is_available():
+                # NCCL binds each rank to the device that is current when the
+                # process group is created, so this has to happen first.
+                torch.cuda.set_device(int(os.environ['LOCAL_RANK']))
             torch.distributed.init_process_group(backend=backend)
             self._global_rank = int(os.environ['RANK'])
             self._world_size = int(os.environ['WORLD_SIZE'])

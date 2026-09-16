@@ -9,7 +9,8 @@
 
 ### New features
 
-*
+* `PyTorchFederatedDataset` takes `make_user_dataset_fn`, so a user's records
+  can become any `AbstractDataset` rather than only a tensor dataset.
 
 ### Tasks completed
 
@@ -17,7 +18,14 @@
 
 ### Bug fixes
 
-*
+* Bind each rank to its own GPU under `torchrun`. `get_default_device` returned
+  a bare `cuda`, which is device 0 in every process, so a multi-process launch
+  put the whole job on one GPU while reporting a world size that said otherwise.
+* `SummaryMetrics` no longer reports quantiles below `min_bound`, which it did
+  for any quantile falling in the first histogram bin, and warns once when the
+  metric it summarises is absent instead of silently emitting nothing.
+* `SimulatedBackend` shows each postprocessor the metrics the previous ones
+  emitted, so a postprocessor can summarise another's per-user metric.
 
 
 ## v0.5.1

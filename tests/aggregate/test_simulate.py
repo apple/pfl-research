@@ -2,7 +2,7 @@
 '''
 Test simulated_federated_averaging.py.
 '''
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
@@ -12,7 +12,7 @@ from pfl.aggregate.simulate import SimulatedBackend
 from pfl.common_types import Population
 from pfl.data.federated_dataset import FederatedDatasetBase
 from pfl.internal.ops.selector import _internal_reset_framework_module, set_framework_module
-from pfl.metrics import MetricName, StringMetricName, Weighted
+from pfl.metrics import MetricName, Metrics, StringMetricName, Weighted
 from pfl.postprocessor.base import Postprocessor
 
 
@@ -124,3 +124,70 @@ class TestSimulatedBackend:
 
         assert metrics[MetricName('number of devices',
                                   Population.TRAIN)] == 121  # pytype: disable=wrong-arg-count # pylint: disable=line-too-long
+
+
+class TestPostprocessorChaining:
+    """
+    A postprocessor summarising what an earlier one emitted, which it can only
+    do if `SimulatedBackend` re-binds the frozen `UserContext` as it accumulates
+    metrics down the chain.
+    """
+
+    @pytest.fixture
+    def summarising_postprocessor(self):
+        """A postprocessor that reports whatever an earlier one emitted."""
+        p = MagicMock(spec=Postprocessor)
+
+        def postprocess_one_user(stats, user_context):
+            source = StringMetricName('postprocess_user.num_datapoints')
+            if source not in user_context.metrics:
+                return stats, Metrics()
+            return stats, Metrics([(StringMetricName('summary.seen'),
+                                    user_context.metrics[source])])
+
+        p.postprocess_one_user.side_effect = postprocess_one_user
+        p.postprocess_server.side_effect = (
+            lambda stats, central_context, aggregate_metrics:
+            (stats, Metrics()))
+        return p
+
+    @pytest.mark.parametrize('central_context', ({
+        'cohort_size': 2,
+        'population': Population.TRAIN
+    }, ),
+                             indirect=True)
+    def test_a_later_postprocessor_sees_an_earlier_ones_metric(
+            self, new_event_loop, federated_dataset, simple_postprocessor,
+            summarising_postprocessor, use_ops, mock_algorithm, mock_model,
+            central_context):
+        backend = SimulatedBackend(
+            training_data=federated_dataset,
+            val_data=federated_dataset,
+            postprocessors=[simple_postprocessor, summarising_postprocessor])
+
+        _, metrics = backend.gather_results(model=mock_model,
+                                            training_algorithm=mock_algorithm,
+                                            central_context=central_context)
+
+        assert metrics[StringMetricName('summary.seen')] == 4
+
+    @pytest.mark.parametrize('central_context', ({
+        'cohort_size': 2,
+        'population': Population.TRAIN
+    }, ),
+                             indirect=True)
+    def test_order_matters_so_a_summariser_placed_first_sees_nothing(
+            self, new_event_loop, federated_dataset, simple_postprocessor,
+            summarising_postprocessor, use_ops, mock_algorithm, mock_model,
+            central_context):
+        """The negative control: the metric is threaded forwards, not backwards."""
+        backend = SimulatedBackend(
+            training_data=federated_dataset,
+            val_data=federated_dataset,
+            postprocessors=[summarising_postprocessor, simple_postprocessor])
+
+        _, metrics = backend.gather_results(model=mock_model,
+                                            training_algorithm=mock_algorithm,
+                                            central_context=central_context)
+
+        assert StringMetricName('summary.seen') not in metrics

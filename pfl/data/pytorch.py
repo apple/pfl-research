@@ -236,13 +236,16 @@ class PyTorchFederatedDataset(FederatedDataset):
         ``torch.utils.data.DataLoader``.
     """
 
-    def __init__(self,
-                 dataset: 'torch.utils.data.Dataset',
-                 user_sampler: Callable[[], Any],
-                 dataset_cls: Optional[Type[PyTorchTensorDataset]] = None,
-                 dataset_kwargs: Optional[Dict] = None,
-                 user_id_to_weight: Optional[Dict[Any, int]] = None,
-                 **dataloader_kwargs):
+    def __init__(
+            self,
+            dataset: 'torch.utils.data.Dataset',
+            user_sampler: Callable[[], Any],
+            dataset_cls: Optional[Type[PyTorchTensorDataset]] = None,
+            dataset_kwargs: Optional[Dict] = None,
+            user_id_to_weight: Optional[Dict[Any, int]] = None,
+            make_user_dataset_fn: Optional[Callable[[Any],
+                                                    AbstractDataset]] = None,
+            **dataloader_kwargs):
 
         assert (
             'batch_size' not in dataloader_kwargs
@@ -255,6 +258,7 @@ class PyTorchFederatedDataset(FederatedDataset):
 
         self._dataset_cls = dataset_cls or PyTorchTensorDataset
         self._dataset_kwargs = dataset_kwargs or {}
+        self._make_user_dataset_fn = make_user_dataset_fn
 
         self._prefetch_factor = 0
         if dataloader_kwargs.get("num_workers", 0) > 0:
@@ -271,6 +275,8 @@ class PyTorchFederatedDataset(FederatedDataset):
         self.sampler = self._get_pt_sampler(self.sampler)
 
     def _tensors_to_pfl_dataset(self, tensors):
+        if self._make_user_dataset_fn is not None:
+            return self._make_user_dataset_fn(tensors)
         # This is a hack, but `tensors` is now the dataset already loaded
         # by DataLoader instead of the user ID.
 

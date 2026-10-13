@@ -68,3 +68,38 @@ class Postprocessor(Generic[StatisticsType]):
         return self.postprocess_server(stats=stats,
                                        central_context=central_context,
                                        aggregate_metrics=aggregate_metrics)
+
+    def postprocess_one_user_metrics(self, *,
+                                     user_context: UserContext) -> Metrics:
+        """
+        Metrics-only counterpart of `postprocess_one_user`, called whether or
+        not this user produced statistics.
+
+        This method is run for each postprocessor before any of the
+        `postprocess_one_user` calls.
+
+        :param user_context:
+            Additional information about the current user.
+        :return:
+            Any new metrics to track. Default implementation does nothing.
+        """
+        return Metrics()
+
+    def postprocess_server_metrics(self, *, central_context: CentralContext,
+                                   aggregate_metrics: Metrics) -> Metrics:
+        """
+        Metrics-only counterpart of `postprocess_server`, called whether or
+        not statistics are present.
+
+        This method is run for each postprocessor before any of the
+        `postprocess_server` calls.
+
+        :param central_context:
+            Information about aggregation and other useful server-side
+            properties.
+        :param aggregate_metrics:
+            The aggregated metrics and metrics produced by prior postprocessors.
+        :return:
+            Any new metrics to track. Default implementation does nothing.
+        """
+        return Metrics()

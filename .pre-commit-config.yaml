@@ -42,7 +42,7 @@ repos:
       - id: ruff
   # Static analysis for type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.5.0
+    rev: v1.20.2
     hooks:
     - id: mypy
       exclude: ^publications/

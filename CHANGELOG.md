@@ -8,7 +8,9 @@
 
 ### New features
 
-*
+* Add `Postprocessor` methods `postprocess_one_user_metrics` and
+  `postprocess_server_metrics` that only produce metrics, and plug them into
+  `SimulatedBackend`.
 
 ### Tasks completed
 

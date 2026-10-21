@@ -11,6 +11,9 @@
 * Add `Postprocessor` methods `postprocess_one_user_metrics` and
   `postprocess_server_metrics` that only produce metrics, and plug them into
   `SimulatedBackend`.
+* `MLXModel` takes `save_frozen_parameters`. With `False`, checkpoints only
+  hold the trainable parameters, so training adapters on a large frozen model
+  does not write the frozen model to every checkpoint.
 
 ### Tasks completed
 
@@ -18,7 +21,17 @@
 
 ### Bug fixes
 
-*
+* `MLXModel.save` no longer fails for a model with more than 1024 arrays,
+  which `mx.savez` cannot take as keyword arguments.
+* `MLXModel.load` restores the central optimizer's state and step. The state
+  was restored under the wrong keys and the step was not saved, so a resumed
+  run lost its optimizer moments and restarted its learning rate schedule.
+  Checkpoints saved by earlier versions still load.
+* MLX local training works with a `loss` that takes any number of inputs,
+  not only two.
+* `MLXModel.apply_model_update` accepts statistics of NumPy arrays, as
+  `PyTorchModel` does.
+* `mlx_ops.to_numpy` works for 0-d arrays with NumPy 2.
 
 ## v0.5.2
 

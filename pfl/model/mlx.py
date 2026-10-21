@@ -27,8 +27,10 @@ def _savez(path: str, arrays: Dict[str, mx.array]) -> None:
     Write ``arrays`` to an ``.npz`` file like ``mx.savez(path, **arrays)``,
     but for any number of arrays, where ``mx.savez`` takes at most 1024.
     Each array is written as zip64, so it can be larger than 2 GiB.
+    Uncompressed, like ``mx.savez``: weights compress poorly, and deflate
+    makes saving a large model many times slower.
     """
-    with zipfile.ZipFile(path, 'w') as archive:
+    with zipfile.ZipFile(path, 'w', compression=zipfile.ZIP_STORED) as archive:
         for name, array in arrays.items():
             with archive.open(f'{name}.npy', 'w', force_zip64=True) as member:
                 mx.save(member, array)

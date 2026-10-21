@@ -31,8 +31,10 @@ def get_or_make_loss_grad_fn(model_uuid: str, mlx_model: nn.Module, optimizer,
         loss_and_grad_fn = nn.value_and_grad(mlx_model, fn)
 
         @partial(mx.compile, inputs=state, outputs=state)
-        def step(x, y, max_grad_norm):
-            loss, grads = loss_and_grad_fn(x, y)
+        def step(*args):
+            # Any number of loss inputs, followed by the max gradient norm.
+            *raw_data, max_grad_norm = args
+            loss, grads = loss_and_grad_fn(*raw_data)
             if max_grad_norm != -1:
                 grads = mlx.optimizers.clip_grad_norm(grads, max_grad_norm)[0]
             optimizer.update(mlx_model, grads)

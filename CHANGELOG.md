@@ -8,16 +8,26 @@
 
 ### New features
 
+*
+
+### Tasks completed
+
+*
+
+### Bug fixes
+
+*
+
+## v0.6.0
+
+### New features
+
 * Add `Postprocessor` methods `postprocess_one_user_metrics` and
   `postprocess_server_metrics` that only produce metrics, and plug them into
   `SimulatedBackend`.
 * `MLXModel` takes `save_frozen_parameters`. With `False`, checkpoints only
   hold the trainable parameters, so training adapters on a large frozen model
   does not write the frozen model to every checkpoint.
-
-### Tasks completed
-
-*
 
 ### Bug fixes
 

@@ -231,7 +231,7 @@ def to_tensor(tensor: mx.array, dtype: Optional[str] = 'float32') -> mx.array:
 
 def to_numpy(tensor: mx.array) -> mx.array:
     # https://ml-explore.github.io/mlx/build/html/usage/numpy.html?highlight=numpy#conversion-to-numpy-and-other-frameworks
-    return np.array(tensor, copy=False)
+    return np.asarray(tensor)
 
 
 def clone(tensor: mx.array) -> mx.array:

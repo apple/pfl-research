@@ -2,6 +2,7 @@
 import logging
 import os
 import uuid
+import zipfile
 from typing import Callable, Dict, Optional, Tuple
 
 import mlx
@@ -19,6 +20,20 @@ from pfl.model.base import StatefulModel
 from pfl.stats import MappedVectorStatistics
 
 logger = logging.getLogger(name=__name__)
+
+
+def _savez(path: str, arrays: Dict[str, mx.array]) -> None:
+    """
+    Write ``arrays`` to an ``.npz`` file like ``mx.savez(path, **arrays)``,
+    but for any number of arrays, where ``mx.savez`` takes at most 1024.
+    Each array is written as zip64, so it can be larger than 2 GiB.
+    Uncompressed, like ``mx.savez``: weights compress poorly, and deflate
+    makes saving a large model many times slower.
+    """
+    with zipfile.ZipFile(path, 'w', compression=zipfile.ZIP_STORED) as archive:
+        for name, array in arrays.items():
+            with archive.open(f'{name}.npy', 'w', force_zip64=True) as member:
+                mx.save(member, array)
 
 
 class MLXModel(StatefulModel):
@@ -80,6 +95,12 @@ class MLXModel(StatefulModel):
     :param central_optimizer:
         An ``mlx.optimizers.Optimizer`` instance, which is used to apply the
         central model updates to the variables.
+    :param save_frozen_parameters:
+        If ``False``, ``save`` and ``load`` only include the trainable
+        parameters, and ``load`` keeps the frozen parameters as they are.
+        This avoids writing a large frozen model, e.g. the base model when
+        training adapters, to every checkpoint. Only use this if the frozen
+        parameters do not change during training.
     """
 
     set_framework_module(mlx_ops)
@@ -88,18 +109,23 @@ class MLXModel(StatefulModel):
     _MODEL_CKPT_NAME = "weights.npz"
     _CENTRAL_OPTIMIZER_CKPT_NAME = "central_optimizer.npz"
 
-    def __init__(self, model, local_optimizer, central_optimizer):
+    def __init__(self,
+                 model,
+                 local_optimizer,
+                 central_optimizer,
+                 save_frozen_parameters: bool = True):
         super().__init__()
 
         self._model = model
         self._local_optimizer = local_optimizer
         self._central_optimizer = central_optimizer
+        self._save_frozen_parameters = save_frozen_parameters
 
         # Calculate this later dynamically in `evaluate`.
         self._allows_distributed_evaluation: Optional[bool] = None
 
         self._original_values: Dict = {}
-        self._model_diff = MappedVectorStatistics()
+        self._model_diff: MappedVectorStatistics = MappedVectorStatistics()
 
         # To make the MLX grad function cache unique for each model instance.
         self._postfix = str(uuid.uuid4())[:8]
@@ -138,22 +164,30 @@ class MLXModel(StatefulModel):
 
     def save(self, dir_path: str) -> None:
         """
-        Save model weights to file. Optimizer state is currently not saved.
+        Save model weights and the central optimizer state to disk.
+        The learning rate is not saved, so after ``load`` the central
+        optimizer keeps the learning rate it was constructed with, or a
+        schedule continues from the restored step.
 
         :param dir_path:
             Directory on disk to store state.
         """
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
-        self._model.save_weights(os.path.join(dir_path, self._MODEL_CKPT_NAME))
-        mx.savez(os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME),
-                 **self.central_optimizer_variable_map)
+        parameters = (self._model.parameters() if self._save_frozen_parameters
+                      else self._model.trainable_parameters())
+        _savez(os.path.join(dir_path, self._MODEL_CKPT_NAME),
+               dict(mlx.utils.tree_flatten(parameters)))
+        optimizer_state = dict(
+            mlx.utils.tree_flatten(self._central_optimizer.state))
+        optimizer_state.pop('learning_rate', None)
+        _savez(os.path.join(dir_path, self._CENTRAL_OPTIMIZER_CKPT_NAME),
+               optimizer_state)
 
     def load(self, dir_path: str) -> None:
         """
-        Load model weights from disk, which is the state previously
-        saved with ``save``.
-        Optimizer state is currently not loaded.
+        Load model weights and central optimizer state from disk, which is
+        the state previously saved with ``save``.
 
         :param dir_path:
             Path to root directory where weights can be loaded from.
@@ -163,14 +197,36 @@ class MLXModel(StatefulModel):
         if not os.path.exists(save_path):
             raise CheckpointNotFoundError(save_path)
         weights_path = os.path.join(dir_path, self._MODEL_CKPT_NAME)
-        self._model.load_weights(weights_path)
+        if self._save_frozen_parameters:
+            self._model.load_weights(weights_path)
+        else:
+            weights = mx.load(weights_path)
+            weight_shapes = {name: w.shape for name, w in weights.items()}
+            trainable_shapes = {
+                name: p.shape
+                for name, p in mlx.utils.tree_flatten(
+                    self._model.trainable_parameters())
+            }
+            # A non-strict load checks neither names nor shapes.
+            if weight_shapes != trainable_shapes:
+                raise ValueError(
+                    f'{weights_path} does not hold exactly the trainable '
+                    'parameters of the model.')
+            self._model.load_weights(list(weights.items()), strict=False)
         logger.info(f'Restored model weights from {weights_path}')
 
         optimizer_path = os.path.join(dir_path,
                                       self._CENTRAL_OPTIMIZER_CKPT_NAME)
         if os.path.exists(optimizer_path):
             optimizer_state = mx.load(optimizer_path)
-            self._central_optimizer.state.update(optimizer_state)
+            # Empty if saved by an earlier version before the first update.
+            if optimizer_state:
+                # Older MLX versions would otherwise reset the restored
+                # state when the optimizer initializes at its first update.
+                self._central_optimizer.init(
+                    self._model.trainable_parameters())
+                self._central_optimizer.state.update(
+                    mlx.utils.tree_unflatten(list(optimizer_state.items())))
             logger.info(
                 f'Restored central optimizer checkpoint from {optimizer_path}.'
             )
@@ -302,9 +358,15 @@ class MLXModel(StatefulModel):
         assert isinstance(statistics, MappedVectorStatistics)
         metrics = Metrics()
 
-        difference = statistics.apply_elementwise(lambda t: -1 * t)
-        mlx_difference = mlx.utils.tree_unflatten(list(difference.items()))
-        self._central_optimizer.update(self._model, mlx_difference)
+        parameters = dict(mlx.utils.tree_flatten(self._model.parameters()))
+        # Statistics can also hold arrays of other frameworks, e.g. NumPy.
+        difference = [
+            (name,
+             -1 * mlx_ops.to_tensor(update, dtype=parameters[name].dtype))
+            for name, update in statistics.items()
+        ]
+        self._central_optimizer.update(self._model,
+                                       mlx.utils.tree_unflatten(difference))
 
         metrics[StringMetricName('learning rate')] = Weighted.from_unweighted(
             self._central_optimizer.learning_rate.item())

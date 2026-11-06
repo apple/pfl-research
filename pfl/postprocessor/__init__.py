@@ -2,3 +2,4 @@
 
 from .base import Postprocessor
 from .metrics import SummaryMetrics
+from .quantization import QuantizationPostprocessor
